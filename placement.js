@@ -1,6 +1,6 @@
 // 🧭 Тест рівня: 5 питань на рівень, рівень зараховано при ≥ 4/5, інакше тест завершується.
-import { h, button, richText, fx, wait } from './ui.js?v=20261110022322';
-import { applyPlacement, getWorld } from './state.js?v=20261110022322';
+import { h, button, richText, fx, wait } from './ui.js?v=20261110123652';
+import { applyPlacement, getWorld } from './state.js?v=20261110123652';
 
 export const meta = { topbar: false };
 

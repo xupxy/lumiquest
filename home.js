@@ -1,7 +1,8 @@
 // Головний екран: онбординг для нового гравця або «хаб» з плитками.
-import { h, button, plural } from './ui.js?v=20261110022322';
-import { applyPlacement, currentWorldId, getWorld, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110022322';
-import { worldGames, nextGame, gameStars } from './games.js?v=20261110022322';
+import { h, button, plural, fx } from './ui.js?v=20261110123652';
+import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110123652';
+import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110123652';
+import { worldGames, nextGame, gameStars } from './games.js?v=20261110123652';
 
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 function jelly(el) {
@@ -89,84 +90,142 @@ function onboarding(root, app) {
 }
 
 // ─────────────────────────────────────────────────────────── хаб
+// Сцена світу, де зараз гравець: Лумі на постаменті, ресурси, велика «Продовжити», плитки режимів.
+const svgFrom = (str) => { const t = document.createElement('template'); t.innerHTML = str.trim(); return t.content.firstChild; };
+const setI = (el, i) => { el.style.setProperty('--i', i); return el; };
+
+function flameSVG() {
+  return svgFrom(`<svg class="flame" viewBox="0 0 40 48" aria-hidden="true">
+    <path class="fl-out" d="M20 2 C26 12 36 18 36 30 C36 40 29 46 20 46 C11 46 4 40 4 30 C4 22 10 18 12 10 C15 16 17 18 18 18 C18 12 18 7 20 2Z"/>
+    <path class="fl-in" d="M20 20 C24 26 28 29 28 35 C28 40 24 43 20 43 C16 43 12 40 12 35 C12 31 15 29 16 25 C17 28 18 29 19 29 C19 26 19 23 20 20Z"/></svg>`);
+}
+function pathArt(wid) {
+  const t = themeOf(wid);
+  return svgFrom(`<svg class="tile-svg" viewBox="0 0 120 90" aria-hidden="true">
+    <path d="M14 82 C40 70 20 50 52 44 C86 38 70 18 104 10" fill="none" stroke="${t.ink}" stroke-width="14" stroke-linecap="round"/>
+    <path d="M14 82 C40 70 20 50 52 44 C86 38 70 18 104 10" fill="none" stroke="${t.road}" stroke-width="9" stroke-linecap="round"/>
+    <path d="M14 82 C40 70 20 50 52 44 C86 38 70 18 104 10" fill="none" stroke="${t.ink}" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" opacity=".45"/>
+    <g stroke="${t.ink}" stroke-width="3"><circle cx="18" cy="80" r="9" fill="${t.accent}"/><circle cx="52" cy="44" r="11" fill="${t.accent2}" class="tp-cur"/><circle cx="102" cy="11" r="8" fill="${t.card}"/></g>
+    <path d="M48 44 l3 3 6 -7" stroke="${t.ink}" stroke-width="0" fill="none"/></svg>`);
+}
+
+/** Дні тижня (пн..нд), коли гравець грав — з last_day і streak. */
+export function weekActivity(st) {
+  const today = new Date(); today.setHours(12, 0, 0, 0);
+  const dow = (today.getDay() + 6) % 7; // 0 = пн
+  const out = [];
+  const last = st.last_day ? new Date(st.last_day + 'T12:00:00') : null;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today); d.setDate(today.getDate() - dow + i);
+    let on = false;
+    if (last && st.streak) {
+      const diff = Math.round((last - d) / 864e5);
+      on = diff >= 0 && diff < st.streak;
+    }
+    out.push({ on, today: i === dow, future: i > dow });
+  }
+  return out;
+}
+
 function hub(root, app) {
   const st = app.state;
   const name = st.name || 'друже';
   const wid = currentWorldId(st);
   const w = getWorld(wid);
+  const wi = worldIndex(wid) + 1;
   const games = w ? worldGames(wid) : [];
   const got = games.reduce((a, g) => a + gameStars(st, g.id), 0);
   const total = games.length * 3;
   const next = w ? nextGame(st, wid) : null;
   const sleepy = app.session.sleepy;
+  const unTheme = applyWorldTheme(root, wid, { page: true });
 
-  const lumiBox = h('div', { class: 'hub-lumi' });
-  const greet = sleepy ? `Ох, я задрімала, поки чекала тебе 😴` : (app.session.greeted ? `${name}, куди летимо? 🌟` : `З поверненням, ${name}! 🌟`);
+  const allStars = Object.values(st.stars || {}).reduce((a, b) => a + (b || 0), 0);
+  const greet = sleepy ? 'Ох, я задрімала, поки чекала тебе 😴'
+    : app.session.greeted ? `${name}, куди летимо? 🌟` : `Привіт, ${name}! Я скучила ✨`;
   app.session.greeted = true;
 
+  // ── сцена: світ + Лумі на постаменті
+  const lumiBox = h('div', { class: 'hs-lumi' });
   const streak = st.streak || 0;
-  const head = h('div', { class: 'hub-head' },
-    lumiBox,
-    h('h1', { class: 'hub-title', text: `Привіт, ${name}!` }),
-    h('p', { class: 'hub-sub' },
-      h('span', { class: 'pill pill-fire', text: `🔥 ${streak} ${plural(streak, 'день', 'дні', 'днів')}` }),
-      h('span', { class: 'pill', text: `✨ ${st.fireflies} ${plural(st.fireflies, 'світлячок', 'світлячки', 'світлячків')}` })));
+  const streakBtn = h('button', {
+    class: `hs-streak${streak >= 2 ? ' hot' : ''}`, type: 'button',
+    'aria-label': `Стрік: ${streak} ${plural(streak, 'день', 'дні', 'днів')} поспіль`,
+    on: { click: () => { app.tg.tap('light'); jelly(streakBtn); lumi.say(streak >= 2 ? `${streak} ${plural(streak, 'день', 'дні', 'днів')} поспіль! Вогник горить 🔥` : 'Заходь завтра — і вогник розгориться 🔥'); } },
+  }, flameSVG(), h('b', { text: String(streak) }));
+  const worldChip = h('button', { class: 'hs-world', type: 'button', on: { click: () => { app.tg.tap('light'); app.go('map'); } } },
+    h('span', { class: 'hs-emblem', 'aria-hidden': 'true' }, svgFrom(emblem(wid))),
+    h('span', { class: 'hs-world-txt' }, h('small', { text: `Світ ${wi} · ${w ? w.level : ''}` }), h('b', { text: w ? w.name : '' })));
+  const stage = setI(h('section', { class: 'home-stage' },
+    h('div', { class: 'hs-top' }, worldChip, streakBtn),
+    h('div', { class: 'hs-hero' }, h('div', { class: 'hs-halo', 'aria-hidden': 'true' }), lumiBox,
+      h('div', { class: 'hs-pedestal', 'aria-hidden': 'true' }, svgFrom(pedestal(wid)))),
+    h('h1', { class: 'home-hello title-sticker big', text: `Привіт, ${name}!` })), 0);
 
-  // «Продовжити пригоду» — одразу в наступний рівень стежки (або на стежку, якщо світ пройдено)
-  const cont = h('button', {
-    class: 'hero-card', type: 'button', style: { '--i': 1 },
-    on: {
-      click: () => {
-        app.tg.tap('medium');
-        jelly(cont);
-        if (next) app.go(next.screen, next.params); else app.go('world', { wid });
-      },
-    },
+  // ── ресурси
+  const res = (cls, ico, n, label) => h('div', { class: `res ${cls}` },
+    h('span', { class: 'res-ico', 'aria-hidden': 'true', text: ico }),
+    h('span', { class: 'res-txt' }, h('b', { class: 'res-n', data: { to: String(n) }, text: '0' }), h('small', { text: label })));
+  const strip = setI(h('div', { class: 'res-strip' },
+    res('r-ff', '✨', st.fireflies || 0, plural(st.fireflies || 0, 'слово', 'слова', 'слів')),
+    res('r-star', '⭐', allStars, plural(allStars, 'зірка', 'зірки', 'зірок')),
+    res('r-food', '🍀', st.food || 0, 'корм')), 1);
+
+  // ── «Продовжити»
+  const pct = total ? got / total : 0;
+  const cont = setI(h('button', {
+    class: 'cta', type: 'button',
+    on: { click: () => { app.tg.tap('medium'); jelly(cont); if (next) app.go(next.screen, next.params); else app.go('world', { wid }); } },
   },
-  next ? h('img', { class: 'hero-cover', src: app.asset(next.cover), alt: '' })
-    : h('span', { class: 'hero-isle', 'aria-hidden': 'true', text: w ? w.emoji : '🌱' }),
-  h('span', { class: 'hero-txt' },
-    h('span', { class: 'hero-k', text: 'Продовжити пригоду' }),
-    h('span', { class: 'hero-lvl', text: next ? `Рівень ${next.idx + 1}/${games.length} · ${next.emoji} ${next.title}` : 'Світ пройдено — обери рівень' }),
-    h('span', { class: 'hero-name', text: w ? `${w.name} · ${w.level}` : '' }),
-    h('span', { class: 'hero-prog' },
-      h('span', { class: 'hero-bar' }, h('i', { style: { transform: `scaleX(${total ? got / total : 0})` } })),
-      h('span', { class: 'hero-stars', text: `⭐ ${got}/${total}` }))),
-  h('span', { class: 'hero-go', 'aria-hidden': 'true', text: '▶' }));
+  h('span', { class: 'cta-cover' },
+    next ? h('img', { src: app.asset(next.cover), alt: '' }) : svgFrom(emblem(wid)),
+    next ? h('span', { class: 'cta-num', text: String(next.idx + 1) }) : null),
+  h('span', { class: 'cta-txt' },
+    h('span', { class: 'cta-k', text: next ? 'Продовжити' : 'Світ пройдено' }),
+    h('span', { class: 'cta-lvl', text: next ? `${next.emoji} ${next.title}` : 'Обери рівень і збери всі зірки' }),
+    h('span', { class: 'cta-prog' },
+      h('span', { class: 'cta-bar' }, h('i', { style: { transform: `scaleX(${pct})` } })),
+      h('span', { class: 'cta-stars', text: `⭐ ${got}/${total}` }))),
+  h('span', { class: 'cta-go', 'aria-hidden': 'true' }, svgFrom('<svg viewBox="0 0 24 24"><path d="M8 5 L19 12 L8 19Z"/></svg>'))), 2);
 
-  const mapBtn = button('🗺 Карта світів', { variant: 'secondary', cls: 'hub-map', onClick: () => app.go('map') });
-  mapBtn.style.setProperty('--i', 2);
-  const pathBtn = button(`${w ? w.emoji : '🌍'} Стежка`, { variant: 'secondary', cls: 'hub-path', onClick: () => app.go('world', { wid }) });
-  const navRow = h('div', { class: 'btn-row hub-nav', style: { '--i': 2 } }, pathBtn, mapBtn);
-
+  // ── плитки режимів
   const el = st.active_dragon;
-  const stage = stageOf(st.dragons[el] || 0);
-  let ti = 0;
-  const tile = (cls, title, sub, onClick, art) => {
-    const b = h('button', { class: `tile-card ${cls}`, type: 'button', style: { '--i': ti++ }, on: { click: () => { app.tg.tap('light'); jelly(b); onClick(); } } },
-      art, h('span', { class: 'tile-title', text: title }), h('span', { class: 'tile-sub', text: sub }));
-    return b;
+  const dstage = stageOf(st.dragons[el] || 0);
+  const tile = (cls, title, sub, onClick, art, i) => {
+    const b = h('button', { class: `mode-tile ${cls}`, type: 'button', on: { click: () => { app.tg.tap('light'); jelly(b); onClick(); } } },
+      h('span', { class: 'mt-art', 'aria-hidden': 'true' }, art),
+      h('span', { class: 'mt-title', text: title }), h('span', { class: 'mt-sub', text: sub }));
+    return setI(b, i);
   };
+  const grid = setI(h('div', { class: 'mode-grid' },
+    tile('mt-path', 'Стежка світу', next ? `Рівень ${next.idx + 1} з ${games.length}` : `Усі ${games.length} рівнів`, () => app.go('world', { wid }), pathArt(wid), 0),
+    tile('mt-map', 'Карта світів', `Відкрито ${st.unlocked.length} з ${app.content.WORLDS.length}`, () => app.go('map'),
+      h('img', { src: app.asset('map.png'), alt: '', loading: 'lazy' }), 1),
+    tile('mt-durak', 'Картярня', `Перемог над Лисом: ${st.durak_wins || 0}`, () => app.go('durak'),
+      h('img', { src: app.asset('durak.png'), alt: '', loading: 'lazy' }), 2),
+    tile('mt-dragon', 'Дракони', `${ELEMENTS[el]} · ${dstage[2]}`, () => app.go('dragons'),
+      h('img', { src: app.asset(`dragon/${el}_${dstage[0]}.png`), alt: '', loading: 'lazy' }), 3)), 3);
 
-  const grid = h('div', { class: 'hub-grid', style: { '--i': 3 } },
-    tile('t-durak', '🃏 Картярня', `Перемог над Лисом: ${st.durak_wins || 0}`, () => app.go('durak'),
-      h('img', { class: 'tile-art', src: app.asset('durak.png'), alt: '', loading: 'lazy' })),
-    tile('t-dragon', '🐉 Дракони', `${ELEMENTS[el]} · ${stage[2]} · 🍀 ${st.food}`, () => app.go('dragons'),
-      h('img', { class: 'tile-art dragon-art', src: app.asset(`dragon/${el}_${stage[0]}.png`), alt: '', loading: 'lazy' })),
-    tile('t-prof', '👤 Профіль', `Рівень ${levelOf(st.xp)} · 🏆 ${st.trophies}`, () => app.go('profile'),
-      h('span', { class: 'tile-emoji', 'aria-hidden': 'true', text: '🏅' })),
-    tile('t-test', '🔁 Тест знову', st.placement_result ? `Твій рівень: ${st.placement_result}` : 'Рівень: A1 з початку', () => app.go('placement'),
-      h('span', { class: 'tile-emoji', 'aria-hidden': 'true', text: '🧭' })));
+  const links = setI(h('nav', { class: 'home-links', 'aria-label': 'Ще' },
+    h('button', { class: 'hl', type: 'button', on: { click: () => app.go('profile') } }, h('span', { 'aria-hidden': 'true', text: '👤' }), `Профіль · рів. ${levelOf(st.xp)}`),
+    h('button', { class: 'hl', type: 'button', on: { click: () => app.go('placement') } }, h('span', { 'aria-hidden': 'true', text: '🧭' }), 'Тест рівня'),
+    h('button', { class: 'hl', type: 'button', on: { click: () => helpModal(app) } }, h('span', { 'aria-hidden': 'true', text: '❓' }), 'Як грати')), 4);
 
-  const help = h('button', { class: 'link-btn', type: 'button', text: '❓ Як грати', style: { '--i': 4 }, on: { click: () => helpModal(app) } });
+  root.append(h('div', { class: 'home' }, stage, strip, cont, grid, links));
 
-  root.append(h('div', { class: 'hub' }, head, cont, navRow, grid, help));
-  const lumi = app.makeLumi(lumiBox, { size: 150, emotion: sleepy ? 'sleepy' : 'happy' });
-  setTimeout(() => lumi.say(greet), 350);
+  const lumi = app.makeLumi(lumiBox, { size: 160, emotion: sleepy ? 'sleepy' : 'hello' });
+  const timers = [];
+  timers.push(setTimeout(() => lumi.say(greet), 450));
+  timers.push(setTimeout(() => {
+    strip.querySelectorAll('.res-n').forEach((n, k) => fx.countUp(n, 0, +n.dataset.to, 700 + k * 150));
+  }, 380));
   if (sleepy) {
     app.session.sleepy = false;
-    setTimeout(() => { lumi.set('excited'); lumi.say('Летімо далі! ✨'); }, 3800);
+    timers.push(setTimeout(() => { lumi.set('excited'); lumi.say('Летімо далі! ✨'); }, 3800));
+  } else {
+    timers.push(setTimeout(() => lumi.set('happy'), 2600));
   }
+  return () => { timers.forEach(clearTimeout); unTheme(); };
 }
 
 function helpModal(app) {

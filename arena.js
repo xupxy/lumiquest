@@ -1,12 +1,12 @@
 // ⚔️ Бос-екзамен як карткова битва на арені. Порт game/arena.py + boss-run з engine.py.
-import * as S from './state.js?v=20261110022322';
-import * as FX from './fx.js?v=20261110022322';
-import * as UI from './ui.js?v=20261110022322';
-import * as L from './lumi.js?v=20261110022322';
-import { recordGame } from './games.js?v=20261110022322';
+import * as S from './state.js?v=20261110123652';
+import * as FX from './fx.js?v=20261110123652';
+import * as UI from './ui.js?v=20261110123652';
+import * as L from './lumi.js?v=20261110123652';
+import { recordGame } from './games.js?v=20261110123652';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110022322', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110123652', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {

@@ -18,7 +18,7 @@
  *  fx — проксі ефектів: викликає js/fx.js, якщо він є, інакше вбудовані фолбеки
  *  setFx(module), setHaptics(tg)                   (викликає app.js)
  */
-import { norm, levelOf, xpProgress } from './state.js?v=20261110022322';
+import { norm, levelOf, xpProgress } from './state.js?v=20261110123652';
 
 // ─────────────────────────────────────────────────────────── DOM helpers
 export function h(tag, attrs, ...kids) {
@@ -31,7 +31,10 @@ export function h(tag, attrs, ...kids) {
       if (v === undefined || v === null || v === false) continue;
       if (k === 'class') el.className = v;
       else if (k === 'text') el.textContent = v;
-      else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
+      else if (k === 'style' && typeof v === 'object') {
+        // CSS-змінні (--i тощо) через setProperty, решта — звичайно
+        for (const [sk, sv] of Object.entries(v)) sk.startsWith('--') ? el.style.setProperty(sk, sv) : (el.style[sk] = sv);
+      }
       else if (k === 'on') for (const [ev, fn] of Object.entries(v)) el.addEventListener(ev, fn);
       else if (k === 'data') for (const [dk, dv] of Object.entries(v)) el.dataset[dk] = dv;
       else el.setAttribute(k, v === true ? '' : v);

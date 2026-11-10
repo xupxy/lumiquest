@@ -1,6 +1,7 @@
 // 📜 Квест: сюжет → підказка-урок → 5 завдань → результат із зірками.
-import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait } from './ui.js?v=20261110022322';
-import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110022322';
+import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait } from './ui.js?v=20261110123652';
+import { applyWorldTheme } from './theme.js?v=20261110123652';
+import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110123652';
 
 const CHEERS = ['Так! Світлячок спійманий ✨', 'Блискуче! 🌟', 'Ти сяєш! 💫', 'Ура, правильно! 🎉'];
 
@@ -15,6 +16,7 @@ export function render(root, params, app) {
   const tasks = q.tasks || [];
   const run = { i: 0, correct: 0, mistakes: 0, combo: 0, xp: 0, results: [] };
   let alive = true;
+  const unTheme = applyWorldTheme(root, w.id, { page: true });
 
   const wrap = h('div', { class: 'quest' });
   root.append(wrap);
@@ -172,5 +174,5 @@ export function render(root, params, app) {
   }
 
   storyPhase();
-  return () => { alive = false; };
+  return () => { alive = false; unTheme(); };
 }
