@@ -22,10 +22,10 @@
  * Екран: export function render(root, params, app) { ...; return cleanup? }
  *        export const meta = { topbar: true }   // необов'язково
  */
-import { tg, waitTelegram } from './tg.js?v=20261110123941';
-import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110123941';
-import * as S from './state.js?v=20261110123941';
-import * as UI from './ui.js?v=20261110123941';
+import { tg, waitTelegram } from './tg.js?v=20261110124228';
+import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110124228';
+import * as S from './state.js?v=20261110124228';
+import * as UI from './ui.js?v=20261110124228';
 
 const stageEl = document.getElementById('stage');
 const shell = document.getElementById('app');
@@ -172,7 +172,7 @@ const screenCache = {};
 async function loadScreen(name) {
   if (screenCache[name]) return screenCache[name];
   if (!/^[a-z_]+$/.test(name)) throw new Error('bad screen name');
-  const mod = await import(`./${name}.js?v=20261110123941`);
+  const mod = await import(`./${name}.js?v=20261110124228`);
   screenCache[name] = mod;
   return mod;
 }
@@ -250,7 +250,7 @@ function applyTheme() {
 // ─────────────────────────────────────────────────────────── boot
 async function boot() {
   const [content] = await Promise.all([
-    fetch('content.json?v=20261110123941').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
+    fetch('content.json?v=20261110124228').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
     waitTelegram(),
   ]);
   tg.init();
@@ -260,8 +260,8 @@ async function boot() {
 
   // необовʼязкові модулі інших агентів — безпечно
   const [fxM, lumiM] = await Promise.all([
-    import('./fx.js?v=20261110123941').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
-    import('./lumi.js?v=20261110123941').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
+    import('./fx.js?v=20261110124228').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
+    import('./lumi.js?v=20261110124228').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
   ]);
   UI.setFx(fxM);
   lumiMod = lumiM;

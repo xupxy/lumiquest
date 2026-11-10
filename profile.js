@@ -1,10 +1,10 @@
 // 👤 Профіль: картка гравця (Лумі в рамці арени, кільце XP, звання), лічильники, медалі світів, драконяча колекція,
 // кубки і шкала арен, стрік-календар тижня, налаштування.
-import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110123941';
-import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110123941';
-import { worldGames, gameStars } from './games.js?v=20261110123941';
-import { emblem, themeOf } from './theme.js?v=20261110123941';
-import { weekActivity } from './home.js?v=20261110123941';
+import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110124228';
+import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110124228';
+import { worldGames, gameStars } from './games.js?v=20261110124228';
+import { emblem, themeOf } from './theme.js?v=20261110124228';
+import { weekActivity } from './home.js?v=20261110124228';
 
 const svgFrom = (str) => { const t = document.createElement('template'); t.innerHTML = str.trim(); return t.content.firstChild; };
 const setI = (el, i) => { el.style.setProperty('--i', i); return el; };

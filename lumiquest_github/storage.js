@@ -1,6 +1,6 @@
 // Збереження стану: Telegram CloudStorage (синхронізація айфон ↔ ноут) + localStorage (кеш/фолбек).
 //
-//   import { loadState, saveState, clearState } from './storage.js?v=20261110123941';
+//   import { loadState, saveState, clearState } from './storage.js?v=20261110124228';
 //   const raw = await loadState();     // обʼєкт або null (новий гравець)
 //   saveState(obj);                    // localStorage одразу, хмара — з debounce
 //   await clearState();
@@ -8,7 +8,7 @@
 // Хмара: ліміт 4096 символів на значення, тому JSON ріжемо на шматки по 3800.
 // Пишемо по черзі у слот «a» або «b» і лише потім оновлюємо lq_meta → обрив запису
 // не ламає попередню копію. Новішу копію (локальну чи хмарну) обираємо за savedAt.
-import { tg } from './tg.js?v=20261110123941';
+import { tg } from './tg.js?v=20261110124228';
 
 const LS_KEY = 'lumiquest_state_v1';
 const META = 'lq_meta';

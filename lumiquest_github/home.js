@@ -1,8 +1,8 @@
 // Головний екран: онбординг для нового гравця або «хаб» з плитками.
-import { h, button, plural, fx } from './ui.js?v=20261110123941';
-import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110123941';
-import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110123941';
-import { worldGames, nextGame, gameStars } from './games.js?v=20261110123941';
+import { h, button, plural, fx } from './ui.js?v=20261110124228';
+import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110124228';
+import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110124228';
+import { worldGames, nextGame, gameStars } from './games.js?v=20261110124228';
 
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 function jelly(el) {
