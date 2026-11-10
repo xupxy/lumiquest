@@ -2,18 +2,18 @@
 // Показано слово поточною мовою — тапни рибку з правильним перекладом: гачок летить дугою,
 // рибку витягують з бризками. Хибна — тікає, −❤️. 12 слів, таймер 60 с, 3 ❤️.
 // v6: DPR ≤ 2, фон/шари/рибки/підписи — офскрин-спрайти, частинки й бульбашки — пули, без shadowBlur.
-import * as S from './state.js?v=20261111000115';
-import * as FX from './fx.js?v=20261111000115';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261111000115';
-import { themeOf } from './theme.js?v=20261111000115';
+import * as S from './state.js?v=20261111001228';
+import * as FX from './fx.js?v=20261111001228';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261111001228';
+import { themeOf } from './theme.js?v=20261111001228';
 
 // ---------------------------------------------------------------- безпечні мости (i18n, звук, Лумі)
 let I = {};
-try { I = await import('./i18n.js?v=20261111000115'); } catch (e) { /* без ядра i18n — власні словники */ }
+try { I = await import('./i18n.js?v=20261111001228'); } catch (e) { /* без ядра i18n — власні словники */ }
 let A = {};
-import('./audio.js?v=20261111000115').then((m) => { A = m; }).catch(() => { /* без звуку */ });
+import('./audio.js?v=20261111001228').then((m) => { A = m; }).catch(() => { /* без звуку */ });
 let LM = null;
-try { LM = await import('./lumi.js?v=20261111000115'); } catch (e) { /* фолбек через app.makeLumi */ }
+try { LM = await import('./lumi.js?v=20261111001228'); } catch (e) { /* фолбек через app.makeLumi */ }
 
 const DICT = {
   uk: {
@@ -111,7 +111,7 @@ const XP_PER = 10;
 const NFISH = 4;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games4.css?v=20261111000115', import.meta.url).href;
+const CSS_HREF = new URL('./games4.css?v=20261111001228', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games4-css]');
   if (!l) {

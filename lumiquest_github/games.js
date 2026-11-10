@@ -7,11 +7,11 @@
 // Рівень відкритий, якщо попередній має ≥ 1 ⭐ (або світ зараховано тестом рівня).
 // Бос — завжди 13-й; додатково вимагає ≥ 1 ⭐ у всіх уроках (bossOpen у state.js).
 
-import { getWorld, bossOpen } from './state.js?v=20261111000115';
+import { getWorld, bossOpen } from './state.js?v=20261111001228';
 
 /** Порядок рівнів на стежці. 'L' — наступний урок зі списку world.quests. */
 // v8: 23 рівні — 9 уроків, 8 міні-ігор, історія, драма, 3 «виклики» (складні версії), бос.
-export const PATH = ['L', 'L', 'runner', 'L', 'memory', 'story', 'L', 'obby', 'wordle', 'L', 'durak', 'snake',
+export const PATH = ['L', 'L', 'runner', 'L', 'memory', 'story', 'L', 'obby', 'wordle', 'L', 'durak', 'bubbles',
   'L', 'brawl', 'fishing', 'L', 'drama', 'L', 'obbyx', 'runnerx', 'L', 'brawlx', 'boss'];
 
 export const GAME_META = {
@@ -25,7 +25,7 @@ export const GAME_META = {
   boss:   { emoji: '⚔️', label: 'Бос-арена',        screen: 'arena' },
   memory: { emoji: '🧩', label: 'Словесна Пам\'ять', screen: 'memory' },
   wordle: { emoji: '🔤', label: 'Вгадай слово',     screen: 'wordle' },
-  snake:  { emoji: '🐍', label: 'Змійка-Слово',     screen: 'snake' },
+  bubbles:{ emoji: '🫧', label: 'Бульбашки-Літери', screen: 'bubbles' },
   fishing:{ emoji: '🎣', label: 'Словесна Риболовля', screen: 'fishing' },
   // «виклики»: той самий екран з params.hard = true
   obbyx:  { emoji: '🔥', label: 'Обі-Вежа: Виклик',  screen: 'obby',   hard: true, base: 'obby' },

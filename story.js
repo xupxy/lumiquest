@@ -1,13 +1,13 @@
 // 💌 Історії — візуальна новела з виборами. Порт game/story.py.
-import * as S from './state.js?v=20261111000115';
-import * as FX from './fx.js?v=20261111000115';
-import * as L from './lumi.js?v=20261111000115';
-import { createCharacter, characterIdFor } from './characters.js?v=20261111000115';
-import { recordGame } from './games.js?v=20261111000115';
-import { tr, tc, lang, sfx, speak, speakAuto, longPressSpeak, starSfx } from './i18n_modes.js?v=20261111000115';
+import * as S from './state.js?v=20261111001228';
+import * as FX from './fx.js?v=20261111001228';
+import * as L from './lumi.js?v=20261111001228';
+import { createCharacter, characterIdFor } from './characters.js?v=20261111001228';
+import { recordGame } from './games.js?v=20261111001228';
+import { tr, tc, lang, sfx, speak, speakAuto, longPressSpeak, starSfx } from './i18n_modes.js?v=20261111001228';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261111000115', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261111001228', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {

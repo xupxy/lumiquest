@@ -832,7 +832,7 @@ html[data-scheme='dark'] .road-done { stroke: #C99A4E; }
 .wp-node.t-boss { --ring: #FFC845; --m: 100px; }
 .wp-node.t-memory { --ring: #FFB36B; }
 .wp-node.t-wordle { --ring: #F2D04B; }
-.wp-node.t-snake { --ring: #9ADB5C; }
+.wp-node.t-bubbles { --ring: #9ADB5C; }
 .wp-node.t-fishing { --ring: #5CC6F2; }
 .wp-node.hard { --ring: #FF6A3D; }
 .wp-node.current { --m: 108px; z-index: 3; }

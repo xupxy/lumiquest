@@ -1,10 +1,10 @@
 // 🌍 Світ: ігрова стежка з 23 рівнів (games.js) — звивиста дорога, вузли-медальйони з обкладинками,
 // Лумі стоїть на поточному рівні, паралакс-фон і частинки під настрій світу.
-import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261111000115';
-import { getWorld, worldIndex, gameTitle } from './state.js?v=20261111000115';
-import { t, tc } from './i18n.js?v=20261111000115';
-import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261111000115';
-import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261111000115';
+import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261111001228';
+import { getWorld, worldIndex, gameTitle } from './state.js?v=20261111001228';
+import { t, tc } from './i18n.js?v=20261111001228';
+import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261111001228';
+import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261111001228';
 
 const STEP = 186;        // відстань між вузлами по вертикалі
 const CUR_GAP = 56;      // додатковий простір навколо поточного (Лумі зверху, «Грати» знизу)

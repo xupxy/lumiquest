@@ -3,9 +3,9 @@
 // Рядки режимів — ключі 'mode.key' зі словниками uk/ru нижче; реєструються в ядрі через addStrings (якщо є).
 
 let I = {};
-try { I = await import('./i18n.js?v=20261111000115'); } catch (e) { /* i18n ще нема — працюємо з власними словниками */ }
+try { I = await import('./i18n.js?v=20261111001228'); } catch (e) { /* i18n ще нема — працюємо з власними словниками */ }
 let A = {};
-const audioReady = import('./audio.js?v=20261111000115').then((m) => { A = m; }).catch(() => { /* без звуку */ });
+const audioReady = import('./audio.js?v=20261111001228').then((m) => { A = m; }).catch(() => { /* без звуку */ });
 
 const DICT = {
   uk: {

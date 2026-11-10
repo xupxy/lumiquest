@@ -1,16 +1,16 @@
 // 🎭 Шлях Вибору — інтерактивна кінодрама (letterbox, субтитри, рішення з таймером,
 // гілки й кінцівки) і наприкінці анімована СХЕМА ШЛЯХУ (flowchart графа вузлів).
 // Контент: WORLDS[i].drama (див. WEBAPP_SPEC v4). Відкриті вузли: state.drama_seen[wid] = [ids].
-import * as S from './state.js?v=20261111000115';
-import * as FX from './fx.js?v=20261111000115';
-import * as L from './lumi.js?v=20261111000115';
-import { recordGame, gameStars } from './games.js?v=20261111000115';
-import { tr, tc, lang, sfx, speak, speakAuto, longPressSpeak, starSfx } from './i18n_modes.js?v=20261111000115';
-import { createCharacter, characterIdFor } from './characters.js?v=20261111000115';
+import * as S from './state.js?v=20261111001228';
+import * as FX from './fx.js?v=20261111001228';
+import * as L from './lumi.js?v=20261111001228';
+import { recordGame, gameStars } from './games.js?v=20261111001228';
+import { tr, tc, lang, sfx, speak, speakAuto, longPressSpeak, starSfx } from './i18n_modes.js?v=20261111001228';
+import { createCharacter, characterIdFor } from './characters.js?v=20261111001228';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261111000115', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261111000115', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261111001228', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261111001228', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
