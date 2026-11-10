@@ -1,0 +1,3358 @@
+{
+ "LEVELS": [
+  "A1",
+  "A2",
+  "B1",
+  "B2",
+  "C1"
+ ],
+ "PLACEMENT": [
+  {
+   "level": "A1",
+   "q": "She ___ a teacher.",
+   "options": [
+    "am",
+    "is",
+    "are",
+    "be"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "A1",
+   "q": "I ___ two brothers.",
+   "options": [
+    "have",
+    "has",
+    "having",
+    "am"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "A1",
+   "q": "They ___ football every Sunday.",
+   "options": [
+    "plays",
+    "play",
+    "playing",
+    "is play"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "A1",
+   "q": "What colour is a banana? It's ___.",
+   "options": [
+    "blue",
+    "yellow",
+    "red",
+    "black"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "A1",
+   "q": "___ you like coffee?",
+   "options": [
+    "Are",
+    "Does",
+    "Do",
+    "Is"
+   ],
+   "answer": 2
+  },
+  {
+   "level": "A2",
+   "q": "Yesterday I ___ to the cinema.",
+   "options": [
+    "go",
+    "goes",
+    "went",
+    "gone"
+   ],
+   "answer": 2
+  },
+  {
+   "level": "A2",
+   "q": "There ___ two cats in the garden.",
+   "options": [
+    "is",
+    "are",
+    "be",
+    "am"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "A2",
+   "q": "My brother is ___ than me.",
+   "options": [
+    "tall",
+    "taller",
+    "tallest",
+    "more tall"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "A2",
+   "q": "You ___ smoke here. It's forbidden.",
+   "options": [
+    "mustn't",
+    "don't have to",
+    "needn't",
+    "can"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "A2",
+   "q": "The opposite of «cheap» is ___.",
+   "options": [
+    "expensive",
+    "poor",
+    "rich",
+    "free"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "B1",
+   "q": "I ___ in Kyiv since 2019.",
+   "options": [
+    "live",
+    "lived",
+    "have lived",
+    "am living"
+   ],
+   "answer": 2
+  },
+  {
+   "level": "B1",
+   "q": "If it rains tomorrow, we ___ at home.",
+   "options": [
+    "stay",
+    "will stay",
+    "would stay",
+    "stayed"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "B1",
+   "q": "If I had more money, I ___ a new car.",
+   "options": [
+    "will buy",
+    "would buy",
+    "buy",
+    "bought"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "B1",
+   "q": "Please turn ___ the TV. I want to sleep.",
+   "options": [
+    "off",
+    "out",
+    "at",
+    "over"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "B1",
+   "q": "She is very ___: she never tells lies.",
+   "options": [
+    "honest",
+    "lazy",
+    "rude",
+    "jealous"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "B2",
+   "q": "The bridge ___ in 1890.",
+   "options": [
+    "built",
+    "was built",
+    "has built",
+    "was building"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "B2",
+   "q": "She asked me where I ___.",
+   "options": [
+    "lived",
+    "did I live",
+    "do I live",
+    "was I living"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "B2",
+   "q": "If I ___ harder, I would have passed the exam.",
+   "options": [
+    "studied",
+    "had studied",
+    "would study",
+    "have studied"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "B2",
+   "q": "That's the man ___ car was stolen.",
+   "options": [
+    "who",
+    "whose",
+    "which",
+    "whom"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "B2",
+   "q": "«To break the ice» means to ___.",
+   "options": [
+    "help people feel relaxed at a first meeting",
+    "break something by accident",
+    "go skating in winter",
+    "stop a conversation"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "C1",
+   "q": "Never ___ such a beautiful sunset.",
+   "options": [
+    "I have seen",
+    "have I seen",
+    "I saw",
+    "did I saw"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "C1",
+   "q": "If I had taken that job, I ___ rich now.",
+   "options": [
+    "would be",
+    "would have been",
+    "will be",
+    "am"
+   ],
+   "answer": 0
+  },
+  {
+   "level": "C1",
+   "q": "I wish I ___ to the party yesterday. Everyone says it was great.",
+   "options": [
+    "went",
+    "had gone",
+    "would go",
+    "have gone"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "C1",
+   "q": "The new law will ___ thousands of people.",
+   "options": [
+    "effect",
+    "affect",
+    "defect",
+    "reflect"
+   ],
+   "answer": 1
+  },
+  {
+   "level": "C1",
+   "q": "It's high time we ___ home.",
+   "options": [
+    "go",
+    "went",
+    "will go",
+    "have gone"
+   ],
+   "answer": 1
+  }
+ ],
+ "WORLDS": [
+  {
+   "id": "w1",
+   "level": "A1",
+   "name": "Ранкова Галявина",
+   "emoji": "🌱",
+   "intro": "Бух! Лумі гепнулася з неба просто в росу на Ранковій Галявині. Її Слова-Світлячки розлетілися по квітах, а без них вона не може світити. Допоможи їй зібрати перші, найпростіші слова!",
+   "quests": [
+    {
+     "id": "w1q1",
+     "title": "Привіт, Лумі!",
+     "emoji": "👋",
+     "story": "Лумі вперше зустрічає мешканців Галявини, але від хвилювання забула, як представитися. Равлик уже тричі сказав «Hello» і чекає відповіді!",
+     "lesson": "Дієслово to be (бути) має три форми в теперішньому часі:\nI am (I'm) — я є\nhe / she / it is (he's, she's, it's)\nwe / you / they are (we're, you're, they're)\nЗаперечення: додаємо not — She is not (isn't) tired.\nПриклади: I am Lumi. They are my friends. How are you? — I'm fine, thanks.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "I ___ Lumi, a little star.",
+       "options": [
+        "am",
+        "is",
+        "are",
+        "be"
+       ],
+       "answer": 0,
+       "explain": "З I завжди вживаємо am: I am (I'm)."
+      },
+      {
+       "type": "choice",
+       "q": "They ___ my friends.",
+       "options": [
+        "is",
+        "am",
+        "are",
+        "be"
+       ],
+       "answer": 2,
+       "explain": "Для they (вони) форма — are."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «Я щасливий»",
+       "answers": [
+        "i am happy",
+        "i'm happy"
+       ],
+       "explain": "Я = I, є = am, щасливий = happy: I am happy (або I'm happy)."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Як тебе звати?»",
+       "words": [
+        "name",
+        "is",
+        "What",
+        "your"
+       ],
+       "answer": "What is your name",
+       "explain": "Питальне слово What на початку, далі is, потім your name."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «Вона не втомлена»",
+       "answers": [
+        "she is not tired",
+        "she isn't tired",
+        "she's not tired"
+       ],
+       "explain": "Заперечення з to be: she is not (isn't) tired."
+      }
+     ]
+    },
+    {
+     "id": "w1q2",
+     "title": "Ягідний рахунок",
+     "emoji": "🍓",
+     "story": "Їжачок Пух збирав ягоди, але заснув і забув, скільки їх і яких вони кольорів. Лумі обіцяла допомогти порахувати, поки ягоди не з'їли мурахи.",
+     "lesson": "Числа: one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve ... twenty.\nКольори: red (червоний), green (зелений), blue (синій), yellow (жовтий), black (чорний), white (білий).\nПрикметник стоїть ПЕРЕД іменником: a red berry, five green apples.\nПриклади: I have three red berries. The apple is green.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Скільки буде: three + four?",
+       "options": [
+        "six",
+        "seven",
+        "eight",
+        "nine"
+       ],
+       "answer": 1,
+       "explain": "3 + 4 = 7, тобто seven."
+      },
+      {
+       "type": "type",
+       "q": "Напиши англійською словом число 12",
+       "answers": [
+        "twelve"
+       ],
+       "explain": "12 — twelve (не плутай з twenty = 20)."
+      },
+      {
+       "type": "choice",
+       "q": "The grass is ___.",
+       "options": [
+        "green",
+        "red",
+        "purple",
+        "black"
+       ],
+       "answer": 0,
+       "explain": "Трава зелена — green."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «У мене п'ять червоних ягід»",
+       "words": [
+        "red",
+        "have",
+        "berries",
+        "I",
+        "five"
+       ],
+       "answer": "I have five red berries",
+       "explain": "Порядок: I have + число + колір + предмет."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Яблуко зелене»",
+       "words": [
+        "green",
+        "apple",
+        "The",
+        "is"
+       ],
+       "answer": "The apple is green",
+       "explain": "В англійській потрібне дієслово is: The apple is green."
+      }
+     ]
+    },
+    {
+     "id": "w1q3",
+     "title": "Ранок лісового народу",
+     "emoji": "☀️",
+     "story": "Кожного ранку мешканці Галявини роблять одне й те саме: жаба співає, бджола працює, а Бурчун-Гриб бурчить. Лумі хоче записати їхній розпорядок — допоможи!",
+     "lesson": "Present Simple — для звичок і того, що відбувається регулярно.\nI / you / we / they + дієслово: I play, they eat.\nHe / she / it + дієслово із закінченням -s: she plays, he goes, it watches.\nПитання і заперечення: do / does + дієслово БЕЗ -s:\nDoes she like tea? — He does not (doesn't) eat meat.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "He ___ milk every morning.",
+       "options": [
+        "drink",
+        "drinks",
+        "drinking",
+        "is drink"
+       ],
+       "answer": 1,
+       "explain": "Для he/she/it у Present Simple додаємо -s: he drinks."
+      },
+      {
+       "type": "choice",
+       "q": "___ she like apples?",
+       "options": [
+        "Do",
+        "Does",
+        "Is",
+        "Are"
+       ],
+       "answer": 1,
+       "explain": "Питання з she у Present Simple: Does she ...?"
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «Я люблю чай»",
+       "answers": [
+        "i like tea",
+        "i love tea"
+       ],
+       "explain": "Я люблю = I like (або I love), чай = tea."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Вона не грає у футбол»",
+       "words": [
+        "play",
+        "not",
+        "She",
+        "football",
+        "does"
+       ],
+       "answer": "She does not play football",
+       "explain": "Заперечення для she: does not + дієслово без -s."
+      },
+      {
+       "type": "type",
+       "q": "Перепиши для he: «I go to school» → «He ... to school». Напиши все речення.",
+       "answers": [
+        "he goes to school"
+       ],
+       "explain": "go після he стає goes (дієслова на -o отримують -es)."
+      }
+     ]
+    },
+    {
+     "id": "w1q4",
+     "title": "Пікнік родини Їжаків",
+     "emoji": "🧺",
+     "story": "Родина Їжаків кличе Лумі на пікнік! Але вона не знає, хто тут бабуся, а хто тато, і чому всі так дивно дивляться на сир.",
+     "lesson": "Сім'я: mother / mum (мама), father / dad (тато), sister, brother, grandmother (бабуся), grandfather (дідусь).\nЇжа: bread (хліб), cheese (сир), milk, apple, pizza, meat (м'ясо).\nПрисвійні слова: my, your, his (його), her (її).\nПриклади: My dad likes pizza. His name is Tom.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "My mother's mother is my ___.",
+       "options": [
+        "grandmother",
+        "aunt",
+        "sister",
+        "daughter"
+       ],
+       "answer": 0,
+       "explain": "Мама мами — це бабуся, grandmother."
+      },
+      {
+       "type": "choice",
+       "q": "I have a brother. ___ name is Tom.",
+       "options": [
+        "His",
+        "Her",
+        "Its",
+        "Their"
+       ],
+       "answer": 0,
+       "explain": "Брат — він, тож «його ім'я» = his name."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «брат»",
+       "answers": [
+        "brother",
+        "a brother"
+       ],
+       "explain": "Брат — brother."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Мій тато любить піцу»",
+       "words": [
+        "pizza",
+        "dad",
+        "My",
+        "likes"
+       ],
+       "answer": "My dad likes pizza",
+       "explain": "dad — це he, тому likes із -s."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ми любимо свіжий хліб»",
+       "words": [
+        "bread",
+        "like",
+        "fresh",
+        "We"
+       ],
+       "answer": "We like fresh bread",
+       "explain": "Прикметник fresh стоїть перед іменником bread."
+      }
+     ]
+    }
+   ],
+   "story": {
+    "id": "w1s",
+    "title": "Фарби для Мії",
+    "emoji": "💌",
+    "cast": "Mia",
+    "intro": "На краю Галявини руда дівчина в жовтому береті малює ранок. Це Mia. Лумі шепоче: «Вона знає, де ховаються Світлячки кольорів! Заговори з нею — англійською».",
+    "scenes": [
+     {
+      "line": "Hi! I'm Mia. What's your name?",
+      "hint": "Привіт! Я Мія. Як тебе звати?",
+      "choices": [
+       {
+        "text": "Hi, Mia! Nice to meet you.",
+        "good": true,
+        "reaction": "Mia smiles: «Nice to meet you too!» 😊"
+       },
+       {
+        "text": "Hi! My name are Lumi's friend.",
+        "good": false,
+        "reaction": "Mia tilts her head: «Your name ARE?» (Помилка: my name is.)"
+       },
+       {
+        "text": "What? Go away.",
+        "good": false,
+        "reaction": "Mia looks hurt. (Грубо — так знайомитися не варто.)"
+       }
+      ],
+      "explain": "Nice to meet you — стандартна ввічлива фраза при знайомстві."
+     },
+     {
+      "line": "Do you like my painting?",
+      "hint": "Тобі подобається моя картина?",
+      "choices": [
+       {
+        "text": "Yes, it are beautiful.",
+        "good": false,
+        "reaction": "Mia giggles: «It ARE?» (Однина: it is.)"
+       },
+       {
+        "text": "No. It is boring.",
+        "good": false,
+        "reaction": "Mia hides the painting. (Неввічливо.)"
+       },
+       {
+        "text": "Yes, it is beautiful!",
+        "good": true,
+        "reaction": "Mia blushes: «Thank you!» 🎨"
+       }
+      ],
+      "explain": "it + is: It is beautiful."
+     },
+     {
+      "line": "What is your favourite colour?",
+      "hint": "Який твій улюблений колір?",
+      "choices": [
+       {
+        "text": "I am blue.",
+        "good": false,
+        "reaction": "Mia laughs: «You are blue? Are you sad?» (I am blue — я сумний!)"
+       },
+       {
+        "text": "My favourite colour is yellow, like your hat.",
+        "good": true,
+        "reaction": "Mia touches her beret and smiles. 💛"
+       },
+       {
+        "text": "I favourite colour yellow is.",
+        "good": false,
+        "reaction": "Mia looks confused. (Порядок слів: My favourite colour is...)"
+       }
+      ],
+      "explain": "My favourite colour is ... — так називають улюблений колір."
+     },
+     {
+      "line": "I have an apple. Do you want it?",
+      "hint": "У мене є яблуко. Хочеш?",
+      "choices": [
+       {
+        "text": "Yes, give me. Now!",
+        "good": false,
+        "reaction": "Mia frowns. (Без please це звучить грубо.)"
+       },
+       {
+        "text": "Yes, I wants it.",
+        "good": false,
+        "reaction": "Mia blinks. (З I — want, без -s.)"
+       },
+       {
+        "text": "Yes, please! Thank you.",
+        "good": true,
+        "reaction": "Mia gives you the apple with a smile. 🍎"
+       }
+      ],
+      "explain": "Yes, please і Thank you — ввічлива відповідь на пропозицію."
+     },
+     {
+      "line": "Do you paint too?",
+      "hint": "Ти теж малюєш?",
+      "choices": [
+       {
+        "text": "No, I don't, but I like art.",
+        "good": true,
+        "reaction": "Mia: «I can teach you!» ✨"
+       },
+       {
+        "text": "No, I doesn't paint.",
+        "good": false,
+        "reaction": "Mia smiles politely. (З I — don't, а не doesn't.)"
+       },
+       {
+        "text": "Painting is for babies.",
+        "good": false,
+        "reaction": "Mia puts down her brush. (Образливо для художниці.)"
+       }
+      ],
+      "explain": "Коротка відповідь на Do you...? — No, I don't."
+     },
+     {
+      "line": "It's late. See you tomorrow?",
+      "hint": "Вже пізно. Побачимося завтра?",
+      "choices": [
+       {
+        "text": "Yes, I see you yesterday.",
+        "good": false,
+        "reaction": "Mia laughs: «Yesterday?» (Плутанина: завтра = tomorrow.)"
+       },
+       {
+        "text": "Maybe. I am very busy person.",
+        "good": false,
+        "reaction": "Mia shrugs. (Холодно, і бракує артикля: a very busy person.)"
+       },
+       {
+        "text": "Yes! See you tomorrow, Mia.",
+        "good": true,
+        "reaction": "Mia waves her yellow beret: «Bye!» 👋"
+       }
+      ],
+      "explain": "See you tomorrow — «побачимося завтра»."
+     }
+    ],
+    "endings": {
+     "good": "Mia дарує тобі маленький малюнок: ти і Лумі на Галявині. «Come back soon!» Схоже, у тебе нова подруга 💛",
+     "ok": "Mia привітно махає на прощання. Вона рада знайомству, але ще трохи соромиться.",
+     "bad": "Mia ввічливо прощається і повертається до малювання. Нічого, наступного разу вийде краще!"
+    }
+   },
+   "boss": {
+    "name": "Бурчун-Гриб",
+    "emoji": "🍄",
+    "intro": "Посеред Галявини сидить Бурчун-Гриб і бурчить: «Ніхто тут не знає англійської!» Він охороняє місток до Шепітного Лісу. Доведи йому, що він помиляється, і, може, він навіть усміхнеться.",
+    "tasks": [
+     {
+      "type": "choice",
+      "q": "We ___ from Ukraine.",
+      "options": [
+       "am",
+       "is",
+       "are"
+      ],
+      "answer": 2,
+      "explain": "Для we форма to be — are."
+     },
+     {
+      "type": "type",
+      "q": "Напиши англійською словом число 20",
+      "answers": [
+       "twenty"
+      ],
+      "explain": "20 — twenty."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Сонце жовте»",
+      "words": [
+       "yellow",
+       "is",
+       "sun",
+       "The"
+      ],
+      "answer": "The sun is yellow",
+      "explain": "The sun + is + колір."
+     },
+     {
+      "type": "choice",
+      "q": "My sister ___ to music every evening.",
+      "options": [
+       "listen",
+       "listens",
+       "listening"
+      ],
+      "answer": 1,
+      "explain": "Sister = she, тож у Present Simple — listens."
+     },
+     {
+      "type": "type",
+      "q": "Переклади англійською: «Він не їсть м'ясо»",
+      "answers": [
+       "he does not eat meat",
+       "he doesn't eat meat"
+      ],
+      "explain": "Заперечення для he: does not (doesn't) + eat."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Це моя сестра»",
+      "words": [
+       "sister",
+       "my",
+       "This",
+       "is"
+      ],
+      "answer": "This is my sister",
+      "explain": "Це = This is, моя сестра = my sister."
+     },
+     {
+      "type": "choice",
+      "q": "Яке слово — це їжа?",
+      "options": [
+       "chair",
+       "bread",
+       "sister",
+       "blue"
+      ],
+      "answer": 1,
+      "explain": "bread — хліб. Інші слова: стілець, сестра, синій."
+     },
+     {
+      "type": "type",
+      "q": "Переклади англійською: «Ти мій друг»",
+      "answers": [
+       "you are my friend",
+       "you're my friend"
+      ],
+      "explain": "Ти = you, з you вживаємо are: You are my friend."
+     }
+    ]
+   }
+  },
+  {
+   "id": "w2",
+   "level": "A2",
+   "name": "Шепітний Ліс",
+   "emoji": "🌲",
+   "intro": "У Шепітному Лісі дерева весь час щось шепочуть — переважно про те, що сталося вчора. Кажуть, тут ховається ціла зграя Слів-Світлячків. Лумі трохи боїться темряви, тож тримайся поруч!",
+   "quests": [
+    {
+     "id": "w2q1",
+     "title": "Вчорашні сліди",
+     "emoji": "🐾",
+     "story": "Хтось уночі поцупив у Лумі цілий кошик Світлячків і залишив сліди. Свідки розповідають про вчорашнє — але плутають минулий час!",
+     "lesson": "Past Simple — дія в минулому (yesterday, last night, ago).\nПравильні дієслова: + -ed: walk → walked, play → played.\nНеправильні треба запам'ятати: go → went, have → had, see → saw, buy → bought.\nПитання і заперечення: did + дієслово в початковій формі:\nDid you see it? — I did not (didn't) see it.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Yesterday we ___ in the forest.",
+       "options": [
+        "walk",
+        "walked",
+        "walks",
+        "walking"
+       ],
+       "answer": 1,
+       "explain": "Yesterday — минуле, правильне дієслово + -ed: walked."
+      },
+      {
+       "type": "choice",
+       "q": "Last night I ___ a strange dream.",
+       "options": [
+        "have",
+        "had",
+        "haved",
+        "has"
+       ],
+       "answer": 1,
+       "explain": "have — неправильне дієслово, у Past Simple — had."
+      },
+      {
+       "type": "type",
+       "q": "Напиши форму Past Simple від go",
+       "answers": [
+        "went"
+       ],
+       "explain": "go — неправильне дієслово: go → went."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською (Past Simple): «Я не бачив сову»",
+       "answers": [
+        "i did not see the owl",
+        "i didn't see the owl",
+        "i did not see an owl",
+        "i didn't see an owl"
+       ],
+       "explain": "Заперечення в минулому: did not (didn't) + see. Сова — owl."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Ти бачив Лумі вчора?»",
+       "words": [
+        "yesterday",
+        "see",
+        "Lumi",
+        "Did",
+        "you"
+       ],
+       "answer": "Did you see Lumi yesterday",
+       "explain": "Питання: Did + ти + дієслово без змін + решта."
+      }
+     ]
+    },
+    {
+     "id": "w2q2",
+     "title": "Що є в дуплі?",
+     "emoji": "🕳",
+     "story": "Сорока каже, що в старому дуплі є скарб. Лумі заглядає туди, але там так темно, що треба вміти описати, що де лежить.",
+     "lesson": "There is + один предмет, there are + кілька: There is an owl. There are three mushrooms.\nПитання: Is there ...? Are there ...?\nПрийменники місця: in (в), on (на), under (під), behind (позаду), next to (поруч з), between (між).\nПриклад: The mushroom is next to the stone.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "There ___ an owl in the tree.",
+       "options": [
+        "is",
+        "are",
+        "am",
+        "be"
+       ],
+       "answer": 0,
+       "explain": "Одна сова — there is."
+      },
+      {
+       "type": "choice",
+       "q": "There ___ three mushrooms under the bush.",
+       "options": [
+        "is",
+        "are"
+       ],
+       "answer": 1,
+       "explain": "Три гриби — множина, тому there are."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Чи є лисиця під деревом?»",
+       "words": [
+        "under",
+        "a",
+        "there",
+        "tree",
+        "Is",
+        "fox",
+        "the"
+       ],
+       "answer": "Is there a fox under the tree",
+       "explain": "Питання: Is there + предмет + місце."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Гриб поруч із каменем»",
+       "words": [
+        "stone",
+        "to",
+        "mushroom",
+        "next",
+        "The",
+        "the",
+        "is"
+       ],
+       "answer": "The mushroom is next to the stone",
+       "explain": "Поруч із = next to."
+      },
+      {
+       "type": "type",
+       "q": "Як англійською «позаду, за» (одне слово)?",
+       "answers": [
+        "behind"
+       ],
+       "explain": "behind — позаду: behind the tree."
+      }
+     ]
+    },
+    {
+     "id": "w2q3",
+     "title": "Перегони равликів",
+     "emoji": "🐌",
+     "story": "У лісі великі перегони: равлик Турбо проти кролика Стриба. Лумі — коментаторка, але не вміє порівнювати! Допоможи їй вести репортаж.",
+     "lesson": "Короткі прикметники: + -er + than: slow → slower than, big → bigger than.\nДовгі: more + прикметник: beautiful → more beautiful.\nВинятки: good → better, bad → worse.\nПриклад: A snail is slower than a rabbit.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "A snail is ___ than a rabbit.",
+       "options": [
+        "slow",
+        "slower",
+        "slowest",
+        "more slow"
+       ],
+       "answer": 1,
+       "explain": "Короткий прикметник + -er + than: slower than."
+      },
+      {
+       "type": "choice",
+       "q": "This tree is ___ than that one.",
+       "options": [
+        "more big",
+        "bigger",
+        "the biggest",
+        "biger"
+       ],
+       "answer": 1,
+       "explain": "big → bigger (приголосна в кінці подвоюється)."
+      },
+      {
+       "type": "type",
+       "q": "Напиши вищий ступінь від good",
+       "answers": [
+        "better"
+       ],
+       "explain": "good — виняток: good → better."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Сова розумніша за кота»",
+       "words": [
+        "cat",
+        "smarter",
+        "owl",
+        "the",
+        "is",
+        "The",
+        "than"
+       ],
+       "answer": "The owl is smarter than the cat",
+       "explain": "Схема: X is + прикметник-er + than + Y."
+      },
+      {
+       "type": "type",
+       "q": "Напиши вищий ступінь від beautiful",
+       "answers": [
+        "more beautiful"
+       ],
+       "explain": "Довгий прикметник: more beautiful."
+      }
+     ]
+    },
+    {
+     "id": "w2q4",
+     "title": "Правила Лісу",
+     "emoji": "📜",
+     "story": "На воротах лісової школи висить табличка з правилами, але дощ змив половину слів. Лумі має відновити, що тут можна, а що обов'язково.",
+     "lesson": "can — вміти / могти: I can swim. She can't (cannot) dance.\nmust — мусити, обов'язково: You must help.\nmustn't — заборонено: You mustn't touch fire.\nПісля can / must дієслово БЕЗ to і без -s: He can run (не He can runs).",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Fish ___ swim, but they can't fly.",
+       "options": [
+        "can",
+        "must",
+        "can't"
+       ],
+       "answer": 0,
+       "explain": "Риби вміють плавати — can."
+      },
+      {
+       "type": "choice",
+       "q": "You ___ be quiet in the library. It's a rule.",
+       "options": [
+        "must",
+        "can",
+        "mustn't"
+       ],
+       "answer": 0,
+       "explain": "Правило, обов'язок — must."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Я вмію плавати»",
+       "words": [
+        "swim",
+        "can",
+        "I"
+       ],
+       "answer": "I can swim",
+       "explain": "I + can + дієслово."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ти мусиш допомогти Лумі»",
+       "words": [
+        "help",
+        "Lumi",
+        "You",
+        "must"
+       ],
+       "answer": "You must help Lumi",
+       "explain": "must + дієслово без to."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «Вона не вміє танцювати»",
+       "answers": [
+        "she can't dance",
+        "she cannot dance",
+        "she can not dance"
+       ],
+       "explain": "Не вміє = can't (cannot), далі дієслово dance."
+      }
+     ]
+    }
+   ],
+   "story": {
+    "id": "w2s",
+    "title": "Пісня для Ноа",
+    "emoji": "💌",
+    "cast": "Noah",
+    "intro": "Між деревами лунає гітара. Кучерявий хлопець у зеленій куртці — Noah — грає пісню, від якої навіть сови перестають ухкати. Лумі штовхає тебе ліктем: «Іди привітайся!»",
+    "scenes": [
+     {
+      "line": "Oh, hi! Did you hear my song?",
+      "hint": "О, привіт! Ти чув(ла) мою пісню?",
+      "choices": [
+       {
+        "text": "Yes, I heared it.",
+        "good": false,
+        "reaction": "Noah grins: «Heared?» (hear — неправильне: heard.)"
+       },
+       {
+        "text": "Yes, I did! It was great.",
+        "good": true,
+        "reaction": "Noah's face lights up: «Really? Thanks!» 🎸"
+       },
+       {
+        "text": "Yes. It was too loud.",
+        "good": false,
+        "reaction": "Noah looks at his guitar sadly. (Не дуже тактовно.)"
+       }
+      ],
+      "explain": "Коротка відповідь на Did you...? — Yes, I did."
+     },
+     {
+      "line": "I wrote it yesterday. What did you do yesterday?",
+      "hint": "Я написав її вчора. А що ти робив(ла) вчора?",
+      "choices": [
+       {
+        "text": "That's not your business.",
+        "good": false,
+        "reaction": "Noah steps back. (Грубо.)"
+       },
+       {
+        "text": "I help Lumi yesterday.",
+        "good": false,
+        "reaction": "Noah nods slowly. (Yesterday — потрібен Past Simple: helped.)"
+       },
+       {
+        "text": "I helped Lumi in the forest.",
+        "good": true,
+        "reaction": "Noah: «Cool! You're a hero.» 😄"
+       }
+      ],
+      "explain": "Про вчора — Past Simple: helped."
+     },
+     {
+      "line": "Can you play the guitar?",
+      "hint": "Ти вмієш грати на гітарі?",
+      "choices": [
+       {
+        "text": "No, I can't, but I can sing.",
+        "good": true,
+        "reaction": "Noah: «Perfect! Let's make a duet!» 🎶"
+       },
+       {
+        "text": "No, I can't to play.",
+        "good": false,
+        "reaction": "Noah smiles. (Після can — без to.)"
+       },
+       {
+        "text": "No. Guitars are boring.",
+        "good": false,
+        "reaction": "Noah hugs his guitar protectively. (Образливо для музиканта.)"
+       }
+      ],
+      "explain": "can / can't + дієслово без to."
+     },
+     {
+      "line": "Is there a good place for a concert here?",
+      "hint": "Тут є гарне місце для концерту?",
+      "choices": [
+       {
+        "text": "Yes, there are a nice place near the lake.",
+        "good": false,
+        "reaction": "Noah: «There ARE a place?» (Одне місце — there is.)"
+       },
+       {
+        "text": "No. Nobody wants to hear you.",
+        "good": false,
+        "reaction": "Noah goes quiet. (Дуже неприємно.)"
+       },
+       {
+        "text": "Yes, there is a nice place near the lake.",
+        "good": true,
+        "reaction": "Noah: «Show me!» 🌊"
+       }
+      ],
+      "explain": "Один предмет — there is."
+     },
+     {
+      "line": "Is my new song better than my old song?",
+      "hint": "Моя нова пісня краща за стару?",
+      "choices": [
+       {
+        "text": "Yes, it's more better.",
+        "good": false,
+        "reaction": "Noah laughs. (better вже вищий ступінь, more не потрібне.)"
+       },
+       {
+        "text": "Yes, it's better and more beautiful.",
+        "good": true,
+        "reaction": "Noah blushes: «You're too kind.» 😊"
+       },
+       {
+        "text": "They are both worse than silence.",
+        "good": false,
+        "reaction": "Noah stops playing. (Жорстоко.)"
+       }
+      ],
+      "explain": "good → better, beautiful → more beautiful."
+     },
+     {
+      "line": "I must go now. Will you come to my concert?",
+      "hint": "Мені треба йти. Прийдеш на мій концерт?",
+      "choices": [
+       {
+        "text": "Of course! I can't wait!",
+        "good": true,
+        "reaction": "Noah: «Then I'll play a song for you.» 💚"
+       },
+       {
+        "text": "Yes, I comes.",
+        "good": false,
+        "reaction": "Noah smiles. (З I — come, без -s.)"
+       },
+       {
+        "text": "Only if it's free.",
+        "good": false,
+        "reaction": "Noah sighs. (Звучить байдуже.)"
+       }
+      ],
+      "explain": "I can't wait! — «Не можу дочекатися!»"
+     }
+    ],
+    "endings": {
+     "good": "На концерті біля озера Noah оголошує: «This song is for my new friend!» — і дивиться просто на тебе 💚",
+     "ok": "Noah дає тобі квиток на концерт. Здається, ви ще потоваришуєте.",
+     "bad": "Noah ввічливо кланяється і зникає між деревами з гітарою. Спробуй ще раз!"
+    }
+   },
+   "boss": {
+    "name": "Дід Мохобород",
+    "emoji": "🌳",
+    "intro": "Найстаріше дерево лісу, Дід Мохобород, прокинулося після столітньої дрімоти. Він пропустить до Міста Годинників лише того, хто розповість йому, що сталося, поки він спав. Говори голосніше — у нього мох у вухах!",
+    "tasks": [
+     {
+      "type": "choice",
+      "q": "She ___ a cake yesterday.",
+      "options": [
+       "make",
+       "made",
+       "maked",
+       "makes"
+      ],
+      "answer": 1,
+      "explain": "make — неправильне дієслово: make → made."
+     },
+     {
+      "type": "type",
+      "q": "Напиши форму Past Simple від buy",
+      "answers": [
+       "bought"
+      ],
+      "explain": "buy → bought (неправильне дієслово)."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Тут багато старих дерев»",
+      "words": [
+       "old",
+       "many",
+       "There",
+       "trees",
+       "are"
+      ],
+      "answer": "There are many old trees",
+      "explain": "Багато дерев — множина: There are."
+     },
+     {
+      "type": "choice",
+      "q": "Where is the ball? It's ___ the bed (під ліжком).",
+      "options": [
+       "on",
+       "under",
+       "in",
+       "between"
+      ],
+      "answer": 1,
+      "explain": "Під = under."
+     },
+     {
+      "type": "type",
+      "q": "Напиши вищий ступінь від bad",
+      "answers": [
+       "worse"
+      ],
+      "explain": "bad — виняток: bad → worse."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Слон більший за мишу»",
+      "words": [
+       "mouse",
+       "bigger",
+       "elephant",
+       "the",
+       "is",
+       "than",
+       "The"
+      ],
+      "answer": "The elephant is bigger than the mouse",
+      "explain": "big → bigger + than."
+     },
+     {
+      "type": "choice",
+      "q": "You ___ touch fire! It's dangerous.",
+      "options": [
+       "mustn't",
+       "must",
+       "can"
+      ],
+      "answer": 0,
+      "explain": "Заборона — mustn't."
+     },
+     {
+      "type": "type",
+      "q": "Переклади англійською: «Ми не грали вчора»",
+      "answers": [
+       "we did not play yesterday",
+       "we didn't play yesterday",
+       "yesterday we did not play",
+       "yesterday we didn't play"
+      ],
+      "explain": "Заперечення в Past Simple: did not (didn't) + play."
+     }
+    ]
+   }
+  },
+  {
+   "id": "w3",
+   "level": "B1",
+   "name": "Місто Годинників",
+   "emoji": "🕰",
+   "intro": "Тік-так! У Місті Годинників усе тикає, дзенькає і поспішає. Хтось переплутав стрілки, і тепер ніхто не розуміє, що вже сталося, а що тільки буде. Лумі помітила Світлячків у шестернях міської вежі — вперед!",
+   "quests": [
+    {
+     "id": "w3q1",
+     "title": "Годинник, що бачив усе",
+     "emoji": "⏱",
+     "story": "Старий кишеньковий годинник пам'ятає все, але плутає, коли саме це було. Допоможи йому розібратися, де «вже зроблено», а де «було колись».",
+     "lesson": "Present Perfect (have / has + V3) — результат важливий зараз, час не вказано: I have lost my keys (і досі не знайшов).\nСлова-маркери: ever, never, just, already, yet, since, for.\nPast Simple — конкретний час у минулому: We went to Lviv last summer.\nПриклади: I have never been to London. She has just finished work.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "I ___ my keys. I can't find them anywhere!",
+       "options": [
+        "has lost",
+        "have lost",
+        "had lost",
+        "lose"
+       ],
+       "answer": 1,
+       "explain": "Результат важливий зараз (не можу знайти) — Present Perfect: have lost."
+      },
+      {
+       "type": "choice",
+       "q": "We ___ to Lviv last summer.",
+       "options": [
+        "have gone",
+        "went",
+        "have been",
+        "go"
+       ],
+       "answer": 1,
+       "explain": "Last summer — конкретний час у минулому, тому Past Simple: went."
+      },
+      {
+       "type": "type",
+       "q": "Напиши третю форму (V3) дієслова write",
+       "answers": [
+        "written"
+       ],
+       "explain": "write — wrote — written."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Я ніколи не був у Лондоні»",
+       "words": [
+        "been",
+        "London",
+        "never",
+        "I",
+        "to",
+        "have"
+       ],
+       "answer": "I have never been to London",
+       "explain": "have + never + V3 (been)."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Вона щойно закінчила роботу»",
+       "words": [
+        "finished",
+        "just",
+        "work",
+        "She",
+        "has"
+       ],
+       "answer": "She has just finished work",
+       "explain": "just стоїть між has і V3."
+      }
+     ]
+    },
+    {
+     "id": "w3q2",
+     "title": "Прогноз від Флюгера",
+     "emoji": "🌦",
+     "story": "Флюгер на даху вежі передбачає майбутнє, але від вітру в нього паморочиться в голові. Лумі допомагає йому відрізнити плани від раптових рішень.",
+     "lesson": "will — раптове рішення або прогноз-думка: The phone is ringing. I'll answer it!\nbe going to — план або прогноз на основі того, що бачимо: We are going to visit our grandma. Look at those clouds! It's going to rain.\nПриклади: I will help you. It will be sunny tomorrow.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Look at those black clouds! It ___ rain.",
+       "options": [
+        "is going to",
+        "would",
+        "was"
+       ],
+       "answer": 0,
+       "explain": "Прогноз на основі того, що бачимо зараз (хмари) — be going to."
+      },
+      {
+       "type": "choice",
+       "q": "A: The phone is ringing. B: I ___ answer it!",
+       "options": [
+        "will",
+        "am going to",
+        "would"
+       ],
+       "answer": 0,
+       "explain": "Раптове рішення в момент розмови — will."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською (раптове рішення): «Я допоможу тобі»",
+       "answers": [
+        "i will help you",
+        "i'll help you"
+       ],
+       "explain": "Раптове рішення — will: I will (I'll) help you."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ми збираємося відвідати нашу бабусю»",
+       "words": [
+        "grandma",
+        "visit",
+        "are",
+        "our",
+        "We",
+        "going",
+        "to"
+       ],
+       "answer": "We are going to visit our grandma",
+       "explain": "План — be going to + дієслово."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською з will: «Завтра буде сонячно»",
+       "answers": [
+        "it will be sunny tomorrow",
+        "it'll be sunny tomorrow",
+        "tomorrow it will be sunny",
+        "tomorrow it'll be sunny",
+        "tomorrow will be sunny"
+       ],
+       "explain": "Прогноз про погоду з will: It will be sunny tomorrow. Не забудь it!"
+      }
+     ]
+    },
+    {
+     "id": "w3q3",
+     "title": "Якби годинники могли літати",
+     "emoji": "🎈",
+     "story": "Маленький будильник мріє полетіти над містом і весь час питає: «А що, якби...?» Лумі вирішила навчити його говорити про умови правильно.",
+     "lesson": "First Conditional — реальна умова в майбутньому:\nIf + Present Simple, will + дієслово: If it rains, we will stay at home.\nSecond Conditional — уявна ситуація зараз:\nIf + Past Simple, would + дієслово: If I had wings, I would fly.\nЗ to be у Second Conditional часто were для всіх: If I were a bird...",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "If it ___ tomorrow, we will stay at home.",
+       "options": [
+        "rains",
+        "will rain",
+        "rained"
+       ],
+       "answer": 0,
+       "explain": "Після if у First Conditional — Present Simple, не will."
+      },
+      {
+       "type": "choice",
+       "q": "If I ___ a bird, I would fly to the clock tower.",
+       "options": [
+        "am",
+        "were",
+        "will be"
+       ],
+       "answer": 1,
+       "explain": "Уявна ситуація — Second Conditional: If I were..."
+      },
+      {
+       "type": "type",
+       "q": "Встав дієслово have у правильній формі: If she ___ time, she would help us.",
+       "answers": [
+        "had"
+       ],
+       "explain": "Second Conditional: if + Past Simple, тому had."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Що б ти зробив?»",
+       "words": [
+        "you",
+        "do",
+        "What",
+        "would"
+       ],
+       "answer": "What would you do",
+       "explain": "Питання з would: What would you do?"
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Я був би дуже щасливий»",
+       "words": [
+        "happy",
+        "be",
+        "I",
+        "very",
+        "would"
+       ],
+       "answer": "I would be very happy",
+       "explain": "Результат уявної умови: would + дієслово."
+      }
+     ]
+    },
+    {
+     "id": "w3q4",
+     "title": "Майстерня Механіка",
+     "emoji": "🔧",
+     "story": "Механік Гвинтик лагодить годинники і роздає поради, але говорить лише фразовими дієсловами. Лумі нічого не розуміє — перекладай!",
+     "lesson": "Модальні дієслова:\nshould — порада: You should go to bed.\nhave to — треба (обставини), don't have to — не обов'язково.\nmight — можливо: It might rain.\nФразові дієслова: put on (вдягнути), take off (зняти), look for (шукати), give up (здаватися), turn off (вимкнути).",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "You look tired. You ___ go to bed.",
+       "options": [
+        "should",
+        "mustn't",
+        "can't"
+       ],
+       "answer": 0,
+       "explain": "Порада — should."
+      },
+      {
+       "type": "choice",
+       "q": "Please ___ your coat. It's cold outside.",
+       "options": [
+        "put on",
+        "take off",
+        "give up"
+       ],
+       "answer": 0,
+       "explain": "Холодно — треба вдягнути пальто: put on."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: I'm looking ___ my keys (я шукаю ключі).",
+       "answers": [
+        "for"
+       ],
+       "explain": "look for — шукати."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською з have to: «Тобі не обов'язково приходити»",
+       "answers": [
+        "you don't have to come",
+        "you do not have to come"
+       ],
+       "explain": "Не обов'язково = don't have to (а mustn't означає заборону!)."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ніколи не здавайся»",
+       "words": [
+        "up",
+        "Never",
+        "give"
+       ],
+       "answer": "Never give up",
+       "explain": "give up — здаватися."
+      }
+     ]
+    }
+   ],
+   "story": {
+    "id": "w3s",
+    "title": "Шестерня для Лео",
+    "emoji": "💌",
+    "cast": "Leo",
+    "intro": "У маленькій майстерні під вежею світловолосий хлопець в окулярах-гоглах і жилеті лагодить годинник, що вміє літати. Це Leo. Ти випадково наступаєш на його найменшу шестерню...",
+    "scenes": [
+     {
+      "line": "Careful! You've just stepped on my tiny gear!",
+      "hint": "Обережно! Ти щойно наступив(ла) на мою крихітну шестерню!",
+      "choices": [
+       {
+        "text": "Oh no, I'm so sorry! Let me help you find it.",
+        "good": true,
+        "reaction": "Leo pushes up his goggles: «Thanks. That's kind.» 🙂"
+       },
+       {
+        "text": "Sorry, I have stepped on it yesterday.",
+        "good": false,
+        "reaction": "Leo: «Yesterday?» (З yesterday — Past Simple, і взагалі це сталося щойно.)"
+       },
+       {
+        "text": "Why do you leave things on the floor?",
+        "good": false,
+        "reaction": "Leo frowns. (Звинувачувати — не найкращий початок.)"
+       }
+      ],
+      "explain": "Вибачитися й запропонувати допомогу — найкраща реакція."
+     },
+     {
+      "line": "Have you ever seen a clock that can fly?",
+      "hint": "Ти коли-небудь бачив(ла) годинник, що вміє літати?",
+      "choices": [
+       {
+        "text": "No, I have never see one.",
+        "good": false,
+        "reaction": "Leo: «Never SEE?» (Present Perfect: have never seen.)"
+       },
+       {
+        "text": "Flying clocks are stupid.",
+        "good": false,
+        "reaction": "Leo turns back to his work. (Неввічливо.)"
+       },
+       {
+        "text": "No, I've never seen one. Can you show me?",
+        "good": true,
+        "reaction": "Leo grins proudly: «Watch this!» ⏰"
+       }
+      ],
+      "explain": "have never + V3 (seen)."
+     },
+     {
+      "line": "I'm going to finish it tonight. What are you going to do?",
+      "hint": "Я збираюся закінчити його сьогодні ввечері. А що збираєшся робити ти?",
+      "choices": [
+       {
+        "text": "I will going to help Lumi.",
+        "good": false,
+        "reaction": "Leo raises an eyebrow. (Або will help, або am going to help.)"
+       },
+       {
+        "text": "I'm going to help Lumi find her words.",
+        "good": true,
+        "reaction": "Leo: «A star that lost her words? Amazing!» ✨"
+       },
+       {
+        "text": "Nothing. Sleeping is better than your clocks.",
+        "good": false,
+        "reaction": "Leo sighs. (Образливо для майстра.)"
+       }
+      ],
+      "explain": "План — be going to + дієслово."
+     },
+     {
+      "line": "If you had a time machine, where would you go?",
+      "hint": "Якби в тебе була машина часу, куди б ти вирушив(ла)?",
+      "choices": [
+       {
+        "text": "I would went to the past.",
+        "good": false,
+        "reaction": "Leo: «Would WENT?» (Після would — go.)"
+       },
+       {
+        "text": "I wouldn't tell you.",
+        "good": false,
+        "reaction": "Leo shrugs. (Звучить холодно.)"
+       },
+       {
+        "text": "I would go to the future to see your inventions.",
+        "good": true,
+        "reaction": "Leo goes a little pink: «My inventions? Really?» 😳"
+       }
+      ],
+      "explain": "Second Conditional: would + дієслово без змін."
+     },
+     {
+      "line": "My hands are tired. Should I take a break?",
+      "hint": "Руки втомилися. Може, мені варто відпочити?",
+      "choices": [
+       {
+        "text": "Yes, you should. Let's have some tea together.",
+        "good": true,
+        "reaction": "Leo smiles: «Tea with you? Deal.» ☕"
+       },
+       {
+        "text": "Yes, you should to rest.",
+        "good": false,
+        "reaction": "Leo nods. (Після should — без to.)"
+       },
+       {
+        "text": "No, work harder.",
+        "good": false,
+        "reaction": "Leo looks tired and sad. (Безсердечно.)"
+       }
+      ],
+      "explain": "should + дієслово без to."
+     },
+     {
+      "line": "Thanks for today. Will you come back tomorrow?",
+      "hint": "Дякую за сьогодні. Повернешся завтра?",
+      "choices": [
+       {
+        "text": "Yes, I come back tomorrow, I promise.",
+        "good": false,
+        "reaction": "Leo smiles. (Обіцянка — will: I'll come back.)"
+       },
+       {
+        "text": "I'll definitely come back. I had a great time.",
+        "good": true,
+        "reaction": "Leo gives you a tiny brass gear: «For luck.» ⚙️"
+       },
+       {
+        "text": "I'll think about it.",
+        "good": false,
+        "reaction": "Leo looks disappointed. (Звучить байдуже.)"
+       }
+      ],
+      "explain": "Обіцянка — will; I had a great time — «я чудово провів(ла) час»."
+     }
+    ],
+    "endings": {
+     "good": "Leo запускає літаючий годинник, і той виписує в небі твоє ім'я. «Same time tomorrow?» ⚙️💛",
+     "ok": "Leo дякує за допомогу і обіцяє показати ще один винахід. Дружба заводиться, як годинник!",
+     "bad": "Leo знову схиляється над шестернями. Може, наступного разу розмова піде краще."
+    }
+   },
+   "boss": {
+    "name": "Пан Тік-Так",
+    "emoji": "⏰",
+    "intro": "Пан Тік-Так — головний годинник міста і страшенний педант. Він завжди запізнюється на дві хвилини, але вимагає ідеальної точності від інших. Відповідай швидко й точно, і він відчинить ворота до Кришталевих Гір!",
+    "tasks": [
+     {
+      "type": "choice",
+      "q": "___ you ever eaten sushi?",
+      "options": [
+       "Have",
+       "Did",
+       "Do",
+       "Are"
+      ],
+      "answer": 0,
+      "explain": "ever + V3 (eaten) — Present Perfect: Have you ever...?"
+     },
+     {
+      "type": "type",
+      "q": "Напиши третю форму (V3) дієслова take",
+      "answers": [
+       "taken"
+      ],
+      "explain": "take — took — taken."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Я збираюся вивчати англійську»",
+      "words": [
+       "study",
+       "going",
+       "I",
+       "English",
+       "am",
+       "to"
+      ],
+      "answer": "I am going to study English",
+      "explain": "План — be going to + дієслово."
+     },
+     {
+      "type": "choice",
+      "q": "If I ___ you, I would apologise.",
+      "options": [
+       "am",
+       "were",
+       "will be"
+      ],
+      "answer": 1,
+      "explain": "Порада через уявну ситуацію: If I were you..."
+     },
+     {
+      "type": "type",
+      "q": "Встав дієслово stay у правильній формі: If it rains, we ___ at home.",
+      "answers": [
+       "will stay",
+       "'ll stay"
+      ],
+      "explain": "First Conditional: результат — will + дієслово."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Тобі варто піти до лікаря»",
+      "words": [
+       "doctor",
+       "should",
+       "a",
+       "You",
+       "see"
+      ],
+      "answer": "You should see a doctor",
+      "explain": "Порада — should + дієслово. Піти до лікаря = see a doctor."
+     },
+     {
+      "type": "choice",
+      "q": "We ___ wear a uniform at our school. It's a rule.",
+      "options": [
+       "have to",
+       "might",
+       "should"
+      ],
+      "answer": 0,
+      "explain": "Правило, обов'язок — have to."
+     },
+     {
+      "type": "type",
+      "q": "Переклади англійською: «Я вже бачив цей фільм»",
+      "answers": [
+       "i have already seen this film",
+       "i've already seen this film",
+       "i have already seen this movie",
+       "i've already seen this movie",
+       "i have seen this film already",
+       "i've seen this film already",
+       "i have seen this movie already",
+       "i've seen this movie already"
+      ],
+      "explain": "already — маркер Present Perfect: have + already + seen."
+     }
+    ]
+   }
+  },
+  {
+   "id": "w4",
+   "level": "B2",
+   "name": "Кришталеві Гори",
+   "emoji": "💎",
+   "intro": "Кришталеві Гори сяють так яскраво, що Лумі майже губиться серед них. Тут кожне слово відлунює, а кожна печера пам'ятає чужі розмови. Світлячки сховалися глибоко в кристалах — доведеться добре попрацювати!",
+   "quests": [
+    {
+     "id": "w4q1",
+     "title": "Хто збудував міст?",
+     "emoji": "🌉",
+     "story": "Через прірву веде старовинний кришталевий міст, але ніхто не пам'ятає, хто його збудував. Гноми кажуть «не ми», тролі кажуть «не ми». Головне — що міст був збудований!",
+     "lesson": "Passive Voice — коли важлива дія, а не той, хто її виконав.\nСхема: be (у потрібному часі) + V3.\nPresent: English is spoken here.\nPast: The bridge was built in 1500.\nPresent Perfect: The letter has not been sent yet.\nВиконавця додаємо через by: built by dwarves.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "This castle ___ in 1500.",
+       "options": [
+        "built",
+        "was built",
+        "has built",
+        "is building"
+       ],
+       "answer": 1,
+       "explain": "Замок не будував сам себе — пасив у минулому: was built."
+      },
+      {
+       "type": "choice",
+       "q": "English ___ all over the world.",
+       "options": [
+        "speaks",
+        "is spoken",
+        "is speaking",
+        "spoken"
+       ],
+       "answer": 1,
+       "explain": "Мова не говорить сама — Present Simple Passive: is spoken."
+      },
+      {
+       "type": "type",
+       "q": "Перепиши в пасиві: «They make crystals here» → «Crystals ___ here». Напиши пропущені слова.",
+       "answers": [
+        "are made",
+        "crystals are made here"
+       ],
+       "explain": "Crystals — множина, тому are + V3 (made)."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Міст був збудований гномами»",
+       "words": [
+        "dwarves",
+        "built",
+        "bridge",
+        "was",
+        "The",
+        "by"
+       ],
+       "answer": "The bridge was built by dwarves",
+       "explain": "was + V3 + by + виконавець."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Лист ще не відправили»",
+       "words": [
+        "sent",
+        "been",
+        "not",
+        "letter",
+        "The",
+        "yet",
+        "has"
+       ],
+       "answer": "The letter has not been sent yet",
+       "alts": [
+        "The letter has not yet been sent"
+       ],
+       "explain": "Present Perfect Passive: has not been + V3; yet — у кінці."
+      }
+     ]
+    },
+    {
+     "id": "w4q2",
+     "title": "Відлуння в печері",
+     "emoji": "🗣",
+     "story": "У Печері Відлуння всі слова повторюються, але трохи інакше: «I am cold» перетворюється на «He said he was cold». Лумі хоче зрозуміти, як працює ця магія.",
+     "lesson": "Reported Speech — переказ чужих слів. Час «зсувається» назад:\nam / is → was, will → would, can → could, Past Simple → Past Perfect.\n«I am cold», he said. → He said (that) he was cold.\nПитання стають звичайним порядком слів:\n«Where do you live?» → She asked me where I lived.\n«Can you swim?» → She asked if I could swim.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "He said: «I am cold». → He said that he ___ cold.",
+       "options": [
+        "am",
+        "was",
+        "were",
+        "is being"
+       ],
+       "answer": 1,
+       "explain": "У непрямій мові am зсувається в was."
+      },
+      {
+       "type": "choice",
+       "q": "She asked me where I ___.",
+       "options": [
+        "lived",
+        "did I live",
+        "do I live"
+       ],
+       "answer": 0,
+       "explain": "Непряме питання має прямий порядок слів, без did/do: where I lived."
+      },
+      {
+       "type": "type",
+       "q": "«I will come», Tom said. → Tom said that he ___ come. (одне слово)",
+       "answers": [
+        "would"
+       ],
+       "explain": "will у непрямій мові стає would."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Вона сказала мені, що втомилася»",
+       "words": [
+        "tired",
+        "me",
+        "was",
+        "She",
+        "she",
+        "told"
+       ],
+       "answer": "She told me she was tired",
+       "explain": "told + кому + що сталося; is → was."
+      },
+      {
+       "type": "type",
+       "q": "«Can you swim?» she asked. → She asked if I ___ swim. (одне слово)",
+       "answers": [
+        "could"
+       ],
+       "explain": "can у непрямій мові стає could."
+      }
+     ]
+    },
+    {
+     "id": "w4q3",
+     "title": "Якби ж то лавина...",
+     "emoji": "🏔",
+     "story": "Сніговик Пломбір запізнився на гірський потяг і тепер сумно рахує всі «якби»: якби вийшов раніше, якби взяв мапу... Лумі навчить його хоча б говорити про це правильно.",
+     "lesson": "Third Conditional — уявне минуле, яке вже не змінити.\nIf + had + V3, would have + V3.\nIf we had left earlier, we would have caught the train.\nIf she had read the map, she wouldn't have got lost.\nСкорочення: I'd have helped = I would have helped.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "If we had left earlier, we ___ the train.",
+       "options": [
+        "would catch",
+        "would have caught",
+        "had caught",
+        "will catch"
+       ],
+       "answer": 1,
+       "explain": "Третій тип: результат — would have + V3."
+      },
+      {
+       "type": "choice",
+       "q": "If she ___ the map, she wouldn't have got lost.",
+       "options": [
+        "had read",
+        "read",
+        "would read",
+        "has read"
+       ],
+       "answer": 0,
+       "explain": "В if-частині третього типу — had + V3: had read."
+      },
+      {
+       "type": "type",
+       "q": "Встав дієслово help у правильній формі: If I had known, I ___ you.",
+       "answers": [
+        "would have helped",
+        "'d have helped",
+        "would've helped"
+       ],
+       "explain": "Результат у Third Conditional — would have + V3: would have helped."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ми б (тоді) перемогли»",
+       "words": [
+        "won",
+        "have",
+        "We",
+        "would"
+       ],
+       "answer": "We would have won",
+       "explain": "would have + V3 (won) — уявний результат у минулому."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Що б ти тоді зробив?»",
+       "words": [
+        "done",
+        "you",
+        "What",
+        "have",
+        "would"
+       ],
+       "answer": "What would you have done",
+       "explain": "Питання третього типу: What would you have + V3?"
+      }
+     ]
+    },
+    {
+     "id": "w4q4",
+     "title": "Кришталеві ідіоми",
+     "emoji": "🔮",
+     "story": "Кристали в цій печері говорять лише ідіомами, а Лумі сприймає все буквально. Коли їй сказали «break a leg», вона ледь не втекла!",
+     "lesson": "Відносні займенники: who — про людей, which — про речі, whose — чий, where — де.\nThis is the girl who found Lumi. This is the man whose dog ran away.\nІдіоми: it costs an arm and a leg — дуже дорого; break a leg! — успіху!; once in a blue moon — дуже рідко.\nКолокації: make a mistake, do homework, take a photo.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "This is the girl ___ found Lumi.",
+       "options": [
+        "who",
+        "which",
+        "whose",
+        "where"
+       ],
+       "answer": 0,
+       "explain": "Про людину (girl) — who."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Це людина, чий собака втік»",
+       "words": [
+        "dog",
+        "away",
+        "the",
+        "This",
+        "whose",
+        "ran",
+        "is",
+        "man"
+       ],
+       "answer": "This is the man whose dog ran away",
+       "explain": "Чий = whose; одразу після нього — іменник (dog)."
+      },
+      {
+       "type": "choice",
+       "q": "«It costs an arm and a leg» means it is ___.",
+       "options": [
+        "very expensive",
+        "dangerous",
+        "painful",
+        "very cheap"
+       ],
+       "answer": 0,
+       "explain": "Ідіома «коштує руки й ноги» означає «дуже дорого»."
+      },
+      {
+       "type": "type",
+       "q": "Закінчи ідіому одним словом: «Break a ___!» — так бажають удачі акторам.",
+       "answers": [
+        "leg"
+       ],
+       "explain": "Break a leg! — «Ні пуху ні пера!»"
+      },
+      {
+       "type": "type",
+       "q": "Колокація: ___ a mistake (зробити помилку). Напиши одне слово.",
+       "answers": [
+        "make"
+       ],
+       "explain": "Помилку «роблять» з make: make a mistake (не do)."
+      }
+     ]
+    }
+   ],
+   "story": {
+    "id": "w4s",
+    "title": "Вершина з Авою",
+    "emoji": "💌",
+    "cast": "Ava",
+    "intro": "На кришталевій вершині тебе чекає альпіністка з довгою темною косою, у синій куртці та шарфі. Це Ava. Вона щойно піднялася найскладнішим маршрутом і явно хоче з кимось поговорити.",
+    "scenes": [
+     {
+      "line": "You made it to the top! Were you followed by that yeti?",
+      "hint": "Ти дістався(лася) вершини! Тебе переслідував той єті?",
+      "choices": [
+       {
+        "text": "No, I wasn't follow.",
+        "good": false,
+        "reaction": "Ava: «Wasn't FOLLOW?» (Пасив: wasn't followed.)"
+       },
+       {
+        "text": "No, but I was told he gives great hugs.",
+        "good": true,
+        "reaction": "Ava laughs: «That's true, actually!» 😄"
+       },
+       {
+        "text": "Mind your own business.",
+        "good": false,
+        "reaction": "Ava raises her eyebrows. (Грубо.)"
+       }
+      ],
+      "explain": "Пасив: was told — «мені сказали»."
+     },
+     {
+      "line": "Someone told me you were helping a little star. Is that true?",
+      "hint": "Мені сказали, що ти допомагаєш маленькій зірочці. Це правда?",
+      "choices": [
+       {
+        "text": "Yes, she asked me if I could help her find her words.",
+        "good": true,
+        "reaction": "Ava: «That's really sweet of you.» ⭐"
+       },
+       {
+        "text": "Yes, she asked me can I help her.",
+        "good": false,
+        "reaction": "Ava nods. (Непряме питання: asked me if I could.)"
+       },
+       {
+        "text": "Who told you? People talk too much.",
+        "good": false,
+        "reaction": "Ava looks away. (Різко.)"
+       }
+      ],
+      "explain": "Reported question: asked + if + прямий порядок слів, can → could."
+     },
+     {
+      "line": "If I hadn't climbed so fast, I would have seen the sunrise.",
+      "hint": "Якби я не лізла так швидко, я б побачила схід сонця.",
+      "choices": [
+       {
+        "text": "Well, that's your problem.",
+        "good": false,
+        "reaction": "Ava sighs. (Байдуже і неприємно.)"
+       },
+       {
+        "text": "If you would have waited, we would watch it together.",
+        "good": false,
+        "reaction": "Ava smiles but corrects you. (If you had waited, we would have watched.)"
+       },
+       {
+        "text": "If you had waited, we would have watched it together.",
+        "good": true,
+        "reaction": "Ava blushes: «Next time I'll wait for you.» 🌅"
+       }
+      ],
+      "explain": "Third Conditional: If + had + V3, would have + V3."
+     },
+     {
+      "line": "This is the rope that saved my life last year.",
+      "hint": "Це та мотузка, що врятувала мені життя минулого року.",
+      "choices": [
+       {
+        "text": "Wow, the rope which saved your life? Tell me everything!",
+        "good": true,
+        "reaction": "Ava sits down and starts her story, eyes shining. 🧗"
+       },
+       {
+        "text": "Wow, the rope who saved your life?",
+        "good": false,
+        "reaction": "Ava: «The rope WHO?» (Про речі — which/that.)"
+       },
+       {
+        "text": "It looks old. You should throw it away.",
+        "good": false,
+        "reaction": "Ava holds the rope tighter. (Нетактовно.)"
+       }
+      ],
+      "explain": "Для речей — which або that, who — тільки для людей."
+     },
+     {
+      "line": "I'm a bit nervous about the last climb.",
+      "hint": "Я трохи хвилююся перед останнім підйомом.",
+      "choices": [
+       {
+        "text": "Don't worry, it'll be a cake of piece for you.",
+        "good": false,
+        "reaction": "Ava laughs: «A cake of piece?» (Ідіома: a piece of cake.)"
+       },
+       {
+        "text": "Then don't do it. You will fall.",
+        "good": false,
+        "reaction": "Ava goes pale. (Не підтримує, а лякає.)"
+       },
+       {
+        "text": "Don't worry, it'll be a piece of cake for you.",
+        "good": true,
+        "reaction": "Ava: «With you cheering me on? Definitely.» 💙"
+       }
+      ],
+      "explain": "a piece of cake — «простіше простого»."
+     },
+     {
+      "line": "The view is amazing, isn't it?",
+      "hint": "Краєвид неймовірний, правда?",
+      "choices": [
+       {
+        "text": "It is, but honestly, the company is even better.",
+        "good": true,
+        "reaction": "Ava hides her smile in her scarf. 😊"
+       },
+       {
+        "text": "Yes, it's very amazing view.",
+        "good": false,
+        "reaction": "Ava nods. (Бракує артикля, а amazing не вживають з very.)"
+       },
+       {
+        "text": "I've seen better.",
+        "good": false,
+        "reaction": "Ava turns back to the view. (Знецінює момент.)"
+       }
+      ],
+      "explain": "the company — «компанія, товариство»; легкий комплімент."
+     }
+    ],
+    "endings": {
+     "good": "Ava пов'язує тобі на руку шматочок своєї щасливої мотузки: «So we always find each other on the mountain.» 💙",
+     "ok": "Ava пропонує разом спуститися вниз. Гарний початок дружби!",
+     "bad": "Ava ввічливо киває і йде своїм маршрутом. Гори — для другої спроби!"
+    }
+   },
+   "boss": {
+    "name": "Єті Обіймайло",
+    "emoji": "❄️",
+    "intro": "На вершині живе Єті Обіймайло — величезний, пухнастий і дуже самотній. Він не кривдить мандрівників, а просто загадує загадки, щоб хтось лишився поговорити. Відгадай вісім — і він на прощання обійме тебе (обережно, він холодний!).",
+    "tasks": [
+     {
+      "type": "choice",
+      "q": "The letter ___ yesterday.",
+      "options": [
+       "was sent",
+       "sent",
+       "has sent",
+       "is sent"
+      ],
+      "answer": 0,
+      "explain": "Лист не відправляє сам себе; yesterday — Past Simple Passive: was sent."
+     },
+     {
+      "type": "type",
+      "q": "«I am happy», she said. → She said she ___ happy. (одне слово)",
+      "answers": [
+       "was"
+      ],
+      "explain": "am у непрямій мові стає was."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Двері відчинили ключем»",
+      "words": [
+       "key",
+       "opened",
+       "door",
+       "a",
+       "The",
+       "with",
+       "was"
+      ],
+      "answer": "The door was opened with a key",
+      "explain": "Пасив: was + V3; інструмент — with."
+     },
+     {
+      "type": "choice",
+      "q": "If you had told me, I ___ helped you.",
+      "options": [
+       "would have",
+       "will have",
+       "would",
+       "had"
+      ],
+      "answer": 0,
+      "explain": "Third Conditional: would have + V3."
+     },
+     {
+      "type": "type",
+      "q": "Встав відносний займенник: The man ___ car was stolen called the police.",
+      "answers": [
+       "whose"
+      ],
+      "explain": "Чия машина — whose car."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Він сказав, що він голодний»",
+      "words": [
+       "was",
+       "said",
+       "hungry",
+       "He",
+       "he",
+       "that"
+      ],
+      "answer": "He said that he was hungry",
+      "explain": "Непряма мова: is → was."
+     },
+     {
+      "type": "choice",
+      "q": "«Once in a blue moon» means ___.",
+      "options": [
+       "very rarely",
+       "every night",
+       "at midnight",
+       "when the sky is blue"
+      ],
+      "answer": 0,
+      "explain": "Once in a blue moon — дуже рідко."
+     },
+     {
+      "type": "type",
+      "q": "Перепиши в пасиві: «Someone stole my bike» → «My bike ___». Напиши пропущені слова.",
+      "answers": [
+       "was stolen",
+       "my bike was stolen"
+      ],
+      "explain": "Past Simple Passive: was + V3 (stolen)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "w5",
+   "level": "C1",
+   "name": "Небесна Бібліотека",
+   "emoji": "📚",
+   "intro": "Над хмарами, на самому краю неба, стоїть Небесна Бібліотека — звідси Лумі колись і впала. Тут зберігаються найрідкісніші й найтонші слова. Збери останніх Світлячків, і Лумі нарешті зможе засяяти на повну!",
+   "quests": [
+    {
+     "id": "w5q1",
+     "title": "Перевернуті полиці",
+     "emoji": "🙃",
+     "story": "Хтось перевернув полиці догори дриґом, і тепер речення тут теж стоять навпаки: «Never have I seen...». Лумі спершу подумала, що це помилка, але це — інверсія!",
+     "lesson": "Інверсія — після заперечних і обмежувальних слів на початку речення допоміжне дієслово стоїть ПЕРЕД підметом (як у питанні).\nNever have I seen such a library.\nNot only did she read the book, but she also wrote a review.\nHardly had I opened the book when the lights went out.\nRarely do I see such beauty. Under no circumstances should you open it.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Never ___ such a magical library.",
+       "options": [
+        "I have seen",
+        "have I seen",
+        "I saw",
+        "saw I"
+       ],
+       "answer": 1,
+       "explain": "Після Never на початку — інверсія: have I seen."
+      },
+      {
+       "type": "choice",
+       "q": "Not only ___ the book, but she also wrote a review.",
+       "options": [
+        "she read",
+        "did she read",
+        "she did read",
+        "read she"
+       ],
+       "answer": 1,
+       "explain": "Not only на початку вимагає інверсії: did she read."
+      },
+      {
+       "type": "type",
+       "q": "Встав допоміжне дієслово: Hardly ___ I opened the book when the lights went out.",
+       "answers": [
+        "had"
+       ],
+       "explain": "Hardly ... when — з Past Perfect та інверсією: Hardly had I opened..."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Рідко я бачу таку красу»",
+       "words": [
+        "beauty",
+        "I",
+        "such",
+        "Rarely",
+        "see",
+        "do"
+       ],
+       "answer": "Rarely do I see such beauty",
+       "explain": "Rarely + do + I + дієслово — інверсія."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «За жодних обставин не відкривай цю книгу»",
+       "words": [
+        "you",
+        "book",
+        "no",
+        "should",
+        "Under",
+        "open",
+        "this",
+        "circumstances"
+       ],
+       "answer": "Under no circumstances should you open this book",
+       "explain": "Under no circumstances + should + you + дієслово."
+      }
+     ]
+    },
+    {
+     "id": "w5q2",
+     "title": "Мости між часами",
+     "emoji": "🌀",
+     "story": "Бібліотечний кіт заснув на книзі про минуле, а прокинувся в книзі про сьогодення. Тепер він змішує часи — і, на диво, правильно! Це змішані умовні речення.",
+     "lesson": "Mixed Conditionals — коли умова і результат у різних часах.\nМинуле → результат зараз: If + had + V3, would + дієслово:\nIf I had studied medicine, I would be a doctor now.\nТеперішня риса → результат у минулому: If + Past Simple, would have + V3:\nIf she weren't so shy, she would have gone to the party.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "If I had studied medicine, I ___ a doctor now.",
+       "options": [
+        "would be",
+        "would have been",
+        "will be",
+        "am"
+       ],
+       "answer": 0,
+       "explain": "Минула умова, результат зараз (now) — would be."
+      },
+      {
+       "type": "choice",
+       "q": "If she weren't so shy, she ___ to the party last night.",
+       "options": [
+        "would go",
+        "would have gone",
+        "went",
+        "will go"
+       ],
+       "answer": 1,
+       "explain": "Постійна риса зараз, результат у минулому (last night) — would have gone."
+      },
+      {
+       "type": "type",
+       "q": "Встав заперечну форму miss: If I ___ the bus this morning, I wouldn't be late now.",
+       "answers": [
+        "hadn't missed",
+        "had not missed"
+       ],
+       "explain": "Умова в минулому (this morning) — had not + V3."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «(Якби я слухав,) я б зараз знав відповідь»",
+       "words": [
+        "answer",
+        "know",
+        "the",
+        "I",
+        "now",
+        "would"
+       ],
+       "answer": "I would know the answer now",
+       "alts": [
+        "I would now know the answer",
+        "Now I would know the answer"
+       ],
+       "explain": "Результат у теперішньому — would + дієслово."
+      },
+      {
+       "type": "type",
+       "q": "Встав дієслово ask у правильній формі: If he were braver, he ___ her out yesterday.",
+       "answers": [
+        "would have asked",
+        "'d have asked",
+        "would've asked"
+       ],
+       "explain": "Риса характеру зараз, результат у минулому (yesterday) — would have + V3."
+      }
+     ]
+    },
+    {
+     "id": "w5q3",
+     "title": "Книга бажань",
+     "emoji": "🌠",
+     "story": "На верхній полиці лежить Книга Бажань: хто правильно запише бажання, отримає Світлячка. Лумі вже написала «I wish I can fly» — і книга чхнула. Треба виправляти!",
+     "lesson": "wish / if only — жаль або бажання.\nПро теперішнє — Past Simple: I wish I knew the answer. I wish I could fly.\nПро минуле — Past Perfect: If only I had come earlier!\nРоздратування чужою поведінкою — would: I wish you would stop that noise!",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "I wish I ___ fly. (зараз я не вмію)",
+       "options": [
+        "can",
+        "could",
+        "will",
+        "would"
+       ],
+       "answer": 1,
+       "explain": "Бажання про теперішнє — крок назад у часі: can → could."
+      },
+      {
+       "type": "choice",
+       "q": "If only I ___ that! (шкодую про сказане вчора)",
+       "options": [
+        "didn't say",
+        "hadn't said",
+        "don't say",
+        "wouldn't say"
+       ],
+       "answer": 1,
+       "explain": "Жаль про минуле — Past Perfect: hadn't said."
+      },
+      {
+       "type": "type",
+       "q": "Встав дієслово stop: I wish you ___ making that noise! (мене це дратує)",
+       "answers": [
+        "would stop",
+        "'d stop"
+       ],
+       "explain": "Роздратування чужою дією — wish + would."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Шкода, що я не знаю відповіді»",
+       "words": [
+        "knew",
+        "answer",
+        "wish",
+        "I",
+        "the",
+        "I"
+       ],
+       "answer": "I wish I knew the answer",
+       "explain": "Жаль про теперішнє — wish + Past Simple (knew)."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Якби ж то я прийшов раніше»",
+       "words": [
+        "earlier",
+        "had",
+        "only",
+        "If",
+        "come",
+        "I"
+       ],
+       "answer": "If only I had come earlier",
+       "explain": "If only + Past Perfect — жаль про минуле."
+      }
+     ]
+    },
+    {
+     "id": "w5q4",
+     "title": "Словник тонких відтінків",
+     "emoji": "🔍",
+     "story": "Головний Словник бібліотеки дуже поважний і відповідає лише формальною мовою. Коли Лумі сказала йому «hi, wanna help?», він закрився на замок.",
+     "lesson": "affect — дієслово (впливати): Stress can affect your sleep.\neffect — іменник (вплив, ефект): The medicine had a strong effect.\nФормальний регістр: buy → purchase, begin → commence, help → assist, enough → sufficient, tell → inform.\nПриклад: Please inform us as soon as possible.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "The medicine had a strong ___ on him.",
+       "options": [
+        "affect",
+        "effect"
+       ],
+       "answer": 1,
+       "explain": "Після a strong потрібен іменник — effect."
+      },
+      {
+       "type": "choice",
+       "q": "Could you ___ me with the details?",
+       "options": [
+        "provide",
+        "give",
+        "tell",
+        "send"
+       ],
+       "answer": 0,
+       "explain": "Конструкція provide somebody with something — надати комусь щось."
+      },
+      {
+       "type": "type",
+       "q": "Формальний синонім до «buy» (одне слово, на p)",
+       "answers": [
+        "purchase"
+       ],
+       "explain": "purchase — формальне «купувати»."
+      },
+      {
+       "type": "type",
+       "q": "Формальний синонім до «begin» (одне слово, на c)",
+       "answers": [
+        "commence"
+       ],
+       "explain": "commence — формальне «починати»."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Будь ласка, повідомте нас якнайшвидше»",
+       "words": [
+        "us",
+        "possible",
+        "as",
+        "Please",
+        "soon",
+        "inform",
+        "as"
+       ],
+       "answer": "Please inform us as soon as possible",
+       "alts": [
+        "Inform us as soon as possible please"
+       ],
+       "explain": "inform — формальне «повідомити»; as soon as possible — якнайшвидше."
+      }
+     ]
+    }
+   ],
+   "story": {
+    "id": "w5s",
+    "title": "Зоряний плащ Елі",
+    "emoji": "💌",
+    "cast": "Eli",
+    "intro": "Між полицями ширяє постать у плащі із зірками, зі сріблястим волоссям. Це Eli — бібліотекар, що мандрує в часі. Кажуть, Eli пам'ятає кожну книжку, яку колись буде написано.",
+    "scenes": [
+     {
+      "line": "Ah, a visitor. Rarely do I meet someone who reads the stars.",
+      "hint": "А, відвідувач. Нечасто я зустрічаю когось, хто читає зорі.",
+      "choices": [
+       {
+        "text": "Never I have seen a library like this.",
+        "good": false,
+        "reaction": "Eli smiles patiently. (Після Never — інверсія: Never have I seen.)"
+       },
+       {
+        "text": "Whatever. Where's the exit?",
+        "good": false,
+        "reaction": "Eli silently points to the door. (Неввічливо.)"
+       },
+       {
+        "text": "Never have I seen a library quite like this one.",
+        "good": true,
+        "reaction": "Eli bows slightly: «Nor have I seen a visitor quite like you.» ✨"
+       }
+      ],
+      "explain": "Інверсія після Never: have I seen."
+     },
+     {
+      "line": "If I hadn't travelled through time, I wouldn't be here now.",
+      "hint": "Якби я не мандрував(ла) у часі, мене б зараз тут не було.",
+      "choices": [
+       {
+        "text": "Then I'm glad you did. Otherwise we would never have met.",
+        "good": true,
+        "reaction": "Eli's stars on the cloak begin to glow. 🌌"
+       },
+       {
+        "text": "If you hadn't, we wouldn't have meet.",
+        "good": false,
+        "reaction": "Eli: «Have MEET?» (Потрібно V3: met.)"
+       },
+       {
+        "text": "Time travel sounds like a waste of time.",
+        "good": false,
+        "reaction": "Eli: «Hm. Clever, but cold.» (Дотепно, але холодно.)"
+       }
+      ],
+      "explain": "would never have met — уявний результат у минулому."
+     },
+     {
+      "line": "Sometimes I wish I could stay in one century.",
+      "hint": "Іноді я хотів(ла) б залишитися в одному столітті.",
+      "choices": [
+       {
+        "text": "I wish you can stay.",
+        "good": false,
+        "reaction": "Eli tilts their head. (Після wish — could, не can.)"
+       },
+       {
+        "text": "If only you could. I'd visit you there every day.",
+        "good": true,
+        "reaction": "Eli looks at you for a long moment and smiles. 💫"
+       },
+       {
+        "text": "Then stay. Nobody is stopping you.",
+        "good": false,
+        "reaction": "Eli sighs. (Різко і без співчуття.)"
+       }
+      ],
+      "explain": "If only + could — бажання про нереальне теперішнє."
+     },
+     {
+      "line": "The storm may affect our journey. What do you think?",
+      "hint": "Буря може вплинути на нашу подорож. Що думаєш?",
+      "choices": [
+       {
+        "text": "Its effect will be minor, I'm sure. We'll manage together.",
+        "good": true,
+        "reaction": "Eli: «Together. I like the sound of that.» ⛈"
+       },
+       {
+        "text": "Its affect will be minor.",
+        "good": false,
+        "reaction": "Eli: «Its AFFECT?» (Іменник — effect.)"
+       },
+       {
+        "text": "Not my problem.",
+        "good": false,
+        "reaction": "Eli wraps the cloak tighter. (Байдуже.)"
+       }
+      ],
+      "explain": "effect — іменник (вплив), affect — дієслово (впливати)."
+     },
+     {
+      "line": "Would you be so kind as to assist me with these books?",
+      "hint": "Чи не були б ви такі ласкаві допомогти мені з цими книгами?",
+      "choices": [
+       {
+        "text": "Yeah, gimme them.",
+        "good": false,
+        "reaction": "Eli blinks. (Занадто розмовно для формального прохання.)"
+       },
+       {
+        "text": "It would be my pleasure to assisting you.",
+        "good": false,
+        "reaction": "Eli smiles. (Після to — інфінітив: to assist.)"
+       },
+       {
+        "text": "It would be my pleasure.",
+        "good": true,
+        "reaction": "Eli hands you the books, fingers touching yours for a second. 📚"
+       }
+      ],
+      "explain": "It would be my pleasure — формальне «з радістю»."
+     },
+     {
+      "line": "Before you go... I hope our paths cross again.",
+      "hint": "Перш ніж ти підеш... сподіваюся, наші шляхи ще перетнуться.",
+      "choices": [
+       {
+        "text": "If our paths will cross again, I say hello.",
+        "good": false,
+        "reaction": "Eli smiles sadly. (Після if — без will; I'll say hello.)"
+       },
+       {
+        "text": "Should our paths cross again, I'll be the first to say hello.",
+        "good": true,
+        "reaction": "Eli: «Then I'll make sure they do.» 🌠"
+       },
+       {
+        "text": "Let's not get sentimental.",
+        "good": false,
+        "reaction": "Eli nods quietly. (Холодно для такого моменту.)"
+       }
+      ],
+      "explain": "Should our paths cross... — формальна інверсія замість If our paths cross."
+     }
+    ],
+    "endings": {
+     "good": "Eli дарує тобі зірку зі свого плаща: «Whenever you look at it, I'll know.» Вона світиться тепло, як Лумі 🌠",
+     "ok": "Eli залишає закладку в твоїй книжці: «Until next time.» Таємниця ще не розгадана.",
+     "bad": "Eli зникає між полицями, лишивши тільки запах старих сторінок. Може, в іншому часі?"
+    }
+   },
+   "boss": {
+    "name": "Пані Тсс-Тсс",
+    "emoji": "🐈",
+    "intro": "Головна бібліотекарка — кішка Пані Тсс-Тсс. Вона ненавидить шум і обожнює бездоганну граматику. Якщо пройдеш її іспит, вона відчинить Небесне Вікно, і Лумі повернеться на своє місце серед зірок. Тільки тихенько!",
+    "tasks": [
+     {
+      "type": "choice",
+      "q": "Seldom ___ such a quiet reader.",
+      "options": [
+       "have I met",
+       "I have met",
+       "I met",
+       "met I"
+      ],
+      "answer": 0,
+      "explain": "Seldom на початку — інверсія: have I met."
+     },
+     {
+      "type": "type",
+      "q": "Встав дієслово be у правильній формі: If I had saved money, I ___ rich now.",
+      "answers": [
+       "would be",
+       "'d be"
+      ],
+      "explain": "Mixed Conditional: минула умова, результат зараз — would be."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Шкода, що зараз не літо»",
+      "words": [
+       "summer",
+       "were",
+       "it",
+       "I",
+       "wish"
+      ],
+      "answer": "I wish it were summer",
+      "explain": "wish + Past Simple; у формальному стилі з be — were."
+     },
+     {
+      "type": "choice",
+      "q": "The noise ___ my concentration.",
+      "options": [
+       "affected",
+       "effected"
+      ],
+      "answer": 0,
+      "explain": "Потрібне дієслово «вплинув» — affected."
+     },
+     {
+      "type": "type",
+      "q": "Встав дієслово listen: I wish I ___ to my teacher yesterday.",
+      "answers": [
+       "had listened",
+       "'d listened"
+      ],
+      "explain": "Жаль про минуле — wish + Past Perfect."
+     },
+     {
+      "type": "order",
+      "q": "Склади речення: «Ніколи я не розкрию цю таємницю»",
+      "words": [
+       "secret",
+       "I",
+       "this",
+       "Never",
+       "reveal",
+       "will"
+      ],
+      "answer": "Never will I reveal this secret",
+      "explain": "Never на початку — інверсія: will I reveal."
+     },
+     {
+      "type": "choice",
+      "q": "We ___ for any inconvenience caused.",
+      "options": [
+       "apologise",
+       "sorry",
+       "excuse",
+       "forgive"
+      ],
+      "answer": 0,
+      "explain": "Формальне вибачення — We apologise for..."
+     },
+     {
+      "type": "type",
+      "q": "Формальний синонім до «enough» (одне слово, на s)",
+      "answers": [
+       "sufficient"
+      ],
+      "explain": "sufficient — формальне «достатній»."
+     }
+    ]
+   }
+  }
+ ],
+ "WORDS": {
+  "w1": [
+   [
+    "кіт",
+    "cat"
+   ],
+   [
+    "собака",
+    "dog"
+   ],
+   [
+    "яблуко",
+    "apple"
+   ],
+   [
+    "хліб",
+    "bread"
+   ],
+   [
+    "сир",
+    "cheese"
+   ],
+   [
+    "молоко",
+    "milk"
+   ],
+   [
+    "вода",
+    "water"
+   ],
+   [
+    "сонце",
+    "sun"
+   ],
+   [
+    "квітка",
+    "flower"
+   ],
+   [
+    "дерево",
+    "tree"
+   ],
+   [
+    "червоний",
+    "red"
+   ],
+   [
+    "зелений",
+    "green"
+   ],
+   [
+    "жовтий",
+    "yellow"
+   ],
+   [
+    "білий",
+    "white"
+   ],
+   [
+    "чорний",
+    "black"
+   ],
+   [
+    "один",
+    "one"
+   ],
+   [
+    "два",
+    "two"
+   ],
+   [
+    "три",
+    "three"
+   ],
+   [
+    "десять",
+    "ten"
+   ],
+   [
+    "сестра",
+    "sister"
+   ],
+   [
+    "брат",
+    "brother"
+   ],
+   [
+    "бабуся",
+    "grandmother"
+   ],
+   [
+    "друг",
+    "friend"
+   ],
+   [
+    "щасливий",
+    "happy"
+   ]
+  ],
+  "w2": [
+   [
+    "ліс",
+    "forest"
+   ],
+   [
+    "сова",
+    "owl"
+   ],
+   [
+    "лисиця",
+    "fox"
+   ],
+   [
+    "гриб",
+    "mushroom"
+   ],
+   [
+    "равлик",
+    "snail"
+   ],
+   [
+    "кролик",
+    "rabbit"
+   ],
+   [
+    "ведмідь",
+    "bear"
+   ],
+   [
+    "річка",
+    "river"
+   ],
+   [
+    "озеро",
+    "lake"
+   ],
+   [
+    "камінь",
+    "stone"
+   ],
+   [
+    "гітара",
+    "guitar"
+   ],
+   [
+    "пісня",
+    "song"
+   ],
+   [
+    "вчора",
+    "yesterday"
+   ],
+   [
+    "під",
+    "under"
+   ],
+   [
+    "позаду",
+    "behind"
+   ],
+   [
+    "між",
+    "between"
+   ],
+   [
+    "поруч із",
+    "next to"
+   ],
+   [
+    "швидший",
+    "faster"
+   ],
+   [
+    "повільніший",
+    "slower"
+   ],
+   [
+    "кращий",
+    "better"
+   ],
+   [
+    "гірший",
+    "worse"
+   ],
+   [
+    "пішов (Past)",
+    "went"
+   ],
+   [
+    "купив (Past)",
+    "bought"
+   ],
+   [
+    "бачив (Past)",
+    "saw"
+   ]
+  ],
+  "w3": [
+   [
+    "годинник (настінний)",
+    "clock"
+   ],
+   [
+    "вежа",
+    "tower"
+   ],
+   [
+    "шестерня",
+    "gear"
+   ],
+   [
+    "хвилина",
+    "minute"
+   ],
+   [
+    "секунда",
+    "second"
+   ],
+   [
+    "рано",
+    "early"
+   ],
+   [
+    "пізно",
+    "late"
+   ],
+   [
+    "вже",
+    "already"
+   ],
+   [
+    "щойно",
+    "just"
+   ],
+   [
+    "ніколи",
+    "never"
+   ],
+   [
+    "завтра",
+    "tomorrow"
+   ],
+   [
+    "план",
+    "plan"
+   ],
+   [
+    "рішення",
+    "decision"
+   ],
+   [
+    "погода",
+    "weather"
+   ],
+   [
+    "прогноз",
+    "forecast"
+   ],
+   [
+    "вимкнути",
+    "turn off"
+   ],
+   [
+    "увімкнути",
+    "turn on"
+   ],
+   [
+    "шукати",
+    "look for"
+   ],
+   [
+    "здаватися (опускати руки)",
+    "give up"
+   ],
+   [
+    "вдягнути",
+    "put on"
+   ],
+   [
+    "порада",
+    "advice"
+   ],
+   [
+    "чесний",
+    "honest"
+   ],
+   [
+    "майбутнє",
+    "future"
+   ],
+   [
+    "винахід",
+    "invention"
+   ]
+  ],
+  "w4": [
+   [
+    "гора",
+    "mountain"
+   ],
+   [
+    "вершина",
+    "summit"
+   ],
+   [
+    "печера",
+    "cave"
+   ],
+   [
+    "міст",
+    "bridge"
+   ],
+   [
+    "лавина",
+    "avalanche"
+   ],
+   [
+    "мотузка",
+    "rope"
+   ],
+   [
+    "альпініст",
+    "climber"
+   ],
+   [
+    "сніг",
+    "snow"
+   ],
+   [
+    "лід",
+    "ice"
+   ],
+   [
+    "кришталь",
+    "crystal"
+   ],
+   [
+    "відлуння",
+    "echo"
+   ],
+   [
+    "краєвид",
+    "view"
+   ],
+   [
+    "схід сонця",
+    "sunrise"
+   ],
+   [
+    "захід сонця",
+    "sunset"
+   ],
+   [
+    "чий",
+    "whose"
+   ],
+   [
+    "збудований",
+    "built"
+   ],
+   [
+    "вкрадений",
+    "stolen"
+   ],
+   [
+    "пояснив",
+    "explained"
+   ],
+   [
+    "зробити помилку",
+    "make a mistake"
+   ],
+   [
+    "ухвалити рішення",
+    "make a decision"
+   ],
+   [
+    "простіше простого",
+    "piece of cake"
+   ],
+   [
+    "ні пуху ні пера",
+    "break a leg"
+   ],
+   [
+    "шарф",
+    "scarf"
+   ],
+   [
+    "куртка",
+    "jacket"
+   ]
+  ],
+  "w5": [
+   [
+    "бібліотека",
+    "library"
+   ],
+   [
+    "полиця",
+    "shelf"
+   ],
+   [
+    "рукопис",
+    "manuscript"
+   ],
+   [
+    "сувій",
+    "scroll"
+   ],
+   [
+    "мудрість",
+    "wisdom"
+   ],
+   [
+    "купувати (офіц.)",
+    "purchase"
+   ],
+   [
+    "починати (офіц.)",
+    "commence"
+   ],
+   [
+    "допомагати (офіц.)",
+    "assist"
+   ],
+   [
+    "достатній",
+    "sufficient"
+   ],
+   [
+    "повідомляти (офіц.)",
+    "inform"
+   ],
+   [
+    "вплив",
+    "effect"
+   ],
+   [
+    "впливати",
+    "affect"
+   ],
+   [
+    "вибачатися",
+    "apologise"
+   ],
+   [
+    "неоднозначний",
+    "ambiguous"
+   ],
+   [
+    "жаль",
+    "regret"
+   ],
+   [
+    "вічність",
+    "eternity"
+   ],
+   [
+    "сузір'я",
+    "constellation"
+   ],
+   [
+    "обставини",
+    "circumstances"
+   ],
+   [
+    "незручність",
+    "inconvenience"
+   ],
+   [
+    "наполегливий",
+    "persistent"
+   ],
+   [
+    "красномовний",
+    "eloquent"
+   ],
+   [
+    "ретельний",
+    "thorough"
+   ],
+   [
+    "телескоп",
+    "telescope"
+   ],
+   [
+    "бажання",
+    "wish"
+   ]
+  ]
+ }
+}
