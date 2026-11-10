@@ -730,9 +730,10 @@ html[data-scheme='dark'] .hub-head::before { background: radial-gradient(closest
 .hero-card { position: relative; overflow: hidden; box-shadow: 0 6px 0 var(--ink), 0 18px 30px -12px rgba(59, 42, 85, .45);
   background: linear-gradient(115deg, #FFF3C9 0%, #FFD0B0 40%, #E7C8FF 75%, #FFF3C9 100%); background-size: 260% 100%; animation: rise-in .55s var(--ease-pop) backwards, hero-sheen 9s ease-in-out infinite alternate; }
 @keyframes hero-sheen { to { background-position: 100% 0; } }
-.hero-card::after { content: ''; position: absolute; top: -40%; bottom: -40%; width: 46px; left: -80px; transform: rotate(18deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .65), transparent); animation: shine 4.5s ease-in-out 1.2s infinite; pointer-events: none; }
-@keyframes shine { 0%, 60% { left: -80px; } 100% { left: 115%; } }
+.hero-card::after { content: ''; position: absolute; top: -40%; bottom: -40%; width: 100%; left: -80px; transform: rotate(18deg); transform-origin: 23px 50%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .65), transparent) 0 0 / 46px 100% no-repeat; animation: shine 4.5s ease-in-out 1.2s infinite; pointer-events: none; }
+/* v6: смуга-відблиск їде transform-ом (раніше — left): елемент шириною з картку, смуга — 46–50px фону ліворуч */
+@keyframes shine { 0%, 60% { transform: translateX(0) rotate(18deg); } 100% { transform: translateX(calc(115% + 80px)) rotate(18deg); } }
 .hero-card:active { transform: translateY(4px) scale(1.01, .96); box-shadow: 0 2px 0 var(--ink); transition-duration: .08s; }
 .hero-cover { flex: none; width: 74px; height: 74px; border-radius: 50%; border: 3px solid var(--ink); object-fit: cover; background: #fff;
   box-shadow: 0 0 0 4px rgba(255, 255, 255, .8), 0 4px 0 4px var(--ink); animation: floaty 3.4s ease-in-out infinite; }
@@ -877,7 +878,7 @@ html[data-scheme='dark'] .wp-node.locked .wp-medal img { filter: grayscale(.85) 
 
 /* частинки: липкий шар висотою з вікно */
 .wp-fx { position: sticky; top: 0; z-index: 3; display: block; height: var(--vh, 100vh); margin-bottom: calc(-1 * var(--vh, 100vh)); overflow: hidden; pointer-events: none; }
-.pt { position: absolute; left: var(--x); top: var(--y); display: block; scale: var(--s); will-change: transform, opacity; }
+.pt { position: absolute; left: var(--x); top: var(--y); display: block; scale: var(--s); }
 .pt-pollen { width: 7px; height: 7px; border-radius: 50%; background: #FFE58A; box-shadow: 0 0 8px 2px rgba(255, 236, 150, .8); top: 105%;
   animation: rise var(--d) linear infinite; animation-delay: var(--dl); }
 @keyframes rise { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .9; } 50% { transform: translate(var(--dx), -55vh); } 90% { opacity: .8; } 100% { transform: translate(0, -115vh); opacity: 0; } }
@@ -1166,10 +1167,19 @@ html[data-scheme='dark'] [data-world] .wp-par.near { opacity: .65; }
 [data-world] .wp-node.done .wp-medal { box-shadow: 0 0 0 3px var(--ink), 0 0 30px 10px var(--w-glow); }
 [data-world] .wp-node.locked .wp-medal { box-shadow: 0 0 0 3px var(--ink), 0 14px 18px -6px rgba(0, 0, 0, .45); }
 .wp-frame { position: absolute; left: 50%; top: 50%; z-index: -1; width: calc(var(--m) * 1.36); height: calc(var(--m) * 1.36); transform: translate(-50%, -50%); pointer-events: none; }
-.wp-frame svg { display: block; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 5px 0 var(--ink)); }
-.wp-node.locked .wp-frame svg { filter: grayscale(.85) brightness(.95) drop-shadow(0 5px 0 var(--ink)); }
+.wp-frame svg { position: relative; display: block; width: 100%; height: 100%; overflow: visible; }
+/* v6: фільтр — на обгортці (спільна тінь), а шестерня w3 — окремий <svg>-шар, що крутиться transform-ом на компоновнику
+   (раніше <g> обертався всередині SVG під двома drop-shadow → перерахунок фільтра щокадру) */
+.wp-frame { filter: drop-shadow(0 5px 0 var(--ink)); }
+.wp-frame .wf-gear-l { position: absolute; inset: 0; display: block; }
+.wp-frame .wf-gear-l.sh { translate: 0 5px; }
+.wp-node.current .wp-frame:has(.wf-gear-l) { filter: none; }
+.wp-node.current .wf-gear-l:not(.sh) svg { filter: drop-shadow(0 0 14px var(--w-glow)); }
+.wp-node.locked .wp-frame { filter: grayscale(.85) brightness(.95) drop-shadow(0 5px 0 var(--ink)); }
 .wp-node.current .wf-gear { transform-origin: 0 0; animation: tick 10s linear infinite; }
-.wp-node.current .wp-frame svg { filter: drop-shadow(0 5px 0 var(--ink)) drop-shadow(0 0 14px var(--w-glow)); }
+.wp-node.current .wf-gear-l .wf-gear { animation: none; }
+.wp-node.current .wf-gear-l { transform-origin: 50% 50%; animation: tick 10s linear infinite; }
+.wp-node.current .wp-frame { filter: drop-shadow(0 5px 0 var(--ink)) drop-shadow(0 0 14px var(--w-glow)); }
 [data-world='w4'] .wp-medal { background: transparent; box-shadow: none !important; }
 [data-world='w4'] .wp-medal img { clip-path: polygon(50% 0, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); border-radius: 0; }
 [data-world='w4'] .wp-node.current .wp-medal::before, [data-world='w4'] .wp-node.current .wp-medal::after { border-radius: 30%; }
@@ -1247,8 +1257,8 @@ html[data-scheme='dark'] .map-legend { color: #FFF4E6; }
   transition: transform .38s var(--ease-jelly), box-shadow .2s; }
 .cta::before { content: ''; position: absolute; inset: 3px 3px 50% 3px; border-radius: 24px 24px 40% 40% / 24px 24px 22px 22px; pointer-events: none;
   background: linear-gradient(180deg, rgba(255, 255, 255, .6), rgba(255, 255, 255, .05)); }
-.cta::after { content: ''; position: absolute; top: -40%; bottom: -40%; width: 50px; left: -80px; transform: rotate(18deg); pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .7), transparent); animation: shine 4.5s ease-in-out 1.4s infinite; }
+.cta::after { content: ''; position: absolute; top: -40%; bottom: -40%; width: 100%; left: -80px; transform: rotate(18deg); transform-origin: 25px 50%; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .7), transparent) 0 0 / 50px 100% no-repeat; animation: shine 4.5s ease-in-out 1.4s infinite; }
 .cta:active { transform: translateY(4px) scale(1.01, .96); box-shadow: 0 2px 0 var(--ink); transition-duration: .08s; }
 .cta > * { position: relative; z-index: 1; }
 .cta-cover { width: 84px; height: 84px; border-radius: 22px; border: 3px solid var(--ink); background: var(--paper); box-shadow: 0 4px 0 var(--ink); transform: rotate(-4deg); }
@@ -1263,7 +1273,12 @@ html[data-scheme='dark'] .map-legend { color: #FFF4E6; }
 .cta-bar { flex: 1; height: 10px; border-radius: 6px; border: 2px solid var(--ink); background: rgba(255, 255, 255, .7); overflow: hidden; }
 .cta-bar i { display: block; height: 100%; transform-origin: left; background: linear-gradient(90deg, var(--gold), var(--peach)); animation: bar-grow 1s var(--ease-pop) .7s backwards; }
 .cta-stars { font-size: 12.5px; font-weight: 900; white-space: nowrap; }
-.cta-go { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--ink); animation: go-pulse 1.8s ease-out infinite; }
+.cta-go { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: none; }
+/* v6: пульс — диск позаду кнопки, що росте й тане (transform/opacity), замість анімованого box-shadow */
+.cta-go::before, .cta-go::after { content: ''; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; }
+.cta-go::before { z-index: -2; background: rgb(255, 200, 69); opacity: 0; animation: go-pulse-disk 1.8s ease-out infinite; }
+.cta-go::after { z-index: -1; background: var(--ink); }
+@keyframes go-pulse-disk { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(var(--go-k, 1.5385)); opacity: 0; } }
 .cta-go svg { width: 22px; height: 22px; margin-left: 3px; fill: var(--gold); }
 .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .mode-tile { position: relative; display: flex; flex-direction: column; justify-content: flex-end; min-height: 150px; padding: 12px; overflow: hidden;
@@ -1384,7 +1399,7 @@ html[data-scheme='dark'] .pmedal:not(.got) .medal-art svg { filter: invert(1); o
   .cta { gap: 10px; }
   .cta-cover { width: 66px; height: 66px; }
   .cta-k { font-size: 22px; }
-  .cta-go { width: 44px; height: 44px; }
+  .cta-go { width: 44px; height: 44px; --go-k: 1.6364; }
   .mode-tile { min-height: 136px; }
   .mt-art { width: 70px; height: 70px; }
   .res { padding: 6px 7px; gap: 5px; }
@@ -1401,3 +1416,43 @@ html[data-scheme='dark'] .pmedal:not(.got) .medal-art svg { filter: invert(1); o
 [data-world='w4'] .title-sticker { filter: drop-shadow(2px 0 0 #1B2152) drop-shadow(-2px 0 0 #1B2152) drop-shadow(0 2px 0 #1B2152) drop-shadow(0 -2px 0 #1B2152) drop-shadow(0 3px 0 #1B2152) drop-shadow(0 0 12px rgba(130, 230, 255, .5)); }
 [data-world='w3'] .wp-head .title-sticker, [data-world='w3'] .card .title-sticker { font-size: 19px; letter-spacing: .05em; filter: none;
   background: linear-gradient(180deg, #9A3F2A, #4A1A20); -webkit-background-clip: text; background-clip: text; }
+
+
+/* ═════════════════════════════════════════════════════════════
+   v6 — плавність: паузи невидимого, окремі шари, авто-«lite»
+   ═════════════════════════════════════════════════════════════ */
+/* прихована вкладка / WebView у фоні — нічого не крутиться */
+html.lq-hidden *, html.lq-hidden *::before, html.lq-hidden *::after { animation-play-state: paused !important; }
+/* поза екраном (IntersectionObserver у world/map) */
+.lq-off, .lq-off *, .lq-off::before, .lq-off::after, .lq-off *::before, .lq-off *::after { animation-play-state: paused !important; }
+/* небо під темою світу невидиме (opacity 0) — не анімуємо його */
+body[data-world] #sky { visibility: hidden; transition: opacity .5s, visibility 0s .5s; }
+body[data-world] #sky *, body[data-world] #sky::before, body[data-world] #sky::after { animation-play-state: paused; }
+/* шар старого світу, що згасає, і екран, що йде, — заморожені */
+.w-decor.out *, .screen[class*='leave-'] *, .screen[class*='leave-'] *::before, .screen[class*='leave-'] *::after { animation-play-state: paused !important; }
+/* стежка світу: пунктир-«мурахи» у власному шарі; великі шари — ізольовані */
+.wp-road-fx { z-index: 0; will-change: transform; }
+.wp-par { contain: layout style; }
+.wd-burst { will-change: transform; }
+
+/* ── авто-lite: слабкий телефон (fps < 45 у перші 2 с) ── */
+html[data-perf='lite'] .wd-fx .pt:nth-child(n+7) { display: none; }
+html[data-perf='lite'] .pt { box-shadow: none !important; filter: none !important; }
+html[data-perf='lite'] #sky::before, html[data-perf='lite'] #sky::after, html[data-perf='lite'] .bokeh,
+html[data-perf='lite'] .cloud, html[data-perf='lite'] .m-cloud,
+html[data-perf='lite'] .wd-burst, html[data-perf='lite'] .wd-fog, html[data-perf='lite'] .wd-aurora i, html[data-perf='lite'] .wd-beams i,
+html[data-perf='lite'] .wd-stars, html[data-perf='lite'] .wd-crys, html[data-perf='lite'] .wd-rays, html[data-perf='lite'] .wd-gear svg,
+html[data-perf='lite'] .wd-cloud, html[data-perf='lite'] .wd-leaf, html[data-perf='lite'] .wd-book, html[data-perf='lite'] .wd-book .pg-l, html[data-perf='lite'] .wd-book .pg-r,
+html[data-perf='lite'] .wd-const .tw, html[data-perf='lite'] .wd-win, html[data-perf='lite'] .wd-dew circle, html[data-perf='lite'] .wd-shrooms circle,
+html[data-perf='lite'] .road-done-dash, html[data-perf='lite'] .trail-open, html[data-perf='lite'] .isle-art .shimmer, html[data-perf='lite'] .isle-art .glow,
+html[data-perf='lite'] .hub-head::before, html[data-perf='lite'] .hs-halo, html[data-perf='lite'] .m-star,
+html[data-perf='lite'] .cta::after, html[data-perf='lite'] .hero-card::after, html[data-perf='lite'] .hero-go,
+html[data-perf='lite'] .wp-node.current .wf-gear, html[data-perf='lite'] .wp-node.current .wf-gear-l, html[data-perf='lite'] .spin-slow, html[data-perf='lite'] .isle-art .spin-slow-g,
+html[data-perf='lite'] .wd-hand-m, html[data-perf='lite'] .wd-hand-h, html[data-perf='lite'] .tp-cur, html[data-perf='lite'] .pmedal.got .medal-art svg,
+html[data-perf='lite'] .isle-art .sway, html[data-perf='lite'] .isle-art .bob, html[data-perf='lite'] .isle-art .spin { animation: none !important; }
+html[data-perf='lite'] .road-done-dash { opacity: 1; }
+html[data-perf='lite'] .wd-fog, html[data-perf='lite'] .wd-aurora i, html[data-perf='lite'] .wd-beams i, html[data-perf='lite'] .cloud { filter: none; }
+html[data-perf='lite'] .wd-book, html[data-perf='lite'] .wd-moon, html[data-perf='lite'] .wd-clock, html[data-perf='lite'] .hs-pedestal svg,
+html[data-perf='lite'] .isle .isle-art, html[data-perf='lite'] [data-world] .road-done, html[data-perf='lite'] [data-world='w5'] .road-dash,
+html[data-perf='lite'] { --lift: 0 4px 0 var(--ink); --lift-sm: 0 3px 0 var(--ink); }
+html[data-perf='lite'] .wp-node.current .wp-medal::after { display: none; }

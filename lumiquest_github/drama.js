@@ -1,15 +1,15 @@
 // 🎭 Шлях Вибору — інтерактивна кінодрама (letterbox, субтитри, рішення з таймером,
 // гілки й кінцівки) і наприкінці анімована СХЕМА ШЛЯХУ (flowchart графа вузлів).
 // Контент: WORLDS[i].drama (див. WEBAPP_SPEC v4). Відкриті вузли: state.drama_seen[wid] = [ids].
-import * as S from './state.js?v=20261110130628';
-import * as FX from './fx.js?v=20261110130628';
-import * as L from './lumi.js?v=20261110130628';
-import { recordGame, gameStars } from './games.js?v=20261110130628';
-import { createCharacter, characterIdFor } from './characters.js?v=20261110130628';
+import * as S from './state.js?v=20261110183712';
+import * as FX from './fx.js?v=20261110183712';
+import * as L from './lumi.js?v=20261110183712';
+import { recordGame, gameStars } from './games.js?v=20261110183712';
+import { createCharacter, characterIdFor } from './characters.js?v=20261110183712';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110130628', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110130628', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110183712', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
@@ -170,6 +170,12 @@ export function dramaLayout(d) {
 }
 
 // ---------------------------------------------------------------- екран
+/** v6: екран повністю непрозорий — фонове небо застосунку (#sky) під ним не видно, ставимо його анімації на паузу. */
+function skyCovered(on) {
+  const h = document.documentElement, n = Math.max(0, (+h.dataset.gcanvas || 0) + (on ? 1 : -1));
+  if (n) h.dataset.gcanvas = n; else delete h.dataset.gcanvas;
+}
+
 export function render(root, params, app) {
   ensureCss(root);
   root.classList.add('m-host');
@@ -316,6 +322,7 @@ export function render(root, params, app) {
     run.timerMax = sec; run.timeLeft = sec; run.prevSec = Math.ceil(sec);
     ringEl.hidden = false;
     ringEl.classList.remove('low');
+    run.shownSec = run.shownLow = undefined;
     paintRing();
     run.lastTick = performance.now();
     loop();
@@ -339,10 +346,12 @@ export function render(root, params, app) {
   }
   function paintRing() {
     const k = run.timerMax ? run.timeLeft / run.timerMax : 0;
-    ringFg.style.strokeDashoffset = `${RING_LEN * (1 - k)}`;
-    ringNum.textContent = Math.ceil(run.timeLeft);
-    ringEl.classList.toggle('low', run.timeLeft <= 3.05);
-    ringEl.style.setProperty('--k', k.toFixed(3));
+    ringFg.style.strokeDashoffset = `${(RING_LEN * (1 - k)).toFixed(2)}`;
+    // v6: DOM-текст і клас — лише при зміні (не щокадру)
+    const sec = Math.ceil(run.timeLeft);
+    if (sec !== run.shownSec) { run.shownSec = sec; ringNum.textContent = sec; }
+    const low = run.timeLeft <= 3.05;
+    if (low !== run.shownLow) { run.shownLow = low; ringEl.classList.toggle('low', low); }
   }
 
   // ------------------------------------------------ сцени
@@ -756,7 +765,9 @@ export function render(root, params, app) {
 
   showIntro();
 
+  skyCovered(true);
   return () => {
+    skyCovered(false);
     alive = false;
     stopTimer();
     ro?.disconnect();

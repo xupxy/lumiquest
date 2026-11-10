@@ -2,14 +2,15 @@
 // Лумі в центрі арени, до неї повзуть «Помилки» (кумедні клякси) з українськими словами.
 // Знизу — 3 англійські варіанти для найближчого ворога: правильно — зоряний снаряд і вибух,
 // неправильно — ворог робить ривок. 3 ❤️, хвилі, супер-атака за серію, таймер 90 с.
-import * as S from './state.js?v=20261110130628';
-import * as FX from './fx.js?v=20261110130628';
-import * as L from './lumi.js?v=20261110130628';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110130628';
+import * as S from './state.js?v=20261110183712';
+import * as FX from './fx.js?v=20261110183712';
+import * as L from './lumi.js?v=20261110183712';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110183712';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110183712';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110130628', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110130628', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110183712', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
@@ -179,7 +180,7 @@ export function render(root, params, app) {
       <div class="g2-score" aria-label="Переможено">💥 <b>0</b></div>
       <button class="g2-pause" aria-label="Пауза">⏸</button>
     </header>
-    <div class="g2-arena"><canvas aria-label="Арена"></canvas><div class="g2-banner" aria-live="polite"></div></div>
+    <div class="g2-arena"><canvas class="g2-bgl" aria-hidden="true"></canvas><canvas aria-label="Арена"></canvas><div class="g2-banner" aria-live="polite"></div></div>
     <div class="g2-dock">
       <div class="g2-super">
         <div class="g2-super-bar"><i></i>${'<b></b>'.repeat(SUPER_N - 1)}</div>
@@ -189,7 +190,7 @@ export function render(root, params, app) {
       <div class="g2-answers">${[0, 1, 2].map((k) => `<button class="g2-ans" data-k="${k}" disabled><small>${k + 1}</small><span>…</span></button>`).join('')}</div>
     </div>`;
   const $ = (q) => scr.querySelector(q);
-  const canvas = $('canvas');
+  const canvas = $('canvas[aria-label]');
   const ctx = canvas.getContext('2d');
   const arenaEl = $('.g2-arena');
   const bannerEl = $('.g2-banner');
@@ -204,11 +205,12 @@ export function render(root, params, app) {
 
   // ------------------------------------------------ розміри / фон
   let W = 0; let H = 0; let dpr = 1; let cx = 0; let cy = 0; let LR = 28; let ER = 21;
-  const bg = document.createElement('canvas');
+  const bg = $('.g2-bgl'); // v6: статичний фон — окреме полотно під ареною (не копіюємо його щокадру)
+  let bgShake = false;
   function resize() {
     const r = arenaEl.getBoundingClientRect();
     if (!r.width || !r.height) return;
-    dpr = Math.min(2.5, window.devicePixelRatio || 1);
+    dpr = Math.min(perfLite() ? 1.5 : 2, window.devicePixelRatio || 1);
     W = r.width; H = r.height;
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
     canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
@@ -216,6 +218,7 @@ export function render(root, params, app) {
     LR = clamp(Math.min(W, H) * 0.075, 22, 36);
     ER = LR * 0.78;
     paintBg();
+    ['#ffd68c', '#ffe48a', '#f8ffb0'].forEach(glow); // v6: прогрів спрайтів сяйва до першого пострілу
     initAmbient();
     if (!raf) draw();
   }
@@ -224,6 +227,7 @@ export function render(root, params, app) {
 
   function paintBg() {
     bg.width = canvas.width; bg.height = canvas.height;
+    bg.style.width = W + 'px'; bg.style.height = H + 'px';
     const g = bg.getContext('2d');
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     const R = Math.hypot(W, H) / 2;
@@ -327,7 +331,7 @@ export function render(root, params, app) {
   // ------------------------------------------------ амбієнт (пилок/світлячки/пил/сніг/зорі)
   let amb = [];
   function initAmbient() {
-    const n = P.amb === 'stars' ? 34 : P.amb === 'firefly' ? 16 : 26;
+    const n = (P.amb === 'stars' ? 34 : P.amb === 'firefly' ? 16 : 26) >> (perfLite() ? 1 : 0);
     amb = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, s: rnd(0.6, 1.4), p: Math.random() * 6.28, v: rnd(0.6, 1.3) }));
   }
   function drawAmbient(dt, t) {
@@ -398,8 +402,8 @@ export function render(root, params, app) {
       timerB.textContent = sec;
       timerEl.classList.toggle('low', sec <= 10 && G.phase === 'play');
     }
-    scoreB.textContent = G.kills;
-    superBar.style.width = `${(G.meter / SUPER_N) * 100}%`;
+    if (G.kills !== G.shownKills) { G.shownKills = G.kills; scoreB.textContent = G.kills; }   // DOM — лише при зміні
+    if (G.meter !== G.shownMeter) { G.shownMeter = G.meter; superBar.style.width = `${(G.meter / SUPER_N) * 100}%`; }
     const ready = G.meter >= SUPER_N && G.phase === 'play';
     if (superBtn.disabled === ready) {
       superBtn.disabled = !ready;
@@ -582,6 +586,7 @@ export function render(root, params, app) {
 
   // ------------------------------------------------ цикл
   let raf = 0; let last = 0;
+  const watch = fpsWatch(() => { if (alive) resize(); });
   const looping = () => alive && (G.phase === 'intro' || G.phase === 'count' || G.phase === 'play' || G.phase === 'end');
   function startLoop() {
     if (raf || !alive) return;
@@ -593,6 +598,7 @@ export function render(root, params, app) {
     raf = 0;
     if (!alive) return;
     const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
+    if (G.phase === 'play') watch(now - last);
     last = now;
     if (!W) resize();
     update(dt);
@@ -813,10 +819,17 @@ export function render(root, params, app) {
   function drawPill(e, t, isTarget) {
     const fsz = isTarget ? 15 : 13;
     ctx.font = `800 ${fsz}px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`;
-    let txt = e.word[0];
     const maxW = Math.min(170, W * 0.45);
-    let tw = ctx.measureText(txt).width;
-    if (tw > maxW) { while (txt.length > 3 && ctx.measureText(txt + '…').width > maxW) txt = txt.slice(0, -1); txt += '…'; tw = ctx.measureText(txt).width; }
+    // measureText — раз на слово/кегль/ширину (кеш на ворогові)
+    const pk = `${fsz}|${maxW}`;
+    let pc = e._pill?.[pk];
+    if (!pc) {
+      let txt = e.word[0];
+      let tw = ctx.measureText(txt).width;
+      if (tw > maxW) { while (txt.length > 3 && ctx.measureText(txt + '…').width > maxW) txt = txt.slice(0, -1); txt += '…'; tw = ctx.measureText(txt).width; }
+      pc = (e._pill ||= {})[pk] = { txt, tw };
+    }
+    const { txt, tw } = pc;
     const w = tw + 16; const h = fsz + 10;
     let x = e.x - w / 2; let y = e.y - e.r * 1.25 - h - (isTarget ? 6 + Math.sin(t * 6) * 2 : 0);
     x = clamp(x, -cx + 4, W - cx - w - 4); y = Math.max(-cy + 4, y);
@@ -849,9 +862,11 @@ export function render(root, params, app) {
     ctx.clearRect(0, 0, W, H);
     const sh = reduced() ? 0 : G.shake;
     const sx = (Math.random() - 0.5) * sh; const sy = (Math.random() - 0.5) * sh;
+    // фон трусимо разом з ареною — зсувом шару (компоновщик), без перемальовування
+    if (sh > 0) { bg.style.transform = `translate(${sx.toFixed(2)}px,${sy.toFixed(2)}px)`; bgShake = true; }
+    else if (bgShake) { bg.style.transform = ''; bgShake = false; }
     ctx.save();
     ctx.translate(sx, sy);
-    ctx.drawImage(bg, 0, 0, W, H);
     ctx.translate(cx, cy);
     // слиз
     for (const s of G.slime) { ctx.globalAlpha = 0.28 * (1 - s.age / 2.2); ctx.fillStyle = s.c; ctx.beginPath(); ctx.ellipse(s.x, s.y, s.r, s.r * 0.6, 0, 0, 7); ctx.fill(); }
@@ -1065,6 +1080,7 @@ export function render(root, params, app) {
   window.addEventListener('keydown', onKey);
   const onVis = () => { if (document.hidden) pause(); };
   document.addEventListener('visibilitychange', onVis);
+  canvasGameOn(true);
 
   requestAnimationFrame(() => { if (alive) { resize(); showIntro(); } });
 
@@ -1076,6 +1092,7 @@ export function render(root, params, app) {
     timers.forEach(clearTimeout);
     window.removeEventListener('keydown', onKey);
     document.removeEventListener('visibilitychange', onVis);
+    canvasGameOn(false);
     closeOverlay();
     if (G.dirty) { try { app.save?.(); } catch (e) { /* */ } }
   };

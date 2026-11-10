@@ -2,9 +2,10 @@
 // набігають 3 ворота з англ. словами. Свайп/тап/стрілки — зміна доріжки. Правильні ворота —
 // бонус і швидкість росте; неправильні — спотикання (−❤️). 15 слів, потім фініш.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110130628';
-import * as FX from './fx.js?v=20261110130628';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110130628';
+import * as S from './state.js?v=20261110183712';
+import * as FX from './fx.js?v=20261110183712';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110183712';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110183712';
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, доріжка правильних воріт (0..2), фаза. */
@@ -19,7 +20,7 @@ const Z_SPAWN = 36;
 const Z_FAR = 70;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110130628', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110183712', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
@@ -242,6 +243,7 @@ export function render(root, params, app) {
   }
 
   scr.innerHTML = `
+    <div class="g-skyl" aria-hidden="true"><canvas></canvas></div>
     <canvas class="g-canvas" aria-hidden="true"></canvas>
     <div class="g-hud">
       <div class="g-hud-row">
@@ -273,12 +275,13 @@ export function render(root, params, app) {
   function resize() {
     const r = scr.getBoundingClientRect();
     W = Math.max(280, r.width); H = Math.max(420, r.height);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    dpr = Math.min(perfLite() ? 1.5 : 2, window.devicePixelRatio || 1);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     cv.style.width = W + 'px'; cv.style.height = H + 'px';
     hy = H * 0.4; hb = H * 0.85; LW = Math.min(W * 0.29, 140);
     zNear = (zP * (hb - hy)) / (H - hy);
     buildLand();
+    buildCache();
     if (!running) draw();
   }
   const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => resize()) : null;
@@ -287,6 +290,76 @@ export function render(root, params, app) {
   const kz = (z) => (LW * zP) / Math.max(0.2, z);                 // px на одиницю на глибині z
   const SX = (x, z) => W / 2 + (x - camX + curveOff(z)) * kz(z);
   const SY = (z, h = 0) => hy + ((hb - hy) * zP) / Math.max(0.2, z) - h * kz(z);
+
+  // ------------------------------------------------ v6: кеш (небо — окреме полотно під грою; сяйва/туман/віньєтка — спрайти)
+  const skyC = scr.querySelector('.g-skyl canvas');
+  const spr = {};
+  const mkC = (w, h) => { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; };
+  /** Спрайт 1:1 у пікселях пристрою (поточна матриця — масштаб dpr + зсув). */
+  function blit(c, x, y) {
+    const m = ctx.getTransform();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(c, Math.round(m.a * x + m.e), Math.round(m.d * y + m.f));
+    ctx.setTransform(m);
+  }
+  function radialSprite(R, stops, S = 1) {
+    const c = mkC(2 * R * S * dpr, 2 * R * S * dpr), x = c.getContext('2d');
+    x.setTransform(dpr * S, 0, 0, dpr * S, R * S * dpr, R * S * dpr);
+    const gr = x.createRadialGradient(0, 0, 0, 0, 0, R);
+    stops.forEach(([o, col]) => gr.addColorStop(o, col));
+    x.fillStyle = gr; x.fillRect(-R, -R, 2 * R, 2 * R);
+    return c;
+  }
+  function buildCache() {
+    // небо: рівно як fillRect(-20,-20,W+40,hy+22) з градієнтом 0..hy
+    skyC.width = cv.width; skyC.height = Math.ceil((hy + 2) * dpr);
+    skyC.style.width = W + 'px'; skyC.style.height = skyC.height / dpr + 'px';
+    let x = skyC.getContext('2d');
+    x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const sky = x.createLinearGradient(0, 0, 0, hy);
+    sky.addColorStop(0, th.sky[0]); sky.addColorStop(0.6, th.sky[1]); sky.addColorStop(1, th.sky[2]);
+    x.fillStyle = sky; x.fillRect(0, 0, W, hy + 2);
+    // сонце/місяць (сяйво + диск)
+    const R = 130;
+    spr.sun = mkC(2 * R * dpr, 2 * R * dpr); x = spr.sun.getContext('2d');
+    x.setTransform(dpr, 0, 0, dpr, R * dpr, R * dpr);
+    const sg = x.createRadialGradient(0, 0, 4, 0, 0, R);
+    sg.addColorStop(0, th.sun); sg.addColorStop(0.25, hexA(th.sun, 0.5)); sg.addColorStop(1, hexA(th.sun, 0));
+    x.fillStyle = sg; x.fillRect(-R, -R, 2 * R, 2 * R);
+    x.fillStyle = th.sun; x.beginPath(); x.arc(0, 0, th.dark ? 20 : 28, 0, 7); x.fill();
+    if (th.dark) { x.fillStyle = th.sky[1]; x.beginPath(); x.arc(9, -6, 17, 0, 7); x.fill(); }
+    // туман на горизонті
+    spr.fog = mkC((W + 40) * dpr, 48 * dpr); x = spr.fog.getContext('2d');
+    x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const fog = x.createLinearGradient(0, 0, 0, 48);
+    fog.addColorStop(0, hexA(th.sky[2], 0.95)); fog.addColorStop(1, hexA(th.sky[2], 0));
+    x.fillStyle = fog; x.fillRect(0, 0, W + 40, 48);
+    // віньєтки спалаху (повна сила; яскравість — globalAlpha)
+    spr.vig = {};
+    // сяйва: світлячок, кулька, ліхтарик
+    spr.fly = radialSprite(8, [[0, 'rgba(240,255,150,0.9)'], [1, 'rgba(240,255,150,0)']], 1.3);
+    spr.orb = radialSprite(30, [[0, 'rgba(255,246,170,.9)'], [1, 'rgba(255,220,120,0)']]);
+    spr.lan = radialSprite(50, [[0, 'rgba(255,236,150,0.8)'], [1, 'rgba(255,236,150,0)']], 0.5);
+    spr.k = dpr;
+  }
+  function vignette(c) {
+    if (spr.vig[c]) return spr.vig[c];
+    const v = mkC(cv.width, cv.height), x = v.getContext('2d');
+    x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const gr = x.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.75);
+    gr.addColorStop(0, `rgba(${c},0)`); gr.addColorStop(1, `rgba(${c},1)`);
+    x.fillStyle = gr; x.fillRect(0, 0, W, H);
+    return (spr.vig[c] = v);
+  }
+  const wordW = new Map(); // ширина слова при 100px — measureText раз на слово
+  function fitFontC(text, maxW, size, minSize = 7) {
+    let w1 = wordW.get(text);
+    if (w1 == null) { ctx.font = `800 100px ${FONT}`; w1 = ctx.measureText(text).width / 100; wordW.set(text, w1); }
+    let fs = Math.floor(size);
+    for (; fs > minSize; fs--) if (w1 * fs <= maxW) break;
+    ctx.font = `800 ${fs}px ${FONT}`;
+    return fs;
+  }
 
   // ------------------------------------------------ стан
   let g = null;
@@ -420,18 +493,20 @@ export function render(root, params, app) {
   }
   function initAmbient() {
     amb.length = 0;
-    const n = reduced() ? 10 : th.part === 'stars' ? 50 : 28;
+    const n = reduced() ? 10 : (th.part === 'stars' ? 50 : 28) >> (perfLite() ? 1 : 0);
     for (let i = 0; i < n; i++) amb.push({ x: Math.random(), y: Math.random(), s: rnd(0.5, 1.3), ph: rnd(0, 6.28), sp: rnd(0.6, 1.4) });
   }
   function buildLand() {
+    if (land && land.W === W) return; // той самий розмір — силуети не перегенеровуємо
     // силуети на горизонті: два шари, період P (повторюються)
     const P = W * 1.6;
     const mk = (n, hmin, hmax) => Array.from({ length: n }, (_, i) => ({ x: (i / n) * P + rnd(-10, 10), w: rnd(0.6, 1.3), h: rnd(hmin, hmax), v: Math.random() }));
-    land = { P, far: mk(9, 40, 90), near: mk(12, 22, 55) };
+    land = { P, W, far: mk(9, 40, 90), near: mk(12, 22, 55) };
   }
 
   // ------------------------------------------------ цикл
   let raf = 0, last = 0, running = false;
+  const watch = fpsWatch(() => { if (alive) { amb.length = Math.ceil(amb.length / 2); resize(); } });
   function start() {
     if (running || !alive) return;
     running = true; _debug.running = true;
@@ -446,6 +521,7 @@ export function render(root, params, app) {
     if (!running || !alive) return;
     _debug.frames += 1;
     const dt = Math.min(0.033, Math.max(0, (now - last) / 1000));
+    watch(now - last);
     last = now;
     update(dt);
     draw();
@@ -536,15 +612,11 @@ export function render(root, params, app) {
     ctx.save();
     if (shake > 0) ctx.translate(rnd(-shake, shake), rnd(-shake, shake));
     // небо
-    const sky = ctx.createLinearGradient(0, 0, 0, hy);
-    sky.addColorStop(0, th.sky[0]); sky.addColorStop(0.6, th.sky[1]); sky.addColorStop(1, th.sky[2]);
-    ctx.fillStyle = sky; ctx.fillRect(-20, -20, W + 40, hy + 22);
+    // небо — окреме статичне полотно під грою (.g-skyl); тут лише чистимо кадр
+    if (spr.k !== dpr) buildCache();
+    ctx.clearRect(-20, -20, W + 40, H + 40);
     const sunX = W * 0.74 - curveAcc * 40 % W - camX * 6, sunY = hy * 0.42;
-    const sg = ctx.createRadialGradient(sunX, sunY, 4, sunX, sunY, 130);
-    sg.addColorStop(0, th.sun); sg.addColorStop(0.25, hexA(th.sun, 0.5)); sg.addColorStop(1, hexA(th.sun, 0));
-    ctx.fillStyle = sg; ctx.fillRect(sunX - 130, sunY - 130, 260, 260);
-    ctx.fillStyle = th.sun; ctx.beginPath(); ctx.arc(sunX, sunY, th.dark ? 20 : 28, 0, 7); ctx.fill();
-    if (th.dark) { ctx.fillStyle = th.sky[1]; ctx.beginPath(); ctx.arc(sunX + 9, sunY - 6, 17, 0, 7); ctx.fill(); }
+    blit(spr.sun, sunX - 130, sunY - 130);
     drawSkyAmbient(T);
     drawLand(land.far, th.far, 0.25, 1);
     drawLand(land.near, th.near, 0.6, 0.7);
@@ -591,9 +663,9 @@ export function render(root, params, app) {
       ctx.restore();
     }
     if (flash > 0) {
-      const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.25, W / 2, H / 2, H * 0.75);
-      v.addColorStop(0, `rgba(${flashC},0)`); v.addColorStop(1, `rgba(${flashC},${flash * 0.8})`);
-      ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = Math.min(1, flash * 0.8);
+      blit(vignette(flashC), 0, 0);
+      ctx.globalAlpha = 1;
     }
   }
 
@@ -612,9 +684,7 @@ export function render(root, params, app) {
       } else if (th.part === 'firefly') {
         const xx = x + Math.sin(T * 0.8 * a.sp + a.ph) * 20, yy = hy * 0.6 + a.y * H * 0.5 + Math.cos(T * 0.6 + a.ph) * 12;
         const k = 0.5 + 0.5 * Math.sin(T * 3 * a.sp + a.ph);
-        const fg = ctx.createRadialGradient(xx, yy, 0, xx, yy, 8 * a.s);
-        fg.addColorStop(0, `rgba(240,255,150,${0.9 * k})`); fg.addColorStop(1, 'rgba(240,255,150,0)');
-        ctx.fillStyle = fg; ctx.fillRect(xx - 9 * a.s, yy - 9 * a.s, 18 * a.s, 18 * a.s);
+        if (k > 0.003) { ctx.globalAlpha = k; ctx.drawImage(spr.fly, xx - 8 * a.s, yy - 8 * a.s, 16 * a.s, 16 * a.s); ctx.globalAlpha = 1; }
       } else {
         const yy = (((a.y * H - T * 30 * a.sp) % H) + H) % H;
         ctx.fillStyle = `rgba(255,${190 + 40 * Math.sin(a.ph)},110,${0.45 + 0.4 * Math.sin(T * 4 + a.ph)})`;
@@ -690,9 +760,7 @@ export function render(root, params, app) {
       if (par) { quad(-0.53, -0.47, th.lane); quad(0.47, 0.53, th.lane); }
     }
     // туман на горизонті
-    const fog = ctx.createLinearGradient(0, hy - 2, 0, hy + 46);
-    fog.addColorStop(0, hexA(th.sky[2], 0.95)); fog.addColorStop(1, hexA(th.sky[2], 0));
-    ctx.fillStyle = fog; ctx.fillRect(-20, hy - 2, W + 40, 48);
+    blit(spr.fog, -20, hy - 2);
   }
   function fogA(z) { return clamp((Z_FAR * 0.75 - z) / (Z_FAR * 0.3), 0, 1); }
   function drawProp(p, T) {
@@ -725,9 +793,7 @@ export function render(root, params, app) {
       case 'lantern': {
         ctx.fillStyle = '#3a2a80'; ctx.fillRect(-4, -120, 8, 120);
         const k2 = 0.6 + 0.4 * Math.sin(T * 3 + p.x);
-        const gg = ctx.createRadialGradient(0, -135, 2, 0, -135, 50);
-        gg.addColorStop(0, `rgba(255,236,150,${0.8 * k2})`); gg.addColorStop(1, 'rgba(255,236,150,0)');
-        ctx.fillStyle = gg; ctx.fillRect(-50, -185, 100, 100);
+        ctx.globalAlpha *= k2; ctx.drawImage(spr.lan, -50, -185, 100, 100); ctx.globalAlpha /= k2;
         ctx.fillStyle = '#ffe27a'; starPath(ctx, 0, -135, 18, T * 0.5, 0.45); ctx.fill();
         break;
       }
@@ -747,9 +813,7 @@ export function render(root, params, app) {
     if (y < hy) return;
     const r = k * 0.11;
     ctx.save(); ctx.globalAlpha = fogA(o.z);
-    const gg = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
-    gg.addColorStop(0, 'rgba(255,246,170,.9)'); gg.addColorStop(1, 'rgba(255,220,120,0)');
-    ctx.fillStyle = gg; ctx.fillRect(x - r * 3, y - r * 3, r * 6, r * 6);
+    ctx.drawImage(spr.orb, x - r * 3, y - r * 3, r * 6, r * 6);
     ctx.fillStyle = '#fff6c8'; starPath(ctx, x, y, r * 1.2, T * 2 + o.ph, 0.5); ctx.fill();
     ctx.fillStyle = 'rgba(40,20,60,.18)'; ell(ctx, x, SY(o.z), r * 0.9, r * 0.25); ctx.fill();
     ctx.restore();
@@ -794,7 +858,7 @@ export function render(root, params, app) {
       ctx.fillStyle = th.accent; starPath(ctx, (xl + xr) / 2 + wob, bTop - k * 0.04, k * 0.07, T * 2, 0.45); ctx.fill();
       // слово
       if (k > 14) {
-        const fs = fitFont(ctx, ws[i], bw - k * 0.06, Math.min(26, bh * 0.62), 7);
+        const fs = fitFontC(ws[i], bw - k * 0.06, Math.min(26, bh * 0.62), 7);
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.lineWidth = Math.max(2, fs * 0.18); ctx.strokeStyle = 'rgba(30,15,45,.55)';
         ctx.strokeText(ws[i], (xl + xr) / 2 + wob, (bTop + bBot) / 2 + fs * 0.05);
@@ -920,6 +984,7 @@ export function render(root, params, app) {
   cv.addEventListener('pointercancel', onUp);
   document.addEventListener('keydown', onKey);
   document.addEventListener('visibilitychange', onVis);
+  canvasGameOn(true);
 
   // ------------------------------------------------ оверлеї
   function closeOverlay() {
@@ -1042,6 +1107,7 @@ export function render(root, params, app) {
     cv.removeEventListener('pointercancel', onUp);
     document.removeEventListener('keydown', onKey);
     document.removeEventListener('visibilitychange', onVis);
+    canvasGameOn(false);
     lumiRefs.forEach((l) => { try { l?.destroy?.(); } catch (e) { /* */ } });
     jobs = [];
   };

@@ -2,9 +2,9 @@
 // варіанти — платформи попереду. Правильна → стрибок угору; хибна → платформа розсипається,
 // Лумі падає на чекпоінт (−1 ❤️). 12 стрибків до вершини, чекпоінти кожні 4 платформи.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110130628';
-import * as FX from './fx.js?v=20261110130628';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110130628';
+import * as S from './state.js?v=20261110183712';
+import * as FX from './fx.js?v=20261110183712';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110183712';
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, індекс правильного варіанта, фаза. */
@@ -17,7 +17,7 @@ const XP_PER_CORRECT = 10;
 const G = 2700;           // гравітація, px/с²
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110130628', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110183712', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
@@ -182,6 +182,28 @@ function drawLumi(ctx, x, y, r, o = {}) {
   }
   ctx.restore();
 }
+function mkCanvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; }
+/** v6: авто-«lite». Якщо кадри стабільно довші за ~21 мс (слабкий телефон), вмикаємо
+ *  documentElement.dataset.perf = 'lite' (спільний прапорець застосунку) і викликаємо onSlow —
+ *  гра знижує щільність пікселів полотна до 1.5 і прибирає зайві частинки. */
+export const perfLite = () => document.documentElement.dataset.perf === 'lite';
+export function fpsWatch(onSlow) {
+  let acc = 0, n = 0, skip = 20;
+  return (ms) => {
+    if (perfLite() || ms > 250) return;          // стрибок після паузи/вкладки — не рахуємо
+    if (skip > 0) { skip -= 1; return; }          // прогрів перших кадрів
+    acc += ms; n += 1;
+    if (acc < 1500) return;
+    const slow = acc / n > 21;
+    acc = 0; n = 0;
+    if (slow) { document.documentElement.dataset.perf = 'lite'; onSlow(); }
+  };
+}
+/** v6: поки йде canvas-гра — глобальне небо (#sky) під полотном ставимо на паузу (його й так не видно). */
+export function canvasGameOn(on) {
+  const h = document.documentElement, n = Math.max(0, (+h.dataset.gcanvas || 0) + (on ? 1 : -1));
+  if (n) h.dataset.gcanvas = n; else delete h.dataset.gcanvas;
+}
 function rrect(ctx, x, y, w, h, r) {
   r = Math.min(r, w / 2, h / 2);
   ctx.beginPath();
@@ -256,6 +278,7 @@ export function render(root, params, app) {
   }
 
   scr.innerHTML = `
+    <div class="g-skyl" aria-hidden="true"><canvas></canvas><canvas class="g-skyb"></canvas><canvas class="g-sun"></canvas></div>
     <canvas class="g-canvas" aria-hidden="true"></canvas>
     <div class="g-hud">
       <div class="g-hud-row">
@@ -285,14 +308,104 @@ export function render(root, params, app) {
   function resize() {
     const r = scr.getBoundingClientRect();
     W = Math.max(280, r.width); H = Math.max(420, r.height);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    dpr = Math.min(perfLite() ? 1.5 : 2, window.devicePixelRatio || 1);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     cv.style.width = W + 'px'; cv.style.height = H + 'px';
     LH = clamp(H * 0.19, 112, 160);
+    ensureBg();
     if (g) relayout();
     if (!running) draw();
   }
   const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => resize()) : null;
+
+  // ------------------------------------------------ v6: кеш спрайтів (жодних градієнтів/тіней у кадрі)
+  /** Спрайт 1:1 у пікселях пристрою (поточна матриця — лише масштаб dpr + зсув). */
+  function blit(c, x, y) {
+    const m = ctx.getTransform();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(c, Math.round(m.a * x + m.e), Math.round(m.d * y + m.f));
+    ctx.setTransform(m);
+  }
+  let fontGen = 0; // шрифт довантажився — перемалювати спрайти з текстом
+  const onFonts = () => { fontGen += 1; };
+  document.fonts?.addEventListener?.('loadingdone', onFonts);
+  canvasGameOn(true);
+  const bgc = { key: '', k: -1, sy: -1, cloud: null, fly: null };
+  const skyCs = scr.querySelectorAll('.g-skyl canvas'), skyB = skyCs[1], sunC = skyCs[2];
+  const snap = (v) => Math.round(v * dpr) / dpr;
+  function skyLayer(c, top, part = 1) {
+    c.width = cv.width; c.height = Math.ceil(cv.height * part);
+    c.style.width = W + 'px'; c.style.height = c.height / dpr + 'px';
+    const x = c.getContext('2d');
+    x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const sky = x.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, top); sky.addColorStop(0.55, th.sky[1]); sky.addColorStop(1, th.sky[2]);
+    x.fillStyle = sky; x.fillRect(0, 0, W, H);
+    return c;
+  }
+  function ensureBg() {
+    const key = `${W}|${H}|${dpr}`;
+    if (bgc.key === key) return;
+    bgc.key = key;
+    skyLayer(skyCs[0], th.sky[0]);
+    skyLayer(skyB, mix(th.sky[0], th.high, 1), 0.56); // нижче 0.55 шари однакові
+    bgc.k = bgc.sy = -1;
+    // сонце/місяць
+    const R = 120, sun = sunC, sx = sun.getContext('2d');
+    sun.width = Math.ceil(2 * R * dpr); sun.height = Math.ceil(2 * R * dpr);
+    sun.style.width = sun.width / dpr + 'px'; sun.style.height = sun.height / dpr + 'px';
+    sx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const sg = sx.createRadialGradient(R, R, 4, R, R, R);
+    sg.addColorStop(0, th.sun); sg.addColorStop(0.25, hexA(th.sun, 0.55)); sg.addColorStop(1, hexA(th.sun, 0));
+    sx.fillStyle = sg; sx.fillRect(0, 0, 2 * R, 2 * R);
+    sx.fillStyle = th.sun; sx.beginPath(); sx.arc(R, R, th.dark ? 22 : 30, 0, 7); sx.fill();
+    if (th.dark) { sx.fillStyle = th.sky[1]; sx.beginPath(); sx.arc(R + 10, R - 6, 19, 0, 7); sx.fill(); }
+    // хмаринка (масштаб 1.25 — максимальний у декорі)
+    if (th.deco === 'cloud') {
+      const S = 1.25, c = mkCanvas(110 * S * dpr, 66 * S * dpr), x = c.getContext('2d');
+      x.setTransform(dpr * S, 0, 0, dpr * S, 52 * S * dpr, 34 * S * dpr);
+      x.fillStyle = 'rgba(255,255,255,.85)';
+      for (const [cx, cy, r] of [[-30, 6, 20], [-8, -6, 26], [20, 2, 22], [40, 10, 14]]) { x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill(); }
+      x.fillRect(-48, 6, 98, 20);
+      bgc.cloud = c;
+    }
+    // світлячок (повна яскравість; мерехтіння — globalAlpha)
+    if (th.part === 'firefly') {
+      const S = 1.3, c = mkCanvas(20 * S * dpr, 20 * S * dpr), x = c.getContext('2d');
+      x.setTransform(dpr * S, 0, 0, dpr * S, 10 * S * dpr, 10 * S * dpr);
+      const fg = x.createRadialGradient(0, 0, 0, 0, 0, 9);
+      fg.addColorStop(0, 'rgba(240,255,150,0.9)'); fg.addColorStop(1, 'rgba(240,255,150,0)');
+      x.fillStyle = fg; x.fillRect(-10, -10, 20, 20);
+      bgc.fly = c;
+    }
+  }
+  /** Спрайт бульбашки-варіанта (тінь, рамка, хвостик, текст) — малюється раз на зміну тексту/ширини/виділення. */
+  function labelSprite(p, w, sel) {
+    const key = `${p.label}|${w}|${sel ? 1 : 0}|${dpr}|${fontGen}`;
+    if (p._lk === key) return p._ls;
+    const fitC = labelSprite.m || (labelSprite.m = mkCanvas(2, 2).getContext('2d'));
+    const { fs, lines } = fitText(fitC, p.label, w - 10, 16, 10);
+    const lh = fs * 1.15, bh = lines.length * lh + 12;
+    const PAD = 14, cw = w - 4 + PAD * 2, ch = bh + 7 + PAD * 2 + 4;
+    const c = mkCanvas(cw * dpr, ch * dpr), x = c.getContext('2d');
+    x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    x.translate(PAD - 2, PAD);           // локальні координати: ліва межа платформи = 0, верх бульбашки = 0
+    const cxm = w / 2;
+    x.fillStyle = sel ? '#fff7c2' : 'rgba(255,255,255,.95)';
+    x.shadowColor = 'rgba(40,20,70,.25)'; x.shadowBlur = 8; x.shadowOffsetY = 3;
+    rrect(x, 2, 0, w - 4, bh, 12); x.fill();
+    x.shadowColor = 'transparent';
+    x.strokeStyle = sel ? th.accent : 'rgba(72,44,86,.25)'; x.lineWidth = sel ? 3 : 1.5; rrect(x, 2, 0, w - 4, bh, 12); x.stroke();
+    x.fillStyle = sel ? '#fff7c2' : 'rgba(255,255,255,.95)';
+    x.beginPath(); x.moveTo(cxm - 6, bh - 1); x.lineTo(cxm, bh + 7); x.lineTo(cxm + 6, bh - 1); x.fill();
+    x.fillStyle = '#2b1d3a'; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.font = `800 ${fs}px ${FONT}`;
+    lines.forEach((ln, k) => x.fillText(ln, cxm, 6 + lh * (k + 0.5)));
+    x.font = `700 9px ${FONT}`; x.fillStyle = 'rgba(72,44,86,.35)';
+    x.fillText(String(p.i + 1), 8, 6);
+    p._lk = key; p._ls = { c, bh, ox: -(PAD - 2), oy: -PAD };
+    return p._ls;
+  }
 
   // ------------------------------------------------ стан гри
   let g = null;            // поточна партія
@@ -511,7 +624,7 @@ export function render(root, params, app) {
   }
   function initAmbient() {
     amb.length = 0;
-    const n = reduced() ? 10 : th.part === 'stars' ? 46 : 30;
+    const n = reduced() ? 10 : (th.part === 'stars' ? 46 : 30) >> (perfLite() ? 1 : 0);
     for (let i = 0; i < n; i++) amb.push({ x: Math.random(), y: Math.random(), s: rnd(0.5, 1.3), ph: rnd(0, 6.28), sp: rnd(0.6, 1.4) });
     decos.length = 0;
     for (let i = 0; i < 16; i++) decos.push({ x: Math.random(), y: -i * 230 + rnd(-60, 60) - 120, s: rnd(0.6, 1.25), d: rnd(4, 14) * (Math.random() < 0.5 ? -1 : 1), ph: rnd(0, 6) });
@@ -519,6 +632,7 @@ export function render(root, params, app) {
 
   // ------------------------------------------------ цикл
   let raf = 0, last = 0, running = false;
+  const watch = fpsWatch(() => { if (alive) { amb.length = Math.ceil(amb.length / 2); resize(); } });
   function start() {
     if (running || !alive) return;
     running = true; _debug.running = true;
@@ -533,6 +647,7 @@ export function render(root, params, app) {
     if (!running || !alive) return;
     _debug.frames += 1;
     const dt = Math.min(0.033, Math.max(0, (now - last) / 1000));
+    watch(now - last);
     last = now;
     update(dt);
     draw();
@@ -611,19 +726,15 @@ export function render(root, params, app) {
     const cam = g ? g.cam : 0;
     const prog = clamp(-cam / (GOAL * LH), 0, 1);
     // небо
-    const sky = ctx.createLinearGradient(0, 0, 0, H);
-    sky.addColorStop(0, mix(th.sky[0], th.high, prog * 0.7));
-    sky.addColorStop(0.55, th.sky[1]);
-    sky.addColorStop(1, th.sky[2]);
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+    // v6: небо з кешу — шар «низ вежі» + шар «верх вежі» з альфою prog*0.7 (те саме, що mix у градієнті)
+    ensureBg();
+    // (шари неба/сонця — окремі полотна під грою, їх рухає компоновщик; тут лише прозорість/зсув за зміни)
+    ctx.clearRect(0, 0, W, H);
+    const kSky = Math.round(Math.min(1, prog * 0.7) * 255) / 255;
+    if (kSky !== bgc.k) { bgc.k = kSky; skyB.style.opacity = kSky; }
+    const sunY = snap(H * 0.34 + prog * 30 - 120);
+    if (sunY !== bgc.sy) { bgc.sy = sunY; sunC.style.transform = `translate3d(${snap(W * 0.78 - 120)}px,${sunY}px,0)`; }
     const T = gt;
-    // сонце/місяць
-    const sunY = H * 0.34 + prog * 30;
-    const sg = ctx.createRadialGradient(W * 0.78, sunY, 4, W * 0.78, sunY, 120);
-    sg.addColorStop(0, th.sun); sg.addColorStop(0.25, hexA(th.sun, 0.55)); sg.addColorStop(1, hexA(th.sun, 0));
-    ctx.fillStyle = sg; ctx.fillRect(W * 0.78 - 120, sunY - 120, 240, 240);
-    ctx.fillStyle = th.sun; ctx.beginPath(); ctx.arc(W * 0.78, sunY, th.dark ? 22 : 30, 0, 7); ctx.fill();
-    if (th.dark) { ctx.fillStyle = th.sky[1]; ctx.beginPath(); ctx.arc(W * 0.78 + 10, sunY - 6, 19, 0, 7); ctx.fill(); }
     // ембієнт-частинки (паралакс від камери)
     drawAmbient(T, cam);
     // декор (хмари / листя / шестерні / кристали / зорі)
@@ -688,9 +799,11 @@ export function render(root, params, app) {
       } else if (th.part === 'firefly') {
         x += Math.sin(T * 0.8 * a.sp + a.ph) * 22; y += Math.cos(T * 0.6 * a.sp + a.ph) * 14;
         const k = 0.5 + 0.5 * Math.sin(T * 3 * a.sp + a.ph);
-        const fg = ctx.createRadialGradient(x, y, 0, x, y, 9 * a.s);
-        fg.addColorStop(0, `rgba(240,255,150,${0.9 * k})`); fg.addColorStop(1, 'rgba(240,255,150,0)');
-        ctx.fillStyle = fg; ctx.fillRect(x - 10 * a.s, y - 10 * a.s, 20 * a.s, 20 * a.s);
+        if (bgc.fly && k > 0.003) {
+          ctx.globalAlpha = k;
+          ctx.drawImage(bgc.fly, x - 10 * a.s, y - 10 * a.s, 20 * a.s, 20 * a.s);
+          ctx.globalAlpha = 1;
+        }
       } else if (th.part === 'spark') {
         y = ((y - T * 26 * a.sp) % H + H) % H;
         ctx.fillStyle = `rgba(255,${190 + 40 * Math.sin(a.ph)},110,${0.5 + 0.4 * Math.sin(T * 4 + a.ph)})`;
@@ -713,10 +826,9 @@ export function render(root, params, app) {
         ctx.rotate(Math.sin(T * 0.5) * 0.2);
         ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.strokeStyle = 'rgba(120,170,230,.6)'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(0, -26); ctx.lineTo(12, -4); ctx.lineTo(0, 24); ctx.lineTo(-12, -4); ctx.closePath(); ctx.fill(); ctx.stroke();
-      } else {
-        ctx.fillStyle = 'rgba(255,255,255,.85)';
-        for (const [cx, cy, r] of [[-30, 6, 20], [-8, -6, 26], [20, 2, 22], [40, 10, 14]]) { ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.fill(); }
-        ctx.fillRect(-48, 6, 98, 20);
+      } else if (bgc.cloud) {
+        const S = 1.25;
+        ctx.drawImage(bgc.cloud, -52, -34, bgc.cloud.width / dpr / S, bgc.cloud.height / dpr / S);
       }
     } else if (th.deco === 'leaf') {
       ctx.rotate(Math.sin(T * 1.3) * 0.8);
@@ -821,24 +933,9 @@ export function render(root, params, app) {
     if (p.flag || p.cp) drawFlag(p.x + w * 0.32, y, p.summit ? 1.5 : 1, p.flag || 1, T, p.summit);
     // напис-варіант
     if (p.kind === 'opt' && p.label && !p.dead) {
-      const maxW = w - 10;
-      const { fs, lines } = fitText(ctx, p.label, maxW, 16, 10);
-      const lh = fs * 1.15, bh = lines.length * lh + 12;
-      const by = y - bh - 12;
-      ctx.fillStyle = sel ? '#fff7c2' : 'rgba(255,255,255,.95)';
-      ctx.shadowColor = 'rgba(40,20,70,.25)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
-      rrect(ctx, x + 2, by, w - 4, bh, 12); ctx.fill();
-      ctx.shadowColor = 'transparent';
-      ctx.strokeStyle = sel ? th.accent : 'rgba(72,44,86,.25)'; ctx.lineWidth = sel ? 3 : 1.5; rrect(ctx, x + 2, by, w - 4, bh, 12); ctx.stroke();
-      // хвостик
-      ctx.fillStyle = sel ? '#fff7c2' : 'rgba(255,255,255,.95)';
-      ctx.beginPath(); ctx.moveTo(p.x - 6, by + bh - 1); ctx.lineTo(p.x, by + bh + 7); ctx.lineTo(p.x + 6, by + bh - 1); ctx.fill();
-      ctx.fillStyle = '#2b1d3a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.font = `800 ${fs}px ${FONT}`;
-      lines.forEach((ln, k) => ctx.fillText(ln, p.x, by + 6 + lh * (k + 0.5)));
-      // номер клавіші
-      ctx.font = `700 9px ${FONT}`; ctx.fillStyle = 'rgba(72,44,86,.35)';
-      ctx.fillText(String(p.i + 1), x + 8, by + 6);
+      const sp = labelSprite(p, w, sel);
+      const by = y - sp.bh - 12;
+      blit(sp.c, x + sp.ox, by + sp.oy);
     }
     ctx.restore();
   }
@@ -1055,6 +1152,8 @@ export function render(root, params, app) {
     cv.removeEventListener('pointerup', onUp);
     document.removeEventListener('keydown', onKey);
     document.removeEventListener('visibilitychange', onVis);
+    document.fonts?.removeEventListener?.('loadingdone', onFonts);
+    canvasGameOn(false);
     lumiRefs.forEach((l) => { try { l?.destroy?.(); } catch (e) { /* */ } });
     jobs = [];
   };

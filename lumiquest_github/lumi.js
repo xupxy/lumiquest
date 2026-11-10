@@ -1,6 +1,6 @@
 // LumiQuest — Лумі, анімована SVG-героїня (v6 «Ліхтарик-дух»).
 //
-//   import { createLumi } from './lumi.js?v=20261110130628';
+//   import { createLumi } from './lumi.js?v=20261110183712';
 //   const lumi = createLumi(container, { size: 220, emotion: 'hello', bubble: 'top' });
 //   lumi.set('happy');              // hello happy excited thinking surprised sad proud cheer sleepy
 //   lumi.say('Привіт!', { ms: 2500 }); // бульбашка + друк + говоріння (5 форм рота по голосних, кивки)
@@ -80,9 +80,9 @@ function arcC(cx, cy, rx, ry, a0, a1, segs = 2) {
   return out;
 }
 const arcD = (...a) => cubicD(arcC(...a));
-function cubicD(n) {
+function cubicD(n, len = n.length) {
   let d = `M${f(n[0])} ${f(n[1])}`;
-  for (let i = 2; i < n.length; i += 6) d += `C${n.slice(i, i + 6).map(f).join(' ')}`;
+  for (let i = 2; i < len; i += 6) d += `C${f(n[i])} ${f(n[i + 1])} ${f(n[i + 2])} ${f(n[i + 3])} ${f(n[i + 4])} ${f(n[i + 5])}`;
   return d;
 }
 
@@ -148,7 +148,9 @@ for (const [k, [pts, sw, t]] of Object.entries(RAW_MOUTHS)) {
   MOUTHS[k] = [pts.map((n, i) => FACE_M[i % 2] + n * MS), sw * 0.72,
     [FACE_M[0] + t[0] * MS, FACE_M[1] + t[1] * MS, t[2] * MS, t[3] * MS, t[4]]];
 }
-const flatMouth = (k) => { const m = MOUTHS[k]; return [...m[0], m[1], ...m[2]]; }; // 32 numbers
+const FLAT = {};
+for (const k in MOUTHS) { const m = MOUTHS[k]; FLAT[k] = [...m[0], m[1], ...m[2]]; } // 32 numbers, раз на модуль
+const flatMouth = (k) => FLAT[k];
 
 // brows [x0,y0,cx,cy,x1,y1] left, right — authored relative to the eye line
 const RAW_BROWS = {
@@ -210,35 +212,48 @@ function poseOf(name, faceOverride) {
 
 // ---------------------------------------------------------------- CSS
 
-const BC = `${BODY.cx}px ${BODY.cy}px`, BB = '200px 344px';
-const CSS = `
-.lq{position:relative;display:inline-block;flex:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer;line-height:1;--wf:.15s}
-.lq>svg{display:block;width:100%;height:100%;overflow:visible}
+// v6-perf: Лумі — стос шарів (HTML-div/SVG). Безперервні рухи (ширяння, дихання, крильця, антенки, китиця,
+// світло, сяйво, світлячки) анімуються transform/opacity на HTML-рівні → компонуються на GPU без перемальовування SVG.
+// Координати шарів — у просторі viewBox (-28 -4 456 456); відсотки рахуються від цього квадрата.
+const VB = 456, VX = -28, VY = -4, FULL = [VX, VY, VB, VB];
+const p4 = (n) => Math.round(n * 1e4) / 1e4;
+const ORG = (x, y, b = FULL) => `${p4(((x - b[0]) / b[2]) * 100)}% ${p4(((y - b[1]) / b[3]) * 100)}%`;
+const BC = ORG(BODY.cx, BODY.cy), BB = ORG(200, 344);
+const BCpx = `${BODY.cx}px ${BODY.cy}px`;
+// кейфрейми, що тепер крутяться на HTML-шарах: px (одиниці viewBox) → % від розміру шару
+const CHAIN_KF = new Set(['lqFloat', 'lqTalkNod', 'lqSwayBody', 'lqHop', 'lqJump', 'lqTiltIn', 'lqTilt', 'lqJolt', 'lqSinkIn', 'lqSadSway',
+  'lqPuff', 'lqPumpBody', 'lqDozeIn', 'lqDoze', 'lqRJump', 'lqRGiggle', 'lqRSpin', 'lqRShake', 'lqRNod', 'lqRLove']);
+const kfToPct = (css) => css.replace(/@keyframes (\w+)\{((?:[^{}]*\{[^{}]*\})*)\s*\}/g, (m, name) =>
+  (CHAIN_KF.has(name) ? m.replace(/(-?[\d.]+)px/g, (_, n) => `${p4((n / VB) * 100)}%`) : m));
+const CSS = kfToPct(`
+.lq{position:relative;display:inline-block;flex:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation;cursor:pointer;line-height:1;--wf:.15s;contain:layout style}
+.lq .lqL{position:absolute;left:0;top:0;width:100%;height:100%;display:block;overflow:visible}
 .lq svg *{transform-box:view-box}
-.lq-float{animation:lqFloat 3.6s ease-in-out infinite}
-.lq-shadow{transform-origin:200px 428px;animation:lqShadow 3.6s ease-in-out infinite}
+.lq.lq-paused,.lq.lq-paused *{animation-play-state:paused!important}
+.lq-float{transform-origin:${ORG(0, 0)};animation:lqFloat 3.6s ease-in-out infinite}
+.lq-shadow{animation:lqShadow 3.6s ease-in-out infinite}
 .lq-breath{transform-origin:${BB};animation:lqBreath 2.4s ease-in-out infinite}
 .lq-act,.lq-react,.lq-talkg{transform-origin:${BB}}
-.lq-flap{transform-origin:${WING_PIV[0]}px ${WING_PIV[1]}px;animation:lqFlap var(--wf) ease-in-out infinite alternate}
+.lq-flap{animation:lqFlap var(--wf) ease-in-out infinite alternate}
 .lq-wR .lq-flap{animation-delay:calc(var(--wf) * -.35)}
 .lq-sheen{animation:lqSheen 2.8s ease-in-out infinite alternate}
-.lq-ant{transform-origin:${ANT_PIV[0]}px ${ANT_PIV[1]}px;animation:lqAnt 2.3s ease-in-out infinite alternate}
+.lq-ant{animation:lqAnt 2.3s ease-in-out infinite alternate}
 .lq-aR .lq-ant{animation-delay:-1.1s;animation-duration:2.6s}
 .lq-bulb{animation:lqFlicker 1.9s ease-in-out infinite}
 .lq-aR .lq-bulb{animation-delay:-.8s;animation-duration:2.3s}
-.lq-ear{transform-origin:${PETAL_PIV[0]}px ${PETAL_PIV[1]}px;animation:lqEar 5.2s ease-in-out infinite}
+.lq-ear{animation:lqEar 5.2s ease-in-out infinite}
 .lq-pR .lq-ear{animation-delay:-2.1s}
-.lq-tas{transform-origin:${TAS_PIV[0]}px ${TAS_PIV[1]}px;animation:lqPend 2.2s ease-in-out infinite alternate}
+.lq-tas{animation:lqPend 2.2s ease-in-out infinite alternate}
 .lq-tstar{animation:lqTwinkle 2.4s ease-in-out infinite}
-.lq-core{transform-origin:200px 244px;animation:lqCore 2.4s ease-in-out infinite}
-.lq-glow{transform-origin:${BC};animation:lqGlow 2.4s ease-in-out infinite}
-.lq-sheenb{animation:lqSheen 3.6s ease-in-out infinite alternate}
+.lq-core{animation:lqCore 2.4s ease-in-out infinite}
+.lq-glow{animation:lqGlow 2.4s ease-in-out infinite}
+.lq-tint{mix-blend-mode:multiply}
 .lq-look{transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
 .lq.lq-blink .lq-lid{animation:lqBlink .16s ease-in-out}
 .lq-fly{animation:lqFly var(--t,4s) ease-in-out var(--d,0s) infinite}
-.lq-flash{opacity:0;transform-origin:${BC}}
+.lq-flash{opacity:0;transform-origin:${BCpx}}
 .lq.lq-flashing .lq-flash{animation:lqFlash .75s ease-out}
-.lq-armact-l,.lq-armact-r{transform-origin:0 0}
+.lq-armact-l,.lq-armact-r{transform-origin:50% 50%}
 @keyframes lqFloat{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-6px) rotate(-.8deg)}50%{transform:translateY(-10px) rotate(0)}80%{transform:translateY(-3px) rotate(.8deg)}}
 @keyframes lqShadow{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.84);opacity:.65}}
 @keyframes lqBreath{0%,100%{transform:scale(1,1)}50%{transform:scale(1.015,.985)}}
@@ -278,8 +293,8 @@ const CSS = `
 .lq-e-sad .lq-tas{animation-duration:4s}
 
 /* accessories */
-.lq-acc{opacity:0;transition:opacity .3s}
-.lq-acc.on{opacity:1}
+.lq-acc{opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.lq-acc.on{opacity:1;visibility:visible;transition:opacity .3s}
 .lq-acc:not(.on) *{animation:none!important}
 .on .lq-q{animation:lqPop .5s cubic-bezier(.3,1.7,.5,1) both,lqBob 1.8s ease-in-out .5s infinite alternate}
 .on .lq-ex{animation:lqPop .45s cubic-bezier(.3,1.9,.5,1) both,lqWobble .5s ease-in-out .45s 3}
@@ -376,13 +391,18 @@ const CSS = `
 .lq-bubble-left .lq-bubble::after{left:auto;right:-8px;bottom:auto;top:50%;margin-top:-7px;transform:rotate(-45deg)}
 .lq-bubble .lq-caret{display:inline-block;width:2px;height:1em;margin-left:1px;vertical-align:-2px;background:currentColor;animation:lqCaret .5s steps(1) infinite}
 @keyframes lqCaret{50%{opacity:0}}
+/* v6-perf: друк без перекладки — увесь текст одразу в потоці (розмір бульбашки сталий), ще не надруковані
+   символи приховані visibility; курсор — тінь останнього символу (не впливає на layout і перенос рядків) */
+.lq-bubble .lq-h{visibility:hidden}
+.lq-bubble .lq-cur{box-shadow:3px 0 0 -1px currentColor;animation:lqCaretS .5s steps(1) infinite}
+@keyframes lqCaretS{50%{box-shadow:3px 0 0 -1px transparent}}
 
 @media (prefers-reduced-motion: reduce){
   .lq *,.lq{animation:none!important}
   .lq-fly{opacity:.8}
   .lq-bubble{transition:opacity .15s}
 }
-`;
+`);
 
 function ensureStyle() {
   if (document.getElementById('lumi-style-v6')) return;
@@ -398,6 +418,9 @@ function ensureStyle() {
 let instances = 0;
 const O = C.outline;
 
+const sparkleInner = (x, y, r, col) => `<g transform="translate(${f(x)} ${f(y)})">
+    <polygon points="${starPts(0, 0, r, r * 0.3, 0, 4)}" fill="${col}" stroke="${O}" stroke-width="${f(Math.max(2.2, r * 0.15) * 2)}" stroke-linejoin="round" paint-order="stroke"/>
+    <circle r="${f(r * 0.18)}" fill="#fff"/></g>`;
 function sparkleSVG(x, y, r, col, delay = 0, dur = 1.9) {
   return `<g transform="translate(${f(x)} ${f(y)})"><g class="lq-spk" style="animation-delay:${f(delay)}s;animation-duration:${f(dur)}s">
     <polygon points="${starPts(0, 0, r, r * 0.3, 0, 4)}" fill="${col}" stroke="${O}" stroke-width="${f(Math.max(2.2, r * 0.15) * 2)}" stroke-linejoin="round" paint-order="stroke"/>
@@ -437,9 +460,19 @@ const FLY_BACK = [
 const FLY_FRONT = [
   [66, 392, 4.6, 16, -18, 4.4, 1.7], [340, 404, 5, -14, -20, 3.9, 0.9], [416, 244, 3.4, -10, 16, 3.1, 2.0], [-12, 262, 3.4, 12, 14, 3.5, 0.2],
 ];
+// v6-perf: шари. box = [x, y, w, h] у координатах viewBox; par — box батьківського шару.
+const boxCss = (b, par = FULL) => (b === par ? '' : `left:${p4(((b[0] - par[0]) / par[2]) * 100)}%;top:${p4(((b[1] - par[1]) / par[3]) * 100)}%;width:${p4((b[2] / par[2]) * 100)}%;height:${p4((b[3] / par[3]) * 100)}%;`);
+const svgL = (cls, b, inner, par = FULL, css = '', attrs = '') =>
+  `<svg class="lqL ${cls}" viewBox="${b.join(' ')}" style="${boxCss(b, par)}${css}" aria-hidden="true" ${attrs}>${inner}</svg>`;
+const divL = (cls, b, inner, par = FULL, css = '', attrs = '') => `<div class="lqL ${cls}" style="${boxCss(b, par)}${css}" ${attrs}>${inner}</div>`;
+
+// світлячок — окремий крихітний SVG, політ анімується transform/opacity самого елемента (композитор)
 function flySVG(list, p) {
-  return list.map(([x, y, r, dx, dy, t, d]) => `<g transform="translate(${x} ${y})"><g class="lq-fly" style="--dx:${dx}px;--dy:${dy}px;--t:${t}s;--d:-${d}s">
-    <circle r="${f(r * 3.4)}" fill="url(#${p}fly)"/><circle r="${r}" fill="#ffe27a"/><circle r="${f(r * 0.45)}" fill="#fffbe8"/></g></g>`).join('');
+  return list.map(([x, y, r, dx, dy, t, d]) => {
+    const R = r * 3.4, b = [f(x - R), f(y - R), f(2 * R), f(2 * R)];
+    return svgL('lq-fly', b, `<circle cx="${x}" cy="${y}" r="${f(R)}" fill="url(#${p}fly)"/><circle cx="${x}" cy="${y}" r="${r}" fill="#ffe27a"/><circle cx="${x}" cy="${y}" r="${f(r * 0.45)}" fill="#fffbe8"/>`,
+      FULL, `--dx:${p4((dx / (2 * R)) * 100)}%;--dy:${p4((dy / (2 * R)) * 100)}%;--t:${t}s;--d:-${d}s`);
+  }).join('');
 }
 
 // old 512-space accessory coordinates → our space
@@ -450,55 +483,62 @@ function buildSVG(p) {
   const ellipse = `cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}"`;
   const mirror = (side, inner) => (side === 'R' ? `<g transform="translate(400 0) scale(-1 1)">${inner}</g>` : inner);
 
-  const wing = (side) => mirror(side, `<g class="lq-w${side}"><g data-wing="${side}"><g class="lq-flap">
-      <g stroke="${O}" stroke-width="3.6">
+  // крило: 3 SVG (основа / перламутровий відблиск з opacity-анімацією / прожилки) у HTML-обгортках
+  const WB = [-4, 150, 150, 165], WO = ORG(WING_PIV[0], WING_PIV[1], WB);
+  const wing = (side) => `<div class="lqL lq-w${side}"${side === 'R' ? ' style="transform:scaleX(-1)"' : ''}>${
+    divL('', WB, divL('lq-flap', WB,
+      svgL('', WB, `<g stroke="${O}" stroke-width="3.6">
         <ellipse cx="72" cy="206" rx="64" ry="34" transform="rotate(-28 72 206)" fill="url(#${p}wingA)"/>
         <ellipse cx="84" cy="276" rx="42" ry="22" transform="rotate(22 84 276)" fill="url(#${p}wingA)"/>
-      </g>
-      <g class="lq-sheen">
-        <ellipse cx="72" cy="206" rx="62" ry="32" transform="rotate(-28 72 206)" fill="url(#${p}wingB)"/>
-        <ellipse cx="84" cy="276" rx="40" ry="20" transform="rotate(22 84 276)" fill="url(#${p}wingB)"/>
-      </g>
-      <path d="M118 232Q80 214 40 182M100 222Q78 200 70 180M118 262Q90 276 58 284" stroke="#fff" stroke-width="3" fill="none" opacity=".9" stroke-linecap="round"/>
+      </g>`, WB) +
+      svgL('lq-sheen', WB, `<ellipse cx="72" cy="206" rx="62" ry="32" transform="rotate(-28 72 206)" fill="url(#${p}wingB)"/>
+        <ellipse cx="84" cy="276" rx="40" ry="20" transform="rotate(22 84 276)" fill="url(#${p}wingB)"/>`, WB) +
+      svgL('', WB, `<path d="M118 232Q80 214 40 182M100 222Q78 200 70 180M118 262Q90 276 58 284" stroke="#fff" stroke-width="3" fill="none" opacity=".9" stroke-linecap="round"/>
       <path d="M52 190Q53 195 58 196Q53 197 52 202Q51 197 46 196Q51 195 52 190Z" fill="#fff"/>
-      <ellipse cx="48" cy="200" rx="8" ry="4" transform="rotate(-28 48 200)" fill="#fff" opacity=".6"/>
-    </g></g></g>`);
+      <ellipse cx="48" cy="200" rx="8" ry="4" transform="rotate(-28 48 200)" fill="#fff" opacity=".6"/>`, WB),
+      WB, `transform-origin:${WO}`), FULL, `transform-origin:${WO}`, `data-wing="${side}"`)}</div>`;
 
-  const antenna = (side) => mirror(side, `<g class="lq-a${side}"><g data-ant="${side}"><g class="lq-ant">
-      <path d="M186 124C178 96 164 78 146 70" fill="none" stroke="${O}" stroke-width="5" stroke-linecap="round"/>
-      <g transform="translate(144 68)"><g class="lq-bulb">
+  const AB = [114, 38, 80, 92], AO = ORG(ANT_PIV[0], ANT_PIV[1], AB), BLB = [114, 38, 60, 60];
+  const antenna = (side) => `<div class="lqL lq-a${side}"${side === 'R' ? ' style="transform:scaleX(-1)"' : ''}>${
+    divL('', AB, divL('lq-ant', AB,
+      svgL('', AB, `<path d="M186 124C178 96 164 78 146 70" fill="none" stroke="${O}" stroke-width="5" stroke-linecap="round"/>`, AB) +
+      svgL('lq-bulb', BLB, `<g transform="translate(144 68)">
         <circle data-bulbglow="" r="26" fill="url(#${p}bulbGlow)"/>
         <circle r="10" fill="url(#${p}bulb)" stroke="${O}" stroke-width="4"/>
-        <circle cx="-3" cy="-3.5" r="3" fill="#fff"/>
-      </g></g>
-    </g></g></g>`);
+        <circle cx="-3" cy="-3.5" r="3" fill="#fff"/></g>`, AB, `transform-origin:${ORG(144, 68, BLB)}`),
+      AB, `transform-origin:${AO}`), FULL, `transform-origin:${AO}`, `data-ant="${side}"`)}</div>`;
 
   const PETAL = 'M120 172C84 170 58 142 56 104C92 106 122 132 132 160Z';
-  const petal = (side) => mirror(side, `<g class="lq-p${side}"><g data-petal="${side}"><g class="lq-ear">
-      <path d="${PETAL}" fill="url(#${p}petal)"/>
+  const PB = [50, 98, 88, 80], PO = ORG(PETAL_PIV[0], PETAL_PIV[1], PB);
+  const petal = (side) => `<div class="lqL lq-p${side}"${side === 'R' ? ' style="transform:scaleX(-1)"' : ''}>${
+    divL('', PB, svgL('lq-ear', PB, `<path d="${PETAL}" fill="url(#${p}petal)"/>
       <g clip-path="url(#${p}petalClip)">
         <path d="${PETAL}" fill="none" stroke="url(#${p}petalHi)" stroke-width="16"/>
         <path d="M120 166Q90 140 64 112" stroke="#fff" stroke-width="3" fill="none" opacity=".85" stroke-linecap="round"/>
       </g>
-      <path d="${PETAL}" fill="none" stroke="${O}" stroke-width="4.5" stroke-linejoin="round"/>
-    </g></g></g>`);
+      <path d="${PETAL}" fill="none" stroke="${O}" stroke-width="4.5" stroke-linejoin="round"/>`, PB, `transform-origin:${PO}`),
+    FULL, `transform-origin:${PO}`, `data-petal="${side}"`)}</div>`;
 
-  const arm = (side) => `<g data-arm="${side}"><g data-armvis=""><g class="lq-armact-${side === 'L' ? 'l' : 'r'}">
+  // рука: обгортки навколо плеча (box 120×120, центр = плече): поворот пози, видимість, емоційна дія
+  const ARB = [-60, -60, 120, 120];
+  const arm = (side) => {
+    const pv = side === 'L' ? ARM_L : ARM_R, b = [pv[0] - 60, pv[1] - 60, 120, 120];
+    return divL('', b, divL('', b, divL(`lq-armact-${side === 'L' ? 'l' : 'r'}`, b, svgL('', ARB, `
       <line x1="0" y1="0" x2="30" y2="0" stroke="${O}" stroke-width="27" stroke-linecap="round"/>
       <line x1="0" y1="0" x2="30" y2="0" stroke="#fcf4f2" stroke-width="17" stroke-linecap="round"/>
       <circle data-paw="" cx="33" cy="0" r="13" fill="url(#${p}paw)" stroke="${O}" stroke-width="4.5"/>
-      <ellipse cx="35" cy="-5" rx="4.5" ry="3" fill="#fff" opacity=".9"/>
-    </g></g></g>`;
+      <ellipse cx="35" cy="-5" rx="4.5" ry="3" fill="#fff" opacity=".9"/>`, ARB), b), b, '', 'data-armvis=""'), FULL, '', `data-arm="${side}"`);
+  };
 
   const STAR_D = softStarD(0, 0, 14, 6.6, 5, 0.2);
-  const tassel = `<g data-tassel=""><g class="lq-tas">
-      <line x1="200" y1="348" x2="200" y2="380" stroke="${O}" stroke-width="5" stroke-linecap="round"/>
-      <g transform="translate(200 392)"><g data-tstar=""><g class="lq-tstar">
+  const TB = [164, 340, 72, 92], TO = ORG(TAS_PIV[0], TAS_PIV[1], TB), SB = [166, 358, 68, 68], SO = ORG(200, 392, SB);
+  const tassel = divL('', TB, divL('lq-tas', TB,
+    svgL('', TB, `<line x1="200" y1="348" x2="200" y2="380" stroke="${O}" stroke-width="5" stroke-linecap="round"/>`, TB) +
+    divL('', SB, svgL('lq-tstar', SB, `<g transform="translate(200 392)">
         <circle r="30" fill="url(#${p}bulbGlow)" opacity=".85"/>
         <path d="${STAR_D}" fill="url(#${p}gold)" stroke="${O}" stroke-width="7" stroke-linejoin="round" paint-order="stroke"/>
-        <path d="M-2 -6Q-1.4 -2.4 2 -2Q-1.4 -1.6 -2 2Q-2.6 -1.6 -6 -2Q-2.6 -2.4 -2 -6Z" fill="#fff"/>
-      </g></g></g>
-    </g></g>`;
+        <path d="M-2 -6Q-1.4 -2.4 2 -2Q-1.4 -1.6 -2 2Q-2.6 -1.6 -6 -2Q-2.6 -2.4 -2 -6Z" fill="#fff"/></g>`, SB, `transform-origin:${SO}`),
+    TB, `transform-origin:${SO}`, 'data-tstar=""'), TB, `transform-origin:${TO}`), FULL, `transform-origin:${TO}`, 'data-tassel=""');
 
   const CAP_B = 'M164 328L236 328L228 348Q200 358 172 348Z';
   const CAP_T = 'M158 142L242 142L232 122Q200 110 168 122Z';
@@ -551,9 +591,14 @@ function buildSVG(p) {
     <circle cx="0" cy="-34" r="4.5" fill="#ff9ec4" stroke="${O}" stroke-width="3"/><circle cx="-30" cy="-28" r="3.6" fill="#a9e7ff" stroke="${O}" stroke-width="3"/><circle cx="30" cy="-28" r="3.6" fill="#a9e7ff" stroke="${O}" stroke-width="3"/>
     <circle cx="0" cy="-9" r="4" fill="#ff7896" stroke="${O}" stroke-width="2.5"/>`;
 
-  const spk = (list) => list.map(([x, y, r, col], i, a) => sparkleSVG(...P(x, y), r * 0.89, col, (i * 0.5) % 1.9)).join('');
+  const spk = (list) => list.map(([x, y, r, col], i) => {
+    const [sx, sy] = P(x, y), rr = r * 0.89, h = f(rr * 1.35 + 5), b = [f(sx - h), f(sy - h), f(2 * h), f(2 * h)];
+    return svgL('lq-spk', b, sparkleInner(sx, sy, rr, col), FULL, `transform-origin:50% 50%;animation-delay:${f((i * 0.5) % 1.9)}s;animation-duration:1.9s`);
+  }).join('');
 
-  return `<svg viewBox="-28 -4 456 456" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  const GB = [-16, 30, 432, 412], SHB = [114, 414, 172, 28], KB = [94, 148, 212, 192], FB = [78, 126, 244, 220];
+  const KO = ORG(200, 244, KB);
+  return `<svg class="lqL" viewBox="-28 -4 456 456" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 <defs>
   <radialGradient id="${p}body" cx=".42" cy=".36" r=".72"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#fffaf2"/><stop offset=".82" stop-color="#f9eef0"/><stop offset="1" stop-color="#eee2f6"/></radialGradient>
   <radialGradient id="${p}coreW" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6cf"/><stop offset=".32" stop-color="#ffdc9c" stop-opacity=".95"/><stop offset=".66" stop-color="#ffc39a" stop-opacity=".45"/><stop offset="1" stop-color="#ffb8a0" stop-opacity="0"/></radialGradient>
@@ -582,38 +627,39 @@ function buildSVG(p) {
   <clipPath id="${p}clip"><ellipse ${ellipse}/></clipPath>
   <clipPath id="${p}mclip"><path data-mclip=""/></clipPath>
 </defs>
-<g class="lq-acc" data-acc="rays"><g class="lq-raysr" style="transform-origin:${BC}" fill="url(#${p}ray)">${rays}</g></g>
-<g class="lq-glow">
-  <ellipse data-glow="w" cx="${cx}" cy="${cy}" rx="214" ry="204" fill="url(#${p}auraW)"/>
-  <ellipse data-glow="c" cx="${cx}" cy="${cy}" rx="214" ry="204" fill="url(#${p}auraC)" opacity="0"/>
-</g>
-<g class="lq-back">
-  <g data-dust="">${flySVG(FLY_BACK, p)}</g>
-  <g class="lq-acc" data-acc="confetti">${conf}</g>
-  <g class="lq-acc" data-acc="sparkMany">${spk([[62, 120, 20, '#ffd65a'], [452, 116, 22, '#ffa0be'], [40, 330, 13, '#a0c8ff'], [476, 320, 15, '#ffd65a'],
-    [150, 40, 12, '#bea0ff'], [400, 24, 14, '#a0e6be'], [86, 450, 11, '#ffa0be'], [440, 456, 12, '#bea0ff']])}</g>
-  <g class="lq-acc" data-acc="sparkHello">${spk([[48, 150, 16, '#ffd65a'], [470, 120, 10, '#bea0ff'], [52, 430, 10, '#ffa0be'], [470, 420, 11, '#a0c8ff']])}</g>
-  <g class="lq-acc" data-acc="sparkHappy">${spk([[50, 140, 16, '#ffd65a'], [474, 300, 12, '#bea0ff'], [56, 440, 10, '#ffa0be']])}</g>
-  <g class="lq-acc" data-acc="sparkCheer">${spk([[50, 150, 16, '#ffd65a'], [100, 60, 10, '#a0e6be'], [56, 440, 10, '#ffa0be'], [474, 430, 12, '#ffd65a']])}</g>
-  <g class="lq-acc" data-acc="hearts">${heartSVG(398, 150, 19, '#ff7896', 14, 0)}${heartSVG(8, 200, 13, '#ffa0be', -16, 0.5)}${heartSVG(380, 330, 11, '#ffb3cc', 10, 0.9)}</g>
-</g>
-<ellipse class="lq-shadow" cx="200" cy="428" rx="84" ry="11" fill="url(#${p}shadow)"/>
-<g class="lq-float"><g class="lq-act"><g class="lq-react"><g class="lq-talkg"><g class="lq-breath">
+<g class="lq-acc" data-acc="rays"><g class="lq-raysr" style="transform-origin:${BCpx}" fill="url(#${p}ray)">${rays}</g></g>
+</svg>
+${svgL('lq-glow', GB, `<ellipse data-glow="w" cx="${cx}" cy="${cy}" rx="214" ry="204" fill="url(#${p}auraW)"/>
+  <ellipse data-glow="c" cx="${cx}" cy="${cy}" rx="214" ry="204" fill="url(#${p}auraC)" opacity="0"/>`, FULL, `transform-origin:${ORG(cx, cy, GB)}`)}
+<div class="lqL" data-dust="">${flySVG(FLY_BACK, p)}</div>
+${svgL('lq-back', FULL, `<g class="lq-acc" data-acc="confetti">${conf}</g>`)}
+<div class="lqL lq-acc" data-acc="sparkMany">${spk([[62, 120, 20, '#ffd65a'], [452, 116, 22, '#ffa0be'], [40, 330, 13, '#a0c8ff'], [476, 320, 15, '#ffd65a'],
+    [150, 40, 12, '#bea0ff'], [400, 24, 14, '#a0e6be'], [86, 450, 11, '#ffa0be'], [440, 456, 12, '#bea0ff']])}</div>
+<div class="lqL lq-acc" data-acc="sparkHello">${spk([[48, 150, 16, '#ffd65a'], [470, 120, 10, '#bea0ff'], [52, 430, 10, '#ffa0be'], [470, 420, 11, '#a0c8ff']])}</div>
+<div class="lqL lq-acc" data-acc="sparkHappy">${spk([[50, 140, 16, '#ffd65a'], [474, 300, 12, '#bea0ff'], [56, 440, 10, '#ffa0be']])}</div>
+<div class="lqL lq-acc" data-acc="sparkCheer">${spk([[50, 150, 16, '#ffd65a'], [100, 60, 10, '#a0e6be'], [56, 440, 10, '#ffa0be'], [474, 430, 12, '#ffd65a']])}</div>
+${svgL('', FULL, `<g class="lq-acc" data-acc="hearts">${heartSVG(398, 150, 19, '#ff7896', 14, 0)}${heartSVG(8, 200, 13, '#ffa0be', -16, 0.5)}${heartSVG(380, 330, 11, '#ffb3cc', 10, 0.9)}</g>`)}
+${svgL('lq-shadow', SHB, `<ellipse cx="200" cy="428" rx="84" ry="11" fill="url(#${p}shadow)"/>`, FULL, `transform-origin:${ORG(200, 428, SHB)}`)}
+<div class="lqL lq-float"><div class="lqL lq-act"><div class="lqL lq-react"><div class="lqL lq-talkg"><div class="lqL lq-breath">
   ${wing('L')}${wing('R')}
   ${antenna('L')}${antenna('R')}
   ${petal('L')}${petal('R')}
   ${arm('L')}${arm('R')}
   ${tassel}
+  ${svgL('', FULL, `
   ${cap(CAP_B, [172, 331, 228])}
   <ellipse ${ellipse} fill="url(#${p}body)"/>
   <g clip-path="url(#${p}clip)">
     <g opacity=".45" fill="none" stroke="#e8cdbf" stroke-width="3">
       <ellipse cx="${cx}" cy="${cy}" rx="64" ry="112"/><ellipse cx="${cx}" cy="${cy}" rx="22" ry="112" opacity=".7"/><ellipse cx="${cx}" cy="${cy}" rx="100" ry="112" opacity=".7"/>
     </g>
-    <g data-core="w"><g class="lq-core"><ellipse cx="200" cy="244" rx="104" ry="94" fill="url(#${p}coreW)"/></g></g>
-    <g data-core="c" opacity="0"><g class="lq-core"><ellipse cx="200" cy="244" rx="100" ry="90" fill="url(#${p}coreC)"/></g></g>
-    <ellipse class="lq-flash" cx="200" cy="240" rx="120" ry="110" fill="url(#${p}flash)"/>
-    <rect data-tint="" x="70" y="120" width="260" height="240" fill="#7b88d8" opacity="0" style="mix-blend-mode:multiply"/>
+  </g>`)}
+  ${divL('', KB, svgL('lq-core', KB, `<ellipse cx="200" cy="244" rx="104" ry="94" fill="url(#${p}coreW)"/>`, KB, `transform-origin:${KO}`), FULL, `transform-origin:${KO}`, 'data-core="w"')}
+  ${divL('', KB, svgL('lq-core', KB, `<ellipse cx="200" cy="244" rx="100" ry="90" fill="url(#${p}coreC)"/>`, KB, `transform-origin:${KO}`), FULL, `transform-origin:${KO};opacity:0`, 'data-core="c"')}
+  ${svgL('', FB, `<g clip-path="url(#${p}clip)"><ellipse class="lq-flash" cx="200" cy="240" rx="120" ry="110" fill="url(#${p}flash)"/></g>`)}
+  ${svgL('lq-tint', FB, `<g clip-path="url(#${p}clip)"><rect data-tint="" x="70" y="120" width="260" height="240" fill="#7b88d8" opacity="0"/></g>`, FULL, 'display:none')}
+  ${svgL('', FULL, `
+  <g clip-path="url(#${p}clip)">
     <ellipse ${ellipse} fill="none" stroke="url(#${p}rim)" stroke-width="22"/>
     <ellipse ${ellipse} fill="none" stroke="url(#${p}rimTop)" stroke-width="14"/>
     <ellipse cx="146" cy="168" rx="32" ry="14" fill="#fff" opacity=".95" transform="rotate(-30 146 168)"/>
@@ -641,19 +687,17 @@ function buildSVG(p) {
   </g>
   <g class="lq-acc" data-acc="tear"><g transform="translate(146 264)"><g class="lq-tear" style="transform-origin:0 0">
     <path d="M0 -17C3.4 -10 9.4 -4 9.4 2.6A9.4 9.4 0 0 1 -9.4 2.6C-9.4 -4 -3.4 -10 0 -17Z" fill="url(#${p}tear)" stroke="${O}" stroke-width="5" stroke-linejoin="round" paint-order="stroke"/>
-    <ellipse cx="-3" cy="2.6" rx="2.6" ry="3.8" fill="#fff" opacity=".95"/></g></g></g>
-</g></g>
-  <g class="lq-acc" data-acc="waveLines">${linesSVG(340, 232, 28, -75, 10, 3, 13)}</g>
-  <g class="lq-acc" data-acc="fistLines">${linesSVG(342, 240, 30, -100, -5, 3, 13)}</g>
-</g></g></g>
-<g class="lq-front">
-  <g data-dust="">${flySVG(FLY_FRONT, p)}</g>
+    <ellipse cx="-3" cy="2.6" rx="2.6" ry="3.8" fill="#fff" opacity=".95"/></g></g></g>`)}
+</div></div>
+  ${svgL('', FULL, `<g class="lq-acc" data-acc="waveLines">${linesSVG(340, 232, 28, -75, 10, 3, 13)}</g>
+  <g class="lq-acc" data-acc="fistLines">${linesSVG(342, 240, 30, -100, -5, 3, 13)}</g>`)}
+</div></div></div>
+<div class="lqL" data-dust="">${flySVG(FLY_FRONT, p)}</div>
+${svgL('', FULL, `
   <g class="lq-acc" data-acc="popLines">${linesSVG(200, 200, 168, -162, -130, 3, 16)}${linesSVG(200, 200, 168, -50, -18, 3, 16)}</g>
   <g class="lq-acc" data-acc="question">${symbolSVG('?', 64, 112, 96, '#9682ff', -12, 'lq-q')}${sparkleSVG(18, 190, 9, '#ffd65a', 0.3)}</g>
   <g class="lq-acc" data-acc="exclaim">${symbolSVG('!', 372, 80, 100, '#ff7878', 10, 'lq-ex')}</g>
-  <g class="lq-acc" data-acc="zzz">${symbolSVG('Z', 318, 132, 54, '#c8d2ff', 10, 'lq-z')}${symbolSVG('z', 358, 92, 42, '#c8d2ff', 14, 'lq-z', 1.1)}${symbolSVG('z', 388, 56, 32, '#c8d2ff', 18, 'lq-z', 2.2)}</g>
-</g>
-</svg>`;
+  <g class="lq-acc" data-acc="zzz">${symbolSVG('Z', 318, 132, 54, '#c8d2ff', 10, 'lq-z')}${symbolSVG('z', 358, 92, 42, '#c8d2ff', 14, 'lq-z', 1.1)}${symbolSVG('z', 388, 56, 32, '#c8d2ff', 18, 'lq-z', 2.2)}</g>`)}`;
 }
 
 // ---------------------------------------------------------------- component
@@ -671,6 +715,57 @@ function visemeFor(ch) {
   if (VIS_U.test(ch)) return 't_u';
   if (VIS_E.test(ch)) return 't_e';
   return null; // consonant: random flap
+}
+
+// ---------------------------------------------------------------- v6-perf: спільний тікер і пауза
+
+// Один планувальник на всі екземпляри: кожен tick(now) повертає час наступної потреби (мс, performance.now);
+// ≤ now → потрібен наступний кадр (rAF), інакше — один спільний setTimeout до найближчої події.
+const TICKS = new Set();
+let tkRaf = 0, tkTmo = 0, tkDue = Infinity;
+function tkRun() {
+  tkRaf = 0; tkTmo = 0; tkDue = Infinity;
+  const now = performance.now();
+  let next = Infinity;
+  for (const t of TICKS) { const d = t(now); if (d < next) next = d; }
+  if (next < Infinity) tkWake(Math.max(next, now + 1));
+}
+function tkWake(at = 0) {
+  if (at >= tkDue) return;
+  if (tkRaf) cancelAnimationFrame(tkRaf);
+  if (tkTmo) clearTimeout(tkTmo);
+  tkRaf = tkTmo = 0;
+  tkDue = at;
+  const wait = at - performance.now();
+  if (wait < 20 && !document.hidden) tkRaf = requestAnimationFrame(tkRun);
+  else tkTmo = setTimeout(tkRun, Math.max(0, wait));
+}
+
+// пауза поза екраном (IntersectionObserver) і в прихованій вкладці: CSS-анімації стоять, тікер не малює
+const VIS = new WeakMap();
+let io = null;
+function observe(el, inst) {
+  VIS.set(el, inst);
+  if (!io && typeof IntersectionObserver === 'function') {
+    io = new IntersectionObserver((entries) => {
+      for (const e of entries) { const i = VIS.get(e.target); if (i) i.setVisible(e.isIntersecting); }
+    }, { rootMargin: '80px' });
+  }
+  io?.observe(el);
+}
+const ALL = new Set();
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => { for (const i of ALL) i.syncPause(); if (!document.hidden) tkWake(); });
+}
+
+// запис атрибута/стилю лише коли значення змінилося (менше інвалідацій стилю/перемальовувань)
+function sa(n, k, v) {
+  const c = n.__lq || (n.__lq = {});
+  if (c[k] !== v) { c[k] = v; n.setAttribute(k, v); }
+}
+function ss(n, k, v) {
+  const c = n.__lq || (n.__lq = {}), kk = '$' + k;
+  if (c[kk] !== v) { c[kk] = v; n.style[k] = v; }
 }
 
 export function createLumi(container, { size = 220, emotion = 'hello', bubble = 'top' } = {}) {
@@ -694,7 +789,7 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
   const R = {
     mouth: q('[data-mouth]'), mclip: q('[data-mclip]'), tongue: q('[data-tongue]'),
     browL: q('[data-brow="l"]'), browR: q('[data-brow="r"]'),
-    chin: q('[data-chin]'), cheeks: q('[data-cheeks]'), tint: q('[data-tint]'),
+    chin: q('[data-chin]'), cheeks: q('[data-cheeks]'), tint: q('[data-tint]'), tintL: q('.lq-tint'),
     coreW: q('[data-core="w"]'), coreC: q('[data-core="c"]'),
     glowW: q('[data-glow="w"]'), glowC: q('[data-glow="c"]'), dust: qa('[data-dust]'),
     wings: { L: q('[data-wing="L"]'), R: q('[data-wing="R"]') },
@@ -702,7 +797,7 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
     ants: { L: q('[data-ant="L"]'), R: q('[data-ant="R"]') },
     bulbs: qa('[data-bulbglow]'), tassel: q('[data-tassel]'), tstar: q('[data-tstar]'),
     acc: Object.fromEntries(qa('[data-acc]').map((n) => [n.dataset.acc, n])),
-    looks: qa('.lq-look'),
+    looks: qa('.lq-look'), act: q('.lq-act'), react: q('.lq-react'), flash: q('.lq-flash'),
   };
   const arms = {};
   for (const s of ['L', 'R']) {
@@ -717,91 +812,113 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
       star: q(`[data-star="${s}"]`),
     };
   }
+  // перезапуск одноразових CSS-анімацій: досить перерахунку стилю вузла (без примусового layout як offsetWidth)
+  const restyle = (n) => { void getComputedStyle(n).animationName; };
 
   let cur = poseOf(POSES[emotion] ? emotion : 'hello');
   let emo = emotion, face = null;
-  let raf = 0;
   const timers = new Set();
   const later = (fn, ms) => { const t = setTimeout(() => { timers.delete(t); fn(); }, ms); timers.add(t); return t; };
   const clearLater = (t) => { if (t) { clearTimeout(t); timers.delete(t); } };
 
+  // ---- видимість / пауза
+  let visible = true, paused = false;
+  const syncPause = () => {
+    const pz = !visible || (typeof document !== 'undefined' && document.hidden);
+    if (pz === paused) return;
+    paused = pz;
+    el.classList.toggle('lq-paused', pz);
+    if (!pz) tkWake();
+  };
+  const inst = { setVisible(v) { visible = v; syncPause(); }, syncPause };
+
   // ---- talking state (mouth blended on top of the emotion mouth)
-  let talking = false, talkMix = 0, talkRaf = 0, talkLast = 0, nextSwap = 0, talkHint = '';
-  let talkCur = flatMouth('t_closed'), talkTgt = talkCur.slice(), lastVis = 't_closed';
+  let talking = false, talkMix = 0, talkLast = 0, nextSwap = 0, talkHint = '';
+  const talkCur = flatMouth('t_closed').slice();
+  let talkTgt = flatMouth('t_closed'), lastVis = 't_closed';
+  const mBuf = new Array(32);
 
   function renderMouth(v) {
-    const m = new Array(32);
-    const k = talkMix;
+    const m = mBuf, k = talkMix;
     for (let i = 0; i < 32; i++) m[i] = k > 0 ? v['m' + i] + (talkCur[i] - v['m' + i]) * k : v['m' + i];
-    const d = cubicD(m.slice(0, 26));
-    R.mouth.setAttribute('d', d);
-    R.mouth.setAttribute('stroke-width', f(m[26]));
-    R.mclip.setAttribute('d', d);
-    R.tongue.setAttribute('cx', f(m[27])); R.tongue.setAttribute('cy', f(m[28]));
-    R.tongue.setAttribute('rx', f(Math.max(0, m[29]))); R.tongue.setAttribute('ry', f(Math.max(0, m[30])));
-    R.tongue.setAttribute('opacity', f(clamp01(m[31])));
+    const d = cubicD(m, 26);
+    sa(R.mouth, 'd', d);
+    sa(R.mouth, 'stroke-width', String(f(m[26])));
+    sa(R.mclip, 'd', d);
+    sa(R.tongue, 'cx', String(f(m[27]))); sa(R.tongue, 'cy', String(f(m[28])));
+    sa(R.tongue, 'rx', String(f(Math.max(0, m[29])))); sa(R.tongue, 'ry', String(f(Math.max(0, m[30]))));
+    sa(R.tongue, 'opacity', String(f(clamp01(m[31]))));
   }
 
   function render(v) {
     for (const s of ['L', 'R']) {
       const e = eyes[s], k = `e${s}_`;
-      e.solid.setAttribute('transform', `translate(${f(v[k + 'tx'])} ${f(v[k + 'ty'])}) scale(${f(v[k + 'sx'])} ${f(Math.max(0.05, v[k + 'sy']))})`);
-      e.solid.setAttribute('opacity', f(clamp01(v[k + 'solid'])));
+      sa(e.solid, 'transform', `translate(${f(v[k + 'tx'])} ${f(v[k + 'ty'])}) scale(${f(v[k + 'sx'])} ${f(Math.max(0.05, v[k + 'sy']))})`);
+      sa(e.solid, 'opacity', String(f(clamp01(v[k + 'solid']))));
       const hl = Math.max(0, v[k + 'hl'] * (1 - clamp01(v[k + 'spark'])));
-      e.hl.setAttribute('rx', f(8.6 * hl)); e.hl.setAttribute('ry', f(8.7 * hl));
-      e.spk.setAttribute('opacity', f(clamp01(v[k + 'spark'])));
-      e.water.setAttribute('opacity', f(clamp01(v[k + 'water'])));
-      e.pup.setAttribute('rx', f(11 * v[k + 'pup'])); e.pup.setAttribute('ry', f(14.5 * v[k + 'pup']));
+      sa(e.hl, 'rx', String(f(8.6 * hl))); sa(e.hl, 'ry', String(f(8.7 * hl)));
+      sa(e.spk, 'opacity', String(f(clamp01(v[k + 'spark']))));
+      sa(e.water, 'opacity', String(f(clamp01(v[k + 'water']))));
+      sa(e.pup, 'rx', String(f(11 * v[k + 'pup']))); sa(e.pup, 'ry', String(f(14.5 * v[k + 'pup'])));
       for (const t of ['happy', 'content', 'sleep', 'star']) {
         const o = clamp01(v[k + t]);
-        e[t].setAttribute('opacity', f(o));
-        e[t].setAttribute('transform', t === 'star' ? `scale(${f(0.3 + 0.7 * o)}) rotate(${f((1 - o) * -60)})` : `scale(1 ${f(0.3 + 0.7 * o)})`);
+        sa(e[t], 'opacity', String(f(o)));
+        sa(e[t], 'transform', t === 'star' ? `scale(${f(0.3 + 0.7 * o)}) rotate(${f((1 - o) * -60)})` : `scale(1 ${f(0.3 + 0.7 * o)})`);
       }
     }
     renderMouth(v);
     const bd = (pre) => `M${f(v[pre + 0])} ${f(v[pre + 1])}Q${f(v[pre + 2])} ${f(v[pre + 3])} ${f(v[pre + 4])} ${f(v[pre + 5])}`;
-    R.browL.setAttribute('d', bd('bl')); R.browR.setAttribute('d', bd('br'));
+    sa(R.browL, 'd', bd('bl')); sa(R.browR, 'd', bd('br'));
     for (const s of ['L', 'R']) {
-      const k = `a${s}_`, piv = s === 'L' ? ARM_L : ARM_R;
+      const k = `a${s}_`;
       const A = arms[s];
-      A.g.setAttribute('transform', `translate(${piv[0]} ${piv[1]}) rotate(${f(v[k + 'a'])})`);
-      A.vis.setAttribute('transform', `scale(${f(Math.max(0.001, clamp01(v[k + 'vis'])))})`);
-      const pr = 13 * (1 + 0.25 * clamp01(v[k + 'fist']));
-      A.paws.forEach((n) => n.setAttribute('r', f(pr)));
-      // spirit parts (mirrored groups: same sign = symmetric motion)
-      R.wings[s].setAttribute('transform', `rotate(${f(v.w)} ${WING_PIV[0]} ${WING_PIV[1]}) translate(${WING_PIV[0]} ${WING_PIV[1]}) scale(${f(v.ws)}) translate(${-WING_PIV[0]} ${-WING_PIV[1]})`);
-      R.petals[s].setAttribute('transform', `rotate(${f(s === 'L' ? v.pl : v.pr)} ${PETAL_PIV[0]} ${PETAL_PIV[1]})`);
-      R.ants[s].setAttribute('transform', `rotate(${f(s === 'L' ? v.nl : v.nr)} ${ANT_PIV[0]} ${ANT_PIV[1]})`);
+      ss(A.g, 'transform', `rotate(${f(v[k + 'a'])}deg)`);
+      ss(A.vis, 'transform', `scale(${f(Math.max(0.001, clamp01(v[k + 'vis'])))})`);
+      const pr = String(f(13 * (1 + 0.25 * clamp01(v[k + 'fist']))));
+      A.paws.forEach((n) => sa(n, 'r', pr));
+      // spirit parts (HTML layers; mirrored wrappers: same sign = symmetric motion)
+      ss(R.wings[s], 'transform', `rotate(${f(v.w)}deg) scale(${f(v.ws)})`);
+      ss(R.petals[s], 'transform', `rotate(${f(s === 'L' ? v.pl : v.pr)}deg)`);
+      ss(R.ants[s], 'transform', `rotate(${f(s === 'L' ? v.nl : v.nr)}deg)`);
     }
-    R.tassel.setAttribute('transform', `rotate(${f(v.ta)} ${TAS_PIV[0]} ${TAS_PIV[1]})`);
-    R.tstar.setAttribute('transform', `scale(${f(v.ts)})`);
+    ss(R.tassel, 'transform', `rotate(${f(v.ta)}deg)`);
+    ss(R.tstar, 'transform', `scale(${f(v.ts)})`);
     const g = v.glow, c = clamp01(v.cool);
-    R.bulbs.forEach((n) => n.setAttribute('opacity', f(Math.min(1, 0.15 + 0.7 * g))));
-    R.chin.setAttribute('opacity', f(clamp01(v.chin)));
-    R.chin.setAttribute('transform', `translate(${f((1 - clamp01(v.chin)) * 26)} ${f((1 - clamp01(v.chin)) * 18)})`);
-    R.cheeks.setAttribute('opacity', f(Math.max(0, v.cheek)));
-    R.tint.setAttribute('opacity', f(clamp01(v.tint)));
-    R.coreW.setAttribute('opacity', f(Math.min(1, 0.18 + 0.78 * g) * (1 - c)));
-    R.coreW.setAttribute('transform', `translate(200 244) scale(${f(0.8 + 0.2 * Math.min(1.4, g))}) translate(-200 -244)`);
-    R.coreC.setAttribute('opacity', f(c * Math.min(1, 0.3 + g)));
-    R.dust.forEach((n) => n.setAttribute('opacity', f(clamp01(v.dust))));
-    R.glowW.setAttribute('opacity', f(Math.min(1, g) * (1 - c)));
-    R.glowW.setAttribute('transform', `translate(${BODY.cx} ${BODY.cy}) scale(${f(0.8 + 0.2 * Math.min(1.4, g))}) translate(${-BODY.cx} ${-BODY.cy})`);
-    R.glowC.setAttribute('opacity', f(c * Math.min(1, 0.4 + g)));
+    const bo = String(f(Math.min(1, 0.15 + 0.7 * g)));
+    R.bulbs.forEach((n) => sa(n, 'opacity', bo));
+    sa(R.chin, 'opacity', String(f(clamp01(v.chin))));
+    sa(R.chin, 'transform', `translate(${f((1 - clamp01(v.chin)) * 26)} ${f((1 - clamp01(v.chin)) * 18)})`);
+    sa(R.cheeks, 'opacity', String(f(Math.max(0, v.cheek))));
+    const tint = f(clamp01(v.tint));
+    sa(R.tint, 'opacity', String(tint));
+    ss(R.tintL, 'display', tint > 0 ? '' : 'none');
+    const cw = f(Math.min(1, 0.18 + 0.78 * g) * (1 - c)), cc = f(c * Math.min(1, 0.3 + g));
+    ss(R.coreW, 'opacity', String(cw));
+    ss(R.coreW, 'display', cw > 0 ? '' : 'none'); // невидиме світло не анімуємо
+    ss(R.coreC, 'display', cc > 0 ? '' : 'none');
+    ss(R.coreW, 'transform', `scale(${f(0.8 + 0.2 * Math.min(1.4, g))})`);
+    ss(R.coreC, 'opacity', String(cc));
+    const du = String(f(clamp01(v.dust)));
+    R.dust.forEach((n) => ss(n, 'opacity', du));
+    sa(R.glowW, 'opacity', String(f(Math.min(1, g) * (1 - c))));
+    sa(R.glowW, 'transform', `translate(${BODY.cx} ${BODY.cy}) scale(${f(0.8 + 0.2 * Math.min(1.4, g))}) translate(${-BODY.cx} ${-BODY.cy})`);
+    sa(R.glowC, 'opacity', String(f(c * Math.min(1, 0.4 + g))));
   }
 
+  // ---- tween (у спільному тікері)
+  let tw = null;
   function tweenTo(target, ms = 480) {
-    cancelAnimationFrame(raf);
-    if (reducedMotion() || ms <= 0) { cur = { ...target }; render(cur); return; }
-    const from = { ...cur }, t0 = performance.now();
-    const step = (now) => {
-      const t = Math.min(1, (now - t0) / ms), e = easeOutBack(t);
-      for (const k in target) cur[k] = from[k] + (target[k] - from[k]) * e;
-      render(cur);
-      if (t < 1) raf = requestAnimationFrame(step);
-      else { cur = { ...target }; render(cur); }
-    };
-    raf = requestAnimationFrame(step);
+    if (reducedMotion() || ms <= 0) { tw = null; cur = { ...target }; render(cur); return; }
+    tw = { from: { ...cur }, target, t0: performance.now(), ms };
+    tkWake();
+  }
+  function stepTween(now) {
+    const t = Math.min(1, (now - tw.t0) / tw.ms), e = easeOutBack(t);
+    const { from, target } = tw;
+    if (t < 1) { for (const k in target) cur[k] = from[k] + (target[k] - from[k]) * e; }
+    else { cur = { ...target }; tw = null; }
+    if (!paused) render(cur);
+    else if (!tw) render(cur);
   }
 
   function applyAcc(name) {
@@ -812,7 +929,7 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
   let flashTimer = 0;
   function flash() {
     if (reducedMotion()) return;
-    el.classList.remove('lq-flashing'); void el.offsetWidth; el.classList.add('lq-flashing');
+    el.classList.remove('lq-flashing'); restyle(R.flash); el.classList.add('lq-flashing');
     clearLater(flashTimer);
     flashTimer = later(() => el.classList.remove('lq-flashing'), 800);
   }
@@ -822,8 +939,9 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
     if (name === emo && el.classList.contains('lq-e-' + name)) return api;
     emo = name;
     face = null;
-    for (const e of EMOTIONS) el.classList.remove('lq-e-' + e);
-    void el.offsetWidth; // restart one-shot emotion animations
+    // одноразові анімації емоцій мають унікальні імена → перезапускаються самі при зміні класу,
+    // без примусового перерахунку стилю всього дерева
+    for (const e of EMOTIONS) if (e !== name) el.classList.remove('lq-e-' + e);
     el.classList.add('lq-e-' + name);
     applyAcc(name);
     tweenTo(poseOf(name));
@@ -840,31 +958,35 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
     faceTimer = later(() => { face = null; tweenTo(poseOf(emo), 400); applyAcc(emo); }, ms);
   }
 
-  // ---- blinking & glances
+  // ---- blinking & glances (час подій — у тікері, без власних таймерів)
   let wasConnected = false;
   const gone = () => { if (el.isConnected) { wasConnected = true; return false; } if (wasConnected) { destroy(); return true; } return false; };
-  const blinkOnce = () => { el.classList.remove('lq-blink'); void el.offsetWidth; el.classList.add('lq-blink'); later(() => el.classList.remove('lq-blink'), 180); };
-  function scheduleBlink() {
-    later(() => {
-      if (gone()) return;
-      const closed = ['happy', 'content', 'sleep', 'wink', 'star'];
+  const CLOSED = ['happy', 'content', 'sleep', 'wink', 'star'];
+  let blinkAt = performance.now() + 1800 + Math.random() * 3800, blinkOff = 0, blink2At = 0;
+  let lookAt = performance.now() + 1500 + Math.random() * 2500;
+  function doBlink(now) { el.classList.add('lq-blink'); blinkOff = now + 180; }
+  function stepEyes(now) {
+    if (blinkOff && now >= blinkOff) { el.classList.remove('lq-blink'); blinkOff = 0; }
+    if (blink2At && now >= blink2At) { blink2At = 0; if (!paused && !blinkOff) doBlink(now); }
+    if (now >= blinkAt) {
+      blinkAt = now + 1800 + Math.random() * 3800;
       const eyesNow = POSES[face || emo].eyes;
-      if (!closed.includes(eyesNow[0]) || !closed.includes(eyesNow[1])) {
-        blinkOnce();
-        if (Math.random() < 0.22) later(blinkOnce, 260);
+      if (!paused && (!CLOSED.includes(eyesNow[0]) || !CLOSED.includes(eyesNow[1]))) {
+        if (!blinkOff) doBlink(now);
+        if (Math.random() < 0.22) blink2At = now + 260;
       }
-      scheduleBlink();
-    }, 1800 + Math.random() * 3800);
-  }
-  function scheduleLook() {
-    later(() => {
-      if (gone()) return;
-      const still = ['thinking', 'sleepy', 'sad'].includes(emo) || reducedMotion();
-      const x = still ? 0 : (Math.random() * 2 - 1) * 4.5, y = still ? 0 : (Math.random() * 2 - 1) * 2.8;
-      const back = Math.random() < 0.45;
-      R.looks.forEach((n) => (n.style.transform = back ? '' : `translate(${f(x)}px, ${f(y)}px)`));
-      scheduleLook();
-    }, 1500 + Math.random() * 2500);
+    }
+    if (now >= lookAt) {
+      lookAt = now + 1500 + Math.random() * 2500;
+      if (!paused) {
+        const still = ['thinking', 'sleepy', 'sad'].includes(emo) || reducedMotion();
+        const x = still ? 0 : (Math.random() * 2 - 1) * 4.5, y = still ? 0 : (Math.random() * 2 - 1) * 2.8;
+        const back = Math.random() < 0.45;
+        const tr = back ? '' : `translate(${f(x)}px, ${f(y)}px)`;
+        R.looks.forEach((n) => ss(n, 'transform', tr));
+      }
+    }
+    return Math.min(blinkAt, lookAt, blinkOff || Infinity, blink2At || Infinity);
   }
 
   // ---- talking (lip-flap by vowels: closed / A / O / E / U)
@@ -890,15 +1012,15 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
     }
     const k = 1 - Math.exp(-dt / 32);
     for (let i = 0; i < 32; i++) talkCur[i] += (talkTgt[i] - talkCur[i]) * k;
-    renderMouth(cur);
-    if (talking || talkMix > 0) talkRaf = requestAnimationFrame(talkStep);
-    else { talkRaf = 0; talkLast = 0; }
+    if (!paused && !tw) renderMouth(cur); // під час твіну рот малює render()
+    if (!talking && talkMix <= 0) talkLast = 0;
   }
   function startTalk() {
     if (reducedMotion()) return;
     talking = true;
     el.classList.add('lq-talking');
-    if (!talkRaf) { talkLast = 0; nextSwap = 0; talkRaf = requestAnimationFrame(talkStep); }
+    if (!talkLast) nextSwap = 0;
+    tkWake();
   }
   function stopTalk() {
     talking = false;
@@ -918,10 +1040,23 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
     });
   }
 
-  // ---- speech bubble
-  let typeTimer = 0, hideTimer = 0, sayResolve = null;
+  // ---- speech bubble: текст розкладається один раз, далі лише visibility символів (без innerHTML/перекладки)
+  let hideTimer = 0, sayResolve = null, typing = null;
+  function stepType(now) {
+    const T = typing;
+    const n = Math.min(T.spans.length, Math.floor((now - T.t0) / 28));
+    if (n > T.i) {
+      if (T.i > 0) T.spans[T.i - 1].classList.remove('lq-cur');
+      for (let j = T.i; j < n; j++) T.spans[j].classList.remove('lq-h');
+      T.i = n;
+      talkHint = T.chars[n - 1];
+      if (n < T.spans.length) T.spans[n - 1].classList.add('lq-cur');
+    }
+    if (T.i >= T.spans.length) { typing = null; later(T.finish, 140); return Infinity; }
+    return T.t0 + (T.i + 1) * 28;
+  }
   function say(text, { ms } = {}) {
-    clearInterval(typeTimer); clearLater(hideTimer); clearLater(talkTimer);
+    typing = null; clearLater(hideTimer); clearLater(talkTimer);
     if (sayResolve) { sayResolve(); sayResolve = null; }
     text = String(text ?? '');
     if (!text) { bub.classList.remove('show'); stopTalk(); return Promise.resolve(); }
@@ -936,18 +1071,25 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
         hideTimer = later(() => { bub.classList.remove('show'); if (sayResolve === resolve) { sayResolve = null; resolve(); } }, stay);
       };
       if (reducedMotion()) { bub.textContent = text; finish(); return; }
-      let i = 0;
-      const caret = '<span class="lq-caret"></span>';
-      const esc = (s) => s.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
-      bub.innerHTML = caret;
+      const frag = document.createDocumentFragment();
+      const spans = chars.map((ch) => { const sp = document.createElement('span'); sp.className = 'lq-h'; sp.textContent = ch; frag.appendChild(sp); return sp; });
+      bub.textContent = '';
+      bub.appendChild(frag);
+      typing = { chars, spans, i: 0, t0: performance.now(), finish };
       startTalk();
-      typeTimer = setInterval(() => {
-        i += 1;
-        talkHint = chars[i - 1];
-        bub.innerHTML = esc(chars.slice(0, i).join('')) + (i < chars.length ? caret : '');
-        if (i >= chars.length) { clearInterval(typeTimer); typeTimer = 0; later(finish, 140); }
-      }, 28);
     });
+  }
+
+  // ---- per-instance tick
+  function tick(now) {
+    if (dead) { TICKS.delete(tick); return Infinity; }
+    if (gone()) return Infinity;
+    let next = Infinity;
+    if (tw) { stepTween(now); if (tw) next = now; }
+    if (typing) next = Math.min(next, stepType(now));
+    if (talking || talkMix > 0) { talkStep(now); if (talking || talkMix > 0) next = now; }
+    next = Math.min(next, stepEyes(now));
+    return next;
   }
 
   // ---- reactions
@@ -955,7 +1097,7 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
   function playReact(kind) {
     const k = ['jump', 'tap', 'giggle', 'spin', 'shake', 'nod', 'love', 'wow'].includes(kind) ? kind : 'jump';
     for (const c of [...el.classList]) if (c.startsWith('lq-r-')) el.classList.remove(c);
-    void el.offsetWidth;
+    restyle(R.react);
     el.classList.add('lq-r-' + k);
     clearLater(reactTimer);
     reactTimer = later(() => el.classList.remove('lq-r-' + k), k === 'spin' ? 950 : 750);
@@ -997,9 +1139,9 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
   function destroy() {
     if (dead) return;
     dead = true;
-    cancelAnimationFrame(raf);
-    cancelAnimationFrame(talkRaf); talkRaf = 0; talking = false;
-    clearInterval(typeTimer);
+    tw = null; typing = null; talking = false;
+    TICKS.delete(tick); ALL.delete(inst);
+    io?.unobserve(el);
     for (const t of timers) clearTimeout(t);
     timers.clear();
     if (sayResolve) { sayResolve(); sayResolve = null; }
@@ -1020,8 +1162,11 @@ export function createLumi(container, { size = 220, emotion = 'hello', bubble = 
 
   render(cur);
   set(emotion);
-  scheduleBlink();
-  scheduleLook();
+  ALL.add(inst);
+  observe(el, inst);
+  syncPause();
+  TICKS.add(tick);
+  tkWake();
   return api;
 }
 

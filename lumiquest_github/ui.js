@@ -18,11 +18,12 @@
  *  fx — проксі ефектів: викликає js/fx.js, якщо він є, інакше вбудовані фолбеки
  *  setFx(module), setHaptics(tg)                   (викликає app.js)
  */
-import { norm, levelOf, xpProgress } from './state.js?v=20261110130628';
+import { norm, levelOf, xpProgress } from './state.js?v=20261110183712';
 
 // ─────────────────────────────────────────────────────────── DOM helpers
 export function h(tag, attrs, ...kids) {
   const el = document.createElement(tag);
+  if (tag === 'img') el.decoding = 'async'; // декодування картинок поза головним потоком
   if (attrs && (typeof attrs !== 'object' || attrs instanceof Node || Array.isArray(attrs))) {
     kids.unshift(attrs); attrs = null;
   }
@@ -551,3 +552,19 @@ export function feedbackSheet(host, opts) {
 }
 
 export { wait, reduced };
+
+/** v6: пауза CSS-анімацій елементів поза екраном (клас .lq-off). root — скрол-контейнер або null (вʼюпорт).
+ *  Повертає disconnect(). */
+//  delay — почати після вхідних (stagger) анімацій, щоб не заморозити їх на півдорозі.
+export function pauseOffscreen(els, root = null, { margin = '120px', delay = 1900 } = {}) {
+  const list = Array.from(els || []).filter(Boolean);
+  if (!list.length || typeof IntersectionObserver !== 'function') return () => {};
+  let io = null;
+  const t = setTimeout(() => {
+    io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.target.classList.toggle('lq-off', !e.isIntersecting);
+    }, { root, rootMargin: margin });
+    list.forEach((el) => io.observe(el));
+  }, delay);
+  return () => { clearTimeout(t); if (io) io.disconnect(); };
+}

@@ -1,12 +1,12 @@
 // 💌 Історії — візуальна новела з виборами. Порт game/story.py.
-import * as S from './state.js?v=20261110130628';
-import * as FX from './fx.js?v=20261110130628';
-import * as L from './lumi.js?v=20261110130628';
-import { createCharacter, characterIdFor } from './characters.js?v=20261110130628';
-import { recordGame } from './games.js?v=20261110130628';
+import * as S from './state.js?v=20261110183712';
+import * as FX from './fx.js?v=20261110183712';
+import * as L from './lumi.js?v=20261110183712';
+import { createCharacter, characterIdFor } from './characters.js?v=20261110183712';
+import { recordGame } from './games.js?v=20261110183712';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110130628', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -129,6 +129,12 @@ function typewriter(node, text, speed = 26) {
 }
 
 // ---------------------------------------------------------------- екран
+/** v6: екран повністю непрозорий — фонове небо застосунку (#sky) під ним не видно, ставимо його анімації на паузу. */
+function skyCovered(on) {
+  const h = document.documentElement, n = Math.max(0, (+h.dataset.gcanvas || 0) + (on ? 1 : -1));
+  if (n) h.dataset.gcanvas = n; else delete h.dataset.gcanvas;
+}
+
 export function render(root, params, app) {
   ensureCss(root);
   const inTg = mountHost(root, app);
@@ -423,7 +429,9 @@ export function render(root, params, app) {
 
   showIntro();
 
+  skyCovered(true);
   return () => {
+    skyCovered(false);
     alive = false;
     if (tw?.typing) tw.finish();
     timers.forEach(clearTimeout);

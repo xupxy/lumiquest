@@ -1,6 +1,6 @@
 // LumiQuest — анімовані SVG-персонажі (боси, Лис Фокс, герої історій, актори драм).
 //
-//   import { createCharacter, CHARACTERS, characterIdFor } from './characters.js?v=20261110130628';
+//   import { createCharacter, CHARACTERS, characterIdFor } from './characters.js?v=20261110183712';
 //   const ch = createCharacter(box, 'boss_w1', { size: 160, mood: 'idle', flip: false });
 //   ch.set('happy');          // idle talk happy sad surprised angry hurt win lose
 //   ch.talk('Hello there!');  // lip-flap, поки «друкується» текст (або ms); ch.talk(0) — стоп
@@ -143,7 +143,7 @@ function eyeSvg(c, e, ol) {
     const ox = x + s * rx;
     eo += `<path d="M${r1(ox - s * 1)} ${r1(y - ry * 0.25)}l${s * 5} -4M${r1(ox - s * 3)} ${r1(y - ry * 0.62)}l${s * 4} -5" stroke="${ol}" stroke-width="2.6" stroke-linecap="round" fill="none"/>`;
   }
-  const eh = `<path class="ch-eh" d="M${x - rx} ${r1(y + ry * 0.2)}Q${x} ${r1(y - ry * 1.05)} ${x + rx} ${r1(y + ry * 0.2)}" fill="none" stroke="${ol}" stroke-width="3.6" stroke-linecap="round"/>`;
+  const eh = `<path class="ch-eh" d="M${x - rx} ${r1(y + ry * 0.2)}Q${x} ${r1(y - ry * 1.05)} ${x + rx} ${r1(y + ry * 0.2)}" fill="none" stroke="#3a2433" stroke-width="4.4" stroke-linecap="round"/>`;
   const ec = `<path class="ch-ec" d="M${x - rx} ${r1(y - ry * 0.05)}Q${x} ${r1(y + ry * 0.75)} ${x + rx} ${r1(y - ry * 0.05)}" fill="none" stroke="${ol}" stroke-width="3.4" stroke-linecap="round"/>`;
   const exd = side === 'l'
     ? `M${r1(x - rx * 0.75)} ${r1(y - ry * 0.6)}L${r1(x + rx * 0.6)} ${y}L${r1(x - rx * 0.75)} ${r1(y + ry * 0.6)}`
@@ -292,7 +292,8 @@ function human(c, p) {
   const sk = p.skin, so = dk(sk, 0.55);
   const hair = HAIR[p.style || 'bob'](c, p.hair, p);
   const hairO = dk(p.hair, 0.55);
-  const back = (p.back || '') + hair.back;
+  const back = p.back || '';          // реквізит за спиною (рухається з тілом)
+  const backHead = hair.back;         // волосся позаду голови — рухається РАЗОМ з головою
   let body = c.P('M 88 120 L 88 156 Q 100 162 112 156 L 112 120 Z', dk(sk, 0.08)) +
     c.F('M 88 130 Q 100 146 112 130 L 112 140 Q 100 152 88 140 Z', dk(sk, 0.3), 0.35);
   body += p.body ? p.body(c) : c.P(TORSO, p.outfit);
@@ -303,7 +304,7 @@ function human(c, p) {
   head += p.headBase ? p.headBase(c) : '';
   return {
     kind: 'bust',
-    back, body,
+    back, backHead, body,
     headBase: head,
     headFront: hair.front + (p.headFront ? p.headFront(c) : ''),
     front: (hair.extra || '') + (p.front ? p.front(c) : ''),
@@ -932,6 +933,8 @@ function generated(id) {
 
 // ---------------------------------------------------------------- стилі
 let styleDone = false;
+// v6-perf: ці кейфрейми крутяться на HTML-шарах (div/svg) — одиниці viewBox (200) переводимо у % розміру шару
+const HTML_KF = new Set(['ch-breathe', 'ch-bob', 'ch-nod', 'ch-hop', 'ch-sway', 'ch-sigh', 'ch-surp', 'ch-fume', 'ch-hurt', 'ch-wob', 'ch-wave']);
 function ensureStyle() {
   if (styleDone || typeof document === 'undefined') return;
   styleDone = true;
@@ -939,17 +942,19 @@ function ensureStyle() {
   const fb = '.chr .ch-eye,.chr .ch-eo,.chr .ch-iris,.chr .ch-brow,.chr .ch-fx,.chr .ch-spark,.chr .ch-twinkle,.chr .ch-glow';
   const mouthCss = MOUTHS.map((k) => `.chr[data-mouth=${k}] .ch-m-${k}`).join(',');
   const css = `
-.chr{position:relative;display:inline-block;flex:none;line-height:0;vertical-align:bottom;--by:0;--bra:0;--al:0;--ar:0;--hr:0;--hy:0;--px:0;--py:0;--mx:0;--my:0;--mr:0;--hand:95;-webkit-user-select:none;user-select:none;pointer-events:none}
+.chr{position:relative;display:inline-block;flex:none;line-height:0;vertical-align:bottom;--by:0;--bra:0;--al:0;--ar:0;--hr:0;--hy:0;--px:0;--py:0;--mx:0;--my:0;--mr:0;--hand:95;-webkit-user-select:none;user-select:none;pointer-events:none;contain:layout style}
 .chr .ch-react{width:100%;height:100%;transition:filter .6s}
-.chr svg{width:100%;height:100%;display:block;overflow:visible}
-.chr.chr-bust svg{overflow:hidden}
-.chr.chr-flip svg{transform:scaleX(-1)}
+.chr .ch-vp{position:relative;width:100%;height:100%}
+.chr .ch-L{position:absolute;left:0;top:0;width:100%;height:100%;display:block;overflow:visible}
+.chr.chr-bust .ch-vp{overflow:hidden}
+.chr.chr-flip .ch-vp{transform:scaleX(-1)}
+.chr.ch-paused,.chr.ch-paused *{animation-play-state:paused!important}
 ${vb}{transform-box:view-box}
 ${fb}{transform-box:fill-box;transform-origin:center}
-.chr .ch-anim,.chr .ch-pose{transform-origin:100px 196px}
-.chr .ch-pose{transform:translate(calc(var(--mx)*1px),calc(var(--my)*1px)) rotate(calc(var(--mr)*1deg));transition:transform .45s cubic-bezier(.3,1.3,.5,1)}
-.chr .ch-body{transform-origin:100px 200px;animation:ch-breathe 3.4s ease-in-out infinite}
-.chr .ch-head{transform:translateY(calc(var(--hy)*1px)) rotate(calc(var(--hr)*1deg));transition:transform .4s cubic-bezier(.3,1.4,.5,1)}
+.chr .ch-anim,.chr .ch-pose{transform-origin:50% 98%}
+.chr .ch-pose{transform:translate(calc(var(--mx)*.5%),calc(var(--my)*.5%)) rotate(calc(var(--mr)*1deg));transition:transform .45s cubic-bezier(.3,1.3,.5,1)}
+.chr .ch-body{transform-origin:50% 100%;animation:ch-breathe 3.4s ease-in-out infinite}
+.chr .ch-head{transform:translateY(calc(var(--hy)*.5%)) rotate(calc(var(--hr)*1deg));transition:transform .4s cubic-bezier(.3,1.4,.5,1)}
 .chr .ch-headi{animation:ch-bob 4.2s ease-in-out infinite}
 .chr .ch-al{transform:rotate(calc(var(--al)*1deg));transition:transform .42s cubic-bezier(.3,1.45,.5,1)}
 .chr .ch-ar{transform:rotate(calc(var(--ar)*-1deg));transition:transform .42s cubic-bezier(.3,1.45,.5,1)}
@@ -963,13 +968,15 @@ ${fb}{transform-box:fill-box;transform-origin:center}
 .chr[data-eyes=happy] .ch-eo,.chr[data-eyes=closed] .ch-eo,.chr[data-eyes=hurt] .ch-eo{opacity:0}
 .chr[data-eyes=happy] .ch-eh,.chr[data-eyes=closed] .ch-ec,.chr[data-eyes=hurt] .ch-ex{opacity:1}
 .chr[data-eyes=wide] .ch-eo{transform:scale(1.14)}
+.chr[data-eyes=smile] .ch-eo{transform:scaleY(.82)}
 .chr[data-eyes=wide] .ch-iris{transform:scale(.76)}
 .chr[data-eyes=wide] .ch-lid{opacity:0}
 .chr.ch-blink .ch-eo{transform:scaleY(.08)}
 .chr .ch-m{opacity:0;transition:opacity .05s}
 ${mouthCss}{opacity:1}
-.chr .ch-hand{transform:translateY(calc(var(--hand)*1px));transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
+.chr .ch-hand{transform:translateY(calc(var(--hand)*.5%));transition:transform .45s cubic-bezier(.3,1.4,.5,1)}
 .chr .ch-handi{animation:ch-wave .45s ease-in-out infinite alternate}
+.chr[data-hand=off] .ch-handi{animation-play-state:paused}
 .chr .ch-fx{opacity:0;transition:opacity .25s}
 .chr[data-mood=sad] .ch-fx-tear,.chr[data-mood=lose] .ch-fx-tear{opacity:1;animation:ch-tear 1.8s ease-in infinite}
 .chr[data-mood=angry] .ch-fx-anger,.chr[data-mood=hurt] .ch-fx-anger{opacity:1;animation:ch-throb .4s ease-in-out infinite alternate}
@@ -983,7 +990,7 @@ ${mouthCss}{opacity:1}
 .chr .ch-pend{animation:ch-pend 1.2s ease-in-out infinite alternate}
 .chr .ch-key{animation:ch-key 1.6s ease-in-out infinite}
 .chr .ch-hmin{animation:ch-spin 12s steps(60) infinite}
-.chr .ch-hhour{animation:ch-spin 144s linear infinite}
+.chr .ch-hhour{animation:ch-spin 144s steps(720) infinite}
 .chr[data-mood=happy] .ch-anim{animation:ch-hop .5s cubic-bezier(.3,.6,.4,1) 2,ch-sway 2.4s ease-in-out 1s infinite}
 .chr[data-mood=win] .ch-anim{animation:ch-hop .62s cubic-bezier(.3,.6,.4,1) infinite}
 .chr[data-mood=sad] .ch-anim{animation:ch-sigh 3.2s ease-in-out infinite}
@@ -1013,8 +1020,10 @@ ${mouthCss}{opacity:1}
 @keyframes ch-glow{0%,100%{opacity:.55}50%{opacity:1}}
 @keyframes ch-pend{0%{transform:rotate(-16deg)}100%{transform:rotate(16deg)}}
 @keyframes ch-key{0%,100%{transform:scaleY(1)}50%{transform:scaleY(-1)}}
+html[data-perf=lite] .chr .ch-twinkle,html[data-perf=lite] .chr .ch-glow,html[data-perf=lite] .chr .ch-spark{animation:none}
 @media (prefers-reduced-motion:reduce){.chr,.chr *{animation:none!important;transition:none!important}}
-`;
+`.replace(/@keyframes (ch-[\w-]+)\{((?:[^{}]*\{[^{}]*\})*)\s*\}/g, (m, name) =>
+    (HTML_KF.has(name) ? m.replace(/(-?[\d.]+)px/g, (_, n) => `${+(n / 2).toFixed(3)}%`) : m));
   const st = document.createElement('style');
   st.dataset.characters = '1';
   st.textContent = css;
@@ -1072,20 +1081,30 @@ function buildSvg(c, s, name) {
   let hand = '';
   if (s.kind === 'bust' && s.hand) {
     const { col, skin } = s.hand;
-    hand = `<g class="ch-hand"><g class="ch-handi" style="transform-origin:152px 214px">` + c.limb('M 152 216 L 152 176', col, 20) +
+    hand = c.limb('M 152 216 L 152 176', col, 20) +
       c.P('M 141 172 C 139 156 145 147 152 147 C 160 147 165 155 163 170 C 161 179 145 181 141 172 Z', skin) +
-      c.P('M 141 166 C 134 162 133 156 138 155 C 142 155 144 160 145 163 Z', skin, { w: 2.4 }) + `</g></g>`;
+      c.P('M 141 166 C 134 162 133 156 138 155 C 142 155 144 160 145 163 Z', skin, { w: 2.4 });
   }
   const arms = (s.armL ? `<g class="ch-arm ch-al"${org(pv.al)}><g class="ch-armi"${org(pv.al)}>${s.armL}</g></g>` : '') +
     (s.armR ? `<g class="ch-arm ch-ar"${org(pv.ar)}><g class="ch-armi"${org(pv.ar)}>${s.armR}</g></g>` : '');
-  const inner = `${s.shadow ? `<ellipse class="ch-shadow" cx="${s.shadow[0]}" cy="${s.shadow[1]}" rx="${s.shadow[2]}" ry="${r1(s.shadow[2] * 0.14)}" fill="rgba(30,14,48,.22)"/>` : ''}` +
-    `<g class="ch-anim"><g class="ch-pose">` +
-    `<g class="ch-back">${s.back || ''}</g>` +
-    `<g class="ch-body">${s.body || ''}${arms}</g>` +
-    `<g class="ch-head"${org(neck)}><g class="ch-headi"${org(neck)}>${s.headBase || ''}<g class="ch-cheeks">${cheeks}</g><g class="ch-eyes">${eyes}</g>${brows}<g class="ch-mouth">${mouth}</g>${s.headFront || ''}${fx.head}</g></g>` +
-    `${s.front || ''}${hand}${fx.top}` +
-    `</g></g>`;
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><title>${name}</title><defs>${c.defs.join('')}</defs>${inner}</svg>`;
+  // v6-perf: шари. Безперервні рухи (дихання тулуба, похитування/кивки голови, помах руки, пози) —
+  // transform на HTML-рівні (композитор), без перемальовування SVG у кожному кадрі.
+  const L = (cls, inner, extra = '') => `<svg class="ch-L${cls ? ' ' + cls : ''}" viewBox="0 0 200 200" aria-hidden="true" focusable="false"${extra}>${inner}</svg>`;
+  const orgP = (p) => (p ? ` style="transform-origin:${p[0] / 2}% ${p[1] / 2}%"` : '');
+  return `<div class="ch-vp">` +
+    L('', `<title>${name}</title><defs>${c.defs.join('')}</defs>` +
+      (s.shadow ? `<ellipse class="ch-shadow" cx="${s.shadow[0]}" cy="${s.shadow[1]}" rx="${s.shadow[2]}" ry="${r1(s.shadow[2] * 0.14)}" fill="rgba(30,14,48,.22)"/>` : '')) +
+    `<div class="ch-L ch-anim"><div class="ch-L ch-pose">` +
+    (s.back ? L('ch-back', s.back) : '') +
+    (s.backHead ? `<div class="ch-L ch-head"${orgP(neck)}><div class="ch-L ch-headi"${orgP(neck)}>${L('ch-back', s.backHead)}</div></div>` : '') +
+    L('ch-body', `${s.body || ''}${arms}`) +
+    `<div class="ch-L ch-head"${orgP(neck)}><div class="ch-L ch-headi"${orgP(neck)}>` +
+    L('', `${s.headBase || ''}<g class="ch-cheeks">${cheeks}</g><g class="ch-eyes">${eyes}</g>${brows}<g class="ch-mouth">${mouth}</g>${s.headFront || ''}${fx.head}`) +
+    `</div></div>` +
+    (s.front ? L('', s.front) : '') +
+    (hand ? `<div class="ch-L ch-hand"><div class="ch-L ch-handi" style="transform-origin:76% 107%">${L('', hand)}</div></div>` : '') +
+    (fx.top ? L('', fx.top) : '') +
+    `</div></div></div>`;
 }
 
 // ---------------------------------------------------------------- пози настроїв
@@ -1093,7 +1112,7 @@ const BASE = { eyes: 'open', by: 0, bra: 0, al: 0, ar: 0, hr: 0, hy: 0, px: 0, p
 const MOOD = {
   idle: {},
   talk: { ar: 6 },
-  happy: { eyes: 'happy', by: -3, bra: -5, al: 110, ar: 110, hand: 0, hy: -1, mouth: 'grin' },
+  happy: { eyes: 'smile', by: -3, bra: -5, al: 110, ar: 110, hand: 0, hy: -1, mouth: 'grin' },
   sad: { py: 2.5, by: 2, bra: -16, al: -8, ar: -8, hr: 4, hy: 4, my: 3, mouth: 'sad' },
   surprised: { eyes: 'wide', by: -7, bra: -4, al: 60, ar: 60, hy: -3, mouth: 'o' },
   angry: { by: 2.5, bra: 20, al: 28, ar: 28, mouth: 'angry' },
@@ -1103,6 +1122,43 @@ const MOOD = {
 };
 const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 let seq = 0;
+
+// ---------------------------------------------------------------- v6-perf: спільний тікер і пауза
+// Один планувальник на всіх персонажів (lip-flap, кліпання): tick(now) → час наступної події;
+// lip-flap кроки ~8–12/с, тож навіть під час розмови працює один setTimeout/rAF на всю сторінку.
+const TICKS = new Set();
+let tkRaf = 0, tkTmo = 0, tkDue = Infinity;
+function tkRun() {
+  tkRaf = 0; tkTmo = 0; tkDue = Infinity;
+  const now = performance.now();
+  let next = Infinity;
+  for (const t of TICKS) { const d = t(now); if (d < next) next = d; }
+  if (next < Infinity) tkWake(Math.max(next, now + 1));
+}
+function tkWake(at = 0) {
+  if (at >= tkDue) return;
+  if (tkRaf) cancelAnimationFrame(tkRaf);
+  if (tkTmo) clearTimeout(tkTmo);
+  tkRaf = tkTmo = 0;
+  tkDue = at;
+  const wait = at - performance.now();
+  if (wait < 12 && !document.hidden) tkRaf = requestAnimationFrame(tkRun);
+  else tkTmo = setTimeout(tkRun, Math.max(0, wait));
+}
+const VIS = new WeakMap(), ALL = new Set();
+let io = null;
+function observe(el, inst) {
+  VIS.set(el, inst);
+  if (!io && typeof IntersectionObserver === 'function') {
+    io = new IntersectionObserver((entries) => {
+      for (const e of entries) { const i = VIS.get(e.target); if (i) i.setVisible(e.isIntersecting); }
+    }, { rootMargin: '80px' });
+  }
+  io?.observe(el);
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => { for (const i of ALL) i.syncPause(); if (!document.hidden) tkWake(); });
+}
 
 export function createCharacter(container, id, { size = 200, mood = 'idle', flip = false } = {}) {
   ensureStyle();
@@ -1126,53 +1182,86 @@ export function createCharacter(container, id, { size = 200, mood = 'idle', flip
 
   const timers = new Set();
   const later = (fn, ms) => { const t = setTimeout(() => { timers.delete(t); fn(); }, ms); timers.add(t); return t; };
-  let cur = 'idle', talking = false, talkT = null, flapT = null, lastM = '', dead = false;
+  let cur = 'idle', talking = false, talkT = null, lastM = '', dead = false;
   const poses = spec.poses || {};
 
   const defaultMouth = () => (MOOD[cur]?.mouth) || spec.idleMouth || 'smile';
-  const setMouth = (m) => { el.dataset.mouth = m; };
+  const setMouth = (m) => { if (el.dataset.mouth !== m) el.dataset.mouth = m; };
+
+  // видимість / пауза (поза екраном або прихована вкладка)
+  let visible = true, paused = false;
+  const syncPause = () => {
+    const pz = !visible || document.hidden;
+    if (pz === paused) return;
+    paused = pz;
+    el.classList.toggle('ch-paused', pz);
+    if (!pz) tkWake();
+  };
+  const inst = { setVisible(v) { visible = v; syncPause(); }, syncPause };
+
+  const qa = (sel) => [...el.querySelectorAll(sel)];
+  const N = { pose: qa('.ch-pose'), head: qa('.ch-head'), al: qa('.ch-al'), ar: qa('.ch-ar'), bl: qa('.ch-bl'), br: qa('.ch-br'), hand: qa('.ch-hand'), pup: qa('.ch-pup') };
+  const T = (list, v) => { for (const n of list) if (n.style.transform !== v) n.style.transform = v; };
+  let pv = BASE, pupX = null;
+  const pupils = (x, y) => { const v = `translate(${x}px,${y}px)`; if (v !== pupX) { pupX = v; T(N.pup, v); } };
 
   function apply(m) {
     const p = { ...BASE, ...(poses.base || {}), ...MOOD[m], ...(poses[m] || {}) };
     if (m === 'idle' || m === 'talk') p.bra += spec.browBase || 0;
     el.dataset.mood = m;
     el.dataset.eyes = p.eyes;
-    for (const k of ['by', 'bra', 'al', 'ar', 'hr', 'hy', 'px', 'py', 'mx', 'my', 'mr', 'hand']) el.style.setProperty('--' + k, p[k]);
+    el.dataset.hand = p.hand > 60 ? 'off' : 'on'; // схована рука не махає
+    // v6-perf: пози пишемо прямо в transform потрібних вузлів (inline), а не CSS-змінними на корені —
+    // успадковані custom properties змушували перераховувати стилі всіх сотень вузлів персонажа.
+    pv = p;
+    T(N.pose, `translate(${p.mx * 0.5}%,${p.my * 0.5}%) rotate(${p.mr}deg)`);
+    T(N.head, `translateY(${p.hy * 0.5}%) rotate(${p.hr}deg)`);
+    T(N.al, `rotate(${p.al}deg)`);
+    T(N.ar, `rotate(${-p.ar}deg)`);
+    T(N.bl, `translateY(${p.by}px) rotate(${p.bra}deg)`);
+    T(N.br, `translateY(${p.by}px) rotate(${-p.bra}deg)`);
+    T(N.hand, `translateY(${p.hand * 0.5}%)`);
+    pupils(p.px, p.py);
     if (!talking) setMouth(defaultMouth());
   }
 
-  function flap() {
-    if (!talking || dead) return;
+  // lip-flap і кліпання — у спільному тікері
+  let flapAt = 0;
+  let blinkAt = performance.now() + 1800 + Math.random() * 3600, blinkOff = 0, blink2At = 0, blink2Off = 0;
+  function flap(now) {
     const opts = ['a', 'o', 'e', 'closed', 'a', 'e', 'o', 'a'];
     let m;
     do m = opts[Math.floor(Math.random() * opts.length)]; while (m === lastM);
     lastM = m;
     const closed = ['smile', 'smirk', 'flat', 'sad'].includes(defaultMouth()) ? defaultMouth() : 'smile';
-    setMouth(m === 'closed' ? closed : m);
-    flapT = later(flap, 80 + Math.random() * 45); // ≈ 8–12 разів/с
+    if (!paused) setMouth(m === 'closed' ? closed : m);
+    flapAt = now + 80 + Math.random() * 45; // ≈ 8–12 разів/с
+  }
+  function tick(now) {
+    if (dead) { TICKS.delete(tick); return Infinity; }
+    let next = Infinity;
+    if (talking && !reduced()) { if (now >= flapAt) flap(now); next = flapAt; }
+    if (blinkOff && now >= blinkOff) { el.classList.remove('ch-blink'); blinkOff = 0; }
+    if (blink2At && now >= blink2At) { blink2At = 0; if (!paused) { el.classList.add('ch-blink'); blinkOff = now + 110; } }
+    if (now >= blinkAt) {
+      blinkAt = now + 1800 + Math.random() * 3600;
+      if (!paused && !reduced()) {
+        if (el.dataset.eyes === 'open' || el.dataset.eyes === 'wide') {
+          el.classList.add('ch-blink'); blinkOff = now + 120;
+          if (Math.random() < 0.2) blink2At = now + 260;
+        }
+        if ((cur === 'idle' || cur === 'talk') && Math.random() < 0.5) {
+          pupils([-1.6, 0, 0, 1.6][Math.floor(Math.random() * 4)], pv.py);
+        }
+      }
+    }
+    return Math.min(next, blinkAt, blinkOff || Infinity, blink2At || Infinity);
   }
   function stopTalk() {
     talking = false;
-    if (flapT) { clearTimeout(flapT); timers.delete(flapT); flapT = null; }
     if (talkT) { clearTimeout(talkT); timers.delete(talkT); talkT = null; }
     el.dataset.talk = '0';
     setMouth(defaultMouth());
-  }
-
-  // кліпання і мікрорухи очей
-  function blinkLoop() {
-    later(() => {
-      if (dead) return;
-      if (!reduced() && (el.dataset.eyes === 'open' || el.dataset.eyes === 'wide')) {
-        el.classList.add('ch-blink');
-        later(() => el.classList.remove('ch-blink'), 120);
-        if (Math.random() < 0.2) later(() => { el.classList.add('ch-blink'); later(() => el.classList.remove('ch-blink'), 110); }, 260);
-      }
-      if ((cur === 'idle' || cur === 'talk') && !reduced() && Math.random() < 0.5) {
-        el.style.setProperty('--px', [-1.6, 0, 0, 1.6][Math.floor(Math.random() * 4)]);
-      }
-      blinkLoop();
-    }, 1800 + Math.random() * 3600);
   }
 
   const api = {
@@ -1196,7 +1285,7 @@ export function createCharacter(container, id, { size = 200, mood = 'idle', flip
       const ms = x === true ? 0 : typeof x === 'number' ? x : Math.min(9000, Math.max(500, String(x).length * 42));
       if (reduced()) { setMouth('e'); if (ms) talkT = later(() => { talkT = null; stopTalk(); }, ms); talking = true; return api; }
       el.dataset.talk = '1';
-      if (!talking) { talking = true; flap(); }
+      if (!talking) { talking = true; flap(performance.now()); tkWake(flapAt); }
       if (ms) talkT = later(() => { talkT = null; stopTalk(); }, ms);
       return api;
     },
@@ -1218,13 +1307,17 @@ export function createCharacter(container, id, { size = 200, mood = 'idle', flip
     destroy() {
       dead = true;
       talking = false;
+      TICKS.delete(tick); ALL.delete(inst); io?.unobserve(el);
       timers.forEach(clearTimeout);
       timers.clear();
       el.remove();
     },
   };
   api.set(MOOD[mood] ? mood : 'idle');
-  blinkLoop();
+  ALL.add(inst);
+  observe(el, inst);
+  TICKS.add(tick);
+  tkWake(blinkAt);
   return api;
 }
 

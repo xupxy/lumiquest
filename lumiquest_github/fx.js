@@ -1,6 +1,6 @@
 // LumiQuest — visual effects. Vanilla JS, no dependencies.
 //
-//   import * as fx from './fx.js?v=20261110130628';
+//   import * as fx from './fx.js?v=20261110183712';
 //   fx.confetti();                         // burst from screen centre
 //   fx.sparkle(button);                    // star sparkles around an element
 //   fx.floatText(el, '+10 XP');            // text that flies up and fades
@@ -63,6 +63,9 @@ const reduced = () => typeof matchMedia === 'function' && matchMedia('(prefers-r
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = (a) => a[Math.floor(Math.random() * a.length)];
+// v6: html[data-perf=lite] (авто-режим для слабких телефонів) — менше частинок
+const lite = () => document.documentElement.dataset.perf === 'lite';
+const MAX_CONFETTI = 260;
 
 function layer() {
   ensureStyle();
@@ -123,9 +126,13 @@ export function confetti({ x, y, count = 90, colors = DEFAULT_COLORS, spread = 1
     confettiState = { cv, ctx: cv.getContext('2d'), parts: [], waiters: [], raf: 0, last: 0 };
   }
   const S = confettiState;
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
-  S.cv.width = W * dpr; S.cv.height = H * dpr;
-  S.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const dpr = Math.min(lite() ? 1.5 : 2, window.devicePixelRatio || 1);
+  if (S.cv.width !== Math.round(W * dpr) || S.cv.height !== Math.round(H * dpr)) {
+    S.cv.width = Math.round(W * dpr); S.cv.height = Math.round(H * dpr);
+  }
+  S.dpr = dpr;
+  if (lite()) count = Math.ceil(count * 0.5);
+  count = Math.max(0, Math.min(count, MAX_CONFETTI - S.parts.length));
   for (let i = 0; i < count; i++) {
     const a = -Math.PI / 2 + rnd(-1.1, 1.1) * spread;
     const v = rnd(7, 15) * power;
@@ -143,21 +150,26 @@ export function confetti({ x, y, count = 90, colors = DEFAULT_COLORS, spread = 1
     const tick = (now) => {
       const dt = Math.min(2.5, (now - S.last) / 16.67);
       S.last = now;
-      const { ctx } = S;
+      const { ctx, dpr: k } = S;
+      ctx.setTransform(k, 0, 0, k, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      S.parts = S.parts.filter((q) => q.life < q.max && q.y < H + 40);
-      for (const q of S.parts) {
+      // компактизація на місці — без нового масиву щокадру
+      const P = S.parts;
+      let n = 0;
+      for (let i = 0; i < P.length; i++) { const q = P[i]; if (q.life < q.max && q.y < H + 40) P[n++] = q; }
+      P.length = n;
+      for (let i = 0; i < n; i++) {
+        const q = P[i];
         q.life += dt;
         q.vx *= Math.pow(0.985, dt); q.vy = q.vy * Math.pow(0.985, dt) + 0.32 * dt;
         q.vx += Math.sin(q.tilt) * 0.05 * dt;
         q.x += q.vx * dt; q.y += q.vy * dt;
         q.rot += q.vr * dt; q.tilt += q.vt * dt;
         const fade = Math.min(1, (q.max - q.life) / 30);
-        ctx.save();
         ctx.globalAlpha = Math.max(0, fade);
-        ctx.translate(q.x, q.y);
-        ctx.rotate(q.rot);
-        ctx.scale(1, Math.cos(q.tilt));
+        // translate·rotate·scale(1, cos tilt) одним setTransform (без save/restore)
+        const c = Math.cos(q.rot), sn = Math.sin(q.rot), sy = Math.cos(q.tilt);
+        ctx.setTransform(k * c, k * sn, -k * sn * sy, k * c * sy, k * q.x, k * q.y);
         ctx.fillStyle = q.color;
         if (q.shape === 'circle') { ctx.beginPath(); ctx.arc(0, 0, q.w / 2, 0, Math.PI * 2); ctx.fill(); }
         else if (q.shape === 'star') {
@@ -168,8 +180,8 @@ export function confetti({ x, y, count = 90, colors = DEFAULT_COLORS, spread = 1
           }
           ctx.closePath(); ctx.fill();
         } else ctx.fillRect(-q.w / 2, -q.h / 2, q.w, q.h);
-        ctx.restore();
       }
+      ctx.globalAlpha = 1;
       if (S.parts.length) S.raf = requestAnimationFrame(tick);
       else {
         S.cv.remove();
@@ -187,6 +199,7 @@ export function confetti({ x, y, count = 90, colors = DEFAULT_COLORS, spread = 1
 
 export function sparkle(el, { count = 10, colors = ['#ffd84a', '#fff1a8', '#ffa0be', '#a0c8ff', '#be96ff'], spread = 1 } = {}) {
   if (!el || reduced()) return Promise.resolve();
+  if (lite()) count = Math.ceil(count / 2);
   const L = layer();
   const { x, y, r } = centerOf(el);
   const rx = r.width / 2 + 6, ry = r.height / 2 + 6;

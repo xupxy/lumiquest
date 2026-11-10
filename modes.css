@@ -331,8 +331,10 @@
   position: absolute; left: -10%; right: -10%; bottom: 10px; height: 18px;
   background: linear-gradient(180deg, #7cc8ff, #4aa3f0); opacity: .75; transform: rotate(-2deg);
 }
-.m-ar-river::after { content: ''; position: absolute; inset: 6px 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,.7) 0 14px, transparent 14px 60px); animation: m-river 3s linear infinite; }
-@keyframes m-river { to { background-position: 60px 0; } }
+.m-ar-river { overflow: hidden; }
+/* v6: течія — зсув шару (transform) замість background-position; шар ширший на період візерунка (60px) */
+.m-ar-river::after { content: ''; position: absolute; top: 6px; bottom: 6px; left: -60px; right: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,.7) 0 14px, transparent 14px 60px); animation: m-river 3s linear infinite; will-change: transform; }
+@keyframes m-river { from { transform: translateX(0); } to { transform: translateX(60px); } }
 .m-ar-boss { position: relative; display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name tower" "hp tower"; align-items: center; column-gap: 8px; min-height: 132px; }
 .m-ar-bname { grid-area: name; align-self: end; font-weight: 900; font-size: 18px; text-shadow: 0 1px 0 rgba(255,255,255,.6); }
 .m-ar-bname span { font-size: 26px; vertical-align: -3px; }
@@ -428,7 +430,10 @@
 .m-ar-elixir { display: flex; align-items: center; gap: 6px; font-weight: 900; }
 .m-ar-elbar { flex: 1; display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; padding: 3px; border-radius: 9px; background: #2b1d3a; }
 .m-ar-elbar i { height: 12px; border-radius: 4px; background: #4b3a5e; transition: background .4s; }
-.m-ar-elbar i.on { background: linear-gradient(180deg, #f58cff, #b03ad8); box-shadow: 0 0 6px #e17cff; animation: m-elix 2s ease-in-out infinite; }
+.m-ar-elbar i.on { position: relative; background: linear-gradient(180deg, #f58cff, #b03ad8); box-shadow: 0 0 6px #e17cff; }
+/* v6: пульс еліксиру — перехресне згасання до «яскравішої» копії (= brightness 1→1.25), лише opacity */
+.m-ar-elbar i.on::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(180deg, #ffafff, #dc48ff); box-shadow: 0 0 6px #ff9bff; opacity: 0; animation: m-elix-o 2s ease-in-out infinite; }
+@keyframes m-elix-o { 50% { opacity: 1; } }
 @keyframes m-elix { 50% { filter: brightness(1.25); } }
 .m-ar-elnum { min-width: 22px; text-align: center; background: #b03ad8; color: #fff; border-radius: 8px; padding: 0 4px; }
 

@@ -22,10 +22,10 @@
  * Екран: export function render(root, params, app) { ...; return cleanup? }
  *        export const meta = { topbar: true }   // необов'язково
  */
-import { tg, waitTelegram } from './tg.js?v=20261110130628';
-import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110130628';
-import * as S from './state.js?v=20261110130628';
-import * as UI from './ui.js?v=20261110130628';
+import { tg, waitTelegram } from './tg.js?v=20261110183712';
+import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110183712';
+import * as S from './state.js?v=20261110183712';
+import * as UI from './ui.js?v=20261110183712';
 
 const stageEl = document.getElementById('stage');
 const shell = document.getElementById('app');
@@ -172,7 +172,7 @@ const screenCache = {};
 async function loadScreen(name) {
   if (screenCache[name]) return screenCache[name];
   if (!/^[a-z_]+$/.test(name)) throw new Error('bad screen name');
-  const mod = await import(`./${name}.js?v=20261110130628`);
+  const mod = await import(`./${name}.js?v=20261110183712`);
   screenCache[name] = mod;
   return mod;
 }
@@ -250,7 +250,7 @@ function applyTheme() {
 // ─────────────────────────────────────────────────────────── boot
 async function boot() {
   const [content] = await Promise.all([
-    fetch('content.json?v=20261110130628').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
+    fetch('content.json?v=20261110183712').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
     waitTelegram(),
   ]);
   tg.init();
@@ -260,8 +260,8 @@ async function boot() {
 
   // необовʼязкові модулі інших агентів — безпечно
   const [fxM, lumiM] = await Promise.all([
-    import('./fx.js?v=20261110130628').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
-    import('./lumi.js?v=20261110130628').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
+    import('./fx.js?v=20261110183712').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
+    import('./lumi.js?v=20261110183712').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
   ]);
   UI.setFx(fxM);
   lumiMod = lumiM;
@@ -280,7 +280,11 @@ async function boot() {
   shell.insertBefore(app.topbar.el, stageEl);
   app.topbar.update(false);
 
-  document.addEventListener('visibilitychange', () => { if (document.hidden) flushState(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) flushState();
+    // v6: прихована вкладка/WebView — усі CSS-анімації на паузі
+    document.documentElement.classList.toggle('lq-hidden', document.hidden);
+  });
   window.addEventListener('pagehide', () => flushState());
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !document.querySelector('.modal') && !document.querySelector('.fb-sheet')) app.back();
@@ -290,6 +294,31 @@ async function boot() {
   setTimeout(() => document.getElementById('splash')?.remove(), 600);
   window.app = app; // для налагодження й тестів
   app.home();
+  perfProbe();
+}
+
+// ─────────────────────────────────────────────────────────── v6: авто-«lite»
+// Перші ~2 с після старту міряємо rAF-fps; якщо < 45 — html[data-perf=lite] (CSS зменшує частинки, тіні, фонові анімації).
+// Ручне перемикання: ?perf=lite | ?perf=full.
+function perfProbe() {
+  const root = document.documentElement;
+  const force = /[?&]perf=(lite|full)\b/.exec(location.search);
+  if (force) { if (force[1] === 'lite') root.dataset.perf = 'lite'; return; }
+  if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const WARM = 400, SPAN = 2000;
+  let t0 = 0; let frames = 0; let start = 0;
+  const tick = (t) => {
+    if (document.hidden) return; // вкладку сховано — замір недостовірний
+    if (!start) start = t;
+    if (t - start < WARM) { requestAnimationFrame(tick); return; }
+    if (!t0) { t0 = t; frames = 0; requestAnimationFrame(tick); return; }
+    frames++;
+    if (t - t0 < SPAN) { requestAnimationFrame(tick); return; }
+    const fps = (frames * 1000) / (t - t0);
+    app.session.fps = Math.round(fps);
+    if (fps < 45) root.dataset.perf = 'lite';
+  };
+  requestAnimationFrame(tick);
 }
 
 boot().catch((e) => {

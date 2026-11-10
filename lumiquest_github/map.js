@@ -1,9 +1,9 @@
 // 🗺 Карта світів: вертикальна мальовнича карта, світ 1 внизу → світ 5 у небі.
-import { h, fx, toast } from './ui.js?v=20261110130628';
-import { currentWorldId } from './state.js?v=20261110130628';
-import { worldGames, gameStars } from './games.js?v=20261110130628';
+import { h, fx, toast, pauseOffscreen } from './ui.js?v=20261110183712';
+import { currentWorldId } from './state.js?v=20261110183712';
+import { worldGames, gameStars } from './games.js?v=20261110183712';
 
-import { applyWorldTheme, worldDecor, themeOf } from './theme.js?v=20261110130628';
+import { applyWorldTheme, worldDecor, themeOf } from './theme.js?v=20261110183712';
 
 // Острови — кожен у мові свого світу: форма основи, палітра, обвідка кольором світу (не чорна).
 const ISLES = [
@@ -210,5 +210,8 @@ export function render(root, params, app) {
     root.scrollTop = Math.max(0, Math.min(y, root.scrollHeight));
   });
 
-  return () => ro.disconnect();
+  // v6: смуги світів і острови поза екраном — анімації на паузі
+  const unPause = pauseOffscreen([...map.querySelectorAll('.map-band, .isle')], root, { delay: 1700 });
+
+  return () => { ro.disconnect(); unPause(); };
 }

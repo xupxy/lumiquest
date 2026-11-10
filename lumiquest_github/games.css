@@ -216,3 +216,10 @@
 @media (prefers-reduced-motion: reduce) {
   .g-card, .g-card-ico, .g-rays, .g-pop, .g-bump, .g-rules li, .g-stats div, .g-banner { animation: none !important; }
 }
+
+/* v6: під час canvas-гри фонове небо застосунку сховане під полотном — не анімуємо його даремно */
+html[data-gcanvas] #sky, html[data-gcanvas] #sky *, html[data-gcanvas] #sky::before, html[data-gcanvas] #sky::after { animation-play-state: paused !important; }
+/* v6: статичні шари неба під ігровим полотном (малюються раз; зсув/прозорість — на компоновщику) */
+.g-skyl { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.g-skyl canvas { position: absolute; left: 0; top: 0; display: block; }
+.g-skyl .g-sun { will-change: transform; }

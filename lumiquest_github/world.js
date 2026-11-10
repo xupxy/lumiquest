@@ -1,9 +1,9 @@
 // 🌍 Світ: ігрова стежка з 13 рівнів (games.js) — звивиста дорога, вузли-медальйони з обкладинками,
 // Лумі стоїть на поточному рівні, паралакс-фон і частинки під настрій світу.
-import { h, starsRow, fx, toast } from './ui.js?v=20261110130628';
-import { getWorld, worldIndex } from './state.js?v=20261110130628';
-import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261110130628';
-import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261110130628';
+import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261110183712';
+import { getWorld, worldIndex } from './state.js?v=20261110183712';
+import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261110183712';
+import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261110183712';
 
 const STEP = 186;        // відстань між вузлами по вертикалі
 const CUR_GAP = 56;      // додатковий простір навколо поточного (Лумі зверху, «Грати» знизу)
@@ -90,7 +90,11 @@ export function render(root, params, app) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('class', 'wp-road');
   svg.setAttribute('aria-hidden', 'true');
-  path.append(parFar, parNear, svg);
+  // v6: «марширувальний» пунктир — в окремому SVG-шарі, щоб його анімація не перемальовувала всю дорогу з тінями
+  const svgFx = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svgFx.setAttribute('class', 'wp-road wp-road-fx');
+  svgFx.setAttribute('aria-hidden', 'true');
+  path.append(parFar, parNear, svg, svgFx);
 
   let lumiBox = null;
   const nodes = list.map((g, i) => {
@@ -101,7 +105,7 @@ export function render(root, params, app) {
     const cls = ['wp-node', `t-${g.type}`, open ? 'open' : 'locked', s ? 'done' : '', isCur ? 'current' : '', isEnd ? 'end' : '']
       .filter(Boolean).join(' ');
     const medal = h('span', { class: 'wp-medal' },
-      h('span', { class: 'wp-frame', 'aria-hidden': 'true' }, svgFrom(medalFrame(w.id))),
+      h('span', { class: 'wp-frame', 'aria-hidden': 'true' }, frameLayers(medalFrame(w.id), isCur)),
       h('img', { src: app.asset(g.cover), alt: '', loading: i > curIdx + 3 ? 'lazy' : 'eager', draggable: 'false' }),
       h('span', { class: 'wp-num', 'aria-hidden': 'true', text: String(i + 1) }),
       open ? h('span', { class: 'wp-stars' }, starsRow(s, 3, 'sm')) : h('span', { class: 'wp-lock', 'aria-hidden': 'true', text: '🔒' }));
@@ -167,11 +171,17 @@ export function render(root, params, app) {
     const d = roadPath(pts);
     const dDone = roadPath(pts.slice(0, curIdx + 1));
     svg.innerHTML = `<path class="road-edge" d="${d}"/><path class="road" d="${d}"/><path class="road-deco" d="${d}"/><path class="road-dash" d="${d}"/>` +
-      (curIdx > 0 ? `<path class="road-done" d="${dDone}" pathLength="1"/><path class="road-done-dash" d="${dDone}"/>` : '');
+      (curIdx > 0 ? `<path class="road-done" d="${dDone}" pathLength="1"/>` : '');
+    svgFx.setAttribute('viewBox', `0 0 ${W} ${height}`);
+    svgFx.setAttribute('width', W);
+    svgFx.setAttribute('height', height);
+    svgFx.innerHTML = curIdx > 0 ? `<path class="road-done-dash" d="${dDone}"/>` : '';
   };
   layout();
   const ro = new ResizeObserver(() => layout());
   ro.observe(path);
+  // v6: анімації вузлів і декору поза екраном — на паузі
+  const unPause = pauseOffscreen([...nodes, ...path.querySelectorAll('.wp-deco')], root);
 
   // ── паралакс: фон стежки рухається повільніше за дорогу
   let raf = 0;
@@ -197,9 +207,27 @@ export function render(root, params, app) {
     cancelAnimationFrame(raf);
     root.removeEventListener('scroll', onScroll);
     ro.disconnect();
+    unPause();
     unTheme();
     lumi = null;
   };
+}
+
+// v6: поточний вузол із шестернею (w3): шестерню обертаємо окремими HTML-шарами на компоновнику, без фільтра над анімацією.
+//   [тінь-копія (чорнило, зсув 5px — те саме, що drop-shadow обертової шестерні)] [шестерня + сяйво] [статична рамка]
+function frameLayers(str, animated) {
+  const main = svgFrom(str);
+  const gear = animated && main && main.querySelector && main.querySelector('.wf-gear');
+  if (!gear) return main;
+  const ink = gear.querySelector('[stroke]') ? gear.querySelector('[stroke]').getAttribute('stroke') : '#000';
+  const gsvg = main.cloneNode(false);
+  gsvg.append(gear);
+  const ssvg = main.cloneNode(false);
+  const sg = gear.cloneNode(true);
+  sg.querySelectorAll('[fill]').forEach((n) => n.setAttribute('fill', ink));
+  ssvg.innerHTML = `<circle r="49" fill="${ink}"/>`;
+  ssvg.prepend(sg);
+  return [h('span', { class: 'wf-gear-l sh' }, ssvg), h('span', { class: 'wf-gear-l' }, gsvg), main];
 }
 
 function svgFrom(str) {
