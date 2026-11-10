@@ -1,0 +1,231 @@
+/* LumiQuest — аркадні міні-ігри: 🧗 Обі-Вежа (obby.js), 🏃 Словесний Забіг (runner.js).
+   Підключається динамічно з модулів. Префікс класів: .g- */
+
+.screen.g-host, #app.no-topbar .screen.g-host { padding: 0; overflow: hidden; }
+.g-screen {
+  --g-ink: #2b1d3a;
+  --g-accent: #7b5cff;
+  --g-good: #2fbf71;
+  --g-bad: #ef4f5f;
+  --g-gold: #ffc93c;
+  position: absolute; inset: 0; overflow: hidden;
+  color: var(--g-ink);
+  font-family: var(--font, system-ui, sans-serif);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+  touch-action: none;
+  background: #cdeeff;
+}
+.g-screen *, .g-screen *::before, .g-screen *::after { box-sizing: border-box; }
+.g-screen button { font: inherit; cursor: pointer; touch-action: manipulation; }
+.g-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+
+/* ------------------------------------------------ HUD */
+.g-hud {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 3;
+  padding: calc(8px + var(--safe-top, env(safe-area-inset-top, 0px))) 10px 0;
+  pointer-events: none;
+}
+.g-hud > *, .g-hud-row > * { pointer-events: auto; }
+.g-hud-row { display: flex; align-items: center; gap: 6px; }
+.g-ibtn {
+  flex: none; width: 42px; height: 42px; border-radius: 14px; border: 0;
+  background: rgba(255,255,255,.78); color: var(--g-ink);
+  font-size: 22px; line-height: 1; display: grid; place-items: center;
+  box-shadow: 0 3px 0 rgba(40,20,70,.18), 0 6px 14px rgba(40,20,70,.12);
+  transition: transform .08s;
+}
+.g-ibtn.g-back { font-size: 28px; padding-bottom: 4px; }
+.g-ibtn[hidden] { display: none; }
+.g-ibtn:active { transform: scale(.9) translateY(2px); }
+.g-pause { margin-left: auto; }
+.g-hearts { display: flex; gap: 1px; padding: 6px 8px; border-radius: 999px; background: rgba(255,255,255,.7); box-shadow: 0 3px 0 rgba(40,20,70,.15); }
+.g-hearts i { font-style: normal; font-size: 18px; line-height: 1; transition: filter .3s, opacity .3s, transform .3s; }
+.g-hearts i.lost { filter: grayscale(1); opacity: .35; transform: scale(.82); }
+.g-chip {
+  flex: none; display: inline-flex; align-items: center; gap: 4px;
+  padding: 7px 11px; border-radius: 999px; font-weight: 800; font-size: 15px;
+  background: rgba(255,255,255,.78); box-shadow: 0 3px 0 rgba(40,20,70,.15);
+  font-variant-numeric: tabular-nums;
+}
+.g-chip[hidden] { display: none; }
+.g-combo { background: linear-gradient(180deg, #ffd25e, #ff9a3c); color: #4a1f00; animation: g-jelly .45s ease-out; }
+.g-bump { animation: g-jelly .45s ease-out; }
+@keyframes g-jelly {
+  0% { transform: scale(1); } 30% { transform: scale(1.3, .8); } 50% { transform: scale(.85, 1.15); }
+  70% { transform: scale(1.08, .95); } 100% { transform: scale(1); }
+}
+
+.g-qcard {
+  margin: 10px auto 0; max-width: 420px;
+  padding: 10px 14px 11px; border-radius: 20px;
+  background: rgba(255,255,255,.93);
+  box-shadow: 0 5px 0 rgba(40,20,70,.14), 0 14px 30px rgba(40,20,70,.18);
+  text-align: center;
+}
+.g-qcard[hidden] { display: none; }
+.g-pop { animation: g-cardin .42s cubic-bezier(.3,1.5,.5,1); }
+@keyframes g-cardin { from { opacity: 0; transform: translateY(-14px) scale(.92); } }
+.g-qlabel { font-size: 12px; font-weight: 800; letter-spacing: .02em; color: #8a6fc9; text-transform: uppercase; }
+.g-qtext { margin-top: 3px; font-family: 'Poppins', var(--font, sans-serif); font-weight: 800; font-size: 21px; line-height: 1.22; }
+.g-qtext.g-long { font-size: 17px; }
+.g-qfb { min-height: 0; font-size: 14px; font-weight: 700; }
+.g-qfb:empty { display: none; }
+.g-qfb.good, .g-qfb.bad { margin-top: 6px; padding: 5px 10px; border-radius: 12px; animation: g-cardin .3s ease-out; }
+.g-qfb.good { background: #dff7e9; color: #13723f; }
+.g-qfb.bad { background: #ffe3e6; color: #a5202f; }
+.g-qfb span { display: block; margin-top: 3px; font-weight: 600; font-size: 13px; color: #6b4a57; }
+
+/* ------------------------------------------------ 🧗 obby: смужка висоти */
+.g-ob-prog {
+  position: absolute; z-index: 2; right: 8px; bottom: calc(20px + var(--safe-bottom, env(safe-area-inset-bottom, 0px)));
+  top: 46%; width: 12px; border-radius: 8px;
+  background: rgba(255,255,255,.45); box-shadow: inset 0 2px 4px rgba(40,20,70,.2);
+  pointer-events: none;
+}
+.g-ob-progfill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; border-radius: 8px; background: linear-gradient(0deg, #ffb03a, #ffe27a); transition: height .6s cubic-bezier(.3,1.4,.5,1); }
+.g-ob-prog i { position: absolute; right: 10px; transform: translateY(50%); font-style: normal; font-size: 13px; }
+.g-ob-progtop { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 16px; }
+.g-ob-progdot {
+  position: absolute; left: 50%; bottom: 0; width: 20px; height: 20px; border-radius: 50%;
+  transform: translate(-50%, 50%);
+  background: radial-gradient(circle at 40% 35%, #ffe8ac, #ffc8ac 45%, #beaaf2);
+  border: 2px solid #482c56; transition: bottom .6s cubic-bezier(.3,1.4,.5,1);
+}
+
+/* ------------------------------------------------ 🏃 runner */
+.g-rn-card { max-width: 300px; padding: 8px 14px 10px; }
+.g-rn-word { font-weight: 900; font-size: 30px; line-height: 1.15; color: #3d2852; margin-top: 2px; }
+.g-rn-word.g-long { font-size: 23px; }
+.g-rn-combo { position: absolute; right: 10px; top: calc(62px + var(--safe-top, env(safe-area-inset-top, 0px))); }
+.g-rn-pad {
+  position: absolute; z-index: 2; left: 0; right: 0; bottom: calc(10px + var(--safe-bottom, env(safe-area-inset-bottom, 0px)));
+  display: flex; justify-content: space-between; padding: 0 14px; pointer-events: none;
+  font-size: 34px; font-weight: 900; color: rgba(255,255,255,.55); text-shadow: 0 2px 0 rgba(40,20,70,.25);
+}
+.g-dark .g-rn-pad { color: rgba(255,255,255,.35); }
+
+/* ------------------------------------------------ кнопки */
+.g-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 50px; padding: 10px 18px; border: 0; border-radius: 16px;
+  font-weight: 800; font-size: 17px; color: #fff;
+  background: linear-gradient(180deg, #8c6dff, #6a48f0);
+  box-shadow: 0 4px 0 #4a2fb8, 0 8px 18px rgba(80,50,200,.25);
+  transition: transform .08s, box-shadow .08s;
+}
+.g-btn:active { transform: translateY(3px) scale(.98); box-shadow: 0 1px 0 #4a2fb8; }
+.g-btn-big { width: 100%; }
+.g-btn-go { background: linear-gradient(180deg, #ffd25e, #f6a821); color: #4a2a00; box-shadow: 0 4px 0 #c27a0b, 0 8px 18px rgba(200,120,10,.28); }
+.g-btn-go:active { box-shadow: 0 1px 0 #c27a0b; }
+.g-btn-ghost { background: rgba(72,44,86,.08); color: var(--g-ink); box-shadow: 0 3px 0 rgba(72,44,86,.18); }
+.g-btn-ghost:active { box-shadow: 0 1px 0 rgba(72,44,86,.18); }
+
+/* ------------------------------------------------ оверлеї */
+.g-over {
+  position: absolute; inset: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: center;
+  padding: calc(14px + var(--safe-top, env(safe-area-inset-top, 0px))) 14px calc(14px + var(--safe-bottom, env(safe-area-inset-bottom, 0px)));
+  background: rgba(24,12,48,.5);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  overflow-y: auto; touch-action: pan-y;
+  animation: g-fade .3s ease-out;
+}
+.g-over.g-out { animation: g-fadeout .22s ease-in forwards; }
+@keyframes g-fade { from { opacity: 0; } }
+@keyframes g-fadeout { to { opacity: 0; } }
+.g-intro { background: rgba(24,12,48,.28); }
+.g-card {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 360px; margin: auto;
+  padding: 18px 18px 16px; border-radius: 28px;
+  background: linear-gradient(180deg, #fffaf0, #fff);
+  box-shadow: 0 8px 0 rgba(72,44,86,.18), 0 24px 50px rgba(20,8,40,.35);
+  text-align: center;
+  display: flex; flex-direction: column; gap: 9px;
+  animation: g-cardpop .5s cubic-bezier(.3,1.5,.5,1);
+}
+.g-card-sm { max-width: 300px; }
+@keyframes g-cardpop { from { opacity: 0; transform: translateY(30px) scale(.86); } }
+.g-card h2 { margin: 0; font-size: 26px; font-weight: 900; color: #3d2852; }
+.g-card-ico {
+  width: 76px; height: 76px; margin: -48px auto 0; border-radius: 24px;
+  display: grid; place-items: center; font-size: 42px;
+  background: linear-gradient(180deg, #ffe27a, #ffb03a);
+  box-shadow: 0 5px 0 #c27a0b, 0 12px 24px rgba(200,120,10,.3);
+  animation: g-bob 2.4s ease-in-out infinite;
+}
+@keyframes g-bob { 50% { transform: translateY(-5px) rotate(-4deg); } }
+.g-sub { margin: 0; font-size: 14px; font-weight: 700; color: #7a6690; }
+.g-intro-lumi, .g-res-lumi { display: flex; justify-content: center; min-height: 60px; margin: -2px 0; }
+.g-rules { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; text-align: left; }
+.g-rules li {
+  padding: 8px 11px; border-radius: 14px; background: #f4efff;
+  font-size: 14px; line-height: 1.33; font-weight: 600;
+  animation: g-cardin .4s ease-out backwards;
+}
+.g-rules li:nth-child(2) { animation-delay: .07s; } .g-rules li:nth-child(3) { animation-delay: .14s; } .g-rules li:nth-child(4) { animation-delay: .21s; }
+.g-keys { font-size: 12px; color: #9a8ab0; font-weight: 600; }
+@media (hover: none) and (pointer: coarse) { .g-keys { display: none; } }
+
+/* результат */
+.g-result.win { background: radial-gradient(circle at 50% 40%, rgba(255,214,90,.35), rgba(24,12,48,.62) 70%); }
+.g-rays {
+  position: absolute; left: 50%; top: 38%; width: 760px; height: 760px; margin: -380px 0 0 -380px;
+  background: repeating-conic-gradient(rgba(255,230,140,.22) 0 10deg, transparent 10deg 20deg);
+  border-radius: 50%; animation: g-spin 18s linear infinite; pointer-events: none;
+  -webkit-mask: radial-gradient(circle, #000 20%, transparent 68%); mask: radial-gradient(circle, #000 20%, transparent 68%);
+}
+.g-result.lose .g-rays { display: none; }
+@keyframes g-spin { to { transform: rotate(360deg); } }
+.g-banner {
+  align-self: center; margin-top: -36px; padding: 8px 26px; border-radius: 16px;
+  font-weight: 900; font-size: 24px; letter-spacing: .04em; color: #fff;
+  background: linear-gradient(180deg, #8c6dff, #6a48f0); box-shadow: 0 5px 0 #4a2fb8;
+  transform: rotate(-2deg);
+  animation: g-banner .6s cubic-bezier(.3,1.6,.5,1);
+}
+.g-result.win .g-banner { background: linear-gradient(180deg, #ffd25e, #f6a821); color: #4a2a00; box-shadow: 0 5px 0 #c27a0b; }
+.g-result.lose .g-banner { background: linear-gradient(180deg, #ff8a8a, #e5484d); box-shadow: 0 5px 0 #a92a33; }
+@keyframes g-banner { from { transform: scale(.3) rotate(-14deg); opacity: 0; } }
+.g-stars { min-height: 84px; display: flex; justify-content: center; align-items: flex-end; }
+.g-record { align-self: center; padding: 4px 12px; border-radius: 999px; background: #fff3c4; color: #8a5a00; font-weight: 800; font-size: 14px; animation: g-jelly .6s .8s backwards; }
+.g-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.g-stats div {
+  display: flex; flex-direction: column; align-items: center; padding: 7px 4px; border-radius: 14px; background: #f4efff;
+  animation: g-cardin .4s ease-out backwards;
+}
+.g-stats div:nth-child(1) { animation-delay: .35s; } .g-stats div:nth-child(2) { animation-delay: .45s; }
+.g-stats div:nth-child(3) { animation-delay: .55s; } .g-stats div:nth-child(4) { animation-delay: .65s; }
+.g-stats span { font-size: 12px; font-weight: 700; color: #7a6690; }
+.g-stats strong { display: flex; align-items: baseline; gap: 2px; }
+.g-stats b { font-size: 22px; font-weight: 900; color: #3d2852; font-variant-numeric: tabular-nums; display: inline; }
+.g-stats em { font-style: normal; font-size: 14px; font-weight: 800; color: #9a8ab0; }
+.g-res-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.g-res-row .g-res-lumi { min-height: 0; margin: 0; }
+.g-xp { align-self: center; padding: 6px 16px; border-radius: 999px; background: linear-gradient(180deg, #fff3c4, #ffe08a); font-weight: 900; font-size: 18px; color: #7a4a00; box-shadow: 0 3px 0 #e0b040; }
+.g-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 2px; }
+
+.g-locked { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 20px; font-weight: 700; }
+.g-locked-ico { font-size: 64px; }
+
+/* темний світ (w5) */
+.g-dark { background: #1b1340; }
+.g-dark .g-hearts, .g-dark .g-chip:not(.g-combo), .g-dark .g-ibtn { background: rgba(255,255,255,.88); }
+
+@media (prefers-reduced-motion: reduce) {
+  .g-card, .g-card-ico, .g-rays, .g-pop, .g-bump, .g-rules li, .g-stats div, .g-banner { animation: none !important; }
+}
+
+/* v6: під час canvas-гри фонове небо застосунку сховане під полотном — не анімуємо його даремно */
+html[data-gcanvas] #sky, html[data-gcanvas] #sky *, html[data-gcanvas] #sky::before, html[data-gcanvas] #sky::after { animation-play-state: paused !important; }
+/* v6: статичні шари неба під ігровим полотном (малюються раз; зсув/прозорість — на компоновщику) */
+.g-skyl { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.g-skyl canvas { position: absolute; left: 0; top: 0; display: block; }
+.g-skyl .g-sun { will-change: transform; }
+
+/* v8 «🔥 Виклик» — позначка на старт-екрані складних версій */
+.g-hard-tag { display: inline-block; margin: 2px auto 6px; padding: 4px 12px; border-radius: 999px;
+  background: linear-gradient(135deg, #ff9a3c, #ff4d4d); color: #fff; font-weight: 900; font-size: 14px;
+  letter-spacing: .02em; box-shadow: 0 3px 0 #b8322a, 0 0 14px rgba(255,110,50,.55); }
+.g-hard .g-card { box-shadow: 0 0 0 3px #ff7a3c, 0 0 26px rgba(255,90,40,.45), 0 12px 30px rgba(0,0,0,.25); }
