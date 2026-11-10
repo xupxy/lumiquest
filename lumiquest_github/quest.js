@@ -1,7 +1,7 @@
 // 📜 Квест: сюжет → підказка-урок → 5 завдань → результат із зірками.
-import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait } from './ui.js?v=20261110124228';
-import { applyWorldTheme } from './theme.js?v=20261110124228';
-import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110124228';
+import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait } from './ui.js?v=20261110130628';
+import { applyWorldTheme } from './theme.js?v=20261110130628';
+import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110130628';
 
 const CHEERS = ['Так! Світлячок спійманий ✨', 'Блискуче! 🌟', 'Ти сяєш! 💫', 'Ура, правильно! 🎉'];
 

@@ -1,8 +1,8 @@
 // Головний екран: онбординг для нового гравця або «хаб» з плитками.
-import { h, button, plural, fx } from './ui.js?v=20261110124228';
-import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110124228';
-import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110124228';
-import { worldGames, nextGame, gameStars } from './games.js?v=20261110124228';
+import { h, button, plural, fx } from './ui.js?v=20261110130628';
+import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110130628';
+import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110130628';
+import { worldGames, nextGame, gameStars } from './games.js?v=20261110130628';
 
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 function jelly(el) {
@@ -38,7 +38,7 @@ function onboarding(root, app) {
       say: `Привіт, ${name}! 👋`,
       body: [
         h('img', { class: 'onb-banner', src: app.asset('banner.png'), alt: 'LumiQuest — English adventure' }),
-        h('p', { class: 'onb-text', text: `Привіт, ${name}! Я — Лумі, маленька зірочка. Разом ми вивчатимемо англійську — як справжню пригоду.` }),
+        h('p', { class: 'onb-text', text: `Привіт, ${name}! Я — Лумі, маленький дух-ліхтарик. Разом ми вивчатимемо англійську — як справжню пригоду.` }),
       ],
       buttons: [button('Далі', { variant: 'primary', onClick: () => go(1) })],
     }),
