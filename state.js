@@ -63,7 +63,7 @@
  *  todayISO()
  */
 
-import { t, tc } from './i18n.js?v=20261110233151';
+import { t, tc } from './i18n.js?v=20261111000115';
 
 export const STATE_VERSION = 1;
 /** v7: глобальне одноразове скидання прогресу. Збереження з іншим epoch замінюється новим станом. */

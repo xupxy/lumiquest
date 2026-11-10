@@ -2,16 +2,16 @@
 // Лумі в центрі арени, до неї повзуть «Помилки» (кумедні клякси) з українськими словами.
 // Знизу — 3 англійські варіанти для найближчого ворога: правильно — зоряний снаряд і вибух,
 // неправильно — ворог робить ривок. 3 ❤️, хвилі, супер-атака за серію, таймер 90 с.
-import * as S from './state.js?v=20261110233151';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110233151';
-import * as FX from './fx.js?v=20261110233151';
-import * as L from './lumi.js?v=20261110233151';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110233151';
-import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110233151';
+import * as S from './state.js?v=20261111000115';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261111000115';
+import * as FX from './fx.js?v=20261111000115';
+import * as L from './lumi.js?v=20261111000115';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261111000115';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261111000115';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110233151', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110233151', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261111000115', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261111000115', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {

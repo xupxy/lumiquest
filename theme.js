@@ -12,7 +12,7 @@
 //   worldProps(wid) -> масив SVG-рядків (дрібний декор уздовж стежки)
 //   medalFrame(wid) -> SVG-рядок рамки вузла стежки;  pedestal(wid) -> SVG-рядок постаменту для Лумі
 //   emblem(wid) -> SVG-рядок маленької емблеми світу
-import { tg } from './tg.js?v=20261110233151';
+import { tg } from './tg.js?v=20261111000115';
 
 const reduced = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 

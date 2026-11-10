@@ -1,8 +1,8 @@
 // 🧭 Тест рівня: 5 питань на рівень, рівень зараховано при ≥ 4/5, інакше тест завершується.
-import { h, button, richText, fx, wait } from './ui.js?v=20261110233151';
-import { applyPlacement, getWorld } from './state.js?v=20261110233151';
-import { t, tc } from './i18n.js?v=20261110233151';
-import { englishOf, speakBtn, audio } from './ui.js?v=20261110233151';
+import { h, button, richText, fx, wait } from './ui.js?v=20261111000115';
+import { applyPlacement, getWorld } from './state.js?v=20261111000115';
+import { t, tc } from './i18n.js?v=20261111000115';
+import { englishOf, speakBtn, audio } from './ui.js?v=20261111000115';
 
 export const meta = { topbar: false };
 

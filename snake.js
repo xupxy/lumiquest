@@ -2,30 +2,30 @@
 // слова ПО ПОРЯДКУ (на полі є й зайві літери). Свайп/стрілки, швидкість росте зі словом.
 // 5 слів, 3 ❤️ (зіткнення зі стіною/собою або неправильна літера). З'їдене слово озвучується.
 // v6: DPR ≤ 2, фон і плитки — офскрин-спрайти, частинки — пул на типізованих масивах, без shadowBlur.
-import * as S from './state.js?v=20261110233151';
-import * as FX from './fx.js?v=20261110233151';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110233151';
-import { themeOf } from './theme.js?v=20261110233151';
+import * as S from './state.js?v=20261111000115';
+import * as FX from './fx.js?v=20261111000115';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261111000115';
+import { themeOf } from './theme.js?v=20261111000115';
 
 // ---------------------------------------------------------------- безпечні мости (i18n, звук, Лумі)
 let I = {};
-try { I = await import('./i18n.js?v=20261110233151'); } catch (e) { /* без ядра i18n — власні словники */ }
+try { I = await import('./i18n.js?v=20261111000115'); } catch (e) { /* без ядра i18n — власні словники */ }
 let A = {};
-import('./audio.js?v=20261110233151').then((m) => { A = m; }).catch(() => { /* без звуку */ });
+import('./audio.js?v=20261111000115').then((m) => { A = m; }).catch(() => { /* без звуку */ });
 let LM = null;
-try { LM = await import('./lumi.js?v=20261110233151'); } catch (e) { /* фолбек через app.makeLumi */ }
+try { LM = await import('./lumi.js?v=20261111000115'); } catch (e) { /* фолбек через app.makeLumi */ }
 
 const DICT = {
   uk: {
     'mode.snake.title': '🐍 Змійка-Слово',
     'mode.snake.r1': 'Угорі — слово. Збери його англійською: їж літери <b>по порядку</b>.',
-    'mode.snake.r2': 'Керуй свайпом (або стрілками). Не врізайся в стіни й себе!',
-    'mode.snake.r3': 'Зайва літера чи удар — мінус ❤️. У тебе {h} ❤️ і {n} слів.',
+    'mode.snake.r2': 'Керуй свайпом або тапом у потрібний бік (чи стрілками). Крізь стіни можна проходити!',
+    'mode.snake.r3': 'Зайва літера — мінус ❤️. У тебе {h} ❤️ і {n} слів.',
     'mode.snake.r4': 'Кожне слово — швидше! 🚀',
     'mode.snake.keys': 'Клавіші: ← ↑ → ↓ / WASD, P — пауза',
     'mode.snake.start': '▶ Повзімо!',
     'mode.snake.label': 'Збери англійською',
-    'mode.snake.tip': '👆 Свайпни, щоб повернути',
+    'mode.snake.tip': '👆 Свайпни або тапни збоку, щоб повернути',
     'mode.snake.hi': 'Їж літери по порядку! 🐍',
     'mode.snake.wrong': 'Не та літера! Потрібна «{c}»',
     'mode.snake.wall': 'Ой, стіна! 🙈',
@@ -55,13 +55,13 @@ const DICT = {
   ru: {
     'mode.snake.title': '🐍 Змейка-Слово',
     'mode.snake.r1': 'Наверху — слово. Собери его по-английски: ешь буквы <b>по порядку</b>.',
-    'mode.snake.r2': 'Управляй свайпом (или стрелками). Не врезайся в стены и в себя!',
-    'mode.snake.r3': 'Лишняя буква или удар — минус ❤️. У тебя {h} ❤️ и {n} слов.',
+    'mode.snake.r2': 'Управляй свайпом или тапом в нужную сторону (или стрелками). Сквозь стены можно проходить!',
+    'mode.snake.r3': 'Лишняя буква — минус ❤️. У тебя {h} ❤️ и {n} слов.',
     'mode.snake.r4': 'С каждым словом — быстрее! 🚀',
     'mode.snake.keys': 'Клавиши: ← ↑ → ↓ / WASD, P — пауза',
     'mode.snake.start': '▶ Ползём!',
     'mode.snake.label': 'Собери по-английски',
-    'mode.snake.tip': '👆 Свайпни, чтобы повернуть',
+    'mode.snake.tip': '👆 Свайпни или тапни сбоку, чтобы повернуть',
     'mode.snake.hi': 'Ешь буквы по порядку! 🐍',
     'mode.snake.wrong': 'Не та буква! Нужна «{c}»',
     'mode.snake.wall': 'Ой, стена! 🙈',
@@ -114,7 +114,7 @@ const DX = [1, 0, -1, 0], DY = [0, 1, 0, -1];
 const MAXN = 256;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games4.css?v=20261110233151', import.meta.url).href;
+const CSS_HREF = new URL('./games4.css?v=20261111000115', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games4-css]');
   if (!l) {
@@ -421,7 +421,7 @@ export function render(root, params, app) {
   const look = { x: 1, y: 0 };
 
   function newGame() {
-    g = { words: pickWords(pairs), wi: 0, pos: 0, hearts: HEARTS, len: 0, dir: 0, q: [], grow: 0, acc: 0, step: 0.24,
+    g = { words: pickWords(pairs), wi: 0, pos: 0, hearts: HEARTS, len: 0, dir: 0, q: [], grow: 0, acc: 0, step: 0.30,
       letters: 0, mistakes: 0, wordsDone: 0, wordMiss: 0, xp: 0, hold: 0, hurt: 0, shake: 0,
       blink: 2, tongue: 0, tongueT: 1.5, time: 0, celebrate: 0, swiped: false };
     stage.style.transform = '';
@@ -491,7 +491,7 @@ export function render(root, params, app) {
   function setupWord() {
     for (const t of TL) if (t.on) t.die = t.die || 0.001;
     g.pos = 0; g.wordMiss = 0;
-    g.step = Math.max(0.12, 0.25 - g.wi * 0.028);
+    g.step = Math.max(0.19, 0.30 - g.wi * 0.022);
     const w = word();
     hud.word.textContent = w.nat;
     hud.word.classList.toggle('g4-long', w.nat.length > 16);
@@ -528,12 +528,9 @@ export function render(root, params, app) {
       const nd = g.q.shift();
       if ((nd + 2) % 4 !== g.dir) g.dir = nd;
     }
-    const nx = sx[0] + DX[g.dir], ny = sy[0] + DY[g.dir];
-    // стіна
-    if (nx < 0 || ny < 0 || nx >= COLS || ny >= rows) { crash(T('mode.snake.wall')); return; }
+    // v9: поле «зациклене» — змійка проходить крізь стіни (і крізь себе) без штрафу
+    const nx = (sx[0] + DX[g.dir] + COLS) % COLS, ny = (sy[0] + DY[g.dir] + rows) % rows;
     const grow = g.grow > 0;
-    const upto = grow ? g.len : g.len - 1;
-    for (let i = 0; i < upto; i++) if (sx[i] === nx && sy[i] === ny) { crash(T('mode.snake.self')); return; }
     for (let i = 0; i < g.len; i++) { qx[i] = sx[i]; qy[i] = sy[i]; }
     let n = g.len;
     if (grow && n < MAXN - 1) { sx[n] = qx[n] = sx[n - 1]; sy[n] = qy[n] = sy[n - 1]; n += 1; g.grow -= 1; }
@@ -689,14 +686,42 @@ export function render(root, params, app) {
   }
   const easeBack = (k) => { const c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); };
   const COL = { out: th.ink, body: th.accent2, light: mix(th.accent2, '#ffffff', 0.42), spot: mix(th.accent, '#ffffff', 0.15), shadow: 'rgba(0,0,0,.2)' };
-  function segX(i, a) { return ox + (qx[i] + (sx[i] - qx[i]) * a + 0.5) * cell; }
-  function segY(i, a) { return oy + (qy[i] + (sy[i] - qy[i]) * a + 0.5) * cell; }
+  const wrapD = (d) => (d > 1 ? -1 : d < -1 ? 1 : d);   // крок через край поля
+  function segX(i, a) { return ox + (qx[i] + wrapD(sx[i] - qx[i]) * a + 0.5) * cell; }
+  function segY(i, a) { return oy + (qy[i] + wrapD(sy[i] - qy[i]) * a + 0.5) * cell; }
   function snakePath(a, dx, dy) {
     ctx.beginPath();
-    ctx.moveTo(segX(g.len - 1, a) + dx, segY(g.len - 1, a) + dy);
-    for (let i = g.len - 2; i >= 0; i--) ctx.lineTo(segX(i, a) + dx, segY(i, a) + dy);
+    let px0 = segX(g.len - 1, a), py0 = segY(g.len - 1, a);
+    ctx.moveTo(px0 + dx, py0 + dy);
+    const gap = cell * 1.6;
+    for (let i = g.len - 2; i >= 0; i--) {
+      const x = segX(i, a), y = segY(i, a);
+      if (Math.abs(x - px0) > gap || Math.abs(y - py0) > gap) { ctx.lineTo(px0 + dx + 0.01, py0 + dy); ctx.moveTo(x + dx, y + dy); }
+      else ctx.lineTo(x + dx, y + dy);
+      px0 = x; py0 = y;
+    }
+    ctx.lineTo(px0 + dx + 0.01, py0 + dy);
   }
+  // Змійка малюється в межах поля; під час переходу через край — ще й «дзеркальна» копія з іншого боку.
   function drawSnake() {
+    const fw = COLS * cell, fh = rows * cell;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(ox, oy, fw, fh); ctx.clip();
+    drawSnakeOnce();
+    const moving = phase === 'play' && g.hold <= 0;
+    if (moving) {
+      let ex = 0, ey = 0;
+      for (let i = 0; i < g.len; i++) {
+        const d1 = sx[i] - qx[i], d2 = sy[i] - qy[i];
+        if (d1 > 1) ex = 1; else if (d1 < -1) ex = -1;
+        if (d2 > 1) ey = 1; else if (d2 < -1) ey = -1;
+      }
+      if (ex) { ctx.translate(ex * fw, 0); drawSnakeOnce(); ctx.translate(-ex * fw, 0); }
+      if (ey) { ctx.translate(0, ey * fh); drawSnakeOnce(); ctx.translate(0, -ey * fh); }
+    }
+    ctx.restore();
+  }
+  function drawSnakeOnce() {
     const moving = phase === 'play' && g.hold <= 0;
     const a = moving ? Math.min(1, g.acc / g.step) : 1;
     if (g.hurt > 0 && ((g.hurt * 10) | 0) % 2 === 0) ctx.globalAlpha = 0.45;
@@ -761,23 +786,34 @@ export function render(root, params, app) {
     if (!g || paused || phase !== 'play') return;
     const lastD = g.q.length ? g.q[g.q.length - 1] : g.dir;
     if (d === lastD || (d + 2) % 4 === lastD) return;
-    if (g.q.length < 2) g.q.push(d);
+    if (g.q.length < 3) g.q.push(d);
     if (!g.swiped) { g.swiped = true; hud.tip.classList.add('g4-hide'); }
     hap(app, 'light');
   }
   let sw = null;
   function onDown(e) {
     if (e.target.closest('button, .g4-over, .g4-lumi')) return;
-    sw = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    sw = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false, x0: e.clientX, y0: e.clientY };
   }
   function onMove(e) {
     if (!sw || e.pointerId !== sw.id) return;
     const dx = e.clientX - sw.x, dy = e.clientY - sw.y;
-    if (dx * dx + dy * dy < 22 * 22) return;
+    if (dx * dx + dy * dy < 12 * 12) return;
     turn(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 0 : 2) : (dy > 0 ? 1 : 3));
-    sw.x = e.clientX; sw.y = e.clientY;
+    sw.x = e.clientX; sw.y = e.clientY; sw.moved = true;
   }
-  function onUp() { sw = null; }
+  // Тап без свайпу: змійка повертає в бік дотику відносно голови (ліворуч/праворуч або вгору/вниз).
+  function onUp(e) {
+    const s0 = sw; sw = null;
+    if (!s0 || s0.moved || !g || !e || e.type === 'pointercancel') return;
+    const r = cv.getBoundingClientRect();
+    const hx = r.left + cellCx(sx[0]), hy = r.top + cellCy(sy[0]);
+    const dx = e.clientX - hx, dy = e.clientY - hy;
+    const horiz = g.dir === 0 || g.dir === 2;
+    // якщо рухаємось горизонтально — тап вирішує «вгору чи вниз», і навпаки
+    if (horiz) { if (Math.abs(dy) > cell * 0.4) turn(dy > 0 ? 1 : 3); else turn(dx > 0 ? 0 : 2); }
+    else if (Math.abs(dx) > cell * 0.4) turn(dx > 0 ? 0 : 2); else turn(dy > 0 ? 1 : 3);
+  }
   const KEYS = { ArrowRight: 0, d: 0, D: 0, ArrowDown: 1, s: 1, S: 1, ArrowLeft: 2, a: 2, A: 2, ArrowUp: 3, w: 3, W: 3 };
   function onKey(e) {
     if (!alive || e.altKey || e.ctrlKey || e.metaKey) return;

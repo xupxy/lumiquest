@@ -2,19 +2,19 @@
 // екранна QWERTY (і фізична клавіатура), літери фарбуються (на місці / є в слові / немає)
 // з flip-анімацією; 3 слова за гру. Зірки — за кількістю спроб.
 // Без canvas/rAF: CSS/WAAPI-анімації transform/opacity + відстежувані таймери (cleanup чистить усе).
-import * as S from './state.js?v=20261110233151';
-import * as FX from './fx.js?v=20261110233151';
-import { recordGame, gameStars } from './games.js?v=20261110233151';
+import * as S from './state.js?v=20261111000115';
+import * as FX from './fx.js?v=20261111000115';
+import { recordGame, gameStars } from './games.js?v=20261111000115';
 
 // ---------------------------------------------------------------- безпечні мости
 let I = {};
-try { I = await import('./i18n.js?v=20261110233151'); } catch (e) { /* без i18n — власні словники */ }
+try { I = await import('./i18n.js?v=20261111000115'); } catch (e) { /* без i18n — власні словники */ }
 let A = {};
-import('./audio.js?v=20261110233151').then((m) => { A = m; }).catch(() => { /* без звуку */ });
+import('./audio.js?v=20261111000115').then((m) => { A = m; }).catch(() => { /* без звуку */ });
 let TH = {};
-try { TH = await import('./theme.js?v=20261110233151'); } catch (e) { /* без теми */ }
+try { TH = await import('./theme.js?v=20261111000115'); } catch (e) { /* без теми */ }
 let LM = {};
-try { LM = await import('./lumi.js?v=20261110233151'); } catch (e) { /* без Лумі */ }
+try { LM = await import('./lumi.js?v=20261111000115'); } catch (e) { /* без Лумі */ }
 
 const sfx = (n) => { try { A.sfx?.(n); } catch (e) { /* */ } };
 const speak = (txt) => {

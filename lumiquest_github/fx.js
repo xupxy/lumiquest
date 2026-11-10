@@ -1,6 +1,6 @@
 // LumiQuest — visual effects. Vanilla JS, no dependencies.
 //
-//   import * as fx from './fx.js?v=20261110233151';
+//   import * as fx from './fx.js?v=20261111000115';
 //   fx.confetti();                         // burst from screen centre
 //   fx.sparkle(button);                    // star sparkles around an element
 //   fx.floatText(el, '+10 XP');            // text that flies up and fades

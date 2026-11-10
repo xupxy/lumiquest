@@ -2,10 +2,10 @@
 // варіанти — платформи попереду. Правильна → стрибок угору; хибна → платформа розсипається,
 // Лумі падає на чекпоінт (−1 ❤️). 12 стрибків до вершини, чекпоінти кожні 4 платформи.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110233151';
-import * as FX from './fx.js?v=20261110233151';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110233151';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110233151';
+import * as S from './state.js?v=20261111000115';
+import * as FX from './fx.js?v=20261111000115';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261111000115';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261111000115';
 const isEn = (s) => !/[а-яіїєґё]/i.test(String(s || ''));
 
 export const meta = { topbar: false };
@@ -19,7 +19,7 @@ const XP_PER_CORRECT = 10;
 const G = 2700;           // гравітація, px/с²
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110233151', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261111000115', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
