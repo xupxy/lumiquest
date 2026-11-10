@@ -1,11 +1,11 @@
 // ⚔️ Бос-екзамен як карткова битва на арені. Порт game/arena.py + boss-run з engine.py.
-import * as S from '../state.js';
-import * as FX from '../fx.js';
-import * as UI from '../ui.js';
-import * as L from '../lumi.js';
+import * as S from './state.js';
+import * as FX from './fx.js';
+import * as UI from './ui.js';
+import * as L from './lumi.js';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('../../css/modes.css', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -22,7 +22,7 @@ function ensureCss(root) {
     setTimeout(show, 1500);
   }
 }
-const asset = (p) => new URL('../../assets/' + p.replace(/\.png$/, '.webp'), import.meta.url).href;
+const asset = (p) => new URL('./' + p.replace(/\.png$/, '.webp').replace(/^covers\//, 'cover_').split('/').pop(), import.meta.url).href;
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const reduced = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function el(tag, cls, html) {

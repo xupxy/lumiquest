@@ -1,6 +1,7 @@
 // 🗺 Карта світів: вертикальна мальовнича карта, світ 1 внизу → світ 5 у небі.
-import { h, fx, toast } from '../ui.js';
-import { currentWorldId } from '../state.js';
+import { h, fx, toast } from './ui.js';
+import { currentWorldId } from './state.js';
+import { worldGames, gameStars } from './games.js';
 
 const INK = '#3B2A55';
 
@@ -15,18 +16,18 @@ const disc = (top, side) => `
 const ISLES = [
   // 1 Ранкова Галявина — галявина з паростком і квітами
   () => `${disc('#9EDC7E', '#6CB65A')}
-    <path d="M100 100 C100 84 100 74 100 62" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <g class="sway"><path d="M100 100 C100 84 100 74 100 62" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
     <path d="M100 70 C88 56 70 58 64 66 C74 76 90 76 100 70Z" fill="#7ACB62" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M100 66 C112 50 132 52 138 60 C128 72 110 72 100 66Z" fill="#8BD86F" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
-    <g stroke="${INK}" stroke-width="2.5"><circle cx="52" cy="106" r="7" fill="#FF9EB5"/><circle cx="52" cy="106" r="2.6" fill="#FFD25A"/>
+    <path d="M100 66 C112 50 132 52 138 60 C128 72 110 72 100 66Z" fill="#8BD86F" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/></g>
+    <g stroke="${INK}" stroke-width="2.5" class="bob"><circle cx="52" cy="106" r="7" fill="#FF9EB5"/><circle cx="52" cy="106" r="2.6" fill="#FFD25A"/>
     <circle cx="140" cy="110" r="7" fill="#FFD25A"/><circle cx="140" cy="110" r="2.6" fill="#FF9F6B"/>
     <circle cx="76" cy="114" r="6" fill="#fff"/><circle cx="76" cy="114" r="2.2" fill="#FFD25A"/></g>`,
   // 2 Шепітний Ліс — ялинки і світлячки
   () => `${disc('#4F9A62', '#3C7C4E')}
     <g stroke="${INK}" stroke-width="3" stroke-linejoin="round">
-      <rect x="54" y="88" width="8" height="14" fill="#9B6B4A"/><path d="M58 30 L80 66 H70 L86 92 H30 L46 66 H36Z" fill="#5DAF73"/>
-      <rect x="138" y="88" width="8" height="14" fill="#9B6B4A"/><path d="M142 36 L162 68 H153 L168 92 H116 L131 68 H122Z" fill="#57A56C"/>
-      <rect x="96" y="92" width="9" height="14" fill="#9B6B4A"/><path d="M100 12 L126 54 H114 L132 96 H68 L86 54 H74Z" fill="#6CBF80"/>
+      <g class="sway"><rect x="54" y="88" width="8" height="14" fill="#9B6B4A"/><path d="M58 30 L80 66 H70 L86 92 H30 L46 66 H36Z" fill="#5DAF73"/></g>
+      <g class="sway d2"><rect x="138" y="88" width="8" height="14" fill="#9B6B4A"/><path d="M142 36 L162 68 H153 L168 92 H116 L131 68 H122Z" fill="#57A56C"/></g>
+      <g class="sway"><rect x="96" y="92" width="9" height="14" fill="#9B6B4A"/><path d="M100 12 L126 54 H114 L132 96 H68 L86 54 H74Z" fill="#6CBF80"/></g>
     </g>
     <g fill="#FFE07A" class="glow"><circle cx="34" cy="40" r="4"/><circle cx="170" cy="26" r="4"/><circle cx="128" cy="20" r="3"/></g>`,
   // 3 Місто Годинників — будиночки і годинникова вежа
@@ -37,7 +38,7 @@ const ISLES = [
       <rect x="124" y="64" width="42" height="38" fill="#FFE6C2"/><path d="M118 66 L145 42 L172 66Z" fill="#7C8CE8"/>
       <rect x="146" y="74" width="10" height="10" fill="#FFD25A"/>
       <rect x="82" y="34" width="38" height="70" fill="#FFF3E2"/><path d="M76 36 L101 6 L126 36Z" fill="#9C7CE0"/>
-      <circle cx="101" cy="56" r="13" fill="#fff"/><path d="M101 47 V56 L108 60" fill="none" stroke-linecap="round"/>
+      <circle cx="101" cy="56" r="13" fill="#fff"/><path d="M101 56 L108 60" fill="none" stroke-linecap="round"/><path class="spin" d="M101 56 V47" fill="none" stroke-linecap="round"/>
       <path d="M94 104 V88 a7 7 0 0 1 14 0 V104Z" fill="#A9774F"/>
     </g>`,
   // 4 Кришталеві Гори — гори зі снігом і кристали
@@ -45,9 +46,9 @@ const ISLES = [
     <g stroke="${INK}" stroke-width="3" stroke-linejoin="round">
       <path d="M22 100 L64 26 L104 100Z" fill="#8F93D8"/><path d="M50 50 L64 26 L78 50 L70 46 L64 54 L57 46Z" fill="#fff"/>
       <path d="M96 100 L140 34 L182 100Z" fill="#8187D0"/><path d="M127 54 L140 34 L153 54 L146 50 L140 58 L133 50Z" fill="#fff"/>
-      <path d="M84 100 L80 64 L92 50 L102 64 L98 100Z" fill="#B9E6FF"/>
+      <g class="shimmer"><path d="M84 100 L80 64 L92 50 L102 64 L98 100Z" fill="#B9E6FF"/>
       <path d="M100 100 L98 58 L110 40 L122 58 L116 100Z" fill="#9FDDFB"/>
-      <path d="M114 100 L116 72 L128 62 L136 74 L130 100Z" fill="#D4B8FF"/>
+      <path d="M114 100 L116 72 L128 62 L136 74 L130 100Z" fill="#D4B8FF"/></g>
     </g>
     <path d="M104 60 L108 54" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`,
   // 5 Небесна Бібліотека — хмара з розкритою книгою
@@ -55,12 +56,12 @@ const ISLES = [
     <path d="M30 116 C10 116 10 90 32 90 C30 70 56 64 66 78 C72 58 104 54 112 76 C122 62 150 66 150 86 C174 82 186 108 168 116Z"
       fill="#F4F0FF" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/>
     <path d="M40 112 H160" stroke="#D8CFF5" stroke-width="5" stroke-linecap="round"/>
-    <g stroke="${INK}" stroke-width="3" stroke-linejoin="round">
+    <g class="bob"><g stroke="${INK}" stroke-width="3" stroke-linejoin="round">
       <path d="M58 86 L100 92 L142 86 L142 92 L100 98 L58 92Z" fill="#8E6CE0"/>
       <path d="M62 40 Q82 34 100 44 V90 Q82 80 62 86Z" fill="#FFF8EC"/>
       <path d="M138 40 Q118 34 100 44 V90 Q118 80 138 86Z" fill="#FFF8EC"/>
     </g>
-    <g stroke="#B8A5EA" stroke-width="2.5" stroke-linecap="round"><path d="M70 52 L92 56 M70 62 L92 66 M70 72 L88 75 M108 56 L130 52 M108 66 L130 62 M108 75 L126 72"/></g>
+    <g stroke="#B8A5EA" stroke-width="2.5" stroke-linecap="round"><path d="M70 52 L92 56 M70 62 L92 66 M70 72 L88 75 M108 56 L130 52 M108 66 L130 62 M108 75 L126 72"/></g></g>
     <g fill="#FFD25A" stroke="${INK}" stroke-width="2" class="glow">
       <path d="M100 6 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z"/><path d="M74 16 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/><path d="M128 18 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/>
     </g>`,
@@ -94,8 +95,9 @@ export function render(root, params, app) {
 
   worlds.forEach((w, i) => {
     const open = st.unlocked.includes(w.id);
-    const qs = w.quests || [];
-    const got = qs.reduce((a, q) => a + (st.stars[q.id] || 0), 0);
+    const games = worldGames(w.id);
+    const got = games.reduce((a, g) => a + gameStars(st, g.id), 0);
+    const total = games.length * 3;
     const badge = st.badges.includes(w.id);
     const byTest = st.by_test.includes(w.id);
     const p = pos(i);
@@ -104,11 +106,13 @@ export function render(root, params, app) {
     art.setAttribute('class', 'isle-art');
     art.innerHTML = (ISLES[i] || ISLES[0])();
     const status = !open ? h('span', { class: 'isle-meta', text: '🔒 Закрито' })
-      : h('span', { class: 'isle-meta' }, `⭐ ${got}/${qs.length * 3}`, badge ? ' · 🏅' : byTest ? ' · 📘' : '');
+      : h('span', { class: 'isle-meta isle-prog' },
+        h('span', { text: `⭐ ${got}/${total}${badge ? ' 🏅' : byTest ? ' 📘' : ''}` }),
+        h('span', { class: 'isle-bar', 'aria-hidden': 'true' }, h('i', { style: { transform: `scaleX(${total ? got / total : 0})` } })));
     const isle = h('button', {
       class: `isle${open ? '' : ' locked'}${w.id === cur ? ' current' : ''}`,
       type: 'button',
-      style: { left: `${p.x * 100}%`, top: `${p.y}px`, '--d': `${i * -0.9}s` },
+      style: { left: `${p.x * 100}%`, top: `${p.y}px`, '--d': `${i * -0.9}s`, '--n': n - 1 - i },
       'aria-label': `${w.name}, ${w.level}${open ? '' : ', закрито'}`,
       on: {
         click: () => {

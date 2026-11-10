@@ -47,7 +47,7 @@ export const app = {
   session: { sleepy: false, firstRun: false },
   topbar: null,
 
-  asset: (p) => p.replace(/\.png$/, '.webp').split('/').pop(),
+  asset: (p) => p.replace(/\.png$/, '.webp').replace(/^covers\//, 'cover_').split('/').pop(),
   world: (wid) => S.getWorld(wid),
   quest: (qid) => S.getQuest(qid),
   toast: (t, ms) => UI.toast(t, ms),

@@ -47,7 +47,7 @@ export const app = {
   session: { sleepy: false, firstRun: false },
   topbar: null,
 
-  asset: (p) => `assets/${p.replace(/\.png$/, '.webp')}`,
+  asset: (p) => p.replace(/\.png$/, '.webp').replace(/^covers\//, 'cover_').split('/').pop(),
   world: (wid) => S.getWorld(wid),
   quest: (qid) => S.getQuest(qid),
   toast: (t, ms) => UI.toast(t, ms),
@@ -172,7 +172,7 @@ const screenCache = {};
 async function loadScreen(name) {
   if (screenCache[name]) return screenCache[name];
   if (!/^[a-z_]+$/.test(name)) throw new Error('bad screen name');
-  const mod = await import(`./screens/${name}.js`);
+  const mod = await import(`./${name}.js`);
   screenCache[name] = mod;
   return mod;
 }

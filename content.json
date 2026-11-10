@@ -549,6 +549,130 @@
        "explain": "Прикметник fresh стоїть перед іменником bread."
       }
      ]
+    },
+    {
+     "id": "w1q5",
+     "title": "Годинник Сови",
+     "emoji": "⏰",
+     "story": "Стара Сова переплутала всі дні тижня, і тепер звірі приходять на пікнік не в той день. Допоможи Лумі навести лад у календарі та годиннику галявини!",
+     "lesson": "Дні тижня пишемо з великої літери: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.\nЗ днями — on: on Monday, on Friday.\nЧас: What time is it? — It's seven o'clock (7:00). It's half past seven (7:30).\nЗ годинами — at: at eight o'clock.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Який день іде після Monday?",
+       "options": [
+        "Sunday",
+        "Tuesday",
+        "Friday",
+        "Thursday"
+       ],
+       "answer": 1,
+       "explain": "Monday (понеділок) → Tuesday (вівторок)."
+      },
+      {
+       "type": "choice",
+       "q": "I go to school ___ Monday.",
+       "options": [
+        "at",
+        "on",
+        "in"
+       ],
+       "answer": 1,
+       "explain": "З днями тижня вживаємо on: on Monday."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «субота»",
+       "answers": [
+        "saturday"
+       ],
+       "explain": "субота — Saturday (з великої літери)."
+      },
+      {
+       "type": "choice",
+       "q": "Годинник показує 7:30. Як сказати?",
+       "options": [
+        "half past seven",
+        "half to seven",
+        "seven half",
+        "half past eight"
+       ],
+       "answer": 0,
+       "explain": "7:30 — half past seven (половина після сьомої)."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Котра година?»",
+       "words": [
+        "is",
+        "time",
+        "What",
+        "it"
+       ],
+       "answer": "What time is it",
+       "explain": "What time is it? — Котра година?"
+      }
+     ]
+    },
+    {
+     "id": "w1q6",
+     "title": "Звіряча естафета",
+     "emoji": "🐇",
+     "story": "На галявині — велика естафета! Кожен звір має показати, що він уміє: бігати, стрибати, плавати чи літати. Лумі — суддя, і їй треба правильно назвати всі рухи.",
+     "lesson": "Дієслова руху: run (бігати), jump (стрибати), swim (плавати), fly (літати), climb (лазити).\ncan + дієслово = вміти: A fish can swim. A bird can fly.\ncan не змінюється: he can, she can, it can (не cans!).\nТварини: frog (жаба), rabbit (кролик), monkey (мавпа), bird (птах).",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "A fish can ___.",
+       "options": [
+        "swim",
+        "fly",
+        "climb"
+       ],
+       "answer": 0,
+       "explain": "Риба вміє плавати — swim."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «жаба»",
+       "answers": [
+        "frog",
+        "a frog"
+       ],
+       "explain": "жаба — frog."
+      },
+      {
+       "type": "choice",
+       "q": "A bird ___ fly.",
+       "options": [
+        "can",
+        "cans",
+        "is"
+       ],
+       "answer": 0,
+       "explain": "can не отримує -s: a bird can fly."
+      },
+      {
+       "type": "type",
+       "q": "Переклади одним словом: «бігати»",
+       "answers": [
+        "run"
+       ],
+       "explain": "бігати — run."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Мавпа вміє лазити»",
+       "words": [
+        "climb",
+        "monkey",
+        "can",
+        "A"
+       ],
+       "answer": "A monkey can climb",
+       "explain": "Підмет + can + дієслово: A monkey can climb."
+      }
+     ]
     }
    ],
    "story": {
@@ -787,6 +911,274 @@
       "explain": "Ти = you, з you вживаємо are: You are my friend."
      }
     ]
+   },
+   "drama": {
+    "id": "w1d",
+    "title": "Мовчазний дзвін",
+    "emoji": "🔔",
+    "intro": "Щоранку старий дзвін на дубі будить Ранкову Галявину. Та сьогодні дзвін зник, сонце не встає, а з річки повзе холодний туман. Кожне твоє слово змінить, чим скінчиться цей ранок.",
+    "start": "n1",
+    "nodes": {
+     "n1": {
+      "scene": "Сонце не встає: ранковий дзвін зник з дуба. З гілки злітає стривожена Сова.",
+      "speaker": "Owl",
+      "line": "Lumi! The morning bell is not here!",
+      "hint": "Лумі! Ранкового дзвона немає!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Oh no! Where is it?",
+        "good": true,
+        "next": "n2a",
+        "note": "Доречне питання; у питанні is стоїть перед it."
+       },
+       {
+        "text": "Oh no! Where it is?",
+        "good": false,
+        "next": "n2b",
+        "note": "У питанні дієслово йде перед підметом: Where is it?"
+       },
+       {
+        "text": "I am sleep.",
+        "good": false,
+        "next": "n2b",
+        "note": "Не до речі і з помилкою: правильно I am sleepy."
+       }
+      ],
+      "timeout": "n2b"
+     },
+     "n2a": {
+      "scene": "Сова показує на землю під дубом: там ланцюжок крихітних слідів.",
+      "speaker": "Owl",
+      "line": "Look! Small footprints. Can you see them?",
+      "hint": "Дивись! Маленькі сліди. Ти їх бачиш?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes, I see they.",
+        "good": false,
+        "next": "n3b",
+        "note": "Після дієслова — them, а не they."
+       },
+       {
+        "text": "Yes, I can. They are small and round.",
+        "good": true,
+        "next": "n3a",
+        "note": "Коротка відповідь Yes, I can — і ще й опис!"
+       }
+      ],
+      "timeout": "n3b"
+     },
+     "n2b": {
+      "scene": "Сова сердито ухкає й відлітає, а туман густішає. З кущів визирає Заєць.",
+      "speaker": "Rabbit",
+      "line": "Hello! I am Rabbit. What is your name?",
+      "hint": "Привіт! Я Заєць. Як тебе звати?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "My name is Lumi. Nice to meet you!",
+        "good": true,
+        "next": "n3b",
+        "note": "Ввічливо і правильно: My name is ..."
+       },
+       {
+        "text": "My name Lumi.",
+        "good": false,
+        "next": "n3c",
+        "note": "Пропущено is: My name is Lumi."
+       }
+      ],
+      "timeout": "n3c"
+     },
+     "n3a": {
+      "scene": "Сліди ведуть до нори. Звідти визирає Їжачок, а за ним блищить дзвін!",
+      "speaker": "Hedgehog",
+      "line": "Hi! Do you like my new bell?",
+      "hint": "Привіт! Тобі подобається мій новий дзвін?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "It is very nice, but it is the morning bell. Can we have it, please?",
+        "good": true,
+        "next": "n4a",
+        "note": "Ввічливо пояснюєш і просиш з please."
+       },
+       {
+        "text": "Give me the bell!",
+        "good": false,
+        "next": "n4b",
+        "note": "Граматично ок, але грубо — Їжачок образився."
+       },
+       {
+        "text": "Yes, I likes it.",
+        "good": false,
+        "next": "n4b",
+        "note": "З I — like без -s."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3b": {
+      "scene": "Заєць веде Лумі вздовж холодної річки. На березі щось блищить у тумані.",
+      "speaker": "Rabbit",
+      "line": "It is cold here. Do you have a scarf?",
+      "hint": "Тут холодно. У тебе є шарф?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "No, I doesn't.",
+        "good": false,
+        "next": "n4b",
+        "note": "З I — don't: No, I don't."
+       },
+       {
+        "text": "No, I don't. But we can run fast!",
+        "good": true,
+        "next": "n4a",
+        "note": "Правильна коротка відповідь і бадьора ідея!"
+       },
+       {
+        "text": "Yes, I have a scarf blue.",
+        "good": false,
+        "next": "n4b",
+        "note": "Прикметник стоїть перед іменником: a blue scarf."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3c": {
+      "scene": "Туман такий густий, що Лумі губить стежку. З білої імли чути тоненький голос.",
+      "speaker": "Hedgehog",
+      "line": "Who is there? Are you a fox?",
+      "hint": "Хто там? Ти лисиця?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "No, I am not. I am Lumi, a friend.",
+        "good": true,
+        "next": "n4b",
+        "note": "Правильна коротка відповідь: No, I am not."
+       },
+       {
+        "text": "No, I not am fox.",
+        "good": false,
+        "next": "n4b",
+        "note": "Порядок слів: I am not."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n4a": {
+      "scene": "Дзвін знайдено, але він дуже важкий. Їжачок і Заєць дивляться на Лумі з надією.",
+      "speaker": "Hedgehog",
+      "line": "The bell is heavy. What can we do?",
+      "hint": "Дзвін важкий. Що нам робити?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Let's carry it together!",
+        "good": true,
+        "next": "n5a",
+        "note": "Let's + дієслово — чудова пропозиція."
+       },
+       {
+        "text": "Let's carries it.",
+        "good": false,
+        "next": "e_ok",
+        "note": "Після let's — дієслово без -s: let's carry."
+       },
+       {
+        "text": "I can't. Bye!",
+        "good": false,
+        "next": "e_ok",
+        "note": "Кинути друзів у біді — не найкращий вибір."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n4b": {
+      "scene": "Дзвін застряг у болоті, туман майже накрив галявину. Часу зовсім мало!",
+      "speaker": "Rabbit",
+      "line": "Quick! The bell is in the mud. Help me, please!",
+      "hint": "Швидше! Дзвін у багнюці. Допоможи, будь ласка!",
+      "timer": 10,
+      "choices": [
+       {
+        "text": "Wait. I am eat.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Неграматично (I am eating) і зовсім не вчасно."
+       },
+       {
+        "text": "OK! I am coming!",
+        "good": true,
+        "next": "n5b",
+        "note": "Швидка і правильна відповідь."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "n5a": {
+      "scene": "Дзвін знову висить на дубі. Сова урочисто дає Лумі мотузку.",
+      "speaker": "Owl",
+      "line": "You are the hero, Lumi. Ring the bell!",
+      "hint": "Ти героїня, Лумі. Дзвони!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Thank you! Good morning, everyone!",
+        "good": true,
+        "next": "e_good",
+        "note": "Ранок же! Good morning — саме те."
+       },
+       {
+        "text": "Thanks. Good night!",
+        "good": false,
+        "next": "e_ok",
+        "note": "Зараз ранок, тому Good morning, а не Good night."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n5b": {
+      "scene": "Удвох вони витягли дзвін — брудний, але цілий. Заєць важко дихає.",
+      "speaker": "Rabbit",
+      "line": "We are very tired. Is it seven o'clock?",
+      "hint": "Ми дуже втомились. Уже сьома година?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes, it are.",
+        "good": false,
+        "next": "e_bad",
+        "note": "З it — is: Yes, it is."
+       },
+       {
+        "text": "Yes, it is. Let's ring the bell now!",
+        "good": true,
+        "next": "e_ok",
+        "note": "Правильна коротка відповідь."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "e_good": {
+      "ending": "good",
+      "title": "Найкращий ранок",
+      "text": "Дзвін лунає над галявиною, сонце сходить, а звірі сміються й обіймають Лумі. Ти знайшла дзвін, нікого не образила і кожне слово сказала правильно!"
+     },
+     "e_ok": {
+      "ending": "ok",
+      "title": "Пізній ранок",
+      "text": "Дзвін знову дзвонить, хоч і трохи запізно. Ранок прийшов, але дорогою було кілька помилок — наступного разу вийде ще краще."
+     },
+     "e_bad": {
+      "ending": "bad",
+      "title": "Сірий день",
+      "text": "Туман так і не розвіявся, і галявина прокинулась лише опівдні. Не здавайся: спробуй інший шлях і знайди дзвін вчасно!"
+     }
+    }
    }
   },
   {
@@ -1057,6 +1449,133 @@
        "explain": "Не вміє = can't (cannot), далі дієслово dance."
       }
      ]
+    },
+    {
+     "id": "w2q5",
+     "title": "Що відбувається просто зараз?",
+     "emoji": "👀",
+     "story": "Чарівна підзорна труба Лісу показує, що робить кожен мешканець саме цієї миті. Але труба розуміє лише Present Continuous — допоможи Лумі описати, що вона бачить!",
+     "lesson": "Present Continuous — дія відбувається зараз: am/is/are + дієслово з -ing.\nI am reading. She is swimming. They are playing.\nСлова-підказки: now, right now, at the moment, Look!\nПравопис: run → running, swim → swimming, make → making.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Look! The fox ___ across the river.",
+       "options": [
+        "swims",
+        "is swimming",
+        "swimming",
+        "swim"
+       ],
+       "answer": 1,
+       "explain": "Look! — дія відбувається зараз: is swimming."
+      },
+      {
+       "type": "choice",
+       "q": "We ___ dinner right now.",
+       "options": [
+        "are having",
+        "have",
+        "has",
+        "is having"
+       ],
+       "answer": 0,
+       "explain": "We + are + having; right now — Present Continuous."
+      },
+      {
+       "type": "type",
+       "q": "Напиши форму з -ing від дієслова run",
+       "answers": [
+        "running"
+       ],
+       "explain": "Коротке дієслово на приголосну — подвоюємо: run → running."
+      },
+      {
+       "type": "type",
+       "q": "Заповни двома словами: She ___ (read) a book at the moment.",
+       "answers": [
+        "is reading"
+       ],
+       "explain": "she + is + reading: She is reading a book."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Що ти зараз робиш?»",
+       "words": [
+        "doing",
+        "are",
+        "What",
+        "you",
+        "now"
+       ],
+       "answer": "What are you doing now",
+       "explain": "Питання: What + are + you + doing + now?"
+      }
+     ]
+    },
+    {
+     "id": "w2q6",
+     "title": "Лісовий ярмарок",
+     "emoji": "🧥",
+     "story": "Восени в Шепітному Лісі відкривається ярмарок одягу. Лумі хоче купити теплий шарф, але продавчиня-сорока розмовляє лише англійською!",
+     "lesson": "Одяг: jacket (куртка), scarf (шарф), hat (шапка), boots (черевики), dress (сукня).\nЦіна: How much is this hat? How much are these boots? (are — для множини)\nВвічливе прохання: I'd like a scarf, please.\nПриміряти: Can I try it on? Розмір: It's too big / too small.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "How much ___ these boots?",
+       "options": [
+        "is",
+        "are",
+        "does"
+       ],
+       "answer": 1,
+       "explain": "boots — множина, тому are."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «куртка»",
+       "answers": [
+        "jacket",
+        "a jacket"
+       ],
+       "explain": "куртка — jacket."
+      },
+      {
+       "type": "choice",
+       "q": "Can I ___ it on?",
+       "options": [
+        "try",
+        "wear",
+        "put",
+        "take"
+       ],
+       "answer": 0,
+       "explain": "try on — приміряти: Can I try it on?"
+      },
+      {
+       "type": "choice",
+       "q": "Продавчиня: «Can I help you?» Що ввічливо відповісти?",
+       "options": [
+        "Yes, I'd like a scarf, please.",
+        "Yes, I like a scarf.",
+        "Yes, give scarf."
+       ],
+       "answer": 0,
+       "explain": "I'd like ... please — ввічлива форма прохання в магазині."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Скільки коштує ця шапка?»",
+       "words": [
+        "hat",
+        "much",
+        "How",
+        "this",
+        "is"
+       ],
+       "answer": "How much is this hat",
+       "explain": "How much is + this + річ?"
+      }
+     ]
     }
    ],
    "story": {
@@ -1301,6 +1820,262 @@
       "explain": "Заперечення в Past Simple: did not (didn't) + play."
      }
     ]
+   },
+   "drama": {
+    "id": "w2d",
+    "title": "Стежки, що рухаються",
+    "emoji": "🦊",
+    "intro": "Щовечора, коли сідає сонце, стежки Шепітного Лісу переплітаються по-новому. Лисеня Руді загубилося, а до заходу сонця лишилось зовсім трохи. Допоможи йому дістатися додому.",
+    "start": "n1",
+    "nodes": {
+     "n1": {
+      "scene": "Сутеніє. Під папороттю тихо плаче лисеня Руді.",
+      "speaker": "Rudy",
+      "line": "I lost my way. The paths are moving again!",
+      "hint": "Я загубився. Стежки знову рухаються!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Don't worry. When did you lose your way?",
+        "good": true,
+        "next": "n2a",
+        "note": "Підтримка + правильне питання в Past Simple з did."
+       },
+       {
+        "text": "Don't worry. When you lost your way?",
+        "good": false,
+        "next": "n2b",
+        "note": "У питанні потрібне did: When did you lose...?"
+       },
+       {
+        "text": "Stop crying, it is boring.",
+        "good": false,
+        "next": "n2b",
+        "note": "Грубо — Руді злякався ще більше."
+       }
+      ],
+      "timeout": "n2b"
+     },
+     "n2a": {
+      "scene": "Руді витирає сльози й показує на старий дуб.",
+      "speaker": "Rudy",
+      "line": "I was near that oak an hour ago. Then I heard a strange noise.",
+      "hint": "Годину тому я був біля того дуба. Потім почув дивний звук.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "What noise you heard?",
+        "good": false,
+        "next": "n3b",
+        "note": "Питання в минулому: What noise did you hear?"
+       },
+       {
+        "text": "What kind of noise did you hear?",
+        "good": true,
+        "next": "n3a",
+        "note": "Правильне питання з did + hear."
+       }
+      ],
+      "timeout": "n3b"
+     },
+     "n2b": {
+      "scene": "Руді ховається глибше в папороть. Над ними на гілку сідає Ворона.",
+      "speaker": "Crow",
+      "line": "Kraa! Are you looking for something?",
+      "hint": "Кра! Ви щось шукаєте?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes, we're looking for the way to the fox den.",
+        "good": true,
+        "next": "n3b",
+        "note": "Present Continuous: we are looking for."
+       },
+       {
+        "text": "Yes, we looking for den.",
+        "good": false,
+        "next": "n3c",
+        "note": "Пропущено are: we are looking for."
+       }
+      ],
+      "timeout": "n3c"
+     },
+     "n3a": {
+      "scene": "Біля дуба лежить ліхтар. З-за коріння вилазить підсліпуватий Борсук.",
+      "speaker": "Badger",
+      "line": "Have you seen my lantern? I can't see anything without it.",
+      "hint": "Ви не бачили мій ліхтар? Без нього я нічого не бачу.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes! Here it is. We found it near the oak.",
+        "good": true,
+        "next": "n4a",
+        "note": "found — минула форма від find."
+       },
+       {
+        "text": "Yes, we finded it.",
+        "good": false,
+        "next": "n4b",
+        "note": "find — неправильне дієслово: found."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3b": {
+      "scene": "Ворона веде їх до струмка, що шепоче голосніше за вітер.",
+      "speaker": "Crow",
+      "line": "The river is louder than the wind tonight. Which path are you going to take?",
+      "hint": "Сьогодні річка гучніша за вітер. Якою стежкою ви підете?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "We going take the river.",
+        "good": false,
+        "next": "n4b",
+        "note": "Правильно: We are going to take..."
+       },
+       {
+        "text": "The most loud one.",
+        "good": false,
+        "next": "n4b",
+        "note": "Найвищий ступінь від loud — the loudest."
+       },
+       {
+        "text": "We're going to take the path along the river.",
+        "good": true,
+        "next": "n4a",
+        "note": "be going to — план на найближче майбутнє."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3c": {
+      "scene": "Стежки перекрутились, ліс шепоче чужими голосами. Хтось пихтить у темряві.",
+      "speaker": "Badger",
+      "line": "Who's there? It's too dark!",
+      "hint": "Хто там? Тут надто темно!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "It's me, Lumi. Can you help us, please?",
+        "good": true,
+        "next": "n4b",
+        "note": "Ввічливе прохання з please."
+       },
+       {
+        "text": "Is me. Help!",
+        "good": false,
+        "next": "n4b",
+        "note": "Потрібен підмет: It's me."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n4a": {
+      "scene": "Із ліхтарем Борсука стежка світиться. Але попереду розвилка.",
+      "speaker": "Badger",
+      "line": "The left path is shorter, but it's darker. The right one is longer but safer.",
+      "hint": "Ліва стежка коротша, але темніша. Права довша, зате безпечніша.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Let's take the safer one. Rudy is tired.",
+        "good": true,
+        "next": "n5a",
+        "note": "Розумний вибір і правильний вищий ступінь safer."
+       },
+       {
+        "text": "The left is more short, go!",
+        "good": false,
+        "next": "e_ok",
+        "note": "Вищий ступінь від short — shorter."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n4b": {
+      "scene": "Сонце майже сіло. Стежки починають рухатись просто під лапами.",
+      "speaker": "Rudy",
+      "line": "I'm scared, Lumi. What are we going to do?",
+      "hint": "Мені страшно, Лумі. Що ми робитимемо?",
+      "timer": 10,
+      "choices": [
+       {
+        "text": "I don't know. You go alone.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Кинути малого саму в лісі — найгірший вибір."
+       },
+       {
+        "text": "Hold my hand. We're going to run to the big stone.",
+        "good": true,
+        "next": "n5b",
+        "note": "Чіткий план з going to."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "n5a": {
+      "scene": "Удалині світиться вогник нори. Мама-лисиця вибігає назустріч.",
+      "speaker": "Mother Fox",
+      "line": "Rudy! Where were you? I was so worried!",
+      "hint": "Руді! Де ти був? Я так хвилювалась!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "He was lost, but he was very brave.",
+        "good": true,
+        "next": "e_good",
+        "note": "he + was; і теплі слова для Руді."
+       },
+       {
+        "text": "He were lost.",
+        "good": false,
+        "next": "e_ok",
+        "note": "З he — was, а не were."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n5b": {
+      "scene": "Біля великого каменя стежки завмирають. Здалеку лунає голос мами-лисиці.",
+      "speaker": "Mother Fox",
+      "line": "Rudy! Can you hear me?",
+      "hint": "Руді! Ти мене чуєш?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "We're here! We're coming!",
+        "good": true,
+        "next": "e_ok",
+        "note": "Present Continuous: we are coming."
+       },
+       {
+        "text": "We is here!",
+        "good": false,
+        "next": "e_bad",
+        "note": "З we — are: We are here."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "e_good": {
+      "ending": "good",
+      "title": "Додому вчасно",
+      "text": "Руді вдома ще до заходу сонця, мама-лисиця обіймає вас обох, а Борсук обіцяє тепер завжди світити тобі в лісі. Бездоганний шлях!"
+     },
+     "e_ok": {
+      "ending": "ok",
+      "title": "Додому в сутінках",
+      "text": "Руді повернувся додому, хоч і після заходу сонця. Усе скінчилось добре, але кілька помилок зробили шлях довшим."
+     },
+     "e_bad": {
+      "ending": "bad",
+      "title": "Лабіринт ночі",
+      "text": "Стежки переплелися, і вам довелося чекати ранку під каменем. Руді цілий, але дуже наляканий. Спробуй ще раз!"
+     }
+    }
    }
   },
   {
@@ -1567,6 +2342,142 @@
        "explain": "give up — здаватися."
       }
      ]
+    },
+    {
+     "id": "w3q5",
+     "title": "Перегони механічних жуків",
+     "emoji": "🪲",
+     "story": "У Місті Годинників — щорічні перегони заводних жуків. Судді сперечаються, хто швидший, а хто надто важкий, щоб бігти. Допоможи Лумі правильно все порівняти!",
+     "lesson": "as + прикметник + as — такий же, як: My beetle is as fast as yours.\nnot as ... as — не такий, як: It isn't as heavy as that one.\ntoo + прикметник — надто: It's too heavy to lift.\nприкметник + enough — достатньо: He isn't old enough to drive. Але enough + іменник: enough time.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "My beetle is as fast ___ yours.",
+       "options": [
+        "than",
+        "as",
+        "like",
+        "so"
+       ],
+       "answer": 1,
+       "explain": "Конструкція as ... as: as fast as."
+      },
+      {
+       "type": "choice",
+       "q": "This box is ___ heavy to lift.",
+       "options": [
+        "too",
+        "enough",
+        "very much",
+        "so much"
+       ],
+       "answer": 0,
+       "explain": "too + прикметник + to — надто важкий, щоб підняти."
+      },
+      {
+       "type": "choice",
+       "q": "Hurry up! We don't have ___.",
+       "options": [
+        "enough time",
+        "time enough",
+        "too time",
+        "as time"
+       ],
+       "answer": 0,
+       "explain": "З іменником enough стоїть перед ним: enough time."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: She isn't tall ___ to reach the shelf.",
+       "answers": [
+        "enough"
+       ],
+       "explain": "Прикметник + enough: tall enough — достатньо висока."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Цей годинник такий же старий, як той»",
+       "words": [
+        "as",
+        "is",
+        "clock",
+        "This",
+        "old",
+        "as",
+        "that",
+        "one"
+       ],
+       "answer": "This clock is as old as that one",
+       "explain": "as old as — такий же старий, як."
+      }
+     ]
+    },
+    {
+     "id": "w3q6",
+     "title": "Що робило місто опівночі?",
+     "emoji": "🌙",
+     "story": "Опівночі хтось перевів усі годинники на годину назад. Інспектор Пружинка опитує свідків: що кожен робив саме тоді? Допоможи Лумі записати свідчення правильно.",
+     "lesson": "Past Continuous — дія тривала в певний момент у минулому: was/were + -ing.\nAt midnight I was sleeping. They were drinking tea.\nТривала дія + коротка, що її перервала (Past Simple): We were watching TV when the lights went out.\nwhile + тривала дія: While I was walking home, I met a friend.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "At midnight I ___.",
+       "options": [
+        "was sleeping",
+        "were sleeping",
+        "am sleeping",
+        "slept was"
+       ],
+       "answer": 0,
+       "explain": "I + was + -ing: тривала дія в момент у минулому."
+      },
+      {
+       "type": "choice",
+       "q": "They ___ tea when the bell rang.",
+       "options": [
+        "were drinking",
+        "was drinking",
+        "are drinking",
+        "drinking"
+       ],
+       "answer": 0,
+       "explain": "they + were + drinking; дзвін (Past Simple) перервав дію."
+      },
+      {
+       "type": "choice",
+       "q": "While I was walking home, I ___ an old friend.",
+       "options": [
+        "met",
+        "was meeting",
+        "meet",
+        "meeting"
+       ],
+       "answer": 0,
+       "explain": "Коротка подія на тлі тривалої — Past Simple: met."
+      },
+      {
+       "type": "type",
+       "q": "Заповни двома словами: We ___ (watch) TV when the lights went out.",
+       "answers": [
+        "were watching"
+       ],
+       "explain": "we + were + watching — тривала дія, яку перервали."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «Що ти робив о дев'ятій?»",
+       "words": [
+        "you",
+        "What",
+        "doing",
+        "were",
+        "at",
+        "nine"
+       ],
+       "answer": "What were you doing at nine",
+       "explain": "Питання в Past Continuous: What + were + you + doing?"
+      }
+     ]
     }
    ],
    "story": {
@@ -1814,6 +2725,256 @@
       "explain": "already — маркер Present Perfect: have + already + seen."
      }
     ]
+   },
+   "drama": {
+    "id": "w3d",
+    "title": "Зупинена вежа",
+    "emoji": "🕰",
+    "intro": "Рівно опівдні годинникова вежа зупинилася — і разом з нею завмерло все місто: люди, птахи, навіть фонтани. Рухаються лише Лумі та юна учениця годинникаря Міра. Якщо до заходу сонця вежа не запрацює, місто застигне назавжди.",
+    "start": "n1",
+    "nodes": {
+     "n1": {
+      "scene": "Площа завмерла: голуби висять у повітрі, краплі фонтану застигли, мов скло. До Лумі біжить Міра.",
+      "speaker": "Mira",
+      "line": "You can move too? Everyone else has frozen!",
+      "hint": "Ти теж можеш рухатися? Усі інші застигли!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes! What happened? Have you seen anything strange?",
+        "good": true,
+        "next": "n2a",
+        "note": "Present Perfect у питанні: Have you seen...?"
+       },
+       {
+        "text": "Yes! What did happen? Did you saw anything?",
+        "good": false,
+        "next": "n2b",
+        "note": "Після did — початкова форма: Did you see...?"
+       },
+       {
+        "text": "Cool, a free day!",
+        "good": false,
+        "next": "n2b",
+        "note": "Місто в біді — такий жарт зовсім недоречний."
+       }
+      ],
+      "timeout": "n2b"
+     },
+     "n2a": {
+      "scene": "Міра показує на вежу: з вікон вилітають шестерні й падають на бруківку.",
+      "speaker": "Mira",
+      "line": "If we don't reach the tower before sunset, the city will stay frozen forever.",
+      "hint": "Якщо ми не дістанемося вежі до заходу сонця, місто застигне навіки.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "If we will run, we will get there.",
+        "good": false,
+        "next": "n3b",
+        "note": "Після if — Present Simple: If we run, we will..."
+       },
+       {
+        "text": "Then we have to hurry. Which way is the quickest?",
+        "good": true,
+        "next": "n3a",
+        "note": "Чітко і правильно: the quickest — найшвидший."
+       }
+      ],
+      "timeout": "n3b"
+     },
+     "n2b": {
+      "scene": "Міра хмуриться й тягне Лумі до вежі. Біля дверей стоїть механічний вартовий Тік.",
+      "speaker": "Tock",
+      "line": "Halt! Nobody has permission to enter the tower.",
+      "hint": "Стій! Ніхто не має дозволу заходити до вежі.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "We must go in, move!",
+        "good": false,
+        "next": "n3c",
+        "note": "Грубий наказ вартовому — він вмикає тривогу."
+       },
+       {
+        "text": "We're sorry, but the city needs help. Could you let us in, please?",
+        "good": true,
+        "next": "n3b",
+        "note": "Ввічливе прохання Could you ..., please?"
+       }
+      ],
+      "timeout": "n3c"
+     },
+     "n3a": {
+      "scene": "Через дахи вони дістаються вежі. Двері зачинені на кодовий замок.",
+      "speaker": "Mira",
+      "line": "My master told me the code, but I've forgotten it!",
+      "hint": "Майстер казав мені код, але я його забула!",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "Try to remember. What was he doing when he told you?",
+        "good": true,
+        "next": "n4a",
+        "note": "Past Continuous у питанні: What was he doing...?"
+       },
+       {
+        "text": "What he was doing when he told?",
+        "good": false,
+        "next": "n4b",
+        "note": "У питанні was іде перед he: What was he doing?"
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3b": {
+      "scene": "Тік пропускає їх, але кам'яні сходи вежі обвалились.",
+      "speaker": "Tock",
+      "line": "The stairs broke while the clocks were stopping. I could carry you up if you were lighter.",
+      "hint": "Сходи зламались, поки годинники зупинялись. Я б заніс вас нагору, якби ви були легші.",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "If I were lighter, I would fly! Is there another way up?",
+        "good": true,
+        "next": "n4a",
+        "note": "Second Conditional: If I were..., I would..."
+       },
+       {
+        "text": "If I am lighter, I fly.",
+        "good": false,
+        "next": "n4b",
+        "note": "Уявна ситуація — If I were lighter, I would..."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3c": {
+      "scene": "Тік вмикає сирену, і їм доводиться тікати через вузькі задні двері.",
+      "speaker": "Mira",
+      "line": "That was close! Have you ever been inside a clock tower?",
+      "hint": "Ледь утекли! Ти колись була всередині годинникової вежі?",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "No, I never was been.",
+        "good": false,
+        "next": "n4b",
+        "note": "Правильно: No, I have never been."
+       },
+       {
+        "text": "No, I've never been inside one. Let's be careful.",
+        "good": true,
+        "next": "n4b",
+        "note": "Present Perfect з never — правильно."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n4a": {
+      "scene": "Нагорі — величезний механізм. Одна шестерня лежить окремо, вона тріснула.",
+      "speaker": "Mira",
+      "line": "This gear is cracked. Should we replace it or repair it?",
+      "hint": "Ця шестерня тріснула. Замінити її чи полагодити?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Let's repair it. It's the original one, and it fits perfectly.",
+        "good": true,
+        "next": "n5a",
+        "note": "Обґрунтована пропозиція з Let's."
+       },
+       {
+        "text": "Whatever, put any gear.",
+        "good": false,
+        "next": "e_ok",
+        "note": "Байдужість — механізм запрацює, але неточно."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n4b": {
+      "scene": "Сонце сідає. Механізм ледве обертається, стрілки тремтять.",
+      "speaker": "Mira",
+      "line": "We only have a few minutes! What should I do?",
+      "hint": "У нас лише кілька хвилин! Що мені робити?",
+      "timer": 10,
+      "choices": [
+       {
+        "text": "Hold the lever while I'm turning the key.",
+        "good": true,
+        "next": "n5b",
+        "note": "Чітка інструкція: while + Present Continuous."
+       },
+       {
+        "text": "I don't know, I'm going home.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Покинути Міру в останню мить — найгірше рішення."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "n5a": {
+      "scene": "Механізм оживає. Перший удар дзвона — і місто ворушиться. Мер здивовано дивиться вгору.",
+      "speaker": "Mayor",
+      "line": "Who has saved our city? Tell me your names!",
+      "hint": "Хто врятував наше місто? Назвіться!",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Me. I have saved it alone.",
+        "good": false,
+        "next": "e_ok",
+        "note": "Граматично ок, але це неправда і несправедливо до Міри."
+       },
+       {
+        "text": "Mira did most of the work. I only helped her.",
+        "good": true,
+        "next": "e_good",
+        "note": "Чесно й скромно — справжня героїня!"
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n5b": {
+      "scene": "Стрілки зрушили, але годинник відстає на цілу годину.",
+      "speaker": "Mira",
+      "line": "It's working, but it's an hour slow. Should we tell the mayor?",
+      "hint": "Працює, але відстає на годину. Скажемо меру?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes, we should tell him the truth.",
+        "good": true,
+        "next": "e_ok",
+        "note": "should + дієслово; чесність — правильний вибір."
+       },
+       {
+        "text": "No, nobody will noticing.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Після will — початкова форма: will notice. І приховувати — погано."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "e_good": {
+      "ending": "good",
+      "title": "Місто оживає",
+      "text": "Вежа б'є точно, фонтани знову дзюркочуть, а мер вручає Мірі ключ від вежі. Ти не лише врятувала місто, а й допомогла другові засяяти. Ідеальний шлях!"
+     },
+     "e_ok": {
+      "ending": "ok",
+      "title": "Трохи не в такт",
+      "text": "Місто ожило, але годинник іде неточно, і тепер усі трохи запізнюються. Добрий результат — проте можна краще."
+     },
+     "e_bad": {
+      "ending": "bad",
+      "title": "Вічний полудень",
+      "text": "Сонце сіло, і вежа так і не запрацювала. Місто чекає на іншу спробу — і лише ти можеш змінити кінцівку!"
+     }
+    }
    }
   },
   {
@@ -2091,6 +3252,139 @@
        "explain": "Помилку «роблять» з make: make a mistake (не do)."
       }
      ]
+    },
+    {
+     "id": "w4q5",
+     "title": "Сліди на снігу",
+     "emoji": "🕵️",
+     "story": "Уночі з табору зник мішок кришталів. Ніхто нічого не бачив, але сліди й підказки залишились. Лумі стає детективкою — і робить висновки про минуле.",
+     "lesson": "Здогадки про минуле: модальне дієслово + have + 3-тя форма.\nmust have done — напевно (майже впевнені): The ground is wet. It must have rained.\nmight have done — можливо: He might have gone to the shop.\ncan't have done — не може бути, щоб: She can't have seen us — she was asleep.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "The ground is wet. It ___ rained last night.",
+       "options": [
+        "must have",
+        "can't have",
+        "should",
+        "must"
+       ],
+       "answer": 0,
+       "explain": "Майже впевнений висновок про минуле: must have + V3."
+      },
+      {
+       "type": "choice",
+       "q": "She ___ seen us — she was asleep the whole time.",
+       "options": [
+        "can't have",
+        "must have",
+        "might",
+        "has"
+       ],
+       "answer": 0,
+       "explain": "Неможливо, бо спала: can't have seen."
+      },
+      {
+       "type": "choice",
+       "q": "I'm not sure where Tom is. He ___ gone to the shop.",
+       "options": [
+        "might have",
+        "must",
+        "can't have",
+        "had"
+       ],
+       "answer": 0,
+       "explain": "Не впевнені, лише припускаємо: might have gone."
+      },
+      {
+       "type": "type",
+       "q": "Встав 3-тю форму дієслова forget: He must have ___ the key.",
+       "answers": [
+        "forgotten"
+       ],
+       "explain": "forget — forgot — forgotten."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Вони, напевно, загубилися» (ми майже впевнені)",
+       "words": [
+        "lost",
+        "They",
+        "have",
+        "must",
+        "got"
+       ],
+       "answer": "They must have got lost",
+       "explain": "must have + V3: They must have got lost."
+      }
+     ]
+    },
+    {
+     "id": "w4q6",
+     "title": "Шепіт кришталевих бажань",
+     "emoji": "💭",
+     "story": "У Печері Бажань кожен кристал виконує лише правильно сформульоване бажання. Скажеш з помилкою — кристал потьмяніє. Допоможи Лумі загадати все як слід.",
+     "lesson": "wish + Past Simple — бажання про теперішнє: I wish I were taller. I wish I knew the answer.\nwish + Past Perfect — жаль про минуле: I wish I hadn't said that.\nwould rather + інфінітив без to — про себе: I'd rather stay at home.\nwould rather + хтось + Past Simple — про інших: I'd rather you didn't read my diary.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "I wish I ___ taller.",
+       "options": [
+        "am",
+        "were",
+        "will be",
+        "have been"
+       ],
+       "answer": 1,
+       "explain": "Нереальне бажання про теперішнє: wish + were."
+      },
+      {
+       "type": "choice",
+       "q": "I wish I ___ that yesterday — now she's upset.",
+       "options": [
+        "hadn't said",
+        "didn't say",
+        "haven't said",
+        "wouldn't say"
+       ],
+       "answer": 0,
+       "explain": "Жаль про минуле: wish + Past Perfect (hadn't said)."
+      },
+      {
+       "type": "type",
+       "q": "Встав дієслово go у правильній формі: I'd rather ___ by train.",
+       "answers": [
+        "go"
+       ],
+       "explain": "would rather + інфінітив без to: I'd rather go."
+      },
+      {
+       "type": "choice",
+       "q": "I'd rather you ___ my diary.",
+       "options": [
+        "didn't read",
+        "don't read",
+        "not read",
+        "won't read"
+       ],
+       "answer": 0,
+       "explain": "would rather + інша особа + Past Simple: you didn't read."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Шкода, що я не знаю відповіді»",
+       "words": [
+        "knew",
+        "I",
+        "the",
+        "wish",
+        "answer",
+        "I"
+       ],
+       "answer": "I wish I knew the answer",
+       "explain": "Жаль про теперішнє: I wish + Past Simple."
+      }
+     ]
     }
    ],
    "story": {
@@ -2335,6 +3629,262 @@
       "explain": "Past Simple Passive: was + V3 (stolen)."
      }
     ]
+   },
+   "drama": {
+    "id": "w4d",
+    "title": "Відлуння під кригою",
+    "emoji": "🏔",
+    "intro": "Серед заметілі Кришталевих Гір зник альпініст Бранн. Провідниця Сора просить Лумі про допомогу, а кристали гір тьмяніють з кожною годиною. Кожен вибір наближає вас до порятунку — або до лавини.",
+    "start": "n1",
+    "nodes": {
+     "n1": {
+      "scene": "Серед заметілі — порожній намет. Поряд стоїть провідниця Сора й торкається маленької пічки.",
+      "speaker": "Sora",
+      "line": "His tent is empty, and the stove is still warm. What do you make of it?",
+      "hint": "Намет порожній, а пічка ще тепла. Що скажеш?",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "He can't have been here for years.",
+        "good": false,
+        "next": "n2b",
+        "note": "Граматично правильно, але нелогічно: пічка ж тепла."
+       },
+       {
+        "text": "He must have left only a few minutes ago.",
+        "good": true,
+        "next": "n2a",
+        "note": "Логічний висновок: must have + V3."
+       },
+       {
+        "text": "He must left a few minutes ago.",
+        "good": false,
+        "next": "n2b",
+        "note": "Пропущено have: must have left."
+       }
+      ],
+      "timeout": "n2b"
+     },
+     "n2a": {
+      "scene": "Свіжі сліди ведуть угору, до кришталевої печери. Крига під ногами тонка.",
+      "speaker": "Sora",
+      "line": "The ice here is thin. Do you think we should rope up?",
+      "hint": "Крига тут тонка. Може, зв'яжемося мотузкою?",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "Definitely. I'd rather be safe than sorry.",
+        "good": true,
+        "next": "n3a",
+        "note": "Ідіома і правильне would rather + інфінітив без to."
+       },
+       {
+        "text": "I'd rather to go without rope.",
+        "good": false,
+        "next": "n3b",
+        "note": "Після would rather немає to: I'd rather go."
+       }
+      ],
+      "timeout": "n3b"
+     },
+     "n2b": {
+      "scene": "Сора спантеличено хитає головою. Вітер замітає сліди.",
+      "speaker": "Sora",
+      "line": "The tracks are gone. If only we had moved faster...",
+      "hint": "Сліди зникли. Якби ж ми рухалися швидше...",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "If we moved faster, we would have found him.",
+        "good": false,
+        "next": "n3c",
+        "note": "Про минуле: If we had moved faster, we would have found him."
+       },
+       {
+        "text": "It's no use regretting it. Let's check the map.",
+        "good": true,
+        "next": "n3b",
+        "note": "Спокійно і по суті: it's no use + -ing."
+       }
+      ],
+      "timeout": "n3c"
+     },
+     "n3a": {
+      "scene": "У печері кристали світяться й повторюють голоси. Серед них — голос Бранна.",
+      "speaker": "Brann",
+      "line": "Help! I'm trapped below the ice bridge!",
+      "hint": "Допоможіть! Я застряг під крижаним мостом!",
+      "timer": 10,
+      "choices": [
+       {
+        "text": "Stay calm! Are you injured?",
+        "good": true,
+        "next": "n4a",
+        "note": "Заспокоїти і з'ясувати головне — правильний пріоритет."
+       },
+       {
+        "text": "Why you went there?",
+        "good": false,
+        "next": "n4b",
+        "note": "Неграматично (Why did you go...?) і зовсім не на часі."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3b": {
+      "scene": "Карта веде обхідною стежкою. Посеред неї сидить Хранитель гір — величезний сніговий звір.",
+      "speaker": "Keeper",
+      "line": "Few travellers are allowed to pass. Why should I let you through?",
+      "hint": "Небагатьох мандрівників тут пропускають. Чому я маю пропустити вас?",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "Because I am wanting.",
+        "good": false,
+        "next": "n4b",
+        "note": "want не вживається в Continuous, і це не аргумент."
+       },
+       {
+        "text": "A climber has gone missing, and we believe he's in danger.",
+        "good": true,
+        "next": "n4a",
+        "note": "Present Perfect + переконливий аргумент."
+       },
+       {
+        "text": "Because you must have let.",
+        "good": false,
+        "next": "n4b",
+        "note": "Неправильна модальна конструкція і нелогічно."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3c": {
+      "scene": "Сутеніє, заметіль посилюється. Сора ледве тримає ліхтар.",
+      "speaker": "Sora",
+      "line": "I can't see a thing. Should we turn back?",
+      "hint": "Я нічого не бачу. Може, повернемось?",
+      "timer": 11,
+      "choices": [
+       {
+        "text": "Not yet. Let's at least try the ice caves.",
+        "good": true,
+        "next": "n4b",
+        "note": "Наполегливість і правильне Let's + дієслово."
+       },
+       {
+        "text": "We should turned back.",
+        "good": false,
+        "next": "n4b",
+        "note": "Після should — інфінітив: should turn back."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n4a": {
+      "scene": "Бранн лежить під крижаним мостом. Нога затиснута, але він при тямі.",
+      "speaker": "Brann",
+      "line": "I shouldn't have come alone. I wish I'd listened to Sora.",
+      "hint": "Не треба було йти самому. Шкода, що я не послухав Сору.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Yes, you should have listen.",
+        "good": false,
+        "next": "e_ok",
+        "note": "should have + V3: should have listened. І докори зараз не допоможуть."
+       },
+       {
+        "text": "Everyone makes mistakes. Let's get you out first.",
+        "good": true,
+        "next": "n5a",
+        "note": "Підтримка і чіткий пріоритет."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n4b": {
+      "scene": "Міст тріщить. Кристали тьмяніють — гора ніби замовкає.",
+      "speaker": "Sora",
+      "line": "The bridge might collapse any second. What's the plan?",
+      "hint": "Міст може обвалитися будь-якої миті. Який план?",
+      "timer": 10,
+      "choices": [
+       {
+        "text": "You hold the rope, and I'll climb down to him.",
+        "good": true,
+        "next": "n5b",
+        "note": "Чіткий розподіл ролей, will для рішення в моменті."
+       },
+       {
+        "text": "No plan. It's hopeless.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Здатися — найгірше рішення."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "n5a": {
+      "scene": "Удвох вони витягають Бранна. Кристали знову співають.",
+      "speaker": "Brann",
+      "line": "I owe you my life. How can I ever repay you?",
+      "hint": "Я завдячую вам життям. Як мені віддячити?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Just promise you'll never climb alone again.",
+        "good": true,
+        "next": "e_good",
+        "note": "Щиро і мудро."
+       },
+       {
+        "text": "You must have pay me gold.",
+        "good": false,
+        "next": "e_ok",
+        "note": "Неправильна форма (must have paid — це здогадка) і корисливо."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n5b": {
+      "scene": "Бранна врятовано, але кришталевий міст обвалився — печеру втрачено.",
+      "speaker": "Sora",
+      "line": "We saved him, but the cave is gone. Was it worth it?",
+      "hint": "Ми його врятували, але печери більше немає. Чи варто було?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "I wish we didn't came.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Про минуле: I wish we hadn't come. І це несправедливо до Бранна."
+       },
+       {
+        "text": "Absolutely. A life matters more than any crystal.",
+        "good": true,
+        "next": "e_ok",
+        "note": "Правильні цінності і правильна граматика."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "e_good": {
+      "ending": "good",
+      "title": "Пісня кристалів",
+      "text": "Бранн у безпеці, печера ціла, а кристали співають так голосно, що відлуння чути в долині. Сора каже, що з тобою пішла б на будь-яку вершину."
+     },
+     "e_ok": {
+      "ending": "ok",
+      "title": "Ціна порятунку",
+      "text": "Бранна врятовано, але не все пішло ідеально. Гори запам'ятали вашу сміливість — і твої помилки теж."
+     },
+     "e_bad": {
+      "ending": "bad",
+      "title": "Мовчазна гора",
+      "text": "Заметіль перемогла: рятувальникам довелося відступити до табору. Гора чекає, поки ти повернешся й обереш інший шлях."
+     }
+    }
    }
   },
   {
@@ -2619,6 +4169,146 @@
        "explain": "inform — формальне «повідомити»; as soon as possible — якнайшвидше."
       }
      ]
+    },
+    {
+     "id": "w5q5",
+     "title": "Прожектор головного",
+     "emoji": "🔦",
+     "story": "Місячний промінь у читальній залі підсвічує лише найважливіше в реченні. Щоб він засвітився, Лумі має побудувати речення так, щоб наголос падав саме туди, куди треба.",
+     "lesson": "Cleft sentences (розщеплені речення) виділяють головне.\nIt was ... that/who ...: It was Lumi who found the page. It was in 1999 that the library opened.\nWhat ... is ...: What I really need is a cup of tea.\nIt wasn't until ... that ...: It wasn't until midnight that she noticed.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "It was Lumi ___ found the lost page.",
+       "options": [
+        "who",
+        "what",
+        "which",
+        "whom"
+       ],
+       "answer": 0,
+       "explain": "Про людину в ролі підмета: It was ... who ..."
+      },
+      {
+       "type": "choice",
+       "q": "___ I really need is a cup of tea.",
+       "options": [
+        "What",
+        "That",
+        "Which",
+        "It"
+       ],
+       "answer": 0,
+       "explain": "Конструкція What ... is ...: What I need is ..."
+      },
+      {
+       "type": "choice",
+       "q": "It wasn't until midnight ___ the librarian noticed the gap.",
+       "options": [
+        "that",
+        "when",
+        "which",
+        "what"
+       ],
+       "answer": 0,
+       "explain": "Сталий зворот It wasn't until ... that ..."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: ___ was in 1999 that the library opened.",
+       "answers": [
+        "it"
+       ],
+       "explain": "Cleft sentence починається з It: It was in 1999 that ..."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Саме ключ я загубила»",
+       "words": [
+        "that",
+        "was",
+        "key",
+        "It",
+        "I",
+        "the",
+        "lost"
+       ],
+       "answer": "It was the key that I lost",
+       "explain": "It was + виділене + that + решта речення."
+      }
+     ]
+    },
+    {
+     "id": "w5q6",
+     "title": "Колокації старого архіваріуса",
+     "emoji": "🧩",
+     "story": "Архіваріус склеює слова, що завжди ходять парами, але пари розсипались по підлозі. Неправильна пара звучить «не по-англійськи» — допоможи Лумі зібрати природні сполучення.",
+     "lesson": "Колокації — слова, що природно поєднуються.\nmake a decision, make a mistake (а не do); pay attention (to).\nheavy rain (а не strong rain); bitterly disappointed.\ntake something into account — брати до уваги: We must take all the facts into account.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "We need to ___ a decision by Friday.",
+       "options": [
+        "make",
+        "do",
+        "get",
+        "have"
+       ],
+       "answer": 0,
+       "explain": "Колокація: make a decision."
+      },
+      {
+       "type": "choice",
+       "q": "There was ___ rain all night.",
+       "options": [
+        "heavy",
+        "strong",
+        "big",
+        "hard"
+       ],
+       "answer": 0,
+       "explain": "Про сильний дощ кажуть heavy rain."
+      },
+      {
+       "type": "choice",
+       "q": "She was ___ disappointed with the result.",
+       "options": [
+        "bitterly",
+        "heavily",
+        "strongly",
+        "hardly"
+       ],
+       "answer": 0,
+       "explain": "Колокація: bitterly disappointed — гірко розчарована."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: Please pay ___ to the details.",
+       "answers": [
+        "attention"
+       ],
+       "explain": "pay attention to — звертати увагу на."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ми маємо врахувати всі факти»",
+       "words": [
+        "into",
+        "We",
+        "all",
+        "take",
+        "account",
+        "must",
+        "the",
+        "facts"
+       ],
+       "answer": "We must take all the facts into account",
+       "alts": [
+        "We must take into account all the facts"
+       ],
+       "explain": "take something into account — брати до уваги; довгий додаток можна поставити після into account."
+      }
+     ]
     }
    ],
    "story": {
@@ -2860,6 +4550,262 @@
       "explain": "sufficient — формальне «достатній»."
      }
     ]
+   },
+   "drama": {
+    "id": "w5d",
+    "title": "Книга, що переписує минуле",
+    "emoji": "📖",
+    "intro": "У забороненому залі Небесної Бібліотеки лежить Ненаписана Книга: усе, що в ній напишеш, стає тим, що було завжди. Архіваріус Веспер хоче виправити нею давню трагедію. Чи зможуть слова Лумі зупинити того, хто хоче переписати час?",
+    "start": "n1",
+    "nodes": {
+     "n1": {
+      "scene": "Лумі торкається розкритої сторінки — і рядки самі змінюються. З тіні виходить архіваріус Веспер.",
+      "speaker": "Vesper",
+      "line": "Remarkable, isn't it? Whatever is written here becomes what has always been.",
+      "hint": "Дивовижно, правда? Усе, що тут написано, стає тим, що було завжди.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Cool. Can I write that I'm a queen?",
+        "good": false,
+        "next": "n2b",
+        "note": "Легковажно — Веспер вирішує, що з тобою можна не рахуватися."
+       },
+       {
+        "text": "It's fascinating, but surely it ought be handled careful.",
+        "good": false,
+        "next": "n2b",
+        "note": "ought to + інфінітив і прислівник carefully."
+       },
+       {
+        "text": "It's fascinating, but surely something this powerful ought to be handled with care.",
+        "good": true,
+        "next": "n2a",
+        "note": "Тактовно, точно і граматично бездоганно."
+       }
+      ],
+      "timeout": "n2b"
+     },
+     "n2a": {
+      "scene": "Веспер усміхається надто широко. У його руці вже тремтить перо.",
+      "speaker": "Vesper",
+      "line": "Care? What I want is to undo every mistake this library has ever made.",
+      "hint": "Обережно? Чого я хочу — то це скасувати кожну помилку цієї бібліотеки.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Not every mistake is worth erasing. Some of them made us who we are.",
+        "good": true,
+        "next": "n3a",
+        "note": "Сильний аргумент; worth + -ing."
+       },
+       {
+        "text": "What you want are dangerous.",
+        "good": false,
+        "next": "n3b",
+        "note": "What-речення узгоджується з одниною: What you want is dangerous."
+       }
+      ],
+      "timeout": "n3b"
+     },
+     "n2b": {
+      "scene": "Веспер ховає книгу під плащ і зникає між полицями. Бібліотекарка Інес помітила це.",
+      "speaker": "Ines",
+      "line": "Did he just take the Unwritten Book? Should we raise the alarm?",
+      "hint": "Він що, щойно взяв Ненаписану Книгу? Піднімемо тривогу?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Not yet. Let's follow him discreetly and see where he goes.",
+        "good": true,
+        "next": "n3b",
+        "note": "Зважене рішення, точна лексика: discreetly."
+       },
+       {
+        "text": "Yes, make a noise very strong!",
+        "good": false,
+        "next": "n3c",
+        "note": "Неприродна колокація і порядок слів; до того ж паніка шкодить."
+       }
+      ],
+      "timeout": "n3c"
+     },
+     "n3a": {
+      "scene": "Веспер вагається. Перо зависає над сторінкою.",
+      "speaker": "Vesper",
+      "line": "Had the fire of 1802 never happened, we would still have the lost archive.",
+      "hint": "Якби пожежі 1802 року ніколи не було, ми б досі мали втрачений архів.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "If the fire didn't happen, we have it.",
+        "good": false,
+        "next": "n4b",
+        "note": "Про минуле потрібен третій тип умови: If the fire hadn't happened, we would have..."
+       },
+       {
+        "text": "Perhaps, but it was after the fire that the library was rebuilt to welcome everyone.",
+        "good": true,
+        "next": "n4a",
+        "note": "Cleft sentence виділяє головне: it was after the fire that..."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3b": {
+      "scene": "Слід чорнила веде до обсерваторії. Інес шепоче, притулившись до дверей.",
+      "speaker": "Ines",
+      "line": "Not only has he taken the book, but he has also locked the door behind him.",
+      "hint": "Він не лише взяв книгу, а й замкнув за собою двері.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Then we must to find another way in.",
+        "good": false,
+        "next": "n4b",
+        "note": "Після must — без to: we must find."
+       },
+       {
+        "text": "Then we'll have to find another way in. Is there a service staircase?",
+        "good": true,
+        "next": "n4a",
+        "note": "Конструктивно й граматично точно."
+       },
+       {
+        "text": "It is the door what he locked.",
+        "good": false,
+        "next": "n4b",
+        "note": "У cleft sentence — that, не what: It is the door that he locked."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n3c": {
+      "scene": "Лунає тривога. Наляканий Веспер пише все швидше — полиці перебудовуються на очах.",
+      "speaker": "Ines",
+      "line": "The shelves are rearranging themselves! What on earth is going on?",
+      "hint": "Полиці самі переставляються! Що взагалі відбувається?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "He's rewriting the past. We need to reach him before it's too late.",
+        "good": true,
+        "next": "n4b",
+        "note": "Чітко пояснюєш і пропонуєш дію."
+       },
+       {
+        "text": "He rewrite past, hurry up.",
+        "good": false,
+        "next": "n4b",
+        "note": "Потрібно He is rewriting the past."
+       }
+      ],
+      "timeout": "n4b"
+     },
+     "n4a": {
+      "scene": "В обсерваторії Веспер зізнається: у тій пожежі загинула його наставниця.",
+      "speaker": "Vesper",
+      "line": "Do you have any idea what it's like to lose someone and be unable to change it?",
+      "hint": "Ти хоч уявляєш, як це — втратити когось і не мати змоги нічого змінити?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "I can only imagine. But rewriting the past won't heal the grief; it will only erase her story.",
+        "good": true,
+        "next": "n5a",
+        "note": "Емпатія і переконливий аргумент."
+       },
+       {
+        "text": "Yes, I know exactly. Just get over it.",
+        "good": false,
+        "next": "e_ok",
+        "note": "Нетактовно: get over it знецінює чуже горе."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n4b": {
+      "scene": "Книга спалахує дивним світлом, кімната перебудовується. Перо пише саме.",
+      "speaker": "Vesper",
+      "line": "I can't stop it! The ink is writing on its own!",
+      "hint": "Я не можу це зупинити! Чорнило пише саме!",
+      "timer": 10,
+      "choices": [
+       {
+        "text": "Close the book! On the count of three, we'll shut it together.",
+        "good": true,
+        "next": "n5b",
+        "note": "Швидкий чіткий план."
+       },
+       {
+        "text": "It's not my problem, honestly.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Відмовитися допомогти в критичну мить — найгірший вибір."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "n5a": {
+      "scene": "Веспер повільно кладе перо. Сторінка, де він писав, стає чистою.",
+      "speaker": "Vesper",
+      "line": "What should we do with the book now?",
+      "hint": "Що нам тепер робити з книгою?",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "Let's sell it. It would make a fortune.",
+        "good": false,
+        "next": "e_ok",
+        "note": "Граматично ок, але безвідповідально: книга може потрапити в погані руки."
+       },
+       {
+        "text": "Let's seal it in the archive so that no one is ever tempted to use it again.",
+        "good": true,
+        "next": "e_good",
+        "note": "Мудре рішення; so that виражає мету."
+       }
+      ],
+      "timeout": "e_ok"
+     },
+     "n5b": {
+      "scene": "Книгу зачинено, але одна полиця так і лишилась переписаною: зникла ціла збірка віршів.",
+      "speaker": "Ines",
+      "line": "We've saved the library, yet something has been lost forever.",
+      "hint": "Ми врятували бібліотеку, але дещо втрачено назавжди.",
+      "timer": 12,
+      "choices": [
+       {
+        "text": "It's a heavy price, but at least the past is ours again.",
+        "good": true,
+        "next": "e_ok",
+        "note": "Зріло і з природною колокацією a heavy price."
+       },
+       {
+        "text": "Whatever, nobody reads poems.",
+        "good": false,
+        "next": "e_bad",
+        "note": "Зневажливо — бібліотека цього не пробачає."
+       }
+      ],
+      "timeout": "e_bad"
+     },
+     "e_good": {
+      "ending": "good",
+      "title": "Минуле в безпеці",
+      "text": "Книгу запечатано, Веспер уперше за багато років плаче — і вперше відпускає. Наступного ранку він відкриває залу пам'яті своєї наставниці. Ти перемогла словами, а не силою."
+     },
+     "e_ok": {
+      "ending": "ok",
+      "title": "Ціна тиші",
+      "text": "Бібліотеку врятовано, але частина історії загубилась. Минуле знову належить усім — хоча й не повністю."
+     },
+     "e_bad": {
+      "ending": "bad",
+      "title": "Переписаний світ",
+      "text": "Чорнило дописало свою версію: полиці стоять інакше, а люди пам'ятають те, чого не було. Лише ти пам'ятаєш, як було насправді. Спробуй ще раз!"
+     }
+    }
    }
   }
  ],

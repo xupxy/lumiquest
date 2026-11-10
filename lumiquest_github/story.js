@@ -21,7 +21,7 @@ function ensureCss(root) {
     setTimeout(show, 1500);
   }
 }
-const asset = (p) => new URL('./' + p.replace(/\.png$/, '.webp').split('/').pop(), import.meta.url).href;
+const asset = (p) => new URL('./' + p.replace(/\.png$/, '.webp').replace(/^covers\//, 'cover_').split('/').pop(), import.meta.url).href;
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const reduced = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function el(tag, cls, html) {

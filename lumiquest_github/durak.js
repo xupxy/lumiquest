@@ -2,6 +2,7 @@
 import * as S from './state.js';
 import * as FX from './fx.js';
 import * as L from './lumi.js';
+import { recordGame } from './games.js';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
 const CSS_HREF = new URL('./modes.css', import.meta.url).href;
@@ -21,7 +22,7 @@ function ensureCss(root) {
     setTimeout(show, 1500);
   }
 }
-const asset = (p) => new URL('./' + p.replace(/\.png$/, '.webp').split('/').pop(), import.meta.url).href;
+const asset = (p) => new URL('./' + p.replace(/\.png$/, '.webp').replace(/^covers\//, 'cover_').split('/').pop(), import.meta.url).href;
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const reduced = () => !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 function el(tag, cls, html) {
@@ -126,12 +127,13 @@ function sample(arr, k) {
   for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
   return a.slice(0, k);
 }
-export function dkPool(content, unlocked) {
+export function dkPool(content, unlocked, onlyWid = null) {
   const words = content?.WORDS || {};
   const worlds = content?.WORLDS || [];
   const pairs = (wid) => (words[wid] || []).filter((p) => Array.isArray(p) && p.length === 2
     && p.every((x) => typeof x === 'string' && x.trim())).map((p) => [p[0], p[1]]);
-  let pool = (unlocked || []).flatMap(pairs);
+  // зі стежки світу (params.wid) — колода тільки зі слів цього світу
+  let pool = onlyWid ? pairs(onlyWid) : (unlocked || []).flatMap(pairs);
   if (new Set(pool.map((p) => norm(p[1]))).size < HAND + 2) pool = worlds.flatMap((w) => pairs(w.id));
   const seen = new Set();
   const uniq = [];
@@ -177,6 +179,8 @@ export function render(root, params, app) {
   ensureCss(root);
   const inTg = mountHost(root, app);
   const st = app.state;
+  const wid = params?.wid && app.content?.WORDS?.[params.wid] ? params.wid : null;
+  const wName = wid ? ((app.content?.WORLDS || []).find((w) => w.id === wid)?.name || '') : '';
   let alive = true;
   let busy = false;
   let dk = null;
@@ -197,7 +201,7 @@ export function render(root, params, app) {
     const wins = st.durak_wins || 0;
     const games = st.durak_games || 0;
     scr.innerHTML = `
-      <header class="m-head"><button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button><div class="m-title">🃏 Картярня</div></header>
+      <header class="m-head"><button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button><div class="m-title">🃏 ${wid ? `Дурень · ${esc(wName)}` : 'Картярня'}</div></header>
       <div class="m-dk-banner"><img src="${asset('durak.png')}" alt="Словесний Дурень" draggable="false"></div>
       ${note ? `<div class="m-dk-lnote">${esc(note)}</div>` : ''}
       <div class="m-dk-rules">
@@ -216,10 +220,10 @@ export function render(root, params, app) {
   // ------------------------------------------------ партія
   let $ = {};
   function newGame() {
-    pool = dkPool(app.content, st.unlocked);
+    pool = dkPool(app.content, st.unlocked, wid);
     if (pool.length < HAND + 1) { lobby('Картярня ще без карт — слів поки немає 🃏'); return; }
     const hand = sample(pool, HAND).map(randCard);
-    dk = { trump: pick(SUITS), hand, atk: null, turn: 0, beaten: 0, xp: 0 };
+    dk = { trump: pick(SUITS), hand, atk: null, turn: 0, beaten: 0, xp: 0, taken: 0 };
     dkAttack(pool, dk);
     st.durak_games = (st.durak_games || 0) + 1;
     app.save?.();
@@ -450,6 +454,7 @@ export function render(root, params, app) {
       node.style.visibility = '';
       const taken = { ...a, id: ++uid };
       dk.hand.push(taken);
+      dk.taken += 1;
       await cardToHand(atkNode, taken);
     }
     after(ok, gain, note);
@@ -476,6 +481,7 @@ export function render(root, params, app) {
       hn?.classList.remove('m-card-hint');
       const taken = { ...a, id: ++uid };
       dk.hand.push(taken);
+      dk.taken += 1;
       await cardToHand(atkNode, taken);
     } else {
       ok = true;
@@ -539,6 +545,8 @@ export function render(root, params, app) {
       st.durak_wins = (st.durak_wins || 0) + 1;
       addXP(st, XP_WIN);
     }
+    const stars = win ? (dk.taken <= 1 ? 3 : 2) : 0;
+    if (wid) recordGame(st, `${wid}-durak`, stars);
     app.save?.();
     const total = win ? XP_WIN + dk.xp : dk.xp;
     const ov = el('div', `m-overlay m-dk-end ${win ? 'win' : 'lose'}`);
@@ -549,12 +557,13 @@ export function render(root, params, app) {
         <h2>${win ? 'Рука порожня! Лис — дурень! 🤡' : 'Цього разу дурень ти, ще партію?'}</h2>
         <div class="m-dk-endxp">+<b>0</b> XP за партію</div>
         <div class="m-dk-endstat">🗑 Бито: <b>${dk.beaten}</b> · 🏆 Перемог: <b>${st.durak_wins || 0}</b> з ${st.durak_games || 0}</div>
+        ${wid ? '<div class="m-dk-endstars" style="display:flex;justify-content:center;min-height:64px"></div>' : ''}
         ${win ? '' : '<p class="m-dk-endtip">Нічого, Лис теж колись програвав 😉</p>'}
         <div class="m-dk-endlumi"></div>
         <div class="m-dk-endbtns">
           <button class="m-btn m-btn-alt m-btn-big" data-a="again">🃏 Ще партію</button>
-          <button class="m-btn" data-a="dragons">🐉 Дракони</button>
-          <button class="m-btn m-btn-ghost" data-a="home">🏠 Меню</button>
+          ${wid ? '<button class="m-btn m-btn-big" data-a="next">➡️ Далі</button>' : `<button class="m-btn" data-a="dragons">🐉 Дракони</button>
+          <button class="m-btn m-btn-ghost" data-a="home">🏠 Меню</button>`}
         </div>
       </div>`;
     scr.append(ov);
@@ -569,7 +578,9 @@ export function render(root, params, app) {
     }
     later(() => countUp(ov.querySelector('.m-dk-endxp b'), 0, total, 800), 500);
     lumiRef = makeLumi(app, ov.querySelector('.m-dk-endlumi'), 64, win ? 'proud' : 'cheer');
-    const on = (a, fn) => { ov.querySelector(`[data-a=${a}]`).onclick = () => { hap(app); fn(); }; };
+    if (wid) fx('starsDrop', ov.querySelector('.m-dk-endstars'), stars);
+    const on = (a, fn) => { const b = ov.querySelector(`[data-a=${a}]`); if (b) b.onclick = () => { hap(app); fn(); }; };
+    on('next', () => app.back());
     on('again', () => { lumiRef?.destroy?.(); lumiRef = null; ov.remove(); newGame(); });
     on('dragons', () => app.go('dragons', {}, { replace: true }));
     on('home', () => (typeof app.home === 'function' ? app.home() : app.go('home')));
