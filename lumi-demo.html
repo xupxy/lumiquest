@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="data:,">
+<title>Лумі — демо анімацій</title>
+<style>
+  :root { --plum: #482c56; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--plum);
+    font: 15px/1.4 Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg, #ffecd6 0%, #e6d6fc 100%);
+  }
+  body.night { background: linear-gradient(180deg, #161a42 0%, #422e70 100%); color: #e8e4ff; }
+  main { max-width: 720px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 20px; margin: 4px 0 8px; }
+  h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; opacity: .7; margin: 18px 0 8px; }
+  .stage { display: flex; justify-content: center; align-items: flex-end; gap: 24px; padding: 70px 0 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  button {
+    min-height: 44px; padding: 0 14px; border-radius: 14px; border: 2.5px solid var(--plum);
+    background: #fff; color: var(--plum); font: 700 15px/1 inherit; font-family: inherit; cursor: pointer;
+    box-shadow: 0 3px 0 rgba(72, 44, 86, .25);
+  }
+  button:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(72, 44, 86, .25); }
+  button.on { background: #ffd84a; }
+  .panel { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-top: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: #fff; border: 2.5px solid var(--plum); font-weight: 800; }
+  #stars { min-height: 96px; display: flex; justify-content: center; align-items: center; }
+  .screens { position: relative; height: 120px; overflow: hidden; border-radius: 18px; border: 2.5px solid var(--plum); }
+  .screen { position: relative; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; padding: 30px 10px 10px; }
+  .grid .cell { display: flex; flex-direction: column; align-items: center; font-weight: 700; padding-bottom: 10px; }
+  .target { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 32px; background: #fff; border: 2.5px solid var(--plum); }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1>Лумі ✨ демо анімацій</h1>
+  <div class="stage" id="stage"></div>
+
+  <h2>Емоції</h2>
+  <div class="row" id="emotions"></div>
+
+  <h2>Реакції та репліки</h2>
+  <div class="row" id="reacts"></div>
+
+  <h2>Ефекти (fx.js)</h2>
+  <div class="row" id="effects"></div>
+
+  <div class="panel">
+    <span class="chip" id="xp">XP: <b id="xpNum">0</b></span>
+    <span class="target" id="dragon">🐉</span>
+    <span class="chip" id="food">🍀 Їжа</span>
+  </div>
+  <div id="stars"></div>
+  <div class="screens" id="screens"><div class="screen" style="background:#fff3c4">Екран 1</div></div>
+</main>
+
+<script type="module">
+  import { createLumi, LUMI_EMOTIONS } from '../js/lumi.js';
+  import * as fx from '../js/fx.js';
+
+  const qs = new URLSearchParams(location.search);
+  const $ = (id) => document.getElementById(id);
+
+  // ---- grid mode for screenshots: lumi-demo.html?grid=1
+  if (qs.has('grid')) {
+    const main = $('main');
+    main.innerHTML = '<div class="grid" id="grid"></div>';
+    for (const e of LUMI_EMOTIONS) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      $('grid').appendChild(cell);
+      createLumi(cell, { size: +(qs.get('size') || 220), emotion: e });
+      cell.insertAdjacentHTML('beforeend', `<span>${e}</span>`);
+    }
+  } else {
+    const size = +(qs.get('size') || 240);
+    const lumi = createLumi($('stage'), { size, emotion: qs.get('e') || 'hello' });
+    const mini = createLumi($('stage'), { size: 110, emotion: 'happy', bubble: 'right' });
+    window.lumi = lumi; window.mini = mini; window.fx = fx;
+
+    const mk = (parent, label, fn) => {
+      const b = document.createElement('button');
+      b.textContent = label;
+      b.addEventListener('click', () => fn(b));
+      $(parent).appendChild(b);
+      return b;
+    };
+
+    const emoBtns = {};
+    for (const e of LUMI_EMOTIONS) {
+      emoBtns[e] = mk('emotions', e, () => {
+        lumi.set(e);
+        document.body.classList.toggle('night', e === 'sleepy');
+        Object.values(emoBtns).forEach((b) => b.classList.remove('on'));
+        emoBtns[e].classList.add('on');
+      });
+    }
+    emoBtns[lumi.emotion].classList.add('on');
+
+    for (const k of ['tap', 'jump', 'giggle', 'spin', 'shake', 'nod', 'love', 'wow']) mk('reacts', k, () => lumi.react(k));
+    mk('reacts', 'say()', () => lumi.say('Привіт! Я Лумі. Давай вивчимо кілька нових слів англійською!'));
+    mk('reacts', 'say коротко', () => lumi.say('Правильно! 🎉', { ms: 1500 }));
+    mk('reacts', 'mini.say', () => mini.say('А я маленька Лумі!'));
+    mk('reacts', 'destroy mini', (b) => { mini.destroy(); b.disabled = true; });
+
+    let xp = 0;
+    mk('effects', 'confetti', () => fx.confetti());
+    mk('effects', 'confetti з кнопки', (b) => { const r = b.getBoundingClientRect(); fx.confetti({ x: r.left + r.width / 2, y: r.top, count: 60 }); });
+    mk('effects', 'sparkle', (b) => fx.sparkle(b));
+    mk('effects', '+10 XP', (b) => { fx.floatText(b, '+10 XP'); fx.countUp($('xpNum'), xp, xp + 10, 700); xp += 10; fx.pop($('xp')); });
+    mk('effects', 'shake', (b) => fx.shake(b));
+    mk('effects', 'pop', (b) => fx.pop(b));
+    mk('effects', 'pulse', (b) => fx.pulse(b));
+    mk('effects', 'flash', () => fx.flash());
+    mk('effects', 'flash зелений', () => fx.flash('#7cffb2'));
+    mk('effects', 'countUp 0→250', () => { fx.countUp($('xpNum'), 0, 250, 1200); xp = 250; });
+    for (const n of [0, 1, 2, 3]) mk('effects', `зірки ${n}/3`, async () => { $('stars').innerHTML = ''; await fx.starsDrop($('stars'), n, 3); });
+    mk('effects', 'flyTo їжа → 🐉', async () => { await fx.flyTo($('food'), $('dragon'), { html: '🍀', ms: 700 }); fx.pop($('dragon')); fx.sparkle($('dragon'), { count: 8 }); });
+    mk('effects', 'flyTo копія', async (b) => { await fx.flyTo(b, $('xp'), { ms: 600 }); fx.pop($('xp')); });
+    let screenN = 1;
+    const colors = ['#fff3c4', '#d8f3ff', '#ffe0ea', '#e2ffd8'];
+    for (const dir of ['left', 'right', 'up', 'fade']) {
+      mk('effects', `екран ${dir}`, () => {
+        const box = $('screens');
+        const old = box.lastElementChild;
+        const nw = document.createElement('div');
+        nw.className = 'screen';
+        screenN += 1;
+        nw.style.background = colors[screenN % colors.length];
+        nw.textContent = `Екран ${screenN}`;
+        box.appendChild(nw);
+        fx.screenTransition(old, nw, dir);
+      });
+    }
+    setTimeout(() => lumi.say('Привіт! Натисни на мене 😊'), 600);
+  }
+</script>
+</body>
+</html>
