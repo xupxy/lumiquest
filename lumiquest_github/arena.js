@@ -1,12 +1,13 @@
 // ⚔️ Бос-екзамен як карткова битва на арені. Порт game/arena.py + boss-run з engine.py.
-import * as S from './state.js?v=20261110123652';
-import * as FX from './fx.js?v=20261110123652';
-import * as UI from './ui.js?v=20261110123652';
-import * as L from './lumi.js?v=20261110123652';
-import { recordGame } from './games.js?v=20261110123652';
+import * as S from './state.js?v=20261110123941';
+import * as FX from './fx.js?v=20261110123941';
+import * as UI from './ui.js?v=20261110123941';
+import * as L from './lumi.js?v=20261110123941';
+import { recordGame } from './games.js?v=20261110123941';
+import { createCharacter } from './characters.js?v=20261110123941';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110123652', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110123941', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -248,7 +249,7 @@ export function render(root, params, app) {
         <div class="m-ar-hp"><div class="m-ar-hpbar">${'<i></i>'.repeat(need)}</div><b class="m-ar-hpnum">${need}/${need}</b></div>
         <div class="m-ar-btower">
           <div class="m-ar-tw red"></div>
-          <div class="m-ar-bavatar">${esc(bEmoji)}</div>
+          <div class="m-ar-bchar"></div>
         </div>
       </div>
     </section>
@@ -275,6 +276,19 @@ export function render(root, params, app) {
   const elSegs = [...scr.querySelectorAll('.m-ar-elbar i')];
   const elNum = $('.m-ar-elnum');
   $('.m-back').onclick = () => { hap(app); app.back(); };
+
+  // живий бос над вежею (characters.js); idle після реакцій
+  const chars = [];
+  const mkChar = (box, size, mood) => {
+    try { const c = createCharacter(box, `boss_${wid}`, { size, mood }); chars.push(c); return c; } catch (e) { console.warn('boss char', e); return null; }
+  };
+  const bossCh = mkChar($('.m-ar-bchar'), 118, 'idle');
+  let moodT = 0;
+  const bossMood = (m, back = 0) => {
+    clearTimeout(moodT);
+    bossCh?.set(m);
+    if (back) moodT = setTimeout(() => { if (alive && !r.over) bossCh?.set('idle'); }, back);
+  };
 
   // рука: 4 карти з колоди (для краси; кидається випадкова карта DECK, як у Python)
   const cardHtml = (name) => {
@@ -308,7 +322,7 @@ export function render(root, params, app) {
     paintStatus();
     const ov = el('div', 'm-overlay m-ar-intro');
     ov.innerHTML = `<div class="m-ar-introcard">
-      <div class="m-ar-introboss">${esc(bEmoji)}</div>
+      <div class="m-ar-introboss m-ar-introchar"></div>
       <div class="m-ar-vs">VS</div>
       <h2>Арена: ${esc(bName)}</h2>
       <p>${esc(boss.intro || '')}</p>
@@ -316,11 +330,15 @@ export function render(root, params, app) {
       <button class="m-btn m-btn-big m-btn-alt" data-a="go">⚔️ До бою!</button>
       ${inTg ? '' : '<button class="m-btn m-btn-ghost m-ar-introback" data-a="back">‹ Назад</button>'}</div>`;
     scr.append(ov);
+    const introCh = mkChar(ov.querySelector('.m-ar-introboss'), 150, 'talk');
+    introCh?.talk(boss.intro || bName);
+    bossCh?.talk(boss.intro || bName);
     const bk = ov.querySelector('[data-a=back]');
     if (bk) bk.onclick = () => { hap(app); app.back(); };
     ov.querySelector('[data-a=go]').onclick = () => {
       hap(app, 'medium');
-      anim(ov, [{ opacity: 1 }, { opacity: 0 }], 250).then(() => ov.remove());
+      introCh?.talk(0); bossCh?.talk(0);
+      anim(ov, [{ opacity: 1 }, { opacity: 0 }], 250).then(() => { introCh?.destroy(); ov.remove(); });
       showTask();
     };
   }
@@ -424,6 +442,8 @@ export function render(root, params, app) {
     if (!alive) return;
     // вибух
     boom(btower, '💥');
+    bossCh?.react('hit');
+    bossMood('hurt', 1000);
     btower.classList.remove('m-hit'); void btower.offsetWidth; btower.classList.add('m-hit');
     fx('shake', btower);
     const seg = hpSegs[need - r.correct];
@@ -448,6 +468,8 @@ export function render(root, params, app) {
     if (!tw) return;
     const a = btower.getBoundingClientRect();
     const src = { left: a.left + a.width / 2 - 24, top: a.top + a.height * 0.3, width: 48, height: 48 };
+    bossMood('happy', 1700); // бос сміється з помилки
+    bossCh?.react('jump');
     anim(btower, [{ transform: 'none' }, { transform: 'translateY(-10px) scale(1.06)' }, { transform: 'none' }], 300);
     const ball = el('div', 'm-ar-fireball', `<span>${esc(bEmoji)}</span>`);
     await fly(ball, src, tw.getBoundingClientRect(), { ms: 650, arc: 40, rot0: 0, rot1: -540, s0: 0.8, s1: 1.1 });
@@ -505,7 +527,7 @@ export function render(root, params, app) {
       <div class="m-ar-rays" aria-hidden="true"></div>
       <div class="m-ar-endcard">
         <div class="m-ar-banner">${win ? 'ПЕРЕМОГА!' : 'ПОРАЗКА'}</div>
-        <div class="m-ar-endicon">${win ? '👑' : '💔'}</div>
+        <div class="m-ar-endicon"><span class="m-ar-endboss"></span><span class="m-ar-endemo">${win ? '👑' : '💔'}</span></div>
         <p class="m-ar-endsub">${win ? `Вежа «${esc(bName)}» впала!` : `Усі вежі впали… ${esc(bName)} цього разу сильніший.`}</p>
         <div class="m-ar-hits">Ударів: <b>${r.correct}/${need}</b></div>
         <div class="m-ar-trophies"><span class="m-ar-cup">🏆</span><b class="m-ar-tcount">${oldT}</b><em>${delta}</em></div>
@@ -524,8 +546,10 @@ export function render(root, params, app) {
     if (win) {
       later(() => fx('confetti'), 300);
       later(() => fx('confetti'), 1400);
-      btower.classList.add('m-fallen');
+      btower.querySelector('.m-ar-tw')?.classList.add('m-fallen');
     }
+    bossMood(win ? 'lose' : 'win');
+    mkChar(ov.querySelector('.m-ar-endboss'), 104, win ? 'lose' : 'win');
     const tc = ov.querySelector('.m-ar-tcount');
     later(() => {
       countUp(tc, oldT, newT, 1000);
@@ -548,6 +572,8 @@ export function render(root, params, app) {
     alive = false;
     timers.forEach(clearTimeout);
     try { lumiRef?.destroy?.(); } catch (e) { /* */ }
+    clearTimeout(moodT);
+    chars.forEach((c) => { try { c.destroy(); } catch (e) { /* */ } });
     document.querySelectorAll('.m-flylayer > *, .m-boom').forEach((x) => x.remove());
   };
 }

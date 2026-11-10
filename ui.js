@@ -18,7 +18,7 @@
  *  fx — проксі ефектів: викликає js/fx.js, якщо він є, інакше вбудовані фолбеки
  *  setFx(module), setHaptics(tg)                   (викликає app.js)
  */
-import { norm, levelOf, xpProgress } from './state.js?v=20261110123652';
+import { norm, levelOf, xpProgress } from './state.js?v=20261110123941';
 
 // ─────────────────────────────────────────────────────────── DOM helpers
 export function h(tag, attrs, ...kids) {

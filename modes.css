@@ -748,3 +748,18 @@
 .m-ar-task { --on-sky: #3B2A55; --on-sky-2: #6B5A8A; }
 html[data-scheme='dark'] .m-ar-task .order-line { background-color: #F4EFFC; border-color: #B9A8F0; }
 html[data-scheme='dark'] .m-ar-task .slot { background: rgba(59, 42, 85, .08); }
+
+/* ---------- v5: живі персонажі (characters.js) ---------- */
+.m-ar-btower { width: 120px; }
+.m-ar-btower .m-ar-tw.red { left: 22px; right: 22px; opacity: .55; }
+.m-ar-bchar { position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); width: 118px; height: 118px; filter: drop-shadow(0 6px 8px rgba(30,15,45,.3)); }
+.m-ar-btower.m-hit { animation: none; }
+.m-ar-introchar { width: 150px; height: 150px; margin: -6px auto 0; animation: none; }
+.m-ar-endicon { display: flex; align-items: flex-end; justify-content: center; gap: 4px; }
+.m-ar-endboss { display: block; width: 104px; height: 104px; }
+.m-ar-endemo { font-size: 40px; line-height: 1; }
+.m-dk-foxpic.m-dk-foxchr { background: radial-gradient(circle at 50% 35%, #8a5a7a, #4a2f45); overflow: hidden; display: grid; place-items: end center; }
+.m-dk-foxpic.m-dk-foxchr.big { background: radial-gradient(circle at 50% 35%, #8a5a7a, #3a2338); animation: none; }
+.m-dk-end.win .m-dk-foxpic.m-dk-foxchr.big, .m-dk-end.lose .m-dk-foxpic.m-dk-foxchr.big { animation: none; filter: none; }
+.m-st-portrait.m-st-chr { background: radial-gradient(circle at 50% 30%, #fff 0%, var(--st-glow, #f3eaff) 85%); display: grid; place-items: end center; }
+.m-end-portrait.m-st-chr { background: radial-gradient(circle at 50% 30%, #fff, #efe6ff); }

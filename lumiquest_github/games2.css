@@ -389,3 +389,8 @@
 .g2-stage.tight .g2-actor-face { width: 56px; height: 56px; font-size: 26px; }
 .g2-stage.tight .g2-actor-name { display: none; }
 .g2-stage.tighter .g2-cast { display: none; }
+
+/* ---------- v5: актори драм — живі персонажі ---------- */
+.g2-actor-face.g2-actor-chr { overflow: hidden; display: grid; place-items: end center; font-size: 0; animation: none;
+  background: radial-gradient(circle at 50% 30%, #fff 0%, var(--actor, #ffd84a) 70%, color-mix(in srgb, var(--actor, #ffd84a) 60%, #000) 100%); }
+.g2-actor-face.g2-actor-chr .chr { width: 100%; height: 100%; }

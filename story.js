@@ -1,11 +1,12 @@
 // 💌 Історії — візуальна новела з виборами. Порт game/story.py.
-import * as S from './state.js?v=20261110123652';
-import * as FX from './fx.js?v=20261110123652';
-import * as L from './lumi.js?v=20261110123652';
-import { recordGame } from './games.js?v=20261110123652';
+import * as S from './state.js?v=20261110123941';
+import * as FX from './fx.js?v=20261110123941';
+import * as L from './lumi.js?v=20261110123941';
+import { createCharacter, characterIdFor } from './characters.js?v=20261110123941';
+import { recordGame } from './games.js?v=20261110123941';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110123652', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110123941', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -165,7 +166,7 @@ export function render(root, params, app) {
     <div class="m-st-hearts" aria-label="Симпатія"></div>
     <div class="m-st-stage">
       <div class="m-st-glow"></div>
-      <div class="m-st-portrait"><img alt="${esc(cast)}" src="${asset(`story/${wid}.png`)}" draggable="false"></div>
+      <div class="m-st-portrait m-st-chr" aria-label="${esc(cast)}"></div>
     </div>
     <div class="m-st-box" role="button" tabindex="0">
       <div class="m-st-speaker"><span></span><button class="m-st-hintbtn" aria-label="Переклад">🇺🇦</button></div>
@@ -186,6 +187,10 @@ export function render(root, params, app) {
   const hintEl = $('.m-st-hint');
   const choicesEl = $('.m-st-choices');
   $('.m-back').onclick = () => { hap(app); app.back(); };
+  // герой історії — живий портрет (characters.js) замість PNG
+  const castId = characterIdFor(cast);
+  let hero = null, endHero = null;
+  try { hero = createCharacter(portrait, castId, { size: '100%' }); } catch (e) { console.warn('story char', e); }
 
   for (let k = 0; k < n; k++) heartsEl.append(el('span', 'm-heart', '🤍'));
   const heartNodes = [...heartsEl.children];
@@ -209,6 +214,10 @@ export function render(root, params, app) {
     box.classList.add('typing');
     anim(box, [{ transform: 'translateY(6px)', opacity: 0.6 }, { transform: 'none', opacity: 1 }], 220);
     tw = typewriter(lineEl, text);
+    if (who === cast && hero) {
+      hero.talk(true);
+      tw.done.then(() => hero?.talk(0));
+    }
     tw.done.then(() => box.classList.remove('typing'));
     return tw.done;
   };
@@ -226,6 +235,8 @@ export function render(root, params, app) {
     portrait.classList.remove('m-react-good', 'm-react-bad');
     void portrait.offsetWidth;
     portrait.classList.add(kind === 'good' ? 'm-react-good' : 'm-react-bad');
+    hero?.talk(0);
+    hero?.set(kind === 'good' ? 'happy' : 'sad');
   };
 
   // ------------------------------------------------ intro
@@ -246,6 +257,7 @@ export function render(root, params, app) {
     paintCount();
     const sc = s.scenes[run.i];
     choicesEl.innerHTML = '';
+    hero?.set('idle');
     anim(portrait, [{ transform: 'scale(.94)', opacity: 0.6 }, { transform: 'none', opacity: 1 }], 350);
     await say(cast, sc.line || '', { hint: sc.hint || '' });
     if (!alive || run.stage !== 'scene') return;
@@ -375,7 +387,7 @@ export function render(root, params, app) {
       <div class="m-end-card">
         <div class="m-end-big">${big}</div>
         <h2>${title}</h2>
-        <div class="m-end-portrait"><img src="${asset(`story/${wid}.png`)}" alt=""></div>
+        <div class="m-end-portrait m-st-chr"></div>
         <p class="m-end-text">${esc(s.endings?.[kind] || '')}</p>
         <div class="m-end-hearts">${Array.from({ length: n }, (_, k) => `<span class="${k < h ? 'on' : ''}" style="animation-delay:${400 + k * 160}ms">${k < h ? '💗' : '🤍'}</span>`).join('')}
           <small>(${h}/${n})</small></div>
@@ -389,6 +401,8 @@ export function render(root, params, app) {
         </div>
       </div>`;
     scr.append(ov);
+    hero?.set(kind === 'good' ? 'win' : kind === 'bad' ? 'sad' : 'happy');
+    try { endHero = createCharacter(ov.querySelector('.m-end-portrait'), castId, { size: '100%', mood: kind === 'good' ? 'happy' : kind === 'bad' ? 'sad' : 'idle' }); } catch (e) { /* */ }
     hap(app, kind === 'bad' ? 'warning' : 'success');
     later(() => countUp(ov.querySelector('.m-end-xp b'), 0, xp, 900), 400 + n * 160);
     if (kind === 'good') later(() => fx('confetti'), 500);
@@ -397,6 +411,8 @@ export function render(root, params, app) {
     ov.querySelector('[data-a=again]').onclick = () => {
       hap(app);
       lumiRef?.destroy?.(); lumiRef = null;
+      endHero?.destroy(); endHero = null;
+      hero?.set('idle');
       ov.remove();
       run.i = 0; run.hearts = 0; run.good = 0;
       showIntro();
@@ -412,6 +428,7 @@ export function render(root, params, app) {
     if (tw?.typing) tw.finish();
     timers.forEach(clearTimeout);
     try { lumiRef?.destroy?.(); } catch (e) { /* */ }
+    try { hero?.destroy(); endHero?.destroy(); } catch (e) { /* */ }
     document.querySelectorAll('.m-fly-heart').forEach((x) => x.remove());
   };
 }

@@ -1,14 +1,15 @@
 // 🎭 Шлях Вибору — інтерактивна кінодрама (letterbox, субтитри, рішення з таймером,
 // гілки й кінцівки) і наприкінці анімована СХЕМА ШЛЯХУ (flowchart графа вузлів).
 // Контент: WORLDS[i].drama (див. WEBAPP_SPEC v4). Відкриті вузли: state.drama_seen[wid] = [ids].
-import * as S from './state.js?v=20261110123652';
-import * as FX from './fx.js?v=20261110123652';
-import * as L from './lumi.js?v=20261110123652';
-import { recordGame, gameStars } from './games.js?v=20261110123652';
+import * as S from './state.js?v=20261110123941';
+import * as FX from './fx.js?v=20261110123941';
+import * as L from './lumi.js?v=20261110123941';
+import { recordGame, gameStars } from './games.js?v=20261110123941';
+import { createCharacter, characterIdFor } from './characters.js?v=20261110123941';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110123652', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110123652', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110123941', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110123941', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
@@ -284,13 +285,22 @@ export function render(root, params, app) {
   // ------------------------------------------------ дрібниці UI
   const ACTOR_COLORS = ['#ff8fb1', '#7fd1ff', '#ffd84a', '#9be38a', '#c6a2ff', '#ffab6b'];
   const actorColor = (name) => ACTOR_COLORS[[...String(name)].reduce((s, c) => s + c.charCodeAt(0), 0) % ACTOR_COLORS.length];
+  // актор вузла — живий персонаж (characters.js); кешуємо за ім'ям
+  let actorCh = null;
   function setActor(name) {
-    if (!name) { actor.classList.remove('on'); return; }
-    if (actorName.textContent !== name) {
+    if (!name) { actor.classList.remove('on'); actorCh?.talk(0); return; }
+    if (actorName.textContent !== name || !actorCh) {
       actorName.textContent = name;
-      actorFace.textContent = [...name][0]?.toUpperCase() || '?';
       actor.style.setProperty('--actor', actorColor(name));
+      try { actorCh?.destroy(); } catch (e) { /* */ }
+      actorCh = null;
+      actorFace.textContent = '';
+      try { actorCh = createCharacter(actorFace, characterIdFor(name), { size: '100%' }); actorFace.classList.add('g2-actor-chr'); } catch (e) {
+        console.warn('drama char', e);
+        actorFace.textContent = [...name][0]?.toUpperCase() || '?';
+      }
     }
+    actorCh?.set('idle');
     actor.classList.add('on');
   }
   function lumiSet(emo) { try { lumi?.set?.(emo); } catch (e) { /* */ } }
@@ -376,7 +386,9 @@ export function render(root, params, app) {
     fit();
     subs.classList.add('show');
     tw = typewriter(lineEl, n.line || '');
+    if (n.speaker) actorCh?.talk(true);
     await tw.done;
+    actorCh?.talk(0);
     if (stale() || run.stage !== 'line') return;
     showChoices(n);
   }
@@ -411,11 +423,13 @@ export function render(root, params, app) {
       onCorrect(st); addXP(st, 10); dirty = true;
       hap(app, 'success');
       lumiSet('happy');
+      actorCh?.set('happy');
       film.classList.add('good');
       fx('sparkle', btns[k]);
     } else {
       hap(app, 'error');
       lumiSet('sad');
+      actorCh?.set('sad');
       film.classList.add('bad');
       fx('shake', btns[k]);
     }
@@ -434,6 +448,7 @@ export function render(root, params, app) {
     stampEl.classList.remove('show'); void stampEl.offsetWidth; stampEl.classList.add('show');
     hap(app, 'warning');
     lumiSet('surprised');
+    actorCh?.set('surprised');
     film.classList.add('bad');
     showNote('time', 'Ти мовчав надто довго — і історія пішла своїм шляхом…', next, '');
   }
@@ -752,6 +767,8 @@ export function render(root, params, app) {
     closeOverlay();
     try { lumi?.destroy?.(); } catch (e) { /* */ }
     lumi = null;
+    try { actorCh?.destroy(); } catch (e) { /* */ }
+    actorCh = null;
     if (dirty) { try { app.save?.(); } catch (e) { /* */ } }
   };
 }

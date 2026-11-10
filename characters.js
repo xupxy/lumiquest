@@ -1,6 +1,6 @@
 // LumiQuest — анімовані SVG-персонажі (боси, Лис Фокс, герої історій, актори драм).
 //
-//   import { createCharacter, CHARACTERS, characterIdFor } from './characters.js?v=20261110123652';
+//   import { createCharacter, CHARACTERS, characterIdFor } from './characters.js?v=20261110123941';
 //   const ch = createCharacter(box, 'boss_w1', { size: 160, mood: 'idle', flip: false });
 //   ch.set('happy');          // idle talk happy sad surprised angry hurt win lose
 //   ch.talk('Hello there!');  // lip-flap, поки «друкується» текст (або ms); ch.talk(0) — стоп
@@ -583,8 +583,8 @@ const DRAW = {
   // ============================================================ ЛИС ФОКС
   fox(c) {
     const fur = '#ee8a3a', cream = '#fff1dc', vest = '#6b2f7a', shirt = '#fdf6ec', gold = '#f2c14a', red = '#d23b4a';
-    const card = (rot, sym, col) => `<g transform="rotate(${rot} 150 140)">` + c.P('M 141 104 L 159 104 Q 162 104 162 107 L 162 131 Q 162 134 159 134 L 141 134 Q 138 134 138 131 L 138 107 Q 138 104 141 104 Z', '#ffffff', { s: '#5a4a5a', w: 2, g: { l: 0.5, d: 0.08 } }) +
-      `<text x="150" y="124" text-anchor="middle" font-size="14" font-family="Georgia,serif" fill="${col}">${sym}</text></g>`;
+    const card = (rot, sym, col) => `<g transform="rotate(${rot} 170 150)">` + c.P('M 161 108 L 179 108 Q 182 108 182 111 L 182 135 Q 182 138 179 138 L 161 138 Q 158 138 158 135 L 158 111 Q 158 108 161 108 Z', '#ffffff', { s: '#5a4a5a', w: 2, g: { l: 0.5, d: 0.08 } }) +
+      `<text x="170" y="128" text-anchor="middle" font-size="14" font-family="Georgia,serif" fill="${col}">${sym}</text></g>`;
     const s = animalBase(c, { fur });
     return Object.assign(s, {
       hand: null,
@@ -599,7 +599,7 @@ const DRAW = {
         c.P('M 100 156 L 85 148 L 85 164 Z', red, { w: 2.4 }) + c.P('M 100 156 L 115 148 L 115 164 Z', red, { w: 2.4 }) + c.C(100, 156, 4, red, { w: 2 }),
       armL: c.limb('M 54 172 Q 44 188 48 206', shirt, 15) + c.C(48, 208, 9, fur),
       armR: card(-32, '♠', '#2b2232') + card(-11, '♥', '#d23b4a') + card(10, '♣', '#2b2232') + card(31, '♦', '#d23b4a') +
-        c.limb('M 146 172 Q 160 156 152 140', shirt, 15) + c.C(150, 138, 9, fur) + c.L('M 144 134 Q 148 130 152 132', dk(fur, 0.5), 1.6),
+        c.limb('M 146 172 Q 166 166 168 150', shirt, 15) + c.C(168, 146, 9, fur) + c.L('M 162 142 Q 166 138 170 140', dk(fur, 0.5), 1.6),
       pivots: { al: [54, 172], ar: [146, 172] },
       headBase: foxHead(c, fur, cream),
       headFront: c.P('M 62 66 Q 100 48 138 66 L 134 76 Q 100 62 66 76 Z', '#3fae6a', { g: { l: 0.4 }, op: 0.95 }) + c.L('M 64 70 Q 100 54 136 70', '#1f6a3a', 2, 0.6),

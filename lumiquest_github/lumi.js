@@ -1,6 +1,6 @@
 // LumiQuest — Лумі, анімована SVG-героїня (v5).
 //
-//   import { createLumi } from './lumi.js?v=20261110123652';
+//   import { createLumi } from './lumi.js?v=20261110123941';
 //   const lumi = createLumi(container, { size: 220, emotion: 'hello', bubble: 'top' });
 //   lumi.set('happy');              // hello happy excited thinking surprised sad proud cheer sleepy
 //   lumi.say('Привіт!', { ms: 2500 }); // бульбашка + друк + говоріння (lip-flap, кивки)

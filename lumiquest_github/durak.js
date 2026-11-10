@@ -1,11 +1,12 @@
 // 🃏 «Словесний Дурень» у Картярні. Порт game/durak.py.
-import * as S from './state.js?v=20261110123652';
-import * as FX from './fx.js?v=20261110123652';
-import * as L from './lumi.js?v=20261110123652';
-import { recordGame } from './games.js?v=20261110123652';
+import * as S from './state.js?v=20261110123941';
+import * as FX from './fx.js?v=20261110123941';
+import * as L from './lumi.js?v=20261110123941';
+import { createCharacter } from './characters.js?v=20261110123941';
+import { recordGame } from './games.js?v=20261110123941';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110123652', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110123941', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -189,6 +190,14 @@ export function render(root, params, app) {
   const later = (fn, ms) => timers.push(setTimeout(() => alive && fn(), ms));
   let lumiRef = null;
   let ro = null;
+  // Лис Фокс — живий персонаж (characters.js)
+  let foxCh = null, endFox = null, foxT = 0;
+  const foxMood = (m, back = 0) => {
+    clearTimeout(foxT);
+    foxCh?.set(m);
+    if (back) foxT = setTimeout(() => { if (alive && !dk?.over) foxCh?.set('idle'); }, back);
+  };
+  const killFox = () => { clearTimeout(foxT); try { foxCh?.destroy(); endFox?.destroy(); } catch (e) { /* */ } foxCh = endFox = null; };
 
   const scr = el('div', 'm-screen m-durak');
   root.append(scr);
@@ -241,7 +250,7 @@ export function render(root, params, app) {
       </header>
       <div class="m-dk-table">
         <div class="m-dk-top">
-          <div class="m-dk-fox"><div class="m-dk-foxpic" aria-label="Лис"></div><div class="m-dk-foxname">🦊 Лис Фокс</div></div>
+          <div class="m-dk-fox"><div class="m-dk-foxpic m-dk-foxchr" aria-label="Лис"></div><div class="m-dk-foxname">🦊 Лис Фокс</div></div>
           <div class="m-dk-bubble"></div>
           <div class="m-dk-deck">
             <div class="m-dk-trumpcard ${isRed(dk.trump) ? 'red' : ''}"><span>${dk.trump}</span></div>
@@ -262,6 +271,8 @@ export function render(root, params, app) {
         </div>
       </div>`;
     const q = (s) => scr.querySelector(s);
+    killFox();
+    try { foxCh = createCharacter(q('.m-dk-foxchr'), 'fox', { size: 84 }); } catch (e) { console.warn('fox', e); }
     $ = {
       info: q('.m-dk-info'), slot: q('.m-dk-slot'), hand: q('.m-dk-hand'), note: q('.m-dk-note'),
       bubble: q('.m-dk-bubble'), fox: q('.m-dk-fox'), deck: q('.m-dk-deck'), bito: q('.m-dk-bito'),
@@ -292,6 +303,7 @@ export function render(root, params, app) {
   function say(text) {
     $.bubble.textContent = text;
     $.bubble.classList.add('show');
+    foxCh?.talk(text);
     anim($.bubble, [{ transform: 'scale(.7)', opacity: 0 }, { transform: 'scale(1.05)', opacity: 1, offset: 0.7 }, { transform: 'none', opacity: 1 }], 300);
   }
   function setNote(text, kind = '') {
@@ -386,6 +398,7 @@ export function render(root, params, app) {
     ], { duration: 520, easing: 'cubic-bezier(.3,1,.5,1)' });
     holder.style.transform = 'rotate(-4deg)';
     anim($.fox, [{ transform: 'none' }, { transform: 'translateY(-6px) rotate(-4deg)' }, { transform: 'none' }], 320);
+    if (foxCh?.mood !== 'idle') foxMood('idle');
     setNote('Відбийся перекладом або бери 🫴');
   }
 
@@ -423,6 +436,7 @@ export function render(root, params, app) {
       fx('sparkle', def);
       floatText(def, `+${gain} XP`, 'm-float-gold');
       setNote(note, 'good');
+      foxMood(dk.beaten % 2 ? 'angry' : 'sad', 1400); foxCh?.react('shake');
       say(['Ах ти ж! 😾', 'Хитро… 🦊', 'Цього разу пощастило!', 'Гм-м… 😼'][dk.beaten % 4]);
       await sleep(650);
       if (!alive) return;
@@ -447,6 +461,7 @@ export function render(root, params, app) {
       fx('shake', $.slot);
       note = `❌ Ні, «${c.en}» — не те. «${a.ua}» = ${a.en}. Береш карту 🫴`;
       setNote(note, 'bad');
+      foxMood('happy', 1600); foxCh?.react('jump');
       say(['Ха-ха! Не той переклад 😹', 'Хи-хи, бери! 🦊', 'Мимо! 😼'][dk.turn % 3]);
       await sleep(750);
       if (!alive) return;
@@ -475,6 +490,7 @@ export function render(root, params, app) {
       hn?.classList.add('m-card-hint');
       setNote(note, 'bad');
       hap(app, 'error');
+      foxMood('happy', 1600); foxCh?.react('jump');
       say('Ага! Переклад же був у тебе 😹');
       await sleep(900);
       if (!alive) return;
@@ -489,6 +505,7 @@ export function render(root, params, app) {
       setNote(note, 'good');
       hap(app, 'success');
       floatText(atkNode, '+1 XP', 'm-float-gold');
+      foxMood('surprised', 1200);
       say('Хм, і справді… Тримай іншу! 🦊');
       await sleep(450);
       if (!alive) return;
@@ -541,6 +558,8 @@ export function render(root, params, app) {
   // ------------------------------------------------ кінець (_durak_end)
   function end(win, note) {
     busy = true;
+    dk.over = true;
+    foxMood(win ? 'lose' : 'win');
     if (win) {
       st.durak_wins = (st.durak_wins || 0) + 1;
       addXP(st, XP_WIN);
@@ -553,7 +572,7 @@ export function render(root, params, app) {
     ov.innerHTML = `
       <div class="m-dk-endcard">
         <div class="m-dk-endnote">${esc(note).replace(/\n/g, '<br>')}</div>
-        <div class="m-dk-endpic"><div class="m-dk-foxpic big"></div><span class="m-dk-clown">🤡</span></div>
+        <div class="m-dk-endpic"><div class="m-dk-foxpic m-dk-foxchr big"></div><span class="m-dk-clown">🤡</span></div>
         <h2>${win ? 'Рука порожня! Лис — дурень! 🤡' : 'Цього разу дурень ти, ще партію?'}</h2>
         <div class="m-dk-endxp">+<b>0</b> XP за партію</div>
         <div class="m-dk-endstat">🗑 Бито: <b>${dk.beaten}</b> · 🏆 Перемог: <b>${st.durak_wins || 0}</b> з ${st.durak_games || 0}</div>
@@ -567,6 +586,7 @@ export function render(root, params, app) {
         </div>
       </div>`;
     scr.append(ov);
+    try { endFox = createCharacter(ov.querySelector('.m-dk-endpic .m-dk-foxchr'), 'fox', { size: 130, mood: win ? 'lose' : 'win' }); } catch (e) { /* */ }
     hap(app, win ? 'success' : 'error');
     if (win) { later(() => fx('confetti'), 250); later(() => fx('confetti'), 1200); }
     // карти, що лишились у руці, розсипаються
@@ -581,7 +601,7 @@ export function render(root, params, app) {
     if (wid) fx('starsDrop', ov.querySelector('.m-dk-endstars'), stars);
     const on = (a, fn) => { const b = ov.querySelector(`[data-a=${a}]`); if (b) b.onclick = () => { hap(app); fn(); }; };
     on('next', () => app.back());
-    on('again', () => { lumiRef?.destroy?.(); lumiRef = null; ov.remove(); newGame(); });
+    on('again', () => { lumiRef?.destroy?.(); lumiRef = null; endFox?.destroy(); endFox = null; ov.remove(); newGame(); });
     on('dragons', () => app.go('dragons', {}, { replace: true }));
     on('home', () => (typeof app.home === 'function' ? app.home() : app.go('home')));
   }
@@ -593,6 +613,7 @@ export function render(root, params, app) {
     timers.forEach(clearTimeout);
     ro?.disconnect();
     try { lumiRef?.destroy?.(); } catch (e) { /* */ }
+    killFox();
     document.querySelectorAll('.m-flylayer > *').forEach((x) => x.remove());
   };
 }
