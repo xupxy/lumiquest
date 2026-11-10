@@ -3,6 +3,7 @@ import * as S from './state.js';
 import * as FX from './fx.js';
 import * as UI from './ui.js';
 import * as L from './lumi.js';
+import { recordGame } from './games.js';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
 const CSS_HREF = new URL('./modes.css', import.meta.url).href;
@@ -477,6 +478,7 @@ export function render(root, params, app) {
     let nextWorld = null;
     let delta;
     const res = typeof S.finishBoss === 'function' ? S.finishBoss(st, wid, win) : localFinishBoss(st, worlds, wi, win, oldT);
+    if (win) recordGame(st, `${wid}-boss`, r.mistakes === 0 ? 3 : r.mistakes === 1 ? 2 : 1);  // зірки боса на стежці
     if (win) {
       delta = `+${res.trophies}`;
       if (res.first) lines.push(`🏅 Бейдж «${esc(w.name || '')}» твій! +${res.xp} XP`);

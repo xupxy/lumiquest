@@ -2,6 +2,7 @@
 import * as S from './state.js';
 import * as FX from './fx.js';
 import * as L from './lumi.js';
+import { recordGame } from './games.js';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
 const CSS_HREF = new URL('./modes.css', import.meta.url).href;
@@ -361,6 +362,8 @@ export function render(root, params, app) {
       badge = kind === 'good' && !st.story_badges.includes(wid);
       if (badge) st.story_badges.push(wid);
     }
+    // зірки рівня на стежці світу: good 3 / ok 2 / bad 1 (будь-яке завершення відкриває наступний рівень)
+    recordGame(st, `${wid}-story`, { good: 3, ok: 2, bad: 1 }[kind] || 1);
     app.save?.();
 
     const title = { good: 'Чудова кінцівка!', ok: 'Непогана кінцівка', bad: 'Сумна кінцівка' }[kind];

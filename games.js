@@ -52,7 +52,15 @@ export function worldGames(wid) {
   return out;
 }
 
-export const gameStars = (state, id) => (state.stars && state.stars[id]) || 0;
+export function gameStars(state, id) {
+  const s = (state.stars && state.stars[id]) || 0;
+  if (s) return s;
+  // Сумісність зі старими збереженнями: історія/бос, пройдені до появи зірок на стежці.
+  const m = /^(w\d+)-(story|boss)$/.exec(id);
+  if (m && m[2] === 'story' && ((state.story_best && m[1] in state.story_best) || (state.story_badges || []).includes(m[1]))) return 1;
+  if (m && m[2] === 'boss' && (state.badges || []).includes(m[1])) return 1;
+  return 0;
+}
 
 /** Записати результат міні-гри (найкращий). Повертає {best, isRecord, first}. */
 export function recordGame(state, id, stars) {
