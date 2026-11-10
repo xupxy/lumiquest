@@ -1,8 +1,8 @@
 // 📜 Квест: сюжет → підказка-урок → 5 завдань → результат із зірками.
-import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait, englishOf, speakBtn, answerSpeech, audio } from './ui.js?v=20261110190644';
-import { t, tc } from './i18n.js?v=20261110190644';
-import { applyWorldTheme } from './theme.js?v=20261110190644';
-import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110190644';
+import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait, englishOf, speakBtn, answerSpeech, audio } from './ui.js?v=20261110194247';
+import { t, tc } from './i18n.js?v=20261110194247';
+import { applyWorldTheme } from './theme.js?v=20261110194247';
+import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110194247';
 
 const CHEERS = ['quest.cheer1', 'quest.cheer2', 'quest.cheer3', 'quest.cheer4'];
 

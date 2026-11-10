@@ -1,11 +1,11 @@
 // 🐉 Мій дракон — вихованець. Порт game/dragons.py.
-import * as S from './state.js?v=20261110190644';
-import * as FX from './fx.js?v=20261110190644';
-import * as L from './lumi.js?v=20261110190644';
-import { t } from './i18n.js?v=20261110190644';
+import * as S from './state.js?v=20261110194247';
+import * as FX from './fx.js?v=20261110194247';
+import * as L from './lumi.js?v=20261110194247';
+import { t } from './i18n.js?v=20261110194247';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110190644', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110194247', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {

@@ -1,11 +1,11 @@
 // Головний екран: онбординг для нового гравця або «хаб» з плитками.
-import { h, button, plural, fx } from './ui.js?v=20261110190644';
-import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110190644';
-import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110190644';
-import { worldGames, nextGame, gameStars } from './games.js?v=20261110190644';
-import * as I18N from './i18n.js?v=20261110190644';
-import { t, tc } from './i18n.js?v=20261110190644';
-import { gameTitle } from './state.js?v=20261110190644';
+import { h, button, plural, fx } from './ui.js?v=20261110194247';
+import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110194247';
+import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110194247';
+import { worldGames, nextGame, gameStars } from './games.js?v=20261110194247';
+import * as I18N from './i18n.js?v=20261110194247';
+import { t, tc } from './i18n.js?v=20261110194247';
+import { gameTitle } from './state.js?v=20261110194247';
 
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 function jelly(el) {
@@ -262,7 +262,8 @@ function hub(root, app) {
   const sleepy = app.session.sleepy;
   const unTheme = applyWorldTheme(root, wid, { page: true });
 
-  const allStars = Object.values(st.stars || {}).reduce((a, b) => a + (b || 0), 0);
+  // як у профілі: сума зірок усіх рівнів стежок (без застарілих id, з сумісністю старих збережень)
+  const allStars = app.content.WORLDS.reduce((a, ww) => a + worldGames(ww.id).reduce((b, g) => b + gameStars(st, g.id), 0), 0);
   const greet = sleepy ? t('home.sleepy')
     : app.session.greeted ? t('home.whereTo', { name }) : t('home.missed', { name });
   app.session.greeted = true;

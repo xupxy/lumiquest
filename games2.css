@@ -394,3 +394,11 @@
 .g2-actor-face.g2-actor-chr { overflow: hidden; display: grid; place-items: end center; font-size: 0; animation: none;
   background: radial-gradient(circle at 50% 30%, #fff 0%, var(--actor, #ffd84a) 70%, color-mix(in srgb, var(--actor, #ffd84a) 60%, #000) 100%); }
 .g2-actor-face.g2-actor-chr .chr { width: 100%; height: 100%; }
+
+/* v8 «🔥 Виклик» */
+.g2-brawl .g-hard-tag { display: inline-block; margin: 2px auto 6px; padding: 4px 12px; border-radius: 999px;
+  background: linear-gradient(135deg, #ff9a3c, #ff4d4d); color: #fff; font-weight: 900; font-size: 14px;
+  box-shadow: 0 3px 0 #b8322a, 0 0 14px rgba(255,110,50,.55); }
+.g2-hard .g2-answers { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.g2-hard .g2-ans { min-height: 46px; font-size: 15px; padding: 6px 18px; overflow-wrap: normal; }
+.g2-hard .g2-card { box-shadow: 0 0 0 3px #ff7a3c, 0 0 26px rgba(255,90,40,.45); }

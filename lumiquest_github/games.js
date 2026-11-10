@@ -7,10 +7,12 @@
 // Рівень відкритий, якщо попередній має ≥ 1 ⭐ (або світ зараховано тестом рівня).
 // Бос — завжди 13-й; додатково вимагає ≥ 1 ⭐ у всіх уроках (bossOpen у state.js).
 
-import { getWorld, bossOpen } from './state.js?v=20261110190644';
+import { getWorld, bossOpen } from './state.js?v=20261110194247';
 
 /** Порядок рівнів на стежці. 'L' — наступний урок зі списку world.quests. */
-export const PATH = ['L', 'L', 'runner', 'L', 'story', 'obby', 'L', 'durak', 'L', 'brawl', 'L', 'drama', 'boss'];
+// v8: 23 рівні — 9 уроків, 8 міні-ігор, історія, драма, 3 «виклики» (складні версії), бос.
+export const PATH = ['L', 'L', 'runner', 'L', 'memory', 'story', 'L', 'obby', 'wordle', 'L', 'durak', 'snake',
+  'L', 'brawl', 'fishing', 'L', 'drama', 'L', 'obbyx', 'runnerx', 'L', 'brawlx', 'boss'];
 
 export const GAME_META = {
   lesson: { emoji: '📘', label: 'Урок' },
@@ -21,9 +23,17 @@ export const GAME_META = {
   drama:  { emoji: '🎭', label: 'Шлях Вибору',      screen: 'drama' },
   runner: { emoji: '🏃', label: 'Словесний Забіг',  screen: 'runner' },
   boss:   { emoji: '⚔️', label: 'Бос-арена',        screen: 'arena' },
+  memory: { emoji: '🧩', label: 'Словесна Пам\'ять', screen: 'memory' },
+  wordle: { emoji: '🔤', label: 'Вгадай слово',     screen: 'wordle' },
+  snake:  { emoji: '🐍', label: 'Змійка-Слово',     screen: 'snake' },
+  fishing:{ emoji: '🎣', label: 'Словесна Риболовля', screen: 'fishing' },
+  // «виклики»: той самий екран з params.hard = true
+  obbyx:  { emoji: '🔥', label: 'Обі-Вежа: Виклик',  screen: 'obby',   hard: true, base: 'obby' },
+  runnerx:{ emoji: '🔥', label: 'Забіг: Виклик',     screen: 'runner', hard: true, base: 'runner' },
+  brawlx: { emoji: '🔥', label: 'Сутичка: Виклик',   screen: 'brawl',  hard: true, base: 'brawl' },
 };
 
-/** Список рівнів світу (13 шт., якщо уроків 6). */
+/** Список рівнів світу (23 шт., якщо уроків 9). */
 export function worldGames(wid) {
   const w = getWorld(wid);
   if (!w) return [];
@@ -42,11 +52,12 @@ export function worldGames(wid) {
         : slot === 'drama' ? (w.drama && w.drama.title) || m.label
         : m.label;
       const emoji = slot === 'boss' ? (w.boss && w.boss.emoji) || m.emoji : m.emoji;
-      g = { id: `${wid}-${slot}`, type: slot, screen: m.screen, params: { wid }, title, emoji };
+      g = { id: `${wid}-${slot}`, type: slot, screen: m.screen, params: m.hard ? { wid, hard: true } : { wid }, title, emoji };
+      if (m.hard) { g.hard = true; g.base = m.base; }
     }
     g.wid = wid;
     g.idx = out.length;
-    g.cover = `covers/${g.type}.png`;   // assets/covers/<type>.webp (app.asset замінює .png → .webp)
+    g.cover = `covers/${g.base || g.type}.png`;   // assets/covers/<type>.webp (app.asset замінює .png → .webp)
     out.push(g);
   }
   return out;

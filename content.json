@@ -741,6 +741,224 @@
      "title_ru": "Звериная эстафета",
      "story_ru": "На поляне — большая эстафета! Каждый зверь должен показать, что он умеет: бегать, прыгать, плавать или летать. Луми — судья, и ей нужно правильно назвать все движения.",
      "lesson_ru": "Глаголы движения: run (бегать), jump (прыгать), swim (плавать), fly (летать), climb (лазить).\ncan + глагол = уметь: A fish can swim. A bird can fly.\ncan не меняется: he can, she can, it can (не cans!).\nЖивотные: frog (лягушка), rabbit (кролик), monkey (обезьяна), bird (птица)."
+    },
+    {
+     "id": "w1q7",
+     "title": "Чий це кошик?",
+     "title_ru": "Чья это корзинка?",
+     "emoji": "🎒",
+     "story": "Після пікніка на галявині лишилася купа речей: кошики, м'ячі, шарфики. Лумі повертає кожну річ власникові — але для цього треба знати, чия вона!",
+     "story_ru": "После пикника на поляне осталась куча вещей: корзинки, мячи, шарфики. Луми возвращает каждую вещь хозяину — но для этого нужно знать, чья она!",
+     "lesson": "Присвійні слова стоять перед іменником:\nmy (мій), your (твій, ваш), his (його), her (її), its (його/її — про тварин і речі), our (наш), their (їхній).\nПриклади: This is my bag. Her name is Mia. The dog wags its tail.\nНе плутай: its (його) і it's (= it is).",
+     "lesson_ru": "Притяжательные слова стоят перед существительным:\nmy (мой), your (твой, ваш), his (его), her (её), its (его/её — о животных и вещах), our (наш), their (их).\nПримеры: This is my bag. Her name is Mia. The dog wags its tail.\nНе путай: its (его) и it's (= it is).",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Mia has a cat. ___ cat is white.",
+       "options": [
+        "His",
+        "Her",
+        "My"
+       ],
+       "answer": 1,
+       "explain": "Mia — вона, тому her: Her cat is white.",
+       "explain_ru": "Mia — она, поэтому her: Her cat is white."
+      },
+      {
+       "type": "choice",
+       "q": "Tom and Ben have a ball. It is ___ ball.",
+       "options": [
+        "their",
+        "our",
+        "his"
+       ],
+       "answer": 0,
+       "explain": "Tom і Ben — вони (they), тому their ball.",
+       "explain_ru": "Tom и Ben — они (they), поэтому their ball."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «мій друг»",
+       "q_ru": "Переведи на английский: «мой друг»",
+       "answers": [
+        "my friend"
+       ],
+       "explain": "мій — my: my friend.",
+       "explain_ru": "мой — my: my friend."
+      },
+      {
+       "type": "choice",
+       "q": "The bird is in ___ nest.",
+       "options": [
+        "its",
+        "it's",
+        "their"
+       ],
+       "answer": 0,
+       "explain": "Для тварин і речей — its: its nest. it's = it is.",
+       "explain_ru": "Для животных и вещей — its: its nest. it's = it is."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Його ім'я — Лео»",
+       "q_ru": "Составь предложение: «Его имя — Лео»",
+       "words": [
+        "Leo",
+        "name",
+        "His",
+        "is"
+       ],
+       "answer": "His name is Leo",
+       "explain": "Його — his, далі name is: His name is Leo.",
+       "explain_ru": "Его — his, дальше name is: His name is Leo."
+      }
+     ]
+    },
+    {
+     "id": "w1q8",
+     "title": "Близько чи далеко?",
+     "title_ru": "Близко или далеко?",
+     "emoji": "🔭",
+     "story": "Лумі та Їжачок Пух граються у «Покажи предмет». Одні речі лежать поруч, інші — аж на тому березі струмка. Головне — правильно сказати, що тут, а що там!",
+     "story_ru": "Луми и Ёжик Пух играют в «Покажи предмет». Одни вещи лежат рядом, другие — на том берегу ручья. Главное — правильно сказать, что здесь, а что там!",
+     "lesson": "this — це (один предмет поруч), that — те (один предмет далеко).\nthese — ці (кілька предметів поруч), those — ті (кілька предметів далеко).\nЗ this/that — is, з these/those — are і іменник у множині:\nThis apple is red. Those birds are big.",
+     "lesson_ru": "this — это (один предмет рядом), that — то (один предмет далеко).\nthese — эти (несколько предметов рядом), those — те (несколько предметов далеко).\nС this/that — is, с these/those — are и существительное во множественном числе:\nThis apple is red. Those birds are big.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Я тримаю в руці одне яблуко. ___ apple is red.",
+       "q_ru": "Я держу в руке одно яблоко. ___ apple is red.",
+       "options": [
+        "This",
+        "These",
+        "Those"
+       ],
+       "answer": 0,
+       "explain": "Один предмет поруч — this.",
+       "explain_ru": "Один предмет рядом — this."
+      },
+      {
+       "type": "choice",
+       "q": "Далеко на дереві сидять три птахи. ___ birds are big.",
+       "q_ru": "Далеко на дереве сидят три птицы. ___ birds are big.",
+       "options": [
+        "That",
+        "Those",
+        "This"
+       ],
+       "answer": 1,
+       "explain": "Багато предметів далеко — those.",
+       "explain_ru": "Много предметов далеко — those."
+      },
+      {
+       "type": "choice",
+       "q": "These ___ my shoes.",
+       "options": [
+        "is",
+        "are",
+        "am"
+       ],
+       "answer": 1,
+       "explain": "these — множина, тому are.",
+       "explain_ru": "these — множественное число, поэтому are."
+      },
+      {
+       "type": "type",
+       "q": "Переклади англійською: «ця книжка»",
+       "q_ru": "Переведи на английский: «эта книжка»",
+       "answers": [
+        "this book"
+       ],
+       "explain": "ця (одна, поруч) — this: this book.",
+       "explain_ru": "эта (одна, рядом) — this: this book."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ті зірки яскраві»",
+       "q_ru": "Составь предложение: «Те звёзды яркие»",
+       "words": [
+        "bright",
+        "are",
+        "Those",
+        "stars"
+       ],
+       "answer": "Those stars are bright",
+       "explain": "Ті (далеко, багато) — those, далі are: Those stars are bright.",
+       "explain_ru": "Те (далеко, много) — those, дальше are: Those stars are bright."
+      }
+     ]
+    },
+    {
+     "id": "w1q9",
+     "title": "Пори року Галявини",
+     "title_ru": "Времена года Поляны",
+     "emoji": "🍂",
+     "story": "Сова веде великий календар Галявини: коли цвітуть квіти, коли падає сніг, коли в кого день народження. Допоможи Лумі вписати все з правильними словами at, on, in!",
+     "story_ru": "Сова ведёт большой календарь Поляны: когда цветут цветы, когда идёт снег, когда у кого день рождения. Помоги Луми вписать всё с правильными словами at, on, in!",
+     "lesson": "at — з точним часом: at 7 o'clock, at noon, at night.\non — з днями і датами: on Sunday, on May 5th, on my birthday.\nin — з частинами дня, місяцями, порами року, роками: in the morning, in July, in winter, in 2026.\nЗапам'ятай: in the morning, але at night.",
+     "lesson_ru": "at — с точным временем: at 7 o'clock, at noon, at night.\non — с днями и датами: on Sunday, on May 5th, on my birthday.\nin — с частями дня, месяцами, временами года, годами: in the morning, in July, in winter, in 2026.\nЗапомни: in the morning, но at night.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "We swim ___ summer.",
+       "options": [
+        "in",
+        "on",
+        "at"
+       ],
+       "answer": 0,
+       "explain": "З порами року — in: in summer.",
+       "explain_ru": "С временами года — in: in summer."
+      },
+      {
+       "type": "choice",
+       "q": "The owl wakes up ___ night.",
+       "options": [
+        "at",
+        "in",
+        "on"
+       ],
+       "answer": 0,
+       "explain": "Стійкий вираз: at night.",
+       "explain_ru": "Устойчивое выражение: at night."
+      },
+      {
+       "type": "choice",
+       "q": "My party is ___ my birthday.",
+       "options": [
+        "on",
+        "in",
+        "at"
+       ],
+       "answer": 0,
+       "explain": "День народження — це конкретний день, тому on.",
+       "explain_ru": "День рождения — это конкретный день, поэтому on."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «I eat breakfast ___ the morning.»",
+       "q_ru": "Вставь одно слово: «I eat breakfast ___ the morning.»",
+       "answers": [
+        "in"
+       ],
+       "explain": "Частини дня — in: in the morning.",
+       "explain_ru": "Части дня — in: in the morning."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Взимку йде сніг»",
+       "q_ru": "Составь предложение: «Зимой идёт снег»",
+       "words": [
+        "winter",
+        "snows",
+        "It",
+        "in"
+       ],
+       "answer": "It snows in winter",
+       "explain": "It snows — йде сніг, in winter — взимку.",
+       "explain_ru": "It snows — идёт снег, in winter — зимой."
+      }
+     ]
     }
    ],
    "story": {
@@ -1805,6 +2023,228 @@
      "title_ru": "Лесная ярмарка",
      "story_ru": "Осенью в Шепчущем Лесу открывается ярмарка одежды. Луми хочет купить тёплый шарф, но продавщица-сорока говорит только по-английски!",
      "lesson_ru": "Одежда: jacket (куртка), scarf (шарф), hat (шапка), boots (ботинки), dress (платье).\nЦена: How much is this hat? How much are these boots? (are — для множественного числа)\nВежливая просьба: I'd like a scarf, please.\nПримерить: Can I try it on? Размер: It's too big / too small."
+    },
+    {
+     "id": "w2q7",
+     "title": "Комора Білки",
+     "title_ru": "Кладовая Белки",
+     "emoji": "🌰",
+     "story": "Білка готується до зими й рахує запаси в дуплі. Чогось у неї вдосталь, а чогось — ані крихти. Допоможи їй скласти список!",
+     "story_ru": "Белка готовится к зиме и считает запасы в дупле. Чего-то у неё вдоволь, а чего-то — ни крошки. Помоги ей составить список!",
+     "lesson": "some — у ствердних реченнях: There are some nuts. I have some water.\nany — у запереченнях і питаннях: We don't have any milk. Are there any apples?\nУ проханнях і пропозиціях — some: Can I have some tea? Would you like some cake?",
+     "lesson_ru": "some — в утвердительных предложениях: There are some nuts. I have some water.\nany — в отрицаниях и вопросах: We don't have any milk. Are there any apples?\nВ просьбах и предложениях — some: Can I have some tea? Would you like some cake?",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "There are ___ nuts in the basket.",
+       "options": [
+        "some",
+        "any",
+        "a"
+       ],
+       "answer": 0,
+       "explain": "Ствердне речення — some.",
+       "explain_ru": "Утвердительное предложение — some."
+      },
+      {
+       "type": "choice",
+       "q": "We don't have ___ milk.",
+       "options": [
+        "any",
+        "some",
+        "a"
+       ],
+       "answer": 0,
+       "explain": "Заперечення — any: We don't have any milk.",
+       "explain_ru": "Отрицание — any: We don't have any milk."
+      },
+      {
+       "type": "choice",
+       "q": "Would you like ___ tea?",
+       "options": [
+        "some",
+        "any",
+        "many"
+       ],
+       "answer": 0,
+       "explain": "Пропозиція (Would you like...) — some.",
+       "explain_ru": "Предложение (Would you like...) — some."
+      },
+      {
+       "type": "type",
+       "q": "Переклади: «У мене немає грибів». Почни з I don't have...",
+       "q_ru": "Переведи: «У меня нет грибов». Начни с I don't have...",
+       "answers": [
+        "i don't have any mushrooms",
+        "i do not have any mushrooms"
+       ],
+       "explain": "Заперечення — any: I don't have any mushrooms.",
+       "explain_ru": "Отрицание — any: I don't have any mushrooms."
+      },
+      {
+       "type": "order",
+       "q": "Склади питання: «У тебе є горіхи?»",
+       "q_ru": "Составь вопрос: «У тебя есть орехи?»",
+       "words": [
+        "any",
+        "you",
+        "nuts",
+        "Do",
+        "have"
+       ],
+       "answer": "Do you have any nuts",
+       "explain": "Питання — Do you have + any: Do you have any nuts?",
+       "explain_ru": "Вопрос — Do you have + any: Do you have any nuts?"
+      }
+     ]
+    },
+    {
+     "id": "w2q8",
+     "title": "Великий лісовий перепис",
+     "title_ru": "Большая лесная перепись",
+     "emoji": "📋",
+     "story": "Мудра Сова проводить перепис Лісу: скільки дерев, скільки птахів, скільки води в річці. Лумі записує — але плутає much і many!",
+     "story_ru": "Мудрая Сова проводит перепись Леса: сколько деревьев, сколько птиц, сколько воды в реке. Луми записывает — но путает much и many!",
+     "lesson": "many — з тим, що можна порахувати (множина): many trees, many birds.\nmuch — з тим, що не рахується: much water, much time, much snow.\nПитання: How many apples? How much milk?\nУ ствердних реченнях частіше кажуть a lot of: a lot of trees, a lot of water.",
+     "lesson_ru": "many — с тем, что можно посчитать (множественное число): many trees, many birds.\nmuch — с тем, что не считается: much water, much time, much snow.\nВопросы: How many apples? How much milk?\nВ утвердительных предложениях чаще говорят a lot of: a lot of trees, a lot of water.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "How ___ trees are there?",
+       "options": [
+        "many",
+        "much",
+        "lot"
+       ],
+       "answer": 0,
+       "explain": "trees можна порахувати — many.",
+       "explain_ru": "trees можно посчитать — many."
+      },
+      {
+       "type": "choice",
+       "q": "There isn't ___ water in the river.",
+       "options": [
+        "much",
+        "many",
+        "a few"
+       ],
+       "answer": 0,
+       "explain": "water не рахується — much.",
+       "explain_ru": "water не считается — much."
+      },
+      {
+       "type": "choice",
+       "q": "How ___ time do we have?",
+       "options": [
+        "much",
+        "many",
+        "lot"
+       ],
+       "answer": 0,
+       "explain": "time не рахується — How much time?",
+       "explain_ru": "time не считается — How much time?"
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «How ___ owls live here?»",
+       "q_ru": "Вставь одно слово: «How ___ owls live here?»",
+       "answers": [
+        "many"
+       ],
+       "explain": "owls — множина, їх можна порахувати: How many.",
+       "explain_ru": "owls — множественное число, их можно посчитать: How many."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «У лисиці багато друзів»",
+       "q_ru": "Составь предложение: «У лисы много друзей»",
+       "words": [
+        "many",
+        "fox",
+        "friends",
+        "The",
+        "has"
+       ],
+       "answer": "The fox has many friends",
+       "explain": "friends рахуються — many: The fox has many friends.",
+       "explain_ru": "friends считаются — many: The fox has many friends."
+      }
+     ]
+    },
+    {
+     "id": "w2q9",
+     "title": "Плани Сови на вихідні",
+     "title_ru": "Планы Совы на выходные",
+     "emoji": "🦉",
+     "story": "Сова вирішила: цих вихідних вона нарешті відпочине! Вона вже все спланувала. Допоможи Лумі розповісти звірям про її плани.",
+     "story_ru": "Сова решила: в эти выходные она наконец отдохнёт! Она уже всё спланировала. Помоги Луми рассказать зверям о её планах.",
+     "lesson": "be going to + дієслово — план, який ми вже вирішили: I am going to visit my aunt.\nФорми: I am going to, he/she/it is going to, we/you/they are going to.\nЗаперечення: She isn't going to swim. Питання: Are you going to play?\nТакож для прогнозу за ознаками: Look at the clouds! It's going to rain.",
+     "lesson_ru": "be going to + глагол — план, который мы уже решили: I am going to visit my aunt.\nФормы: I am going to, he/she/it is going to, we/you/they are going to.\nОтрицание: She isn't going to swim. Вопрос: Are you going to play?\nТакже для прогноза по признакам: Look at the clouds! It's going to rain.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Tomorrow I ___ going to visit my grandma.",
+       "options": [
+        "am",
+        "is",
+        "are"
+       ],
+       "answer": 0,
+       "explain": "З I — am: I am going to.",
+       "explain_ru": "С I — am: I am going to."
+      },
+      {
+       "type": "choice",
+       "q": "Look at those dark clouds! It ___ rain.",
+       "options": [
+        "is going to",
+        "goes to",
+        "going to"
+       ],
+       "answer": 0,
+       "explain": "Прогноз за ознаками (темні хмари) — is going to.",
+       "explain_ru": "Прогноз по признакам (тёмные тучи) — is going to."
+      },
+      {
+       "type": "type",
+       "q": "Переклади: «Ми збираємося грати». Почни з We...",
+       "q_ru": "Переведи: «Мы собираемся играть». Начни с We...",
+       "answers": [
+        "we are going to play",
+        "we're going to play"
+       ],
+       "explain": "З we — are going to: We are going to play.",
+       "explain_ru": "С we — are going to: We are going to play."
+      },
+      {
+       "type": "choice",
+       "q": "___ you going to cook dinner?",
+       "options": [
+        "Are",
+        "Do",
+        "Is"
+       ],
+       "answer": 0,
+       "explain": "Питання з going to: Are you going to...?",
+       "explain_ru": "Вопрос с going to: Are you going to...?"
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Вона не збирається плавати»",
+       "q_ru": "Составь предложение: «Она не собирается плавать»",
+       "words": [
+        "going",
+        "She",
+        "swim",
+        "not",
+        "to",
+        "is"
+       ],
+       "answer": "She is not going to swim",
+       "explain": "Заперечення: She is not going to swim.",
+       "explain_ru": "Отрицание: She is not going to swim."
+      }
+     ]
     }
    ],
    "story": {
@@ -2862,6 +3302,228 @@
      "title_ru": "Что делал город в полночь?",
      "story_ru": "В полночь кто-то перевёл все часы на час назад. Инспектор Пружинка опрашивает свидетелей: что каждый делал именно тогда? Помоги Луми правильно записать показания.",
      "lesson_ru": "Past Continuous — действие длилось в определённый момент в прошлом: was/were + -ing.\nAt midnight I was sleeping. They were drinking tea.\nДлительное действие + короткое, которое его прервало (Past Simple): We were watching TV when the lights went out.\nwhile + длительное действие: While I was walking home, I met a friend."
+    },
+    {
+     "id": "w3q7",
+     "title": "Старі фото Годинникаря",
+     "title_ru": "Старые фото Часовщика",
+     "emoji": "📷",
+     "story": "Годинникар знайшов коробку старих фотографій міста. Колись тут було зовсім інакше! Лумі слухає його спогади й вчиться говорити про минуле, якого вже нема.",
+     "story_ru": "Часовщик нашёл коробку старых фотографий города. Когда-то здесь всё было совсем иначе! Луми слушает его воспоминания и учится говорить о прошлом, которого уже нет.",
+     "lesson": "used to + дієслово — те, що регулярно було в минулому, але тепер уже ні: I used to walk to school.\nЗаперечення і питання — з did, тоді use без d: I didn't use to like tea. Did you use to live here?\nНе плутай з be used to + -ing (бути звиклим до): I'm used to getting up early.",
+     "lesson_ru": "used to + глагол — то, что регулярно было в прошлом, но теперь уже нет: I used to walk to school.\nОтрицание и вопрос — с did, тогда use без d: I didn't use to like tea. Did you use to live here?\nНе путай с be used to + -ing (быть привыкшим к): I'm used to getting up early.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "When I was a child, I ___ climb the clock tower every day.",
+       "options": [
+        "used to",
+        "use to",
+        "am used to"
+       ],
+       "answer": 0,
+       "explain": "Звичка в минулому — used to + дієслово.",
+       "explain_ru": "Привычка в прошлом — used to + глагол."
+      },
+      {
+       "type": "choice",
+       "q": "Did you ___ live in this street?",
+       "options": [
+        "use to",
+        "used to",
+        "using to"
+       ],
+       "answer": 0,
+       "explain": "Після did — use to (без d).",
+       "explain_ru": "После did — use to (без d)."
+      },
+      {
+       "type": "type",
+       "q": "Переклади: «Раніше тут був ринок». Почни з There...",
+       "q_ru": "Переведи: «Раньше здесь был рынок». Начни с There...",
+       "answers": [
+        "there used to be a market here"
+       ],
+       "explain": "There used to be — раніше був: There used to be a market here.",
+       "explain_ru": "There used to be — раньше был: There used to be a market here."
+      },
+      {
+       "type": "choice",
+       "q": "Leo works at night, so now he ___ sleeping in the daytime.",
+       "options": [
+        "is used to",
+        "used to",
+        "use to"
+       ],
+       "answer": 0,
+       "explain": "Бути звиклим до чогось — be used to + -ing: he is used to sleeping.",
+       "explain_ru": "Быть привыкшим к чему-то — be used to + -ing: he is used to sleeping."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Раніше я не любив каву»",
+       "q_ru": "Составь предложение: «Раньше я не любил кофе»",
+       "words": [
+        "like",
+        "didn't",
+        "I",
+        "coffee",
+        "use",
+        "to"
+       ],
+       "answer": "I didn't use to like coffee",
+       "explain": "Заперечення: didn't use to + дієслово.",
+       "explain_ru": "Отрицание: didn't use to + глагол."
+      }
+     ]
+    },
+    {
+     "id": "w3q8",
+     "title": "Вибагливі шестерні",
+     "title_ru": "Капризные шестерёнки",
+     "emoji": "⚙️",
+     "story": "У майстерні Лео дієслова поводяться, як шестерні: одні чіпляються лише за -ing, інші — тільки за to. Встав не ту — і механізм зупиниться!",
+     "story_ru": "В мастерской Лео глаголы ведут себя, как шестерёнки: одни цепляются только за -ing, другие — только за to. Вставь не ту — и механизм остановится!",
+     "lesson": "Після одних дієслів іде -ing: enjoy, finish, avoid, mind, keep, suggest — I enjoy fixing clocks.\nПісля інших — to + дієслово: want, decide, hope, plan, promise, agree — She decided to stay.\nПісля прийменників — завжди -ing: good at drawing, interested in learning.\nДеякі змінюють значення: stop talking (перестати говорити) — stop to talk (зупинитися, щоб поговорити).",
+     "lesson_ru": "После одних глаголов идёт -ing: enjoy, finish, avoid, mind, keep, suggest — I enjoy fixing clocks.\nПосле других — to + глагол: want, decide, hope, plan, promise, agree — She decided to stay.\nПосле предлогов — всегда -ing: good at drawing, interested in learning.\nНекоторые меняют значение: stop talking (перестать говорить) — stop to talk (остановиться, чтобы поговорить).",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Leo enjoys ___ old clocks.",
+       "options": [
+        "repairing",
+        "to repair",
+        "repair"
+       ],
+       "answer": 0,
+       "explain": "Після enjoy — -ing: enjoys repairing.",
+       "explain_ru": "После enjoy — -ing: enjoys repairing."
+      },
+      {
+       "type": "choice",
+       "q": "The mechanic decided ___ the tower.",
+       "options": [
+        "to visit",
+        "visiting",
+        "visit"
+       ],
+       "answer": 0,
+       "explain": "Після decide — to + дієслово.",
+       "explain_ru": "После decide — to + глагол."
+      },
+      {
+       "type": "choice",
+       "q": "She is good at ___ maps.",
+       "options": [
+        "drawing",
+        "to draw",
+        "draw"
+       ],
+       "answer": 0,
+       "explain": "Після прийменника at — -ing.",
+       "explain_ru": "После предлога at — -ing."
+      },
+      {
+       "type": "type",
+       "q": "Встав дієслово write у правильній формі: «Have you finished ___ the letter?»",
+       "q_ru": "Вставь глагол write в правильной форме: «Have you finished ___ the letter?»",
+       "answers": [
+        "writing"
+       ],
+       "explain": "Після finish — -ing: finished writing.",
+       "explain_ru": "После finish — -ing: finished writing."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Він пообіцяв допомогти мені»",
+       "q_ru": "Составь предложение: «Он пообещал помочь мне»",
+       "words": [
+        "help",
+        "promised",
+        "me",
+        "He",
+        "to"
+       ],
+       "answer": "He promised to help me",
+       "explain": "Після promise — to + дієслово: He promised to help me.",
+       "explain_ru": "После promise — to + глагол: He promised to help me."
+      }
+     ]
+    },
+    {
+     "id": "w3q9",
+     "title": "Нічна зміна ліхтарника",
+     "title_ru": "Ночная смена фонарщика",
+     "emoji": "🏮",
+     "story": "Старий ліхтарник захворів, і цієї ночі ліхтарі міста запалює Лумі. Він дав їй записку з порадами — але вона вся з фразових дієслів!",
+     "story_ru": "Старый фонарщик заболел, и этой ночью фонари города зажигает Луми. Он дал ей записку с советами — но она вся из фразовых глаголов!",
+     "lesson": "Ще кілька фразових дієслів:\nrun out of — закінчитися (про запаси): We ran out of oil.\nlook after — доглядати: She looks after the lamps.\nset off / set out — вирушати в дорогу: They set off at dawn.\ncome across — випадково натрапити: I came across an old map.\nput off — відкласти: Don't put off your work.\nfind out — дізнатися: Let's find out the truth.",
+     "lesson_ru": "Ещё несколько фразовых глаголов:\nrun out of — закончиться (о запасах): We ran out of oil.\nlook after — присматривать, ухаживать: She looks after the lamps.\nset off / set out — отправляться в путь: They set off at dawn.\ncome across — случайно наткнуться: I came across an old map.\nput off — отложить: Don't put off your work.\nfind out — узнать: Let's find out the truth.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "The lamps went dark because we ran ___ of oil.",
+       "options": [
+        "out",
+        "off",
+        "up"
+       ],
+       "answer": 0,
+       "explain": "run out of — закінчитися (про запаси).",
+       "explain_ru": "run out of — закончиться (о запасах)."
+      },
+      {
+       "type": "choice",
+       "q": "Who will look ___ the old cat while we are away?",
+       "options": [
+        "after",
+        "into",
+        "up"
+       ],
+       "answer": 0,
+       "explain": "look after — доглядати.",
+       "explain_ru": "look after — присматривать, ухаживать."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «We set ___ at dawn and reached the tower by noon.»",
+       "q_ru": "Вставь одно слово: «We set ___ at dawn and reached the tower by noon.»",
+       "answers": [
+        "off",
+        "out"
+       ],
+       "explain": "set off (або set out) — вирушати в дорогу.",
+       "explain_ru": "set off (или set out) — отправляться в путь."
+      },
+      {
+       "type": "choice",
+       "q": "I came ___ an old map in the attic.",
+       "options": [
+        "across",
+        "over",
+        "up"
+       ],
+       "answer": 0,
+       "explain": "come across — випадково натрапити.",
+       "explain_ru": "come across — случайно наткнуться."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Не відкладай це до завтра»",
+       "q_ru": "Составь предложение: «Не откладывай это до завтра»",
+       "words": [
+        "off",
+        "Don't",
+        "until",
+        "it",
+        "put",
+        "tomorrow"
+       ],
+       "answer": "Don't put it off until tomorrow",
+       "explain": "З займенником: put it off (it — посередині).",
+       "explain_ru": "С местоимением: put it off (it — посередине)."
+      }
+     ]
     }
    ],
    "story": {
@@ -3921,6 +4583,232 @@
      "title_ru": "Шёпот хрустальных желаний",
      "story_ru": "В Пещере Желаний каждый кристалл исполняет только правильно сформулированное желание. Скажешь с ошибкой — кристалл потускнеет. Помоги Луми загадать всё как следует.",
      "lesson_ru": "wish + Past Simple — желание о настоящем: I wish I were taller. I wish I knew the answer.\nwish + Past Perfect — сожаление о прошлом: I wish I hadn't said that.\nwould rather + инфинитив без to — о себе: I'd rather stay at home.\nwould rather + кто-то + Past Simple — о других: I'd rather you didn't read my diary."
+    },
+    {
+     "id": "w4q7",
+     "title": "Попри хуртовину",
+     "title_ru": "Несмотря на метель",
+     "emoji": "❄️",
+     "story": "Ава веде загін до перевалу, а хуртовина не вщухає. У щоденнику експедиції Лумі має пояснити, чому вони не повернули назад, — і для цього потрібні правильні слова-зв'язки.",
+     "story_ru": "Ава ведёт отряд к перевалу, а метель не стихает. В дневнике экспедиции Луми должна объяснить, почему они не повернули назад, — и для этого нужны правильные слова-связки.",
+     "lesson": "although / even though + речення: Although it was cold, we kept climbing.\ndespite / in spite of + іменник або -ing: Despite the cold, we kept climbing. Despite being tired, she smiled.\nhowever — на початку нового речення, з комою: It was cold. However, we kept climbing.\nПісля despite можна і речення, але через the fact that: despite the fact that it was cold.",
+     "lesson_ru": "although / even though + предложение: Although it was cold, we kept climbing.\ndespite / in spite of + существительное или -ing: Despite the cold, we kept climbing. Despite being tired, she smiled.\nhowever — в начале нового предложения, с запятой: It was cold. However, we kept climbing.\nПосле despite можно и предложение, но через the fact that: despite the fact that it was cold.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "___ the storm, the climbers reached the summit.",
+       "options": [
+        "Despite",
+        "Although",
+        "However"
+       ],
+       "answer": 0,
+       "explain": "Далі іменник (the storm) — despite.",
+       "explain_ru": "Дальше существительное (the storm) — despite."
+      },
+      {
+       "type": "choice",
+       "q": "___ it was snowing, Ava kept going.",
+       "options": [
+        "Although",
+        "Despite",
+        "In spite of"
+       ],
+       "answer": 0,
+       "explain": "Далі ціле речення (it was snowing) — although.",
+       "explain_ru": "Дальше целое предложение (it was snowing) — although."
+      },
+      {
+       "type": "choice",
+       "q": "The path was dangerous. ___, nobody turned back.",
+       "options": [
+        "However",
+        "Although",
+        "Despite"
+       ],
+       "answer": 0,
+       "explain": "Нове речення з комою — however.",
+       "explain_ru": "Новое предложение с запятой — however."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «Despite ___ tired, she climbed on.»",
+       "q_ru": "Вставь одно слово: «Despite ___ tired, she climbed on.»",
+       "answers": [
+        "being",
+        "feeling"
+       ],
+       "explain": "Після despite — -ing: despite being tired.",
+       "explain_ru": "После despite — -ing: despite being tired."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ми йшли далі, попри холод»",
+       "q_ru": "Составь предложение: «Мы шли дальше, несмотря на холод»",
+       "words": [
+        "despite",
+        "kept",
+        "We",
+        "the",
+        "walking",
+        "cold"
+       ],
+       "answer": "We kept walking despite the cold",
+       "explain": "despite + іменник: We kept walking despite the cold.",
+       "explain_ru": "despite + существительное: We kept walking despite the cold."
+      }
+     ]
+    },
+    {
+     "id": "w4q8",
+     "title": "Майстерня біля підніжжя",
+     "title_ru": "Мастерская у подножия",
+     "emoji": "🛠",
+     "story": "Перед сходженням загін заходить до майстерні біля підніжжя гори. Тут лагодять мотузки, точать льодоруби і шиють куртки. Але хто що робить сам, а що — руками майстра?",
+     "story_ru": "Перед восхождением отряд заходит в мастерскую у подножия горы. Здесь чинят верёвки, точат ледорубы и шьют куртки. Но кто что делает сам, а что — руками мастера?",
+     "lesson": "have / get + об'єкт + 3-тя форма дієслова — роботу для нас робить хтось інший:\nI had my boots repaired. (Мені полагодили черевики.)\nShe is going to get her hair cut. (Вона збирається підстригтися.)\nget звучить розмовніше. Порівняй: I repaired my boots (сам) — I had my boots repaired (майстер).\nТакож про неприємності: He had his bag stolen. (У нього вкрали сумку.)",
+     "lesson_ru": "have / get + объект + 3-я форма глагола — работу для нас делает кто-то другой:\nI had my boots repaired. (Мне починили ботинки.)\nShe is going to get her hair cut. (Она собирается подстричься.)\nget звучит разговорнее. Сравни: I repaired my boots (сам) — I had my boots repaired (мастер).\nТакже о неприятностях: He had his bag stolen. (У него украли сумку.)",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Ava didn't fix the rope herself. She ___.",
+       "options": [
+        "had it fixed",
+        "had fixed it",
+        "fixed it"
+       ],
+       "answer": 0,
+       "explain": "Зробив хтось інший — had it fixed. had fixed it — це Past Perfect (сама).",
+       "explain_ru": "Сделал кто-то другой — had it fixed. had fixed it — это Past Perfect (сама)."
+      },
+      {
+       "type": "choice",
+       "q": "I need to get my jacket ___.",
+       "options": [
+        "cleaned",
+        "clean",
+        "cleaning"
+       ],
+       "answer": 0,
+       "explain": "get + об'єкт + 3-тя форма: get my jacket cleaned.",
+       "explain_ru": "get + объект + 3-я форма: get my jacket cleaned."
+      },
+      {
+       "type": "type",
+       "q": "Переклади: «Учора я підстриглася» (у перукаря). Почни з I had...",
+       "q_ru": "Переведи: «Вчера я подстриглась» (у парикмахера). Начни с I had...",
+       "answers": [
+        "i had my hair cut yesterday"
+       ],
+       "explain": "have + hair + cut (3-тя форма cut): I had my hair cut yesterday.",
+       "explain_ru": "have + hair + cut (3-я форма cut): I had my hair cut yesterday."
+      },
+      {
+       "type": "choice",
+       "q": "Oh no! The climber had his phone ___ at the camp.",
+       "options": [
+        "stolen",
+        "stole",
+        "steal"
+       ],
+       "answer": 0,
+       "explain": "Неприємність, яку зробив хтось інший: had his phone stolen.",
+       "explain_ru": "Неприятность, которую сделал кто-то другой: had his phone stolen."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Наступного тижня нам полагодять дах»",
+       "q_ru": "Составь предложение: «На следующей неделе нам починят крышу»",
+       "words": [
+        "repaired",
+        "are",
+        "We",
+        "next",
+        "the",
+        "getting",
+        "roof",
+        "week"
+       ],
+       "answer": "We are getting the roof repaired next week",
+       "explain": "get + об'єкт + 3-тя форма: We are getting the roof repaired next week.",
+       "explain_ru": "get + объект + 3-я форма: We are getting the roof repaired next week."
+      }
+     ]
+    },
+    {
+     "id": "w4q9",
+     "title": "Скасоване сходження",
+     "title_ru": "Отменённое восхождение",
+     "emoji": "🚫",
+     "story": "Через загрозу лавини сходження скасовано. Альпіністи сидять у хатині й сперечаються, що робити далі. Лумі записує їхню розмову — а вона вся з фразових дієслів рівня B2.",
+     "story_ru": "Из-за угрозы лавины восхождение отменено. Альпинисты сидят в хижине и спорят, что делать дальше. Луми записывает их разговор — а он весь из фразовых глаголов уровня B2.",
+     "lesson": "call off — скасувати: They called off the climb.\ncome up with — вигадати (ідею, план): Ava came up with a plan.\nput up with — терпіти: I can't put up with this noise.\nturn down — відхилити: He turned down the offer.\nget over — оговтатися: She got over the cold.\nlook forward to + -ing — чекати з нетерпінням: I look forward to seeing you.",
+     "lesson_ru": "call off — отменить: They called off the climb.\ncome up with — придумать (идею, план): Ava came up with a plan.\nput up with — терпеть: I can't put up with this noise.\nturn down — отклонить: He turned down the offer.\nget over — оправиться: She got over the cold.\nlook forward to + -ing — ждать с нетерпением: I look forward to seeing you.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Because of the avalanche risk, they had to call ___ the climb.",
+       "options": [
+        "off",
+        "out",
+        "up"
+       ],
+       "answer": 0,
+       "explain": "call off — скасувати.",
+       "explain_ru": "call off — отменить."
+      },
+      {
+       "type": "choice",
+       "q": "Ava came up ___ a clever plan to cross the glacier.",
+       "options": [
+        "with",
+        "to",
+        "for"
+       ],
+       "answer": 0,
+       "explain": "come up with — вигадати.",
+       "explain_ru": "come up with — придумать."
+      },
+      {
+       "type": "choice",
+       "q": "I'm looking forward to ___ the summit.",
+       "options": [
+        "reaching",
+        "reach",
+        "reached"
+       ],
+       "answer": 0,
+       "explain": "У look forward to частка to — прийменник, тому далі -ing.",
+       "explain_ru": "В look forward to частица to — предлог, поэтому дальше -ing."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «He was offered a place on the team, but he turned it ___.»",
+       "q_ru": "Вставь одно слово: «He was offered a place on the team, but he turned it ___.»",
+       "answers": [
+        "down"
+       ],
+       "explain": "turn down — відхилити: turned it down.",
+       "explain_ru": "turn down — отклонить: turned it down."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Я не можу терпіти цей холод»",
+       "q_ru": "Составь предложение: «Я не могу терпеть этот холод»",
+       "words": [
+        "with",
+        "can't",
+        "cold",
+        "I",
+        "up",
+        "this",
+        "put"
+       ],
+       "answer": "I can't put up with this cold",
+       "explain": "put up with — терпіти: I can't put up with this cold.",
+       "explain_ru": "put up with — терпеть: I can't put up with this cold."
+      }
+     ]
     }
    ],
    "story": {
@@ -5003,6 +5891,232 @@
      "title_ru": "Коллокации старого архивариуса",
      "story_ru": "Архивариус склеивает слова, которые всегда ходят парами, но пары рассыпались по полу. Неправильная пара звучит «не по-английски» — помоги Луми собрать естественные сочетания.",
      "lesson_ru": "Коллокации — слова, которые естественно сочетаются.\nmake a decision, make a mistake (а не do); pay attention (to).\nheavy rain (а не strong rain); bitterly disappointed.\ntake something into account — принимать во внимание: We must take all the facts into account."
+    },
+    {
+     "id": "w5q7",
+     "title": "Лист до Ради Вежі",
+     "title_ru": "Письмо Совету Башни",
+     "emoji": "✉️",
+     "story": "Елі хоче отримати доступ до забороненого крила Бібліотеки. Для цього треба написати офіційного листа Раді Вежі — бездоганною, по-старомодному ввічливою англійською.",
+     "story_ru": "Эли хочет получить доступ к запретному крылу Библиотеки. Для этого нужно написать официальное письмо Совету Башни — безупречным, по-старомодному вежливым английским.",
+     "lesson": "Після suggest, recommend, insist, demand, request, propose та виразів it is essential / vital that дієслово стоїть у базовій формі для всіх осіб:\nThe council insists that he leave at once. It is vital that she be informed.\nЗаперечення: that he not be disturbed. Британський варіант: that he should leave.\nФормальні прохання: I would be grateful if you could... Would you be so kind as to...?",
+     "lesson_ru": "После suggest, recommend, insist, demand, request, propose и выражений it is essential / vital that глагол стоит в базовой форме для всех лиц:\nThe council insists that he leave at once. It is vital that she be informed.\nОтрицание: that he not be disturbed. Британский вариант: that he should leave.\nФормальные просьбы: I would be grateful if you could... Would you be so kind as to...?",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "The archivist insisted that every visitor ___ their name.",
+       "options": [
+        "sign",
+        "signs",
+        "signed"
+       ],
+       "answer": 0,
+       "explain": "Після insist that — базова форма: sign (без -s).",
+       "explain_ru": "После insist that — базовая форма: sign (без -s)."
+      },
+      {
+       "type": "choice",
+       "q": "It is essential that the manuscript ___ kept in the dark.",
+       "options": [
+        "be",
+        "is",
+        "was"
+       ],
+       "answer": 0,
+       "explain": "Після it is essential that — be для всіх осіб.",
+       "explain_ru": "После it is essential that — be для всех лиц."
+      },
+      {
+       "type": "choice",
+       "q": "Would you be so kind ___ to check the archive?",
+       "options": [
+        "as",
+        "so",
+        "that"
+       ],
+       "answer": 0,
+       "explain": "Стійка формула: Would you be so kind as to...?",
+       "explain_ru": "Устойчивая формула: Would you be so kind as to...?"
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «They requested that the doors not ___ opened before dawn.»",
+       "q_ru": "Вставь одно слово: «They requested that the doors not ___ opened before dawn.»",
+       "answers": [
+        "be"
+       ],
+       "explain": "Заперечення в subjunctive: not be opened.",
+       "explain_ru": "Отрицание в subjunctive: not be opened."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Я пропоную, щоб він зачекав»",
+       "q_ru": "Составь предложение: «Я предлагаю, чтобы он подождал»",
+       "words": [
+        "wait",
+        "suggest",
+        "he",
+        "I",
+        "that"
+       ],
+       "answer": "I suggest that he wait",
+       "explain": "Після suggest that — базова форма: he wait.",
+       "explain_ru": "После suggest that — базовая форма: he wait."
+      }
+     ]
+    },
+    {
+     "id": "w5q8",
+     "title": "Пакт Зоряної Вежі",
+     "title_ru": "Пакт Звёздной Башни",
+     "emoji": "🖋",
+     "story": "У сховищі Вежі лежить давній пакт між Бібліотекою і Зорями. Його мова сувора й точна: кожне слово-зв'язка змінює сенс цілої угоди. Допоможи Елі його розтлумачити.",
+     "story_ru": "В хранилище Башни лежит древний пакт между Библиотекой и Звёздами. Его язык строг и точен: каждое слово-связка меняет смысл всего соглашения. Помоги Эли его истолковать.",
+     "lesson": "notwithstanding — попри (= despite); може стояти й після іменника: Notwithstanding the risks, the council agreed. The risks notwithstanding, ...\ninsofar as — тією мірою, якою; наскільки: The plan is fair insofar as everyone benefits.\ninasmuch as — оскільки, зважаючи на те, що.\nwhereby — за допомогою якого, згідно з яким: a system whereby books are tracked.\nhence — звідси, отже: The seal was broken; hence the alarm.\nprovided (that) — за умови, що: You may enter provided you sign the register.",
+     "lesson_ru": "notwithstanding — несмотря на (= despite); может стоять и после существительного: Notwithstanding the risks, the council agreed. The risks notwithstanding, ...\ninsofar as — в той мере, в какой; насколько: The plan is fair insofar as everyone benefits.\ninasmuch as — поскольку, ввиду того что.\nwhereby — посредством которого, согласно которому: a system whereby books are tracked.\nhence — отсюда, следовательно: The seal was broken; hence the alarm.\nprovided (that) — при условии, что: You may enter provided you sign the register.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "___ the late hour, the council continued its debate.",
+       "options": [
+        "Notwithstanding",
+        "Insofar as",
+        "Whereby"
+       ],
+       "answer": 0,
+       "explain": "Далі іменник, значення «попри» — notwithstanding.",
+       "explain_ru": "Дальше существительное, значение «несмотря на» — notwithstanding."
+      },
+      {
+       "type": "choice",
+       "q": "The theory is correct ___ it explains the known facts, but no further.",
+       "options": [
+        "insofar as",
+        "notwithstanding",
+        "hence"
+       ],
+       "answer": 0,
+       "explain": "«Тією мірою, якою» — insofar as.",
+       "explain_ru": "«В той мере, в какой» — insofar as."
+      },
+      {
+       "type": "choice",
+       "q": "They introduced a system ___ every scroll is catalogued.",
+       "options": [
+        "whereby",
+        "hence",
+        "insofar as"
+       ],
+       "answer": 0,
+       "explain": "«За допомогою якого» — whereby.",
+       "explain_ru": "«Посредством которого» — whereby."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово зі значенням «звідси»: «The ink faded; ___ the missing lines.»",
+       "q_ru": "Вставь одно слово со значением «отсюда»: «The ink faded; ___ the missing lines.»",
+       "answers": [
+        "hence",
+        "thus"
+       ],
+       "explain": "hence + іменник — звідси, отже. Допустимо й thus.",
+       "explain_ru": "hence + существительное — отсюда, следовательно. Допустимо и thus."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Ви можете увійти за умови, що підпишете реєстр»",
+       "q_ru": "Составь предложение: «Вы можете войти при условии, что подпишете реестр»",
+       "words": [
+        "sign",
+        "may",
+        "the",
+        "You",
+        "provided",
+        "register",
+        "enter",
+        "you"
+       ],
+       "answer": "You may enter provided you sign the register",
+       "explain": "provided (that) + речення — за умови, що.",
+       "explain_ru": "provided (that) + предложение — при условии, что."
+      }
+     ]
+    },
+    {
+     "id": "w5q9",
+     "title": "Нотатки на полях",
+     "title_ru": "Заметки на полях",
+     "emoji": "🪶",
+     "story": "На полях старих рукописів хтось залишив дотепні коментарі — суцільні ідіоми. Елі просить Лумі зрозуміти їх у контексті, бо дослівний переклад тут не допоможе.",
+     "story_ru": "На полях старых рукописей кто-то оставил остроумные комментарии — сплошные идиомы. Эли просит Луми понять их в контексте, ведь дословный перевод тут не поможет.",
+     "lesson": "Ідіоми рівня C1 розуміємо з контексту:\nburn the midnight oil — працювати до пізньої ночі.\nthe elephant in the room — очевидна проблема, про яку всі мовчать.\na blessing in disguise — те, що здавалося бідою, а виявилося на краще.\nbeat around the bush — ходити околяса, не казати прямо.\nbite off more than you can chew — взятися за більше, ніж можеш подужати.\nback to square one — почати все спочатку.",
+     "lesson_ru": "Идиомы уровня C1 понимаем из контекста:\nburn the midnight oil — работать до поздней ночи.\nthe elephant in the room — очевидная проблема, о которой все молчат.\na blessing in disguise — то, что казалось бедой, а оказалось к лучшему.\nbeat around the bush — ходить вокруг да около.\nbite off more than you can chew — взяться за большее, чем можешь осилить.\nback to square one — начать всё сначала.",
+     "tasks": [
+      {
+       "type": "choice",
+       "q": "Eli has been burning the midnight oil all week. This means he has been ___.",
+       "options": [
+        "working late into the night",
+        "wasting money",
+        "lighting candles for fun"
+       ],
+       "answer": 0,
+       "explain": "burn the midnight oil — працювати до пізньої ночі.",
+       "explain_ru": "burn the midnight oil — работать до поздней ночи."
+      },
+      {
+       "type": "choice",
+       "q": "Everyone avoided talking about the missing book — it was the ___ in the room.",
+       "options": [
+        "elephant",
+        "lion",
+        "ghost"
+       ],
+       "answer": 0,
+       "explain": "the elephant in the room — очевидна проблема, про яку мовчать.",
+       "explain_ru": "the elephant in the room — очевидная проблема, о которой молчат."
+      },
+      {
+       "type": "choice",
+       "q": "Losing the old key turned out to be a blessing in disguise. In other words, it ___.",
+       "options": [
+        "seemed bad but led to something good",
+        "was a hidden curse",
+        "was a secret gift from a friend"
+       ],
+       "answer": 0,
+       "explain": "a blessing in disguise — здавалося бідою, а вийшло на краще.",
+       "explain_ru": "a blessing in disguise — казалось бедой, а вышло к лучшему."
+      },
+      {
+       "type": "type",
+       "q": "Встав одне слово: «Stop beating around the ___ and tell me what happened.»",
+       "q_ru": "Вставь одно слово: «Stop beating around the ___ and tell me what happened.»",
+       "answers": [
+        "bush"
+       ],
+       "explain": "beat around the bush — ходити околяса.",
+       "explain_ru": "beat around the bush — ходить вокруг да около."
+      },
+      {
+       "type": "order",
+       "q": "Склади речення: «Він узявся за більше, ніж міг подужати»",
+       "q_ru": "Составь предложение: «Он взялся за большее, чем мог осилить»",
+       "words": [
+        "chew",
+        "bit",
+        "more",
+        "He",
+        "than",
+        "could",
+        "off",
+        "he"
+       ],
+       "answer": "He bit off more than he could chew",
+       "explain": "bite off more than you can chew; bite — bit у минулому.",
+       "explain_ru": "bite off more than you can chew; bite — bit в прошедшем."
+      }
+     ]
     }
    ],
    "story": {

@@ -160,6 +160,13 @@ const UK = {
   'game.brawl': 'Зоряна Сутичка',
   'game.drama': 'Шлях Вибору',
   'game.runner': 'Словесний Забіг',
+  'game.memory': 'Словесна Пам\'ять',
+  'game.wordle': 'Вгадай слово',
+  'game.snake': 'Змійка-Слово',
+  'game.fishing': 'Словесна Риболовля',
+  'game.obbyx': 'Обі-Вежа: Виклик',
+  'game.runnerx': 'Забіг: Виклик',
+  'game.brawlx': 'Сутичка: Виклик',
   'game.boss': 'Бос-арена',
 
   // ── завдання
@@ -469,6 +476,13 @@ const RU = {
   'game.brawl': 'Звёздная Схватка',
   'game.drama': 'Путь Выбора',
   'game.runner': 'Словесный Забег',
+  'game.memory': 'Словесная Память',
+  'game.wordle': 'Угадай слово',
+  'game.snake': 'Змейка-Слово',
+  'game.fishing': 'Словесная Рыбалка',
+  'game.obbyx': 'Оби-Башня: Вызов',
+  'game.runnerx': 'Забег: Вызов',
+  'game.brawlx': 'Схватка: Вызов',
   'game.boss': 'Босс-арена',
 
   'task.hint.choice': 'Выбери ответ',

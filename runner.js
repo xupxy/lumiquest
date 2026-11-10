@@ -2,26 +2,26 @@
 // набігають 3 ворота з англ. словами. Свайп/тап/стрілки — зміна доріжки. Правильні ворота —
 // бонус і швидкість росте; неправильні — спотикання (−❤️). 15 слів, потім фініш.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110190644';
-import * as FX from './fx.js?v=20261110190644';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110190644';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110190644';
-import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110190644';
+import * as S from './state.js?v=20261110194247';
+import * as FX from './fx.js?v=20261110194247';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110194247';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110194247';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110194247';
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, доріжка правильних воріт (0..2), фаза. */
 export const _debug = { frames: 0, running: false, answer: -1, phase: '' };
 
-const WORDS_N = 15;
+const WORDS_N0 = 15;       // слів за забіг (виклик — 20)
 const HEARTS = 3;
 const XP_PER_CORRECT = 10;
-const SPEED0 = 7;          // од./с
-const SPEED_MAX = 12.5;
+const SPEED00 = 7;         // од./с (виклик — 9)
+const SPEED_MAX0 = 12.5;   // (виклик — 15)
 const Z_SPAWN = 36;
 const Z_FAR = 70;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110190644', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110194247', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
@@ -202,7 +202,7 @@ function fitFont(ctx, text, maxW, size, minSize = 7) {
 }
 
 // ---------------------------------------------------------------- слова
-function buildRounds(content, wid) {
+function buildRounds(content, wid, WORDS_N = WORDS_N0) {
   const pairs = twords(content, wid).filter((p) => Array.isArray(p) && p.length === 2 && p[0] && p[1]);
   const uniq = [];
   const seen = new Set();
@@ -228,15 +228,20 @@ export function render(root, params, app) {
   const wid = params?.wid || 'w1';
   const world = (app.content?.WORLDS || []).find((w) => w.id === wid);
   const th = THEMES[wid] || THEMES.w1;
-  const gameId = `${wid}-runner`;
+  const hard = !!params?.hard;
+  const gameId = params?.id || `${wid}-runner${hard ? 'x' : ''}`;
+  const WORDS_N = hard ? 20 : WORDS_N0;
+  const SPEED0 = hard ? 9 : SPEED00;
+  const SPEED_MAX = hard ? 15 : SPEED_MAX0;
+  const SPEED_STEP = hard ? 0.7 : 0.45;   // прискорення за правильну відповідь
   let alive = true;
   let dirty = false;
   let lumiRefs = [];
 
-  const scr = el('div', `g-screen g-runner g-th-${wid}${th.dark ? ' g-dark' : ''}`);
+  const scr = el('div', `g-screen g-runner g-th-${wid}${th.dark ? ' g-dark' : ''}${hard ? ' g-hard' : ''}`);
   root.append(scr);
 
-  if (!world || buildRounds(app.content, wid).length === 0) {
+  if (!world || buildRounds(app.content, wid, WORDS_N).length === 0) {
     scr.innerHTML = `<div class="g-locked"><div class="g-locked-ico">🏃</div><p>${tr('runner.no_words')}</p>
       <button class="g-btn" data-a="back">${tr('common.back')}</button></div>`;
     scr.querySelector('[data-a=back]').onclick = () => app.back();
@@ -377,7 +382,7 @@ export function render(root, params, app) {
 
   function newGame() {
     g = {
-      rounds: buildRounds(app.content, wid), idx: 0, row: null, rows: [], orbs: [], props: [],
+      rounds: buildRounds(app.content, wid, WORDS_N), idx: 0, row: null, rows: [], orbs: [], props: [],
       hearts: HEARTS, correct: 0, wrong: 0, combo: 0, bestCombo: 0, score: 0, orbsN: 0, xp: 0,
       speed: 0, want: SPEED0, dist: 0, spawnT: 0, finishSpawned: false,
       lumi: { x: 0, lane: 0, h: 0, vh: 0, step: 0, rot: 0, tilt: 0, sq: 0, sqv: 0, trip: 0, glance: 0, mood: 'happy', blink: 0, blinkT: 2, ant: 0, cheer: 0 },
@@ -431,7 +436,7 @@ export function render(root, params, app) {
       g.score += pts; g.xp += XP_PER_CORRECT;
       try { S.onCorrectAnswer(st); S.addXP(st, XP_PER_CORRECT); } catch (e) { console.warn(e); }
       dirty = true; // зберігаємо в кінці/на виході: app.save() під час гри смикає приховану topbar
-      g.want = Math.min(SPEED_MAX, g.want + 0.45);
+      g.want = Math.min(SPEED_MAX, g.want + SPEED_STEP);
       hap(app, 'success'); sfx('correct'); speak(row.en);
       burst(gx, gy, 26, ['#ffd84a', '#fff', th.accent, '#9cf5b8', '#b9a2ff'], 1.2);
       ring(gx, gy, '#9cf5b8');
@@ -1003,6 +1008,7 @@ export function render(root, params, app) {
     overlay = el('div', 'g-over g-intro');
     overlay.innerHTML = `<div class="g-card">
       <div class="g-card-ico">🏃</div>
+      ${hard ? `<div class="g-hard-tag">${tr('common.hard_tag')}</div>` : ''}
       ${tr('runner.title')}
       <div class="g-sub">${esc(world.emoji || '')} ${esc(tc(world, 'name') || '')}${best ? `${tr('obby.best')}${'⭐'.repeat(best)}` : ''}</div>
       <div class="g-intro-lumi"></div>
@@ -1011,6 +1017,7 @@ export function render(root, params, app) {
         <li>${tr('runner.r2')}</li>
         <li>${tr('runner.r3')}</li>
         <li>${tr('runner.r4', { 0: WORDS_N, 1: HEARTS })}</li>
+        ${hard ? `<li>${tr('runner.r_hard', { 0: WORDS_N })}</li>` : ''}
       </ul>
       <div class="g-keys">${tr('runner.keys')}</div>
       <button class="g-btn g-btn-big g-btn-go" data-a="go">${tr('runner.run')}</button>

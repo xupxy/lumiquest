@@ -2,24 +2,24 @@
 // варіанти — платформи попереду. Правильна → стрибок угору; хибна → платформа розсипається,
 // Лумі падає на чекпоінт (−1 ❤️). 12 стрибків до вершини, чекпоінти кожні 4 платформи.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110190644';
-import * as FX from './fx.js?v=20261110190644';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110190644';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110190644';
+import * as S from './state.js?v=20261110194247';
+import * as FX from './fx.js?v=20261110194247';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110194247';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110194247';
 const isEn = (s) => !/[а-яіїєґё]/i.test(String(s || ''));
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, індекс правильного варіанта, фаза. */
 export const _debug = { frames: 0, running: false, answer: -1, phase: '' };
 
-const GOAL = 12;          // стрибків до вершини
+const GOAL0 = 12;         // стрибків до вершини (виклик — 16)
 const CP_EVERY = 4;       // чекпоінт кожні 4 платформи
-const HEARTS = 3;
+const HEARTS0 = 3;        // ❤️ (виклик — 2)
 const XP_PER_CORRECT = 10;
 const G = 2700;           // гравітація, px/с²
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110190644', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110194247', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
@@ -233,7 +233,7 @@ function fitText(ctx, text, maxW, size, minSize = 10) {
 }
 
 // ---------------------------------------------------------------- питання
-function buildPool(content, wid) {
+function buildPool(content, wid, hard = false) {
   const w = (content?.WORLDS || []).find((x) => x.id === wid);
   const choice = [];
   for (const q of w?.quests || []) {
@@ -241,6 +241,12 @@ function buildPool(content, wid) {
       if (t.type !== 'choice' || !Array.isArray(t.options) || t.options[t.answer] == null) continue;
       const right = String(t.options[t.answer]);
       const wrong = shuffle(t.options.filter((_, i) => i !== t.answer).map(String)).slice(0, 3);
+      // виклик: якщо в завданні мало варіантів — добираємо схожі з інших уроків світу
+      if (hard && wrong.length < 3) {
+        const extra = shuffle((w.quests || []).flatMap((qq) => (qq.tasks || []).filter((x) => x.type === 'choice' && Array.isArray(x.options)).flatMap((x) => x.options.map(String))))
+          .filter((o) => o !== right && !wrong.includes(o) && isEn(o) === isEn(right) && Math.abs(o.length - right.length) <= 6);
+        for (const o of extra) { if (wrong.length >= 3) break; if (!wrong.includes(o)) wrong.push(o); }
+      }
       const opts = shuffle([right, ...wrong]);
       choice.push({ q: String(tc(t, 'q') || ''), opts, ans: opts.indexOf(right), explain: tc(t, 'explain') || '', kind: 'task' });
     }
@@ -263,15 +269,18 @@ export function render(root, params, app) {
   const wid = params?.wid || 'w1';
   const world = (app.content?.WORLDS || []).find((w) => w.id === wid);
   const th = THEMES[wid] || THEMES.w1;
-  const gameId = `${wid}-obby`;
+  const hard = !!params?.hard;
+  const gameId = params?.id || `${wid}-obby${hard ? 'x' : ''}`;
+  const GOAL = hard ? 16 : GOAL0;
+  const HEARTS = hard ? 2 : HEARTS0;
   let alive = true;
   let dirty = false;
   let lumiRefs = [];
 
-  const scr = el('div', `g-screen g-obby g-th-${wid}${th.dark ? ' g-dark' : ''}`);
+  const scr = el('div', `g-screen g-obby g-th-${wid}${th.dark ? ' g-dark' : ''}${hard ? ' g-hard' : ''}`);
   root.append(scr);
 
-  const pool = buildPool(app.content, wid);
+  const pool = buildPool(app.content, wid, hard);
   if (!world || (!pool.choice.length && pool.words.length < 4)) {
     scr.innerHTML = `<div class="g-locked"><div class="g-locked-ico">🧗</div><p>${tr('obby.no_tasks')}</p>
       <button class="g-btn" data-a="back">${tr('common.back')}</button></div>`;
@@ -296,7 +305,7 @@ export function render(root, params, app) {
         <div class="g-qfb"></div>
       </div>
     </div>
-    <div class="g-ob-prog" aria-hidden="true"><div class="g-ob-progfill"></div>${[4, 8].map((k) => `<i style="bottom:${(k / GOAL) * 100}%">🚩</i>`).join('')}<b class="g-ob-progtop">🏁</b><span class="g-ob-progdot"></span></div>`;
+    <div class="g-ob-prog" aria-hidden="true"><div class="g-ob-progfill"></div>${Array.from({ length: Math.ceil(GOAL / CP_EVERY) - 1 }, (_, i) => (i + 1) * CP_EVERY).map((k) => `<i style="bottom:${(k / GOAL) * 100}%">🚩</i>`).join('')}<b class="g-ob-progtop">🏁</b><span class="g-ob-progdot"></span></div>`;
   const $ = (q) => scr.querySelector(q);
   const cv = $('.g-canvas');
   const ctx = cv.getContext('2d');
@@ -1056,6 +1065,7 @@ export function render(root, params, app) {
     overlay = el('div', 'g-over g-intro');
     overlay.innerHTML = `<div class="g-card">
       <div class="g-card-ico">🧗</div>
+      ${hard ? `<div class="g-hard-tag">${tr('common.hard_tag')}</div>` : ''}
       ${tr('obby.title')}
       <div class="g-sub">${esc(world.emoji || '')} ${esc(tc(world, 'name') || '')}${best ? `${tr('obby.best')}${'⭐'.repeat(best)}` : ''}</div>
       <div class="g-intro-lumi"></div>
@@ -1063,6 +1073,7 @@ export function render(root, params, app) {
         <li>${tr('obby.r1')}</li>
         <li>${tr('obby.r2')}</li>
         <li>${tr('obby.r3', { 0: GOAL, 1: CP_EVERY, 2: HEARTS })}</li>
+        ${hard ? `<li>${tr('obby.r_hard', { 0: GOAL, 1: HEARTS })}</li>` : ''}
       </ul>
       <div class="g-keys">${tr('obby.keys')}</div>
       <button class="g-btn g-btn-big g-btn-go" data-a="go">${tr('obby.start')}</button>

@@ -830,6 +830,11 @@ html[data-scheme='dark'] .road-done { stroke: #C99A4E; }
 .wp-node.t-brawl { --ring: #FF9A7A; }
 .wp-node.t-drama { --ring: #C792F2; }
 .wp-node.t-boss { --ring: #FFC845; --m: 100px; }
+.wp-node.t-memory { --ring: #FFB36B; }
+.wp-node.t-wordle { --ring: #F2D04B; }
+.wp-node.t-snake { --ring: #9ADB5C; }
+.wp-node.t-fishing { --ring: #5CC6F2; }
+.wp-node.hard { --ring: #FF6A3D; }
 .wp-node.current { --m: 108px; z-index: 3; }
 .wp-medal { position: relative; display: block; width: var(--m); height: var(--m); border-radius: 50%; background: #fff;
   box-shadow: 0 0 0 3.5px var(--ink), 0 0 0 9px var(--ring), 0 0 0 12px var(--ink), 0 7px 0 12px var(--ink), 0 18px 22px 8px rgba(59, 42, 85, .25);
@@ -1581,3 +1586,21 @@ html[data-perf='lite'] .onb-glow, html[data-perf='lite'] .lang-card::after { dis
   border: 2px solid rgba(59,36,64,.25); background: #fff; color: #3a2433; }
 .set-voice-play { width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(59,36,64,.3);
   background: linear-gradient(#fff4d6, #ffd98a); color: #3a2433; font-size: 18px; }
+
+/* v8: обідок кольору типу рівня — тонке кільце по краю обкладинки (видно й поверх рамок тем світів) */
+.wp-medal img { outline: 5px solid var(--ring); outline-offset: -5px; }
+.wp-node.locked .wp-medal img { outline-color: #C9C1D8; }
+[data-world='w4'] .wp-medal img { outline: none; }
+/* v8: «виклики» — вогняна рамка й бейдж 🔥 (анімація лише opacity/transform; поза екраном — на паузі через .lq-off) */
+.wp-fire { position: absolute; inset: -15px; z-index: 0; border-radius: 50%; pointer-events: none;
+  background: conic-gradient(from 0deg, #FFD34D, #FF6A3D, #E8344A, #FF9A3C, #FFD34D, #FF6A3D, #E8344A, #FFD34D);
+  -webkit-mask: radial-gradient(closest-side, transparent 84%, #000 86%, #000 96%, transparent 100%);
+  mask: radial-gradient(closest-side, transparent 84%, #000 86%, #000 96%, transparent 100%);
+  box-shadow: 0 0 22px 6px rgba(255, 106, 61, .55); animation: wp-fire 1.6s ease-in-out infinite alternate; }
+@keyframes wp-fire { from { opacity: .75; transform: scale(.98) rotate(0deg); } to { opacity: 1; transform: scale(1.04) rotate(12deg); } }
+.wp-hard { position: absolute; right: -12px; top: -10px; z-index: 2; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(160deg, #FFB347, #FF4D3D); border: 2.5px solid var(--ink); box-shadow: 0 2px 0 var(--ink), 0 0 12px rgba(255, 90, 40, .7); font-size: 16px; }
+.wp-node.hard .wp-title { box-shadow: 0 2px 0 var(--ink), 0 0 0 2px #FF8A3D inset; }
+.wp-node.hard.locked .wp-fire { filter: grayscale(.8); opacity: .5; animation: none; }
+[data-world='w4'] .wp-fire { border-radius: 30%; }
+@media (prefers-reduced-motion: reduce) { .wp-fire { animation: none; } }

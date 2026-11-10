@@ -1,10 +1,10 @@
-// 🌍 Світ: ігрова стежка з 13 рівнів (games.js) — звивиста дорога, вузли-медальйони з обкладинками,
+// 🌍 Світ: ігрова стежка з 23 рівнів (games.js) — звивиста дорога, вузли-медальйони з обкладинками,
 // Лумі стоїть на поточному рівні, паралакс-фон і частинки під настрій світу.
-import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261110190644';
-import { getWorld, worldIndex, gameTitle } from './state.js?v=20261110190644';
-import { t, tc } from './i18n.js?v=20261110190644';
-import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261110190644';
-import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261110190644';
+import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261110194247';
+import { getWorld, worldIndex, gameTitle } from './state.js?v=20261110194247';
+import { t, tc } from './i18n.js?v=20261110194247';
+import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261110194247';
+import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261110194247';
 
 const STEP = 186;        // відстань між вузлами по вертикалі
 const CUR_GAP = 56;      // додатковий простір навколо поточного (Лумі зверху, «Грати» знизу)
@@ -103,12 +103,14 @@ export function render(root, params, app) {
     const open = isOpen(st, w.id, i);
     const isCur = !!next && g.idx === next.idx;
     const isEnd = !next && i === curIdx;
-    const cls = ['wp-node', `t-${g.type}`, open ? 'open' : 'locked', s ? 'done' : '', isCur ? 'current' : '', isEnd ? 'end' : '']
+    const cls = ['wp-node', `t-${g.type}`, g.hard ? 'hard' : '', open ? 'open' : 'locked', s ? 'done' : '', isCur ? 'current' : '', isEnd ? 'end' : '']
       .filter(Boolean).join(' ');
     const medal = h('span', { class: 'wp-medal' },
       h('span', { class: 'wp-frame', 'aria-hidden': 'true' }, frameLayers(medalFrame(w.id), isCur)),
       h('img', { src: app.asset(g.cover), alt: '', loading: i > curIdx + 3 ? 'lazy' : 'eager', draggable: 'false' }),
+      g.hard ? h('span', { class: 'wp-fire', 'aria-hidden': 'true' }) : null,
       h('span', { class: 'wp-num', 'aria-hidden': 'true', text: String(i + 1) }),
+      g.hard ? h('span', { class: 'wp-hard', 'aria-hidden': 'true', text: '🔥' }) : null,
       open ? h('span', { class: 'wp-stars' }, starsRow(s, 3, 'sm')) : h('span', { class: 'wp-lock', 'aria-hidden': 'true', text: '🔒' }));
     const label = h('span', { class: 'wp-label' },
       h('span', { class: 'wp-title', text: `${g.emoji} ${gameTitle(g)}` }),

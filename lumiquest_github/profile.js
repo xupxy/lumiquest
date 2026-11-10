@@ -1,12 +1,12 @@
 // 👤 Профіль: картка гравця (Лумі в рамці арени, кільце XP, звання), лічильники, медалі світів, драконяча колекція,
 // кубки і шкала арен, стрік-календар тижня, налаштування.
-import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110190644';
-import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110190644';
-import { worldGames, gameStars } from './games.js?v=20261110190644';
-import { emblem, themeOf } from './theme.js?v=20261110190644';
-import { weekActivity, toggleRow, audioSettings, testSound } from './home.js?v=20261110190644';
-import { t, tc, lang, LANGS } from './i18n.js?v=20261110190644';
-import { arenaLabel } from './state.js?v=20261110190644';
+import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110194247';
+import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110194247';
+import { worldGames, gameStars } from './games.js?v=20261110194247';
+import { emblem, themeOf } from './theme.js?v=20261110194247';
+import { weekActivity, toggleRow, audioSettings, testSound } from './home.js?v=20261110194247';
+import { t, tc, lang, LANGS } from './i18n.js?v=20261110194247';
+import { arenaLabel } from './state.js?v=20261110194247';
 
 const svgFrom = (str) => { const t = document.createElement('template'); t.innerHTML = str.trim(); return t.content.firstChild; };
 const setI = (el, i) => { el.style.setProperty('--i', i); return el; };

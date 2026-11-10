@@ -2,16 +2,16 @@
 // Лумі в центрі арени, до неї повзуть «Помилки» (кумедні клякси) з українськими словами.
 // Знизу — 3 англійські варіанти для найближчого ворога: правильно — зоряний снаряд і вибух,
 // неправильно — ворог робить ривок. 3 ❤️, хвилі, супер-атака за серію, таймер 90 с.
-import * as S from './state.js?v=20261110190644';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110190644';
-import * as FX from './fx.js?v=20261110190644';
-import * as L from './lumi.js?v=20261110190644';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110190644';
-import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110190644';
+import * as S from './state.js?v=20261110194247';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110194247';
+import * as FX from './fx.js?v=20261110194247';
+import * as L from './lumi.js?v=20261110194247';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110194247';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110194247';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110190644', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110190644', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110194247', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110194247', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
@@ -156,13 +156,19 @@ export function render(root, params, app) {
   const wid = params?.wid || 'w1';
   const world = (app.content?.WORLDS || []).find((w) => w.id === wid);
   const words = twords(app.content, wid).filter((p) => Array.isArray(p) && p[0] && p[1]);
-  const gid = `${wid}-brawl`;
+  const hard = !!params?.hard;
+  const gid = params?.id || `${wid}-brawl${hard ? 'x' : ''}`;
+  // виклик: 75 с, вороги швидші й частіші, 4 варіанти відповіді
+  const TIME = hard ? 75 : GAME_TIME;
+  const NOPT = hard ? 4 : 3;
+  const SPD_K = hard ? 1.3 : 1;
+  const SPAWN_K = hard ? 0.7 : 1;
   const P = PAL[wid] || PAL.w1;
   let alive = true;
   const timers = [];
   const later = (fn, ms) => timers.push(setTimeout(() => alive && fn(), ms));
 
-  const scr = el('div', `m-screen g2-screen g2-brawl g2-${esc(wid)}`);
+  const scr = el('div', `m-screen g2-screen g2-brawl g2-${esc(wid)}${hard ? ' g2-hard' : ''}`);
   root.append(scr);
 
   if (!world || words.length < 4 || !(st.unlocked || []).includes(wid)) {
@@ -177,7 +183,7 @@ export function render(root, params, app) {
     <header class="m-head g2-head">
       <button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
       <div class="g2-hearts" ${tr('common.lives_aria')}>${'<span class="g2-heart">❤️</span>'.repeat(MAX_HEARTS)}</div>
-      <div class="g2-timer" ${tr('brawl.time_aria')}><span>⏱</span><b>${GAME_TIME}</b></div>
+      <div class="g2-timer" ${tr('brawl.time_aria')}><span>⏱</span><b>${TIME}</b></div>
       <div class="g2-score" ${tr('brawl.kills_aria')}>💥 <b>0</b></div>
       <button class="g2-pause" ${tr('common.pause_aria')}>⏸</button>
     </header>
@@ -188,7 +194,7 @@ export function render(root, params, app) {
         <button class="g2-super-btn" disabled>${tr('brawl.super')}</button>
       </div>
       <div class="g2-ask">${tr('brawl.ask')} <b>…</b></div>
-      <div class="g2-answers">${[0, 1, 2].map((k) => `<button class="g2-ans" data-k="${k}" disabled><small>${k + 1}</small><span>…</span></button>`).join('')}</div>
+      <div class="g2-answers">${Array.from({ length: NOPT }, (_, k) => k).map((k) => `<button class="g2-ans" data-k="${k}" disabled><small>${k + 1}</small><span>…</span></button>`).join('')}</div>
     </div>`;
   const $ = (q) => scr.querySelector(q);
   const canvas = $('canvas[aria-label]');
@@ -364,7 +370,7 @@ export function render(root, params, app) {
   let deck = [];
   let seq = 0;
   function fresh() {
-    G = { phase: 'intro', t: 0, timeLeft: GAME_TIME, hearts: MAX_HEARTS, correct: 0, wrong: 0, leaks: 0, kills: 0,
+    G = { phase: 'intro', t: 0, timeLeft: TIME, hearts: MAX_HEARTS, correct: 0, wrong: 0, leaks: 0, kills: 0,
       streak: 0, bestStreak: 0, meter: 0, wave: 0, waveLeft: 0, spawnT: 0, waveBreak: 0, countdown: 0, endT: 0, reason: '',
       enemies: [], shots: [], parts: [], rings: [], texts: [], slime: [], shake: 0, flash: 0, flashColor: '#fff',
       lumi: { squash: 0, hurt: 0, inv: 0, spin: 0, happy: 0, look: -Math.PI / 2 },
@@ -427,7 +433,7 @@ export function render(root, params, app) {
       ansBtns.forEach((b) => { b.disabled = true; b.classList.remove('ok', 'bad', 'g2-in'); b.querySelector('span').textContent = '…'; });
       return;
     }
-    G.opts = shuffle([e.word[1], ...distractors(e.word[1], 2)]);
+    G.opts = shuffle([e.word[1], ...distractors(e.word[1], NOPT - 1)]);
     askB.textContent = e.word[0];
     ansBtns.forEach((b, k) => {
       b.classList.remove('ok', 'bad', 'g2-in');
@@ -473,7 +479,7 @@ export function render(root, params, app) {
     const speedBase = (Math.max(W, H) * 0.5) / 12.5;
     const goo = GOO[(seq + (Math.random() * 2 | 0)) % GOO.length];
     G.enemies.push({ id: ++seq, x: best.x, y: best.y, r: ER * rnd(0.92, 1.08), word: nextWord(), c0: goo[0], c1: goo[1],
-      speed: speedBase * (1 + (G.wave - 1) * 0.14) * rnd(0.9, 1.1), dash: 0, age: 0, ph: Math.random() * 6.28,
+      speed: speedBase * SPD_K * (1 + (G.wave - 1) * (hard ? 0.18 : 0.14)) * rnd(0.9, 1.1), dash: 0, age: 0, ph: Math.random() * 6.28,
       doomed: false, dead: false, trailT: 0, angry: 0 });
     G.waveLeft -= 1;
     burst(best.x, best.y, 10, goo[0], { speed: 90, size: 4, life: 0.5 });
@@ -637,7 +643,7 @@ export function render(root, params, app) {
         G.spawnT -= dt;
         const aliveN = G.enemies.filter((e) => !e.dead).length;
         if (!aliveN || (aliveN === 1 && G.enemies[0].doomed)) G.spawnT = Math.min(G.spawnT, 0.3); // без пауз «на порожній арені»
-        if (G.spawnT <= 0 && aliveN < 2 + G.wave) { spawn(); G.spawnT = Math.max(0.9, 2.9 - G.wave * 0.35); }
+        if (G.spawnT <= 0 && aliveN < 2 + G.wave + (hard ? 1 : 0)) { spawn(); G.spawnT = SPAWN_K * Math.max(0.9, 2.9 - G.wave * 0.35); }
       } else if (!G.enemies.some((e) => !e.dead)) {
         G.waveBreak = 1.4;
         floatTxt(0, -LR * 2.6, tr('brawl.wave_done'), '#fff', 20);
@@ -964,6 +970,7 @@ export function render(root, params, app) {
     overlay.innerHTML = `
       <div class="m-end-card g2-card">
         <div class="g2-intro-ico">💥</div>
+        ${hard ? `<div class="g-hard-tag">${tr('common.hard_tag')}</div>` : ''}
         ${tr('brawl.title')}
         <div class="g2-world">${esc(world.emoji || '')} ${esc(tc(world, 'name') || '')}</div>
         <div class="g2-intro-lumi"></div>
@@ -972,7 +979,8 @@ export function render(root, params, app) {
           <li><span>🎯</span>${tr('brawl.r2')}</li>
           <li><span>💨</span>${tr('brawl.r3')}</li>
           <li><span>💫</span>${tr('brawl.r4', { 0: SUPER_N })}</li>
-          <li><span>⏱</span>${tr('brawl.r5', { 0: GAME_TIME })}</li>
+          <li><span>⏱</span>${tr('brawl.r5', { 0: TIME })}</li>
+          ${hard ? `<li><span>🔥</span>${tr('brawl.r_hard', { 0: NOPT }).replace(/^🔥\s*/, '')}</li>` : ''}
         </ul>
         ${best ? `<div class="g2-best">${tr('brawl.best')} ${'⭐'.repeat(best)}${'☆'.repeat(3 - best)}</div>` : ''}
         <p class="g2-keys">${tr('brawl.keys')}</p>
@@ -1077,7 +1085,7 @@ export function render(root, params, app) {
   const onKey = (ev) => {
     if (ev.repeat) return;
     const k = ev.key;
-    if (G.phase === 'play' && ['1', '2', '3'].includes(k)) { ev.preventDefault(); answer(+k - 1); }
+    if (G.phase === 'play' && ['1', '2', '3', '4'].slice(0, NOPT).includes(k)) { ev.preventDefault(); answer(+k - 1); }
     else if (G.phase === 'play' && (k === ' ' || k === 'Spacebar')) { ev.preventDefault(); superAttack(); }
     else if (k === 'Escape' || k === 'p' || k === 'P' || k === 'з' || k === 'З') { if (G.phase === 'pause') resume(); else pause(); }
     else if (k === 'Enter' && G.phase === 'intro' && overlay) { ev.preventDefault(); overlay.querySelector('[data-a=go]')?.click(); }
