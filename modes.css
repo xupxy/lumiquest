@@ -768,3 +768,8 @@ html[data-scheme='dark'] .m-ar-task .slot { background: rgba(59, 42, 85, .08); }
 .m-dk-end.win .m-dk-foxpic.m-dk-foxchr.big, .m-dk-end.lose .m-dk-foxpic.m-dk-foxchr.big { animation: none; filter: none; }
 .m-st-portrait.m-st-chr { background: radial-gradient(circle at 50% 30%, #fff 0%, var(--st-glow, #f3eaff) 85%); display: grid; place-items: end center; }
 .m-end-portrait.m-st-chr { background: radial-gradient(circle at 50% 30%, #fff, #efe6ff); }
+
+/* v7: довге натискання → озвучка */
+.m-speaking { box-shadow: 0 0 0 3px #ffd84a !important; }
+.m-st-speaker .m-st-hintbtn:not(.m-st-say) { margin-left: auto; }
+.m-st-speaker .m-st-say { margin-left: 8px; }

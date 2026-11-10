@@ -1,15 +1,16 @@
 // 🎭 Шлях Вибору — інтерактивна кінодрама (letterbox, субтитри, рішення з таймером,
 // гілки й кінцівки) і наприкінці анімована СХЕМА ШЛЯХУ (flowchart графа вузлів).
 // Контент: WORLDS[i].drama (див. WEBAPP_SPEC v4). Відкриті вузли: state.drama_seen[wid] = [ids].
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import * as L from './lumi.js?v=20261110183712';
-import { recordGame, gameStars } from './games.js?v=20261110183712';
-import { createCharacter, characterIdFor } from './characters.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import * as L from './lumi.js?v=20261110185829';
+import { recordGame, gameStars } from './games.js?v=20261110185829';
+import { tr, tc, lang, sfx, speak, speakAuto, longPressSpeak, starSfx } from './i18n_modes.js?v=20261110185829';
+import { createCharacter, characterIdFor } from './characters.js?v=20261110185829';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110183712', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110185829', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110185829', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
@@ -105,7 +106,7 @@ function typewriter(node, text, speed = 30) {
 // ---------------------------------------------------------------- граф
 export const ENDING_STARS = { good: 3, ok: 2, bad: 1 };
 const ENDING_ICON = { good: '🌟', ok: '🌤', bad: '🥀' };
-const ENDING_NAME = { good: 'Щаслива кінцівка', ok: 'Непогана кінцівка', bad: 'Сумна кінцівка' };
+const ENDING_NAME = { get good() { return tr('drama.end_good'); }, get ok() { return tr('story.end_ok'); }, get bad() { return tr('story.end_bad'); } };
 
 /** Ребра графа: [{from, to, timeout}] (timeout — лише якщо веде туди, куди не веде жоден вибір). */
 export function dramaEdges(d) {
@@ -196,8 +197,8 @@ export function render(root, params, app) {
   const valid = d && d.nodes && typeof d.nodes === 'object' && Object.keys(d.nodes).length;
   if (!world || !valid || !(st.unlocked || []).includes(wid)) {
     scr.innerHTML = `<div class="m-locked g2-dr-locked"><div class="m-locked-ico">${world && !valid ? '🎬' : '🔒'}</div>
-      <p>${!world ? 'Такого світу немає.' : !(st.unlocked || []).includes(wid) ? 'Цей світ ще спить. Переможи боса попереднього світу!' : 'Сценарій цієї драми ще пишеться… Зазирни пізніше!'}</p>
-      <button class="m-btn" data-a="back">‹ Назад</button></div>`;
+      <p>${!world ? tr('drama.no_world') : !(st.unlocked || []).includes(wid) ? tr('common.locked_world') : tr('drama.no_script')}</p>
+      <button class="m-btn" data-a="back">${tr('common.back')}</button></div>`;
     scr.querySelector('[data-a=back]').onclick = () => app.back();
     return () => { alive = false; };
   }
@@ -222,10 +223,10 @@ export function render(root, params, app) {
       <div class="g2-grain"></div>
     </div>
     <div class="g2-lb top"><header class="m-head g2-dr-head">
-      <button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
-      <div class="m-title">🎭 ${esc(d.title || 'Шлях Вибору')}</div>
+      <button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
+      <div class="m-title">🎭 ${esc(tc(d, 'title') || tr('drama.title_def'))}</div>
       <div class="g2-dr-step"></div>
-      <button class="g2-pause" aria-label="Пауза">⏸</button>
+      <button class="g2-pause" ${tr('common.pause_aria')}>⏸</button>
     </header></div>
     <div class="g2-stage">
       <div class="g2-scene"><span class="g2-scene-txt"></span></div>
@@ -234,7 +235,7 @@ export function render(root, params, app) {
         <div class="g2-actor"><div class="g2-actor-face"></div><div class="g2-actor-name"></div></div>
       </div>
       <div class="g2-subs" role="button" tabindex="0">
-        <div class="g2-subs-who"><span></span><button class="g2-hintbtn" aria-label="Переклад">🇺🇦</button></div>
+        <div class="g2-subs-who"><span></span><button class="g2-hintbtn" aria-label="${tr('common.translate_aria')}">${tr('common.flag')}</button><button class="g2-hintbtn g2-say" aria-label="${tr('common.listen')}">🔊</button></div>
         <div class="g2-subs-line"></div>
         <div class="g2-subs-hint"></div>
       </div>
@@ -253,7 +254,8 @@ export function render(root, params, app) {
   const sceneTxt = $('.g2-scene-txt');
   const subs = $('.g2-subs');
   const whoEl = $('.g2-subs-who span');
-  const hintBtn = $('.g2-hintbtn');
+  const hintBtn = $('.g2-hintbtn:not(.g2-say)');
+  const sayBtn = $('.g2-say');
   const lineEl = $('.g2-subs-line');
   const hintEl = $('.g2-subs-hint');
   const stampEl = $('.g2-stamp');
@@ -312,9 +314,10 @@ export function render(root, params, app) {
   function lumiSet(emo) { try { lumi?.set?.(emo); } catch (e) { /* */ } }
   function stepInfo() {
     const n = run.path.filter((p) => !nodes[p.id]?.ending).length;
-    stepEl.innerHTML = run.stage === 'intro' || run.stage === 'end' ? '' : `<span>Рішення ${n + (run.stage === 'decide' || run.stage === 'line' ? 1 : 0)}</span>`;
+    stepEl.innerHTML = run.stage === 'intro' || run.stage === 'end' ? '' : `<span>${tr('drama.decision_n', { 0: n + (run.stage === 'decide' || run.stage === 'line' ? 1 : 0) })}</span>`;
   }
   hintBtn.addEventListener('click', (e) => { e.stopPropagation(); hap(app); hintEl.classList.toggle('show'); });
+  sayBtn.addEventListener('click', (e) => { e.stopPropagation(); hap(app); speak(nodes[run.id]?.line); });
   subs.addEventListener('click', () => { if (tw?.typing) tw.finish(); });
 
   // ------------------------------------------------ таймер-кільце (rAF; на паузі стоїть)
@@ -340,7 +343,7 @@ export function render(root, params, app) {
     run.timeLeft = Math.max(0, run.timeLeft - dt);
     paintRing();
     const sec = Math.ceil(run.timeLeft);
-    if (sec !== run.prevSec) { run.prevSec = sec; if (sec <= 3 && sec > 0) hap(app, 'light'); }
+    if (sec !== run.prevSec) { run.prevSec = sec; if (sec <= 3 && sec > 0) { hap(app, 'light'); sfx('tick'); } }
     if (run.timeLeft <= 0) { timeout(); return; }
     raf = requestAnimationFrame(tick);
   }
@@ -380,7 +383,8 @@ export function render(root, params, app) {
     // нова сцена: Кен Бернс, опис сцени, актор
     film.style.setProperty('--kb', `${(run.path.length % 3) - 1}`);
     film.classList.remove('kb'); void film.offsetWidth; film.classList.add('kb');
-    sceneTxt.textContent = n.scene || '';
+    sceneTxt.textContent = tc(n, 'scene') || '';
+    sfx('page');
     sceneEl.classList.remove('show'); void sceneEl.offsetWidth; sceneEl.classList.add('show');
     setActor(n.speaker || '');
     lumiSet('thinking');
@@ -388,8 +392,9 @@ export function render(root, params, app) {
     await wait(n.scene ? 900 : 300);
     if (stale()) return;
     whoEl.textContent = n.speaker || '';
-    hintBtn.hidden = !n.hint;
-    hintEl.textContent = n.hint || '';
+    hintBtn.hidden = !tc(n, 'hint');
+    hintEl.textContent = tc(n, 'hint') || '';
+    sayBtn.hidden = !n.line;
     lineEl.classList.toggle('long', String(n.line || '').length > 70);
     lineEl.textContent = n.line || '';
     fit();
@@ -399,6 +404,7 @@ export function render(root, params, app) {
     await tw.done;
     actorCh?.talk(0);
     if (stale() || run.stage !== 'line') return;
+    speakAuto(n.line, 200);
     showChoices(n);
   }
   function showChoices(n) {
@@ -409,6 +415,7 @@ export function render(root, params, app) {
       const b = el('button', 'g2-choice', `<small>${k + 1}</small><span>${esc(c.text || '…')}</span>`);
       b.style.animationDelay = `${k * 90}ms`;
       b.onclick = () => pick(k);
+      longPressSpeak(b, c.text);
       choicesEl.append(b);
     });
     choicesEl.classList.toggle('long', (n.choices || []).some((c) => String(c.text || '').length > 45));
@@ -431,18 +438,20 @@ export function render(root, params, app) {
       run.good += 1;
       onCorrect(st); addXP(st, 10); dirty = true;
       hap(app, 'success');
+      sfx('heart');
       lumiSet('happy');
       actorCh?.set('happy');
       film.classList.add('good');
       fx('sparkle', btns[k]);
     } else {
       hap(app, 'error');
+      sfx('wrong');
       lumiSet('sad');
       actorCh?.set('sad');
       film.classList.add('bad');
       fx('shake', btns[k]);
     }
-    showNote(c.good ? 'good' : 'bad', c.note || '', c.next, c.good ? '+10 XP' : '');
+    showNote(c.good ? 'good' : 'bad', tc(c, 'note') || '', c.next, c.good ? '+10 XP' : '');
   }
   function timeout() {
     if (run.stage !== 'decide') return;
@@ -453,22 +462,22 @@ export function render(root, params, app) {
     const next = nodes[n.timeout] ? n.timeout : ((n.choices || []).find((c) => !c.good) || (n.choices || [])[0] || {}).next;
     run.path.push({ id: run.id, choice: 'timeout', good: false });
     [...choicesEl.querySelectorAll('.g2-choice')].forEach((b) => { b.disabled = true; b.classList.add('dim'); });
-    stampEl.textContent = '⏳ Час вийшов!';
+    stampEl.textContent = tr('drama.timeout');
     stampEl.classList.remove('show'); void stampEl.offsetWidth; stampEl.classList.add('show');
     hap(app, 'warning');
     lumiSet('surprised');
     actorCh?.set('surprised');
     film.classList.add('bad');
-    showNote('time', 'Ти мовчав надто довго — і історія пішла своїм шляхом…', next, '');
+    showNote('time', tr('drama.timeout_note'), next, '');
   }
   function showNote(kind, note, next, bonus) {
     later(() => {
       ringEl.hidden = true;
-      const head = kind === 'good' ? '✨ Влучна відповідь!' : kind === 'time' ? '⏳ Час вийшов' : '💭 Не зовсім вдало';
+      const head = kind === 'good' ? tr('drama.good') : kind === 'time' ? tr('drama.time') : tr('drama.bad');
       const fb = el('div', `g2-note ${kind}`, `
         <div class="g2-note-head">${head}${bonus ? ` <em>${esc(bonus)}</em>` : ''}</div>
         ${note ? `<div class="g2-note-txt">${esc(note)}</div>` : ''}`);
-      const go = el('button', 'm-btn m-btn-big g2-next', nodes[next]?.ending ? '🎬 До фіналу ▸' : 'Далі ▸');
+      const go = el('button', 'm-btn m-btn-big g2-next', nodes[next]?.ending ? tr('drama.to_final') : tr('drama.next'));
       go.onclick = () => { if (run.stage !== 'feedback') return; hap(app); run.stage = 'line'; playNode(next); };
       fb.append(go);
       choicesEl.innerHTML = '';
@@ -495,24 +504,24 @@ export function render(root, params, app) {
     overlay = el('div', 'g2-dr-intro');
     overlay.innerHTML = `
       <div class="g2-dr-intro-in">
-        <div class="g2-dr-kicker">🎭 Шлях Вибору · ${esc(world.emoji || '')} ${esc(world.name || '')}</div>
-        <h1>${esc(d.title || 'Без назви')}</h1>
-        <p class="g2-dr-logline">${esc(d.intro || '')}</p>
+        <div class="g2-dr-kicker">${tr('drama.kicker')} ${esc(world.emoji || '')} ${esc(tc(world, 'name') || '')}</div>
+        <h1>${esc(tc(d, 'title') || tr('drama.untitled'))}</h1>
+        <p class="g2-dr-logline">${esc(tc(d, 'intro') || '')}</p>
         <ul class="g2-rules g2-rules-dark">
-          <li><span>💬</span>Відповідай англійською — кожен вибір змінює сюжет.</li>
-          <li><span>⏳</span>На рішення є час: кільце стискається. Не встигнеш — історія вирішить за тебе!</li>
-          <li><span>🎬</span>${endingIds.length || 3} різні кінцівки. Найкраща — ⭐⭐⭐.</li>
-          <li><span>🗺</span>Наприкінці — схема твого шляху. Відкрий усі гілки!</li>
+          <li><span>💬</span>${tr('drama.r1')}</li>
+          <li><span>⏳</span>${tr('drama.r2')}</li>
+          <li><span>🎬</span>${tr('drama.r3', { 0: endingIds.length || 3 })}</li>
+          <li><span>🗺</span>${tr('drama.r4')}</li>
         </ul>
-        ${seen.size ? `<div class="g2-dr-progress"><div><b>${pctOpen()}%</b> шляхів відкрито</div>
-          <div class="g2-dr-ends">${endingIds.map((id) => `<span title="${esc(nodes[id].title || '')}">${seen.has(id) ? ENDING_ICON[nodes[id].ending] || '🎬' : '🔒'}</span>`).join('')}</div>
+        ${seen.size ? `<div class="g2-dr-progress"><div><b>${pctOpen()}%</b> ${tr('drama.paths_open')}</div>
+          <div class="g2-dr-ends">${endingIds.map((id) => `<span title="${esc(tc(nodes[id], 'title') || '')}">${seen.has(id) ? ENDING_ICON[nodes[id].ending] || '🎬' : '🔒'}</span>`).join('')}</div>
           ${best ? `<div class="g2-best">${'⭐'.repeat(best)}${'☆'.repeat(3 - best)}</div>` : ''}</div>` : ''}
         <div class="g2-dr-btns">
-          <button class="m-btn m-btn-alt m-btn-big" data-a="go">▶ ${seen.size ? 'Грати знову' : 'Почати'}</button>
-          ${seen.size ? '<button class="m-btn m-btn-ghost m-btn-big" data-a="map">🗺 Схема шляху</button>' : ''}
-          <button class="m-btn m-btn-ghost m-btn-big" data-a="back">‹ Назад</button>
+          <button class="m-btn m-btn-alt m-btn-big" data-a="go">▶ ${seen.size ? tr('drama.play_again') : tr('drama.start')}</button>
+          ${seen.size ? '<button class="m-btn m-btn-ghost m-btn-big" data-a="map">' + tr('drama.map_btn') + '</button>' : ''}
+          <button class="m-btn m-btn-ghost m-btn-big" data-a="back">${tr('common.back')}</button>
         </div>
-        <p class="g2-keys">Клавіші: 1 2 3 — вибір, Enter — далі, Esc — пауза</p>
+        <p class="g2-keys">${tr('drama.keys')}</p>
       </div>`;
     scr.append(overlay);
     overlay.querySelector('[data-a=go]').onclick = () => { hap(app, 'medium'); begin(); };
@@ -548,12 +557,12 @@ export function render(root, params, app) {
     overlay.innerHTML = `
       <div class="m-end-card g2-card">
         <div class="g2-intro-ico">⏸</div>
-        <h2>Пауза</h2>
-        <p class="g2-pause-stats">Рішень: ${run.total} · Влучних: ${run.good}</p>
+        ${tr('common.pause_h')}
+        <p class="g2-pause-stats">${tr('drama.pause_stats', { 0: run.total, 1: run.good })}</p>
         <div class="g2-col">
-          <button class="m-btn m-btn-alt m-btn-big" data-a="resume">▶ Продовжити</button>
-          <button class="m-btn m-btn-big" data-a="restart">🔁 Почати спочатку</button>
-          <button class="m-btn m-btn-ghost g2-dark m-btn-big" data-a="exit">🚪 Вийти</button>
+          <button class="m-btn m-btn-alt m-btn-big" data-a="resume">${tr('common.resume')}</button>
+          <button class="m-btn m-btn-big" data-a="restart">${tr('common.restart')}</button>
+          <button class="m-btn m-btn-ghost g2-dark m-btn-big" data-a="exit">${tr('common.exit')}</button>
         </div>
       </div>`;
     scr.append(overlay);
@@ -595,32 +604,32 @@ export function render(root, params, app) {
     overlay = el('div', `g2-dr-result ${browse ? 'browse' : kind}`);
     overlay.innerHTML = `
       <div class="g2-dr-res-in">
-        ${browse ? '<div class="g2-dr-kicker">🗺 Схема шляху</div>' : `
+        ${browse ? '<div class="g2-dr-kicker">' + tr('drama.map_btn') + '</div>' : `
         <div class="g2-dr-end">
-          <div class="g2-dr-kicker">Кінець · ${ENDING_NAME[kind] || ''}</div>
+          <div class="g2-dr-kicker">${tr('drama.end_kicker')}${ENDING_NAME[kind] || ''}</div>
           <div class="g2-dr-end-ico">${ENDING_ICON[kind] || '🎬'}</div>
-          <h2>${esc(end?.title || 'Кінець')}</h2>
-          <p class="g2-dr-end-txt">${esc(end?.text || '')}</p>
+          <h2>${esc(tc(end, 'title') || tr('drama.the_end'))}</h2>
+          <p class="g2-dr-end-txt">${esc(tc(end, 'text') || '')}</p>
           <div class="g2-stars"></div>
-          ${rec?.isRecord ? '<div class="m-end-badge">🏆 Нова найкраща кінцівка!</div>' : ''}
-          <div class="g2-dr-sum"><span>✅ Влучних: <b>${run.good}/${run.total}</b></span><span class="g2-xp">+<b>0</b> XP</span></div>
+          ${rec?.isRecord ? '<div class="m-end-badge">' + tr('drama.record') + '</div>' : ''}
+          <div class="g2-dr-sum"><span>${tr('drama.hits')} <b>${run.good}/${run.total}</b></span><span class="g2-xp">+<b>0</b> XP</span></div>
         </div>`}
         <div class="g2-map">
           <div class="g2-map-head">
-            <div class="g2-map-title">${browse ? esc(d.title || '') : 'Твій шлях'}</div>
-            <div class="g2-map-pct"><b>0</b>% шляхів відкрито</div>
+            <div class="g2-map-title">${browse ? esc(tc(d, 'title') || '') : tr('drama.your_path')}</div>
+            <div class="g2-map-pct"><b>0</b>% ${tr('drama.paths_open')}</div>
           </div>
           <div class="g2-map-bar"><i></i></div>
-          <div class="g2-map-ends">Кінцівки: ${endingIds.map((id) => `<span class="${seen.has(id) ? 'on' : ''}">${seen.has(id) ? ENDING_ICON[nodes[id].ending] || '🎬' : '🔒'}</span>`).join('')} <small>${endsFound}/${endingIds.length}</small></div>
+          <div class="g2-map-ends">${tr('drama.endings')} ${endingIds.map((id) => `<span class="${seen.has(id) ? 'on' : ''}">${seen.has(id) ? ENDING_ICON[nodes[id].ending] || '🎬' : '🔒'}</span>`).join('')} <small>${endsFound}/${endingIds.length}</small></div>
           <div class="g2-map-svg"></div>
-          <div class="g2-map-cap">Торкнись вузла, щоб згадати сцену.</div>
+          <div class="g2-map-cap">${tr('drama.map_cap')}</div>
         </div>
-        ${!browse && kind !== 'good' ? '<p class="g2-dr-tip">Інші вибори ведуть до інших кінцівок — спробуй ще раз! 🎭</p>' : ''}
+        ${!browse && kind !== 'good' ? '<p class="g2-dr-tip">' + tr('drama.tip') + '</p>' : ''}
       </div>
       <div class="g2-dr-res-btns">
         ${browse
-    ? '<button class="m-btn m-btn-ghost" data-a="close">‹ Назад</button><button class="m-btn m-btn-alt" data-a="again">▶ Грати</button>'
-    : '<button class="m-btn" data-a="again">🔁 Ще раз</button><button class="m-btn m-btn-alt" data-a="next">➡️ Далі</button>'}
+    ? '<button class="m-btn m-btn-ghost" data-a="close">' + tr('common.back') + '</button><button class="m-btn m-btn-alt" data-a="again">' + tr('drama.play') + '</button>'
+    : '<button class="m-btn" data-a="again">' + tr('common.again') + '</button><button class="m-btn m-btn-alt" data-a="next">' + tr('common.next') + '</button>'}
       </div>`;
     scr.append(overlay);
     cutEl.classList.remove('on');
@@ -629,16 +638,18 @@ export function render(root, params, app) {
     const drawn = drawMap(svgBox, seen, pathIds, browse ? 300 : 1900, (id) => {
       const n = nodes[id];
       hap(app);
-      if (!seen.has(id)) { cap.innerHTML = '🔒 Цю сцену ще не відкрито — спробуй інші вибори!'; return; }
+      if (!seen.has(id)) { cap.innerHTML = tr('drama.locked_scene'); return; }
       cap.innerHTML = n.ending
-        ? `${ENDING_ICON[n.ending] || '🎬'} <b>${esc(n.title || '')}</b> — ${esc(n.text || '')}`
-        : `🎬 ${esc(n.scene || '')}${n.line ? ` <i>«${esc(n.line)}»</i>` : ''}`;
+        ? `${ENDING_ICON[n.ending] || '🎬'} <b>${esc(tc(n, 'title') || '')}</b> — ${esc(tc(n, 'text') || '')}`
+        : `🎬 ${esc(tc(n, 'scene') || '')}${n.line ? ` <i>«${esc(n.line)}»</i>` : ''}`;
     });
     const pctB = overlay.querySelector('.g2-map-pct b');
     const bar = overlay.querySelector('.g2-map-bar i');
     later(() => { countUp(pctB, 0, pct, 1100); bar.style.width = pct + '%'; }, browse ? 200 : drawn);
     if (!browse) {
       later(() => fx('starsDrop', overlay.querySelector('.g2-stars'), stars), 450);
+      sfx(kind === 'bad' ? 'lose' : 'win');
+      starSfx(stars, 650);
       later(() => countUp(overlay.querySelector('.g2-xp b'), 0, run.good * 10, 800), 700);
       if (stars === 3) later(() => fx('confetti'), 1100);
       // схема — під фіналом: плавно прокручуємо до неї, коли вона почне «малюватись»

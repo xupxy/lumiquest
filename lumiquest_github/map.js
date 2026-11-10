@@ -1,9 +1,10 @@
 // 🗺 Карта світів: вертикальна мальовнича карта, світ 1 внизу → світ 5 у небі.
-import { h, fx, toast, pauseOffscreen } from './ui.js?v=20261110183712';
-import { currentWorldId } from './state.js?v=20261110183712';
-import { worldGames, gameStars } from './games.js?v=20261110183712';
+import { h, fx, toast, pauseOffscreen } from './ui.js?v=20261110185829';
+import { currentWorldId } from './state.js?v=20261110185829';
+import { t, tc } from './i18n.js?v=20261110185829';
+import { worldGames, gameStars } from './games.js?v=20261110185829';
 
-import { applyWorldTheme, worldDecor, themeOf } from './theme.js?v=20261110183712';
+import { applyWorldTheme, worldDecor, themeOf } from './theme.js?v=20261110185829';
 
 // Острови — кожен у мові свого світу: форма основи, палітра, обвідка кольором світу (не чорна).
 const ISLES = [
@@ -113,7 +114,7 @@ export function render(root, params, app) {
         return band;
       })),
     path,
-    h('h1', { class: 'map-title title-sticker', text: 'Карта світів' }));
+    h('h1', { class: 'map-title title-sticker', text: t('map.title') }));
 
   const pos = (i) => ({ x: LAYOUT[i % LAYOUT.length], y: TOP + (n - 1 - i) * GAP });
   let lumiBox = null;
@@ -130,21 +131,22 @@ export function render(root, params, app) {
     art.setAttribute('viewBox', '0 0 200 150');
     art.setAttribute('class', 'isle-art');
     art.innerHTML = (ISLES[i] || ISLES[0])(themeOf(w.id).ink);
-    const status = !open ? h('span', { class: 'isle-meta', text: '🔒 Закрито' })
+    const status = !open ? h('span', { class: 'isle-meta', text: t('map.closed') })
       : h('span', { class: 'isle-meta isle-prog' },
         h('span', { text: `⭐ ${got}/${total}${badge ? ' 🏅' : byTest ? ' 📘' : ''}` }),
         h('span', { class: 'isle-bar', 'aria-hidden': 'true' }, h('i', { style: { transform: `scaleX(${total ? got / total : 0})` } })));
     const isle = h('button', {
       class: `isle${open ? '' : ' locked'}${w.id === cur ? ' current' : ''}`,
-      type: 'button',
+      type: 'button', data: { sfx: open ? 'open' : 'none' },
       style: { left: `${p.x * 100}%`, top: `${p.y}px`, '--d': `${i * -0.9}s`, '--n': n - 1 - i },
-      'aria-label': `${w.name}, ${w.level}${open ? '' : ', закрито'}`,
+      'aria-label': `${tc(w, 'name')}, ${w.level}${open ? '' : t('map.closedAria')}`,
       on: {
         click: () => {
           if (!open) {
             app.tg.notify('warning');
+            app.audio.sfx('wrong');
             fx.shake(isle);
-            toast('Цей світ ще спить 🔒 Переможи боса попереднього світу!');
+            toast(t('map.sleeps'));
             return;
           }
           app.tg.tap('medium');
@@ -158,7 +160,7 @@ export function render(root, params, app) {
       w.id === cur ? (lumiBox = h('span', { class: 'isle-lumi' })) : null),
     h('span', { class: 'isle-label' },
       h('span', { class: 'isle-num', text: String(i + 1) }),
-      h('span', { class: 'isle-name' }, h('b', { text: w.name }), status)));
+      h('span', { class: 'isle-name' }, h('b', { text: tc(w, 'name') }), status)));
     isle.style.setProperty('--d', `${i * -0.9}s`);
     isle.style.setProperty('--n', n - 1 - i);
     applyWorldTheme(isle, w.id);
@@ -166,7 +168,7 @@ export function render(root, params, app) {
   });
 
   const wrap = h('div', { class: 'map-wrap' }, map,
-    h('p', { class: 'map-legend', text: '🏅 бос переможений · 📘 зараховано за тестом' }));
+    h('p', { class: 'map-legend', text: t('map.legend') }));
   root.append(wrap);
 
   // стежка між островами — у пікселях, щоб пунктир не розтягувався
@@ -200,7 +202,7 @@ export function render(root, params, app) {
   if (lumiBox) {
     const lumi = app.makeLumi(lumiBox, { size: 78, emotion: 'hello', bubble: ((x) => (x > 0.5 ? 'left' : x < 0.5 ? 'right' : 'top'))(LAYOUT[Math.max(0, worlds.findIndex((w) => w.id === cur)) % LAYOUT.length]) });
     const cw = app.world(cur);
-    setTimeout(() => lumi.say(cw ? `Ми тут: ${cw.name}!` : 'Летімо!'), 700);
+    setTimeout(() => lumi.say(cw ? t('map.here', { name: tc(cw, 'name') }) : t('map.fly')), 700);
   }
 
   // прокрутити до поточного світу

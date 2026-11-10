@@ -1,12 +1,13 @@
 // 🃏 «Словесний Дурень» у Картярні. Порт game/durak.py.
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import * as L from './lumi.js?v=20261110183712';
-import { createCharacter } from './characters.js?v=20261110183712';
-import { recordGame } from './games.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import * as L from './lumi.js?v=20261110185829';
+import { createCharacter } from './characters.js?v=20261110185829';
+import { recordGame } from './games.js?v=20261110185829';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110185829', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -129,7 +130,7 @@ function sample(arr, k) {
   return a.slice(0, k);
 }
 export function dkPool(content, unlocked, onlyWid = null) {
-  const words = content?.WORDS || {};
+  const words = new Proxy({}, { get: (_, wid) => twords(content, wid) });
   const worlds = content?.WORLDS || [];
   const pairs = (wid) => (words[wid] || []).filter((p) => Array.isArray(p) && p.length === 2
     && p.every((x) => typeof x === 'string' && x.trim())).map((p) => [p[0], p[1]]);
@@ -187,7 +188,7 @@ export function render(root, params, app) {
   const inTg = mountHost(root, app);
   const st = app.state;
   const wid = params?.wid && app.content?.WORDS?.[params.wid] ? params.wid : null;
-  const wName = wid ? ((app.content?.WORLDS || []).find((w) => w.id === wid)?.name || '') : '';
+  const wName = wid ? (tc((app.content?.WORLDS || []).find((w) => w.id === wid), 'name') || '') : '';
   let alive = true;
   let busy = false;
   let dk = null;
@@ -216,17 +217,17 @@ export function render(root, params, app) {
     const wins = st.durak_wins || 0;
     const games = st.durak_games || 0;
     scr.innerHTML = `
-      <header class="m-head"><button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button><div class="m-title">🃏 ${wid ? `Дурень · ${esc(wName)}` : 'Картярня'}</div></header>
-      <div class="m-dk-banner"><img src="${asset('durak.png')}" alt="Словесний Дурень" draggable="false"></div>
+      <header class="m-head"><button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button><div class="m-title">🃏 ${wid ? `${tr('durak.title_w', { 0: esc(wName) })}` : tr('durak.lobby')}</div></header>
+      <div class="m-dk-banner"><img src="${asset('durak.png')}" ${tr('durak.banner_alt')} draggable="false"></div>
       ${note ? `<div class="m-dk-lnote">${esc(note)}</div>` : ''}
       <div class="m-dk-rules">
-        <p>🦊 <b>${FOX}</b> атакує карткою з українським словом. Відбивайся карткою з руки — її <b>англійським перекладом</b>!</p>
-        <p>🫴 «Беру» — якщо перекладу в руці немає.</p>
-        <p>Скинь усі карти — і Лис стане дурнем 🤡</p>
-        <p class="m-dk-small">Програш: ${MAX_HAND} карт у руці або ${MAX_TURNS} ходів. Козирний відбій — +2 XP.</p>
+        <p>🦊 <b>${tr('durak.fox')}</b> ${tr('durak.rule1')}</p>
+        <p>${tr('durak.rule2')}</p>
+        <p>${tr('durak.rule3')}</p>
+        <p class="m-dk-small">${tr('durak.rule4', { 0: MAX_HAND, 1: MAX_TURNS })}</p>
       </div>
-      <div class="m-dk-stats">🏆 Перемог: <b>${wins}</b> з <b>${games}</b></div>
-      <button class="m-btn m-btn-alt m-btn-big" data-a="new">🃏 Нова партія</button>`;
+      <div class="m-dk-stats">${tr('durak.wins', { 0: wins, 1: games })}</div>
+      <button class="m-btn m-btn-alt m-btn-big" data-a="new">${tr('durak.new')}</button>`;
     scr.querySelector('.m-back').onclick = back;
     scr.querySelector('[data-a=new]').onclick = () => { hap(app, 'medium'); newGame(); };
     anim(scr.querySelector('.m-dk-banner img'), [{ transform: 'scale(.9) rotate(-2deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], 450);
@@ -236,7 +237,7 @@ export function render(root, params, app) {
   let $ = {};
   function newGame() {
     pool = dkPool(app.content, st.unlocked, wid);
-    if (pool.length < HAND + 1) { lobby('Картярня ще без карт — слів поки немає 🃏'); return; }
+    if (pool.length < HAND + 1) { lobby(tr('durak.no_words')); return; }
     const hand = sample(pool, HAND).map(randCard);
     dk = { trump: pick(SUITS), hand, atk: null, turn: 0, beaten: 0, xp: 0, taken: 0 };
     dkAttack(pool, dk);
@@ -250,13 +251,13 @@ export function render(root, params, app) {
     scr.className = 'm-screen m-durak';
     scr.innerHTML = `
       <header class="m-head">
-        <button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
-        <div class="m-title">🃏 Словесний Дурень</div>
-        <div class="m-chip m-dk-trumpchip ${isRed(dk.trump) ? 'red' : ''}">Козир <b>${dk.trump}</b></div>
+        <button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
+        <div class="m-title">${tr('durak.title')}</div>
+        <div class="m-chip m-dk-trumpchip ${isRed(dk.trump) ? 'red' : ''}">${tr('durak.trump_chip', { 0: dk.trump })}</div>
       </header>
       <div class="m-dk-table">
         <div class="m-dk-top">
-          <div class="m-dk-fox"><div class="m-dk-foxpic m-dk-foxchr" aria-label="Лис"></div><div class="m-dk-foxname">🦊 Лис Фокс</div></div>
+          <div class="m-dk-fox"><div class="m-dk-foxpic m-dk-foxchr" ${tr('durak.fox_aria')}></div><div class="m-dk-foxname">${tr('durak.fox_name')}</div></div>
           <div class="m-dk-bubble"></div>
           <div class="m-dk-deck">
             <div class="m-dk-trumpcard ${isRed(dk.trump) ? 'red' : ''}"><span>${dk.trump}</span></div>
@@ -272,8 +273,8 @@ export function render(root, params, app) {
         <div class="m-dk-note" aria-live="polite"></div>
         <div class="m-dk-hand"></div>
         <div class="m-dk-actions">
-          <button class="m-btn m-dk-take">🫴 Беру</button>
-          <button class="m-btn m-btn-ghost m-dk-quit">🏳 Здатися</button>
+          <button class="m-btn m-dk-take">${tr('durak.take')}</button>
+          <button class="m-btn m-btn-ghost m-dk-quit">${tr('durak.surrender')}</button>
         </div>
       </div>`;
     const q = (s) => scr.querySelector(s);
@@ -289,7 +290,7 @@ export function render(root, params, app) {
     $.quit.onclick = () => {
       if (busy) return;
       hap(app, 'warning');
-      end(false, 'Ти здаєшся… 🏳');
+      end(false, tr('durak.gave_up'));
     };
     $.hand.addEventListener('click', (e) => {
       const c = e.target.closest('.m-card');
@@ -301,7 +302,7 @@ export function render(root, params, app) {
   }
 
   function paintInfo() {
-    $.info.innerHTML = `<span>Хід <b>${Math.min(dk.turn + 1, MAX_TURNS)}</b>/${MAX_TURNS}</span><span>🖐 <b>${dk.hand.length}</b>/${MAX_HAND}</span><span>🗑 Бито: <b>${dk.beaten}</b></span><span>⚡ <b>${dk.xp}</b> XP</span>`;
+    $.info.innerHTML = `${tr('durak.info', { 0: Math.min(dk.turn + 1, MAX_TURNS), 1: MAX_TURNS, 2: dk.hand.length, 3: MAX_HAND, 4: dk.beaten })}<span>⚡ <b>${dk.xp}</b> XP</span>`;
     $.bitoN.textContent = dk.beaten;
     $.info.classList.toggle('danger', dk.hand.length >= MAX_HAND - 2);
     $.turns.innerHTML = Array.from({ length: MAX_TURNS }, (_, k) => `<i class="${k < dk.turn ? 'done' : ''}"></i>`).join('');
@@ -364,7 +365,8 @@ export function render(root, params, app) {
 
   async function deal() {
     busy = true;
-    say(`Козир — ${dk.trump}. Лис тасує колоду… 🦊`);
+    sfx('deal');
+    say(`${tr('durak.shuffle', { 0: dk.trump })}`);
     const ids = dk.hand.map((c) => c.id);
     layoutHand({ fresh: ids });
     const deckR = $.deck.getBoundingClientRect();
@@ -379,7 +381,7 @@ export function render(root, params, app) {
         { transform: `translate(${deckR.left - r.left}px, ${deckR.top - r.top}px) rotate(-30deg) scale(.6)`, opacity: 0.4 },
         { transform: `translate(var(--x), var(--y)) rotate(var(--r))`, opacity: 1 },
       ], { duration: 420, easing: 'cubic-bezier(.3,1.3,.5,1)', composite: 'replace' });
-      hap(app);
+      hap(app); sfx('card');
       void k;
     }
     await sleep(400);
@@ -392,8 +394,9 @@ export function render(root, params, app) {
     paintInfo();
     $.slot.innerHTML = '';
     const a = dk.atk;
+    sfx('flip');
     const holder = el('div', 'm-dk-atk', cardHtml(a, { side: 'ua', trump: dk.trump }));
-    if (a.suit === dk.trump) holder.append(el('div', 'm-dk-ribbon', 'козир!'));
+    if (a.suit === dk.trump) holder.append(el('div', 'm-dk-ribbon', tr('durak.ribbon')));
     $.slot.append(holder);
     const fr = $.fox.getBoundingClientRect();
     const r = holder.getBoundingClientRect();
@@ -405,7 +408,7 @@ export function render(root, params, app) {
     holder.style.transform = 'rotate(-4deg)';
     anim($.fox, [{ transform: 'none' }, { transform: 'translateY(-6px) rotate(-4deg)' }, { transform: 'none' }], 320);
     if (foxCh?.mood !== 'idle') foxMood('idle');
-    setNote('Відбийся перекладом або бери 🫴');
+    setNote(tr('durak.prompt'));
   }
 
   // ------------------------------------------------ хід гравця (_durak_action)
@@ -414,7 +417,7 @@ export function render(root, params, app) {
     const idx = dk.hand.findIndex((c) => c.id === id);
     if (idx < 0) return;
     busy = true;
-    hap(app, 'medium');
+    hap(app, 'medium'); sfx('card');
     const a = dk.atk;
     const c = dk.hand[idx];
     const node = handNodes().get(id);
@@ -436,14 +439,14 @@ export function render(root, params, app) {
       dk.hand.splice(idx, 1);
       dk.beaten += 1;
       gain = a.suit === dk.trump ? 2 : 1;
-      note = `✅ Відбито! «${a.ua}» = ${a.en}. +${gain} XP${gain === 2 ? ' (козир!)' : ''}`;
+      note = `${tr('durak.beat', { 0: a.ua, 1: a.en, 2: gain })}${gain === 2 ? tr('durak.trump_p') : ''}`;
       def.classList.add('good');
-      hap(app, 'success');
+      hap(app, 'success'); sfx('correct'); speak(a.en);
       fx('sparkle', def);
       floatText(def, `+${gain} XP`, 'm-float-gold');
       setNote(note, 'good');
       foxMood(dk.beaten % 2 ? 'angry' : 'sad', 1400); foxCh?.react('shake');
-      say(['Ах ти ж! 😾', 'Хитро… 🦊', 'Цього разу пощастило!', 'Гм-м… 😼'][dk.beaten % 4]);
+      say([tr('durak.f1'), tr('durak.f2'), tr('durak.f3'), tr('durak.f4')][dk.beaten % 4]);
       await sleep(650);
       if (!alive) return;
       // «Бито» — пара відлітає
@@ -463,12 +466,12 @@ export function render(root, params, app) {
     } else {
       // неправильна карта: береш атакуючу (у руку — її переклад)
       def.classList.add('bad');
-      hap(app, 'error');
+      hap(app, 'error'); sfx('wrong'); speak(a.en);
       fx('shake', $.slot);
-      note = `❌ Ні, «${c.en}» — не те. «${a.ua}» = ${a.en}. Береш карту 🫴`;
+      note = `${tr('durak.wrong', { 0: c.en, 1: a.ua, 2: a.en })}`;
       setNote(note, 'bad');
       foxMood('happy', 1600); foxCh?.react('jump');
-      say(['Ха-ха! Не той переклад 😹', 'Хи-хи, бери! 🦊', 'Мимо! 😼'][dk.turn % 3]);
+      say([tr('durak.t1'), tr('durak.t2'), tr('durak.t3')][dk.turn % 3]);
       await sleep(750);
       if (!alive) return;
       def.remove();
@@ -484,20 +487,20 @@ export function render(root, params, app) {
   async function onTake() {
     if (busy || !dk) return;
     busy = true;
-    hap(app, 'medium');
+    hap(app, 'medium'); sfx('card');
     const a = dk.atk;
     const inHand = dk.hand.find((c) => norm(c.en) === norm(a.en));
     const atkNode = $.slot.querySelector('.m-dk-atk');
     let ok = false;
     let note;
     if (inHand) {
-      note = `❌ Переклад був у руці: ${inHand.suit}${inHand.rank} ${inHand.en}! Береш карту 🫴`;
+      note = `${tr('durak.had', { 0: inHand.suit, 1: inHand.rank, 2: inHand.en })}`;
       const hn = handNodes().get(inHand.id);
       hn?.classList.add('m-card-hint');
       setNote(note, 'bad');
-      hap(app, 'error');
+      hap(app, 'error'); sfx('wrong'); speak(inHand.en);
       foxMood('happy', 1600); foxCh?.react('jump');
-      say('Ага! Переклад же був у тебе 😹');
+      say(tr('durak.had_say'));
       await sleep(900);
       if (!alive) return;
       hn?.classList.remove('m-card-hint');
@@ -507,12 +510,12 @@ export function render(root, params, app) {
       await cardToHand(atkNode, taken);
     } else {
       ok = true;
-      note = '✅ Правильно, перекладу не було! Лис підкидає іншу карту 🦊';
+      note = tr('durak.none');
       setNote(note, 'good');
-      hap(app, 'success');
+      hap(app, 'success'); sfx('correct');
       floatText(atkNode, '+1 XP', 'm-float-gold');
       foxMood('surprised', 1200);
-      say('Хм, і справді… Тримай іншу! 🦊');
+      say(tr('durak.none_say'));
       await sleep(450);
       if (!alive) return;
       const r = atkNode.getBoundingClientRect();
@@ -552,8 +555,8 @@ export function render(root, params, app) {
     app.save?.();
     paintInfo();
     if (!dk.hand.length) return end(true, note);
-    if (dk.hand.length >= MAX_HAND) return end(false, note + `\n🖐 У руці ${MAX_HAND} карт!`);
-    if (dk.turn >= MAX_TURNS) return end(false, note + `\n⌛ Минуло ${MAX_TURNS} ходів!`);
+    if (dk.hand.length >= MAX_HAND) return end(false, note + `${tr('durak.full', { 0: MAX_HAND })}`);
+    if (dk.turn >= MAX_TURNS) return end(false, note + `${tr('durak.turns', { 0: MAX_TURNS })}`);
     dkAttack(pool, dk);
     await sleep(350);
     if (!alive) return;
@@ -579,21 +582,23 @@ export function render(root, params, app) {
       <div class="m-dk-endcard">
         <div class="m-dk-endnote">${esc(note).replace(/\n/g, '<br>')}</div>
         <div class="m-dk-endpic"><div class="m-dk-foxpic m-dk-foxchr big"></div><span class="m-dk-clown">🤡</span></div>
-        <h2>${win ? 'Рука порожня! Лис — дурень! 🤡' : 'Цього разу дурень ти, ще партію?'}</h2>
-        <div class="m-dk-endxp">+<b>0</b> XP за партію</div>
-        <div class="m-dk-endstat">🗑 Бито: <b>${dk.beaten}</b> · 🏆 Перемог: <b>${st.durak_wins || 0}</b> з ${st.durak_games || 0}</div>
+        <h2>${win ? tr('durak.win_h') : tr('durak.lose_h')}</h2>
+        <div class="m-dk-endxp">+<b>0</b> ${tr('durak.xp')}</div>
+        <div class="m-dk-endstat">${tr('durak.endstat', { 0: dk.beaten, 1: st.durak_wins || 0, 2: st.durak_games || 0 })}</div>
         ${wid ? '<div class="m-dk-endstars" style="display:flex;justify-content:center;min-height:64px"></div>' : ''}
-        ${win ? '' : '<p class="m-dk-endtip">Нічого, Лис теж колись програвав 😉</p>'}
+        ${win ? '' : '<p class="m-dk-endtip">' + tr('durak.tip') + '</p>'}
         <div class="m-dk-endlumi"></div>
         <div class="m-dk-endbtns">
-          <button class="m-btn m-btn-alt m-btn-big" data-a="again">🃏 Ще партію</button>
-          ${wid ? '<button class="m-btn m-btn-big" data-a="next">➡️ Далі</button>' : `<button class="m-btn" data-a="dragons">🐉 Дракони</button>
-          <button class="m-btn m-btn-ghost" data-a="home">🏠 Меню</button>`}
+          <button class="m-btn m-btn-alt m-btn-big" data-a="again">${tr('durak.again')}</button>
+          ${wid ? '<button class="m-btn m-btn-big" data-a="next">' + tr('common.next') + '</button>' : `<button class="m-btn" data-a="dragons">${tr('durak.dragons')}</button>
+          <button class="m-btn m-btn-ghost" data-a="home">${tr('common.menu')}</button>`}
         </div>
       </div>`;
     scr.append(ov);
     try { endFox = createCharacter(ov.querySelector('.m-dk-endpic .m-dk-foxchr'), 'fox', { size: 130, mood: win ? 'lose' : 'win' }); } catch (e) { /* */ }
     hap(app, win ? 'success' : 'error');
+    sfx(win ? 'win' : 'lose');
+    if (wid) starSfx(stars, 700);
     if (win) { later(() => fx('confetti'), 250); later(() => fx('confetti'), 1200); }
     // карти, що лишились у руці, розсипаються
     if (!win) {

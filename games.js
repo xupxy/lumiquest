@@ -7,7 +7,7 @@
 // Рівень відкритий, якщо попередній має ≥ 1 ⭐ (або світ зараховано тестом рівня).
 // Бос — завжди 13-й; додатково вимагає ≥ 1 ⭐ у всіх уроках (bossOpen у state.js).
 
-import { getWorld, bossOpen } from './state.js?v=20261110183712';
+import { getWorld, bossOpen } from './state.js?v=20261110185829';
 
 /** Порядок рівнів на стежці. 'L' — наступний урок зі списку world.quests. */
 export const PATH = ['L', 'L', 'runner', 'L', 'story', 'obby', 'L', 'durak', 'L', 'brawl', 'L', 'drama', 'boss'];

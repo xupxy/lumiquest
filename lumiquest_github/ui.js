@@ -18,7 +18,53 @@
  *  fx — проксі ефектів: викликає js/fx.js, якщо він є, інакше вбудовані фолбеки
  *  setFx(module), setHaptics(tg)                   (викликає app.js)
  */
-import { norm, levelOf, xpProgress } from './state.js?v=20261110183712';
+import { norm, levelOf, xpProgress } from './state.js?v=20261110185829';
+import { t, tc } from './i18n.js?v=20261110185829';
+
+// ─────────────────────────────────────────────────────────── audio proxy (js/audio.js може ще не існувати)
+const NOOP_AUDIO = {
+  initAudio() {}, sfx() {}, music() {}, speak() {}, canSpeak: () => false,
+  setSound() {}, setMusic() {}, getSettings: () => ({ sound: true, music: true }), duck() {},
+};
+let audioMod = null;
+export function setAudio(mod) { audioMod = mod || null; }
+/** Безпечний доступ до audio.js: будь-яка помилка/відсутність — тихий no-op. */
+export const audio = new Proxy({}, {
+  get(_, name) {
+    return (...args) => {
+      try {
+        const f = audioMod && typeof audioMod[name] === 'function' ? audioMod[name] : NOOP_AUDIO[name];
+        return f ? f(...args) : undefined;
+      } catch (e) { return NOOP_AUDIO[name] ? NOOP_AUDIO[name](...args) : undefined; }
+    };
+  },
+});
+export const sfx = (name) => audio.sfx(name);
+
+const CYR = /[А-Яа-яЁёІіЇїЄєҐґ]/;
+const LATIN_RE = /[A-Za-z][A-Za-z'’]*(?:[ ,\-/][A-Za-z][A-Za-z'’]*)*(?:[.?!])?/g;
+/** Англійська частина рядка для озвучки ('' — нема що читати). */
+export function englishOf(str) {
+  const s = String(str ?? '').trim();
+  if (!s || !/[A-Za-z]{2,}/.test(s)) return '';
+  if (!CYR.test(s)) return s.replace(/_{2,}/g, ' … ').replace(/\s+/g, ' ').trim();
+  const parts = s.match(LATIN_RE) || [];
+  return parts.filter((x) => /[A-Za-z]{2,}/.test(x)).join('. ');
+}
+/** Маленька кнопка 🔊 — озвучити англійський текст. */
+export function speakBtn(text, cls = '') {
+  const b = h('button', { class: `say-btn ${cls}`, type: 'button', 'aria-label': t('task.listen'), title: t('task.listen'), data: { sfx: 'none' } }, '🔊');
+  const go = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    const v = typeof text === 'function' ? text() : text;
+    if (!v) return;
+    b.classList.remove('talk'); void b.offsetWidth; b.classList.add('talk');
+    audio.speak(v, { lang: 'en-US', rate: 0.9 });
+  };
+  b.addEventListener('click', go);
+  b.addEventListener('pointerdown', (e) => e.stopPropagation());
+  return b;
+}
 
 // ─────────────────────────────────────────────────────────── DOM helpers
 export function h(tag, attrs, ...kids) {
@@ -148,11 +194,22 @@ const fallbackFx = {
   },
 };
 
+function fxSound(name, args) {
+  try {
+    if (name === 'confetti') audio.sfx('win');
+    else if (name === 'starsDrop') {
+      const n = args[1] | 0;
+      for (let i = 0; i < n; i++) setTimeout(() => audio.sfx('star'), (reduced() ? 0 : 350 + i * 380) + 120);
+    }
+  } catch (e) { /* */ }
+}
+
 export const fx = new Proxy({}, {
   get(_, name) {
     return (...args) => {
       try {
         const f = fxMod && typeof fxMod[name] === 'function' ? fxMod[name] : fallbackFx[name];
+        fxSound(name, args);
         return f ? f(...args) : undefined;
       } catch (e) {
         console.warn('[fx]', name, e);
@@ -175,14 +232,15 @@ export function starSVG(cls = '') {
 }
 
 export function starsRow(n, total = 3, cls = '') {
-  const row = h('span', { class: `stars-row ${cls}`, 'aria-label': `${n} з ${total} зірок` });
+  const row = h('span', { class: `stars-row ${cls}`, 'aria-label': t('common.starsOf', { n, total }) });
   for (let i = 0; i < total; i++) row.append(h('span', { class: 'star' + (i < n ? ' on' : '') }, starSVG()));
   return row;
 }
 
 export function button(label, opts = {}) {
-  const { variant = 'primary', onClick, haptic = 'light', disabled, cls = '', type = 'button' } = opts;
+  const { variant = 'primary', onClick, haptic = 'light', disabled, cls = '', type = 'button', sfx: snd } = opts;
   const b = h('button', { class: `btn btn-${variant} ${cls}`, type, disabled: !!disabled });
+  if (snd) b.dataset.sfx = snd;
   if (label instanceof Node) b.append(label); else b.append(h('span', { class: 'btn-label', text: label }));
   b.addEventListener('pointerdown', () => b.classList.add('is-pressed'));
   const up = () => b.classList.remove('is-pressed');
@@ -207,7 +265,7 @@ export function richText(str) {
   let last = 0; let m;
   while ((m = re.exec(s))) {
     if (m.index > last) frag.append(s.slice(last, m.index));
-    if (m[1]) frag.append(h('span', { class: 'blank', 'aria-label': 'пропуск' }));
+    if (m[1]) frag.append(h('span', { class: 'blank', 'aria-label': t('task.blank') }));
     else frag.append(h('span', { class: 'en', lang: 'en', text: m[2] }));
     last = m.index + m[0].length;
   }
@@ -222,7 +280,7 @@ export function toast(text, ms = 2200) {
   setTimeout(() => { t.classList.remove('in'); setTimeout(() => t.remove(), 300); }, ms);
 }
 
-export function confirmDialog(text, { okLabel = 'Так', cancelLabel = 'Скасувати', danger = false, title = '' } = {}) {
+export function confirmDialog(text, { okLabel = t('common.yes'), cancelLabel = t('common.cancel'), danger = false, title = '' } = {}) {
   return new Promise((resolve) => {
     const close = (v) => {
       wrap.classList.remove('in');
@@ -252,13 +310,13 @@ export function topBar(app) {
   const ring = h('span', { class: 'lvl-ring' }, lvlNum);
   const xpFill = h('i', { class: 'xp-fill' });
   const xpTxt = h('span', { class: 'xp-txt', text: '0 XP' });
-  const lvl = h('button', { class: 'chip chip-lvl', type: 'button', 'aria-label': 'Профіль', on: { click: () => app.go('profile') } },
+  const lvl = h('button', { class: 'chip chip-lvl', type: 'button', 'aria-label': t('top.profile'), on: { click: () => app.go('profile') } },
     ring, h('span', { class: 'xp-col' }, xpTxt, h('span', { class: 'xp-bar' }, xpFill)));
   const foodN = h('b', { text: '0' });
   const trN = h('b', { text: '0' });
-  const food = h('span', { class: 'chip chip-food', title: 'Світлячковий корм' }, h('span', { class: 'chip-ico', text: '🍀' }), foodN);
-  const tro = h('span', { class: 'chip chip-tro', title: 'Кубки' }, h('span', { class: 'chip-ico', text: '🏆' }), trN);
-  const backBtn = h('button', { class: 'chip chip-back', type: 'button', 'aria-label': 'Назад', on: { click: () => app.back() } }, '‹');
+  const food = h('span', { class: 'chip chip-food', title: t('top.food') }, h('span', { class: 'chip-ico', text: '🍀' }), foodN);
+  const tro = h('span', { class: 'chip chip-tro', title: t('top.trophies') }, h('span', { class: 'chip-ico', text: '🏆' }), trN);
+  const backBtn = h('button', { class: 'chip chip-back', type: 'button', 'aria-label': t('common.back'), data: { sfx: 'back' }, on: { click: () => app.back() } }, '‹');
   const el = h('header', { class: 'topbar' }, backBtn, lvl, h('span', { class: 'topbar-gap' }), food, tro);
 
   let prev = null;
@@ -285,7 +343,9 @@ export function topBar(app) {
         const span = h('span');
         xpTxt.textContent = ''; xpTxt.append(span, ' XP');
         bump(span, lvl, prev.xp, cur.xp, cur.xp > prev.xp ? `+${cur.xp - prev.xp} XP` : null);
+        if (cur.xp > prev.xp && levelOf(cur.xp) <= levelOf(prev.xp)) setTimeout(() => audio.sfx('xp'), 180);
         if (levelOf(cur.xp) > levelOf(prev.xp)) {
+          setTimeout(() => audio.sfx('levelup'), 200);
           lvlNum.textContent = p.level;
           ring.classList.remove('lvl-up'); void ring.offsetWidth; ring.classList.add('lvl-up');
           fx.sparkle(ring);
@@ -332,7 +392,15 @@ export function correctText(t) {
   return String(t.answer || '');
 }
 
-const TASK_HINT = { choice: 'Обери відповідь', type: 'Напиши англійською', order: 'Склади речення зі слів' };
+const TASK_HINT = { choice: 'task.hint.choice', type: 'task.hint.type', order: 'task.hint.order' };
+
+/** Що озвучити після відповіді: повне англійське речення з правильною відповіддю. */
+export function answerSpeech(task) {
+  const right = correctText(task);
+  const q = String(task.q || '');
+  if (task.type === 'choice' && /_{2,}/.test(q) && !CYR.test(q)) return q.replace(/_{2,}/, right);
+  return englishOf(right);
+}
 
 /**
  * Рендер одного завдання. Після відповіді блокується й підсвічує результат,
@@ -340,10 +408,12 @@ const TASK_HINT = { choice: 'Обери відповідь', type: 'Напиши
  */
 export function renderTask(container, task, { onResult, lumi } = {}) {
   let done = false;
+  const qText = tc(task, 'q');
   const root = h('div', { class: `task task-${task.type}` });
+  const qEn = englishOf(qText);
   const qCard = h('div', { class: 'task-q' },
-    h('span', { class: 'task-kind', text: TASK_HINT[task.type] || '' }),
-    h('p', { class: 'task-text' }, richText(task.q)));
+    h('span', { class: 'task-kind', text: TASK_HINT[task.type] ? t(TASK_HINT[task.type]) : '' }),
+    h('p', { class: 'task-text' }, richText(qText), qEn ? speakBtn(qEn, 'say-q') : null));
   root.append(qCard);
   const body = h('div', { class: 'task-body' });
   root.append(body);
@@ -353,6 +423,7 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
     done = true;
     root.classList.add('is-locked', ok ? 'is-ok' : 'is-bad');
     haptics.notify(ok ? 'success' : 'error');
+    audio.sfx(ok ? 'correct' : 'wrong');
     if (lumi) {
       try { lumi.set(ok ? 'happy' : (meta.skipped ? 'sad' : 'cheer')); } catch (e) { /* ignore */ }
     }
@@ -364,9 +435,12 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
     const short = task.options.every((o) => String(o).length <= 12) && task.options.length === 4;
     const grid = h('div', { class: 'choices' + (short ? ' grid2' : '') });
     const btns = task.options.map((o, i) => {
+      const en = englishOf(o);
+      let longPressed = false;
       const b = button(h('span', { class: 'btn-label', lang: 'en', text: o }), {
         variant: 'option',
         onClick: () => {
+          if (longPressed) { longPressed = false; return; }
           if (done) return;
           const ok = i === task.answer;
           b.classList.add(ok ? 'is-right' : 'is-wrong');
@@ -377,6 +451,17 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
         },
       });
       b.style.setProperty('--i', i);
+      b.dataset.sfx = 'none';
+      if (en) {
+        b.classList.add('has-say');
+        b.append(speakBtn(en, 'say-opt'));
+        // довге натискання на варіант — теж озвучка
+        let lp = null;
+        b.addEventListener('pointerdown', () => { clearTimeout(lp); lp = setTimeout(() => { longPressed = true; audio.speak(en, { lang: 'en-US', rate: 0.9 }); haptics.tap('soft'); }, 550); });
+        const stop = () => clearTimeout(lp);
+        b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
+        b.addEventListener('contextmenu', (e) => e.preventDefault());
+      }
       return b;
     });
     grid.append(...btns);
@@ -388,9 +473,9 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
     const input = h('input', {
       class: 'type-input', type: 'text', lang: 'en', inputmode: 'text', autocomplete: 'off',
       autocapitalize: 'off', autocorrect: 'off', spellcheck: 'false', enterkeyhint: 'done',
-      placeholder: 'Пиши тут англійською…', 'aria-label': 'Твоя відповідь', maxlength: '120',
+      placeholder: t('task.typePh'), 'aria-label': t('task.yourAnswer'), maxlength: '120',
     });
-    const check = button('Перевірити', {
+    const check = button(t('task.check'), {
       variant: 'primary', cls: 'type-check',
       onClick: () => submit(),
     });
@@ -414,8 +499,8 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
   if (task.type === 'order') {
     const words = task.words.map(String);
     const picked = [];
-    const line = h('div', { class: 'order-line', 'aria-label': 'Твоє речення' });
-    const placeholder = h('span', { class: 'order-ph', text: 'Тисни на слова нижче' });
+    const line = h('div', { class: 'order-line', 'aria-label': t('task.yourSentence') });
+    const placeholder = h('span', { class: 'order-ph', text: t('task.orderPh') });
     line.append(placeholder);
     const pool = h('div', { class: 'order-pool' });
     const slots = words.map(() => h('span', { class: 'slot' }));
@@ -430,8 +515,8 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
       return t;
     });
     pool.append(...slots);
-    const undo = button('↩️ Стерти', { variant: 'secondary', disabled: true, onClick: () => { if (picked.length) unpick(picked[picked.length - 1]); } });
-    const check = button('✅ Перевірити', {
+    const undo = button(t('task.undo'), { variant: 'secondary', disabled: true, onClick: () => { if (picked.length) unpick(picked[picked.length - 1]); } });
+    const check = button(t('task.checkOrder'), {
       variant: 'primary', disabled: true,
       onClick: () => {
         if (done || picked.length !== words.length) return;
@@ -440,6 +525,9 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
         if (ok) fx.sparkle(line); else fx.shake(line);
         line.classList.add(ok ? 'is-right' : 'is-wrong');
         undo.disabled = true; check.disabled = true;
+        // після перевірки — 🔊 речення (правильний варіант)
+        const sent = String(task.answer || built);
+        line.append(speakBtn(sent, 'say-line'));
         finish(ok, built);
       },
     });
@@ -489,11 +577,11 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
   }
 
   // ── не знаю
-  const skip = button('🏳 Не знаю', {
+  const skip = button(t('task.skip'), {
     variant: 'ghost', cls: 'skip-btn', haptic: 'soft',
     onClick: () => {
       if (done) return;
-      root.querySelectorAll('button, input').forEach((x) => { x.disabled = true; });
+      root.querySelectorAll('button:not(.say-btn), input').forEach((x) => { x.disabled = true; });
       if (task.type === 'choice') {
         const b = root.querySelectorAll('.choices .btn')[task.answer];
         if (b) b.classList.add('is-answer');
@@ -516,12 +604,13 @@ export function renderTask(container, task, { onResult, lumi } = {}) {
 // ─────────────────────────────────────────────────────────── feedback sheet
 /**
  * Нижня панель після відповіді — «бульбашка» Лумі.
- * opts: {ok, skipped, title, sub, right, yours, explain, emotion, nextLabel, app}
+ * opts: {ok, skipped, title, sub, right, yours, explain, emotion, nextLabel, app, say}
+ *   say — англійський текст правильної відповіді: озвучується автоматично + кнопка 🔊
  * Повертає Promise, що резолвиться після «Далі».
  */
 export function feedbackSheet(host, opts) {
   return new Promise((resolve) => {
-    const { ok, title, sub, right, yours, explain, nextLabel = 'Далі', app, emotion } = opts;
+    const { ok, title, sub, right, yours, explain, nextLabel = t('common.next'), app, emotion, say } = opts;
     const lumiBox = h('div', { class: 'fb-lumi' });
     const next = button(nextLabel, {
       variant: ok ? 'primary' : 'gold', cls: 'fb-next', haptic: 'medium',
@@ -535,8 +624,9 @@ export function feedbackSheet(host, opts) {
     const body = h('div', { class: 'fb-body' },
       h('p', { class: 'fb-title', text: title }),
       sub ? h('p', { class: 'fb-sub', text: sub }) : null,
-      yours ? h('p', { class: 'fb-row' }, h('span', { class: 'fb-k', text: 'Твоя відповідь' }), h('span', { class: 'fb-v en strike', lang: 'en', text: yours })) : null,
-      right ? h('p', { class: 'fb-row' }, h('span', { class: 'fb-k', text: 'Правильно' }), h('span', { class: 'fb-v en', lang: 'en', text: right })) : null,
+      yours ? h('p', { class: 'fb-row' }, h('span', { class: 'fb-k', text: t('fb.yours') }), h('span', { class: 'fb-v en strike', lang: 'en', text: yours })) : null,
+      right ? h('p', { class: 'fb-row' }, h('span', { class: 'fb-k', text: t('fb.right') }), h('span', { class: 'fb-v en', lang: 'en', text: right }), say ? speakBtn(say, 'say-fb') : null) : null,
+      !right && say ? h('p', { class: 'fb-row fb-say' }, h('span', { class: 'fb-v en', lang: 'en', text: say }), speakBtn(say, 'say-fb')) : null,
       explain ? h('p', { class: 'fb-explain' }, h('span', { 'aria-hidden': 'true', text: '💡 ' }), richText(explain)) : null);
     const scrim = h('div', { class: 'fb-scrim' });
     const sheet = h('div', { class: `fb-sheet ${ok ? 'is-ok' : 'is-bad'}`, role: 'status', 'aria-live': 'polite' },
@@ -548,6 +638,7 @@ export function feedbackSheet(host, opts) {
     }
     requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('in')));
     setTimeout(() => next.focus({ preventScroll: true }), 300);
+    if (say) setTimeout(() => { if (sheet.isConnected) audio.speak(say, { lang: 'en-US', rate: 0.9 }); }, 420);
   });
 }
 

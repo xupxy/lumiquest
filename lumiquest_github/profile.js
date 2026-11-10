@@ -1,21 +1,22 @@
 // 👤 Профіль: картка гравця (Лумі в рамці арени, кільце XP, звання), лічильники, медалі світів, драконяча колекція,
 // кубки і шкала арен, стрік-календар тижня, налаштування.
-import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110183712';
-import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110183712';
-import { worldGames, gameStars } from './games.js?v=20261110183712';
-import { emblem, themeOf } from './theme.js?v=20261110183712';
-import { weekActivity } from './home.js?v=20261110183712';
+import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110185829';
+import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110185829';
+import { worldGames, gameStars } from './games.js?v=20261110185829';
+import { emblem, themeOf } from './theme.js?v=20261110185829';
+import { weekActivity, toggleRow, audioSettings, testSound } from './home.js?v=20261110185829';
+import { t, tc, lang, LANGS } from './i18n.js?v=20261110185829';
+import { arenaLabel } from './state.js?v=20261110185829';
 
 const svgFrom = (str) => { const t = document.createElement('template'); t.innerHTML = str.trim(); return t.content.firstChild; };
 const setI = (el, i) => { el.style.setProperty('--i', i); return el; };
 
 // звання за рівнем
-const RANKS = [[1, 'Іскорка'], [3, 'Ловець світлячків'], [5, 'Юний мандрівник'], [8, 'Знавець слів'],
-  [12, 'Хранитель світла'], [17, 'Зоряний мудрець'], [25, 'Легенда неба']];
-const rankOf = (lvl) => RANKS.reduce((r, x) => (lvl >= x[0] ? x[1] : r), RANKS[0][1]);
+const RANKS = [1, 3, 5, 8, 12, 17, 25];
+const rankOf = (lvl) => t('rank.' + RANKS.reduce((r, x, i) => (lvl >= x ? i : r), 0));
 // рамка аватара — матеріал арени
 const ARENA_SKIN = ['wood', 'stone', 'silver', 'gold', 'star'];
-const DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
+const DAYS = () => t('days.short').split(',');
 
 function medalSVG(wid, got) {
   const t = themeOf(wid);
@@ -48,6 +49,7 @@ export function render(root, params, app) {
   const tr = st.trophies || 0;
   const ai = ARENAS.reduce((k, a, i) => (tr >= a[0] ? i : k), 0);
   const timers = [];
+  let lumi = null;
 
   // ── картка гравця
   const lumiBox = h('div', { class: 'pc-lumi' });
@@ -59,13 +61,13 @@ export function render(root, params, app) {
   const card = setI(h('section', { class: 'pcard' },
     h('div', { class: `pc-avatar skin-${ARENA_SKIN[ai] || 'wood'}` },
       h('span', { class: 'pc-frame', 'aria-hidden': 'true' }), lumiBox,
-      h('span', { class: 'pc-arena-tag', text: ARENAS[ai][1] })),
+      h('span', { class: 'pc-arena-tag', text: arenaLabel(ai) })),
     h('div', { class: 'pc-id' },
       h('h1', { class: 'pc-name title-sticker', text: st.name }),
       h('p', { class: 'pc-rank', text: rankOf(p.level) }),
       h('div', { class: 'pc-lvl' },
-        h('span', { class: 'pc-lvl-ring' }, ring, h('span', { class: 'pc-lvl-n' }, h('small', { text: 'рівень' }), lvlN)),
-        h('span', { class: 'pc-xp' }, h('b', { text: `${st.xp} XP` }), h('small', { text: `ще ${p.need} XP до рівня ${p.level + 1}` }))))), 0);
+        h('span', { class: 'pc-lvl-ring' }, ring, h('span', { class: 'pc-lvl-n' }, h('small', { text: t('prof.level') }), lvlN)),
+        h('span', { class: 'pc-xp' }, h('b', { text: `${st.xp} XP` }), h('small', { text: t('prof.toLevel', { n: p.need, lvl: p.level + 1 }) }))))), 0);
 
   // ── статистика
   const stat = (cls, ico, n, label, suffix = '') => h('div', { class: `pst ${cls}` },
@@ -74,29 +76,29 @@ export function render(root, params, app) {
     h('small', { text: label }));
   const streak = st.streak || 0;
   const stats = setI(h('div', { class: 'pstat-grid' },
-    stat('ps-ff', '✨', st.fireflies || 0, plural(st.fireflies || 0, 'слово-світлячок', 'слова-світлячки', 'слів-світлячків')),
-    stat('ps-star', '⭐', allStars, `зірок із ${maxStars}`),
-    stat('ps-fox', '🃏', st.durak_wins || 0, `${plural(st.durak_wins || 0, 'перемога', 'перемоги', 'перемог')} над Лисом`),
-    h('div', { class: 'pst ps-eng' }, h('span', { class: 'pst-ico', 'aria-hidden': 'true', text: '🇬🇧' }), h('b', { text: eng }), h('small', { text: 'рівень за тестом' }))), 1);
+    stat('ps-ff', '✨', st.fireflies || 0, t('plural.fireflies', { n: st.fireflies || 0 })),
+    stat('ps-star', '⭐', allStars, t('prof.starsOf', { n: maxStars })),
+    stat('ps-fox', '🃏', st.durak_wins || 0, t('prof.overFox', { wins: t('plural.wins', { n: st.durak_wins || 0 }) })),
+    h('div', { class: 'pst ps-eng' }, h('span', { class: 'pst-ico', 'aria-hidden': 'true', text: '🇬🇧' }), h('b', { text: eng }), h('small', { text: t('prof.engLevel') }))), 1);
 
   // ── стрік-календар тижня
   const week = weekActivity(st);
   const cal = setI(h('section', { class: 'psec streak-cal' },
     h('div', { class: 'sc-head' },
       h('span', { class: 'sc-flame', 'aria-hidden': 'true', text: '🔥' }),
-      h('b', { text: `${streak} ${plural(streak, 'день', 'дні', 'днів')} поспіль` }),
-      h('small', { text: streak >= 7 ? 'Тиждень без перерви!' : 'Грай щодня, щоб вогник ріс' })),
+      h('b', { text: t('prof.inRow', { n: streak, days: t('plural.days', { n: streak }) }) }),
+      h('small', { text: streak >= 7 ? t('prof.week') : t('prof.daily') })),
     h('ol', { class: 'sc-days' }, week.map((d, i) => setI(h('li', { class: `${d.on ? 'on' : ''}${d.today ? ' today' : ''}${d.future ? ' future' : ''}` },
-      h('span', { class: 'sc-dot', 'aria-hidden': 'true' }), h('small', { text: DAYS[i] })), i)))), 2);
+      h('span', { class: 'sc-dot', 'aria-hidden': 'true' }), h('small', { text: DAYS()[i] })), i)))), 2);
 
   // ── медалі
   const medals = h('div', { class: 'medal-grid' });
   let mi = 0;
   worlds.forEach((w) => {
     const got = st.badges.includes(w.id);
-    medals.append(setI(h('div', { class: `pmedal${got ? ' got' : ''}`, title: got ? `Переможено: ${w.boss && w.boss.name}` : 'Ще не здобуто' },
+    medals.append(setI(h('div', { class: `pmedal${got ? ' got' : ''}`, title: got ? t('prof.beaten', { name: w.boss ? tc(w.boss, 'name') : '' }) : t('prof.notYet') },
       h('span', { class: 'medal-art' }, svgFrom(medalSVG(w.id, got))),
-      h('small', { text: got ? w.name : '???' })), mi++));
+      h('small', { text: got ? tc(w, 'name') : '???' })), mi++));
   });
   worlds.forEach((w) => {
     if (!w.story) return;
@@ -114,12 +116,12 @@ export function render(root, params, app) {
     const sg = stageOf(st.dragons[el] || 0);
     drag.append(setI(h('button', {
       class: `dcard${has ? ' has' : ''}${st.active_dragon === el ? ' active' : ''}`, type: 'button',
-      'aria-label': has ? `${ELEMENTS[el]}, ${sg[2]}` : 'Ще не знайдено',
-      on: { click: () => { app.tg.tap('light'); if (has) app.go('dragons'); else toast('Цей дракон чекає в яйці за босом одного зі світів 🥚'); } },
+      'aria-label': has ? `${t('el.' + el)}, ${sg[2]}` : t('prof.notFound'),
+      on: { click: () => { app.tg.tap('light'); if (has) app.go('dragons'); else toast(t('prof.eggHint')); } },
     },
     h('img', { src: app.asset(`dragon/${el}_${has ? sg[0] : 'adult'}.png`), alt: '', loading: 'lazy' }),
-    h('b', { text: has ? `${ELEMENT_EMOJI[el]} ${ELEMENTS[el]}` : '???' }),
-    h('small', { text: has ? sg[2] : 'не знайдено' })), i));
+    h('b', { text: has ? `${ELEMENT_EMOJI[el]} ${t('el.' + el)}` : '???' }),
+    h('small', { text: has ? sg[2] : t('prof.notFoundSm') })), i));
   });
 
   // ── кубки й арени
@@ -129,7 +131,7 @@ export function render(root, params, app) {
   const arenaTrack = h('div', { class: 'ar-track' },
     h('span', { class: 'ar-fill', style: { transform: 'scaleX(0)' } }),
     ARENAS.map((a, i) => {
-      const n = h('span', { class: `ar-node${i <= ai ? ' on' : ''}${i === ai ? ' cur' : ''}`, title: a[1] },
+      const n = h('span', { class: `ar-node${i <= ai ? ' on' : ''}${i === ai ? ' cur' : ''}`, title: arenaLabel(i) },
         h('i', { 'aria-hidden': 'true' }), h('small', { text: String(a[0]) }));
       n.style.left = `${posOf(a[0]) * 100}%`;
       return n;
@@ -138,35 +140,55 @@ export function render(root, params, app) {
   const arena = setI(h('section', { class: 'psec arena-card' },
     h('div', { class: 'ar-head' },
       h('span', { class: 'ar-cup', 'aria-hidden': 'true', text: '🏆' }),
-      h('div', h('div', { class: 'ar-count' }, trN, h('span', { text: ` ${plural(tr, 'кубок', 'кубки', 'кубків')}` })),
-        h('p', { class: 'ar-name', text: ARENAS[ai][1] }))),
+      h('div', h('div', { class: 'ar-count' }, trN, h('span', { text: ` ${t('plural.cups', { n: tr })}` })),
+        h('p', { class: 'ar-name', text: arenaLabel(ai) }))),
     arenaTrack,
-    h('p', { class: 'ar-next', text: next ? `До «${next[1]}» — ще ${next[0] - tr} 🏆. Перемагай босів на арені.` : 'Найвища арена! Ти — легенда неба 🌟' })), 4);
+    h('p', { class: 'ar-next', text: next ? t('prof.toArena', { name: arenaLabel(ai + 1), n: next[0] - tr }) : t('prof.topArena') })), 4);
 
-  // ── налаштування
-  const settings = h('div', { class: 'prof-actions' },
-    button('🧭 Пройти тест рівня знову', { variant: 'secondary', onClick: () => app.go('placement') }),
-    button('Скинути прогрес', {
-      variant: 'ghost-danger', haptic: 'medium',
-      onClick: async () => {
-        const ok = await confirmDialog('Усі зірки, XP, медалі, кубки й дракони зникнуть назавжди. Почати гру з нуля?', {
-          title: 'Скинути прогрес?', okLabel: 'Так, скинути', cancelLabel: 'Ні, залишити', danger: true,
-        });
-        if (!ok) return;
-        await app.reset();
-        toast('Прогрес скинуто. Нова пригода! 🌱');
+  // ── налаштування: мова, звук, музика, онбординг, тест рівня, скидання
+  const au = audioSettings(app);
+  const langSeg = h('div', { class: 'lang-seg', role: 'radiogroup', 'aria-label': t('set.lang') },
+    ['uk', 'ru'].map((code) => h('button', {
+      class: `ls-opt${lang() === code ? ' on' : ''}`, type: 'button', role: 'radio', 'aria-checked': lang() === code ? 'true' : 'false',
+      on: {
+        click: () => {
+          if (lang() === code) return;
+          app.tg.tap('medium');
+          app.setLang(code);
+          toast(t('set.langDone'));
+        },
       },
-    }));
+    }, h('span', { 'aria-hidden': 'true', text: LANGS[code].flag }), LANGS[code].name)));
+  const settings = h('div', { class: 'prof-settings' },
+    h('div', { class: 'card set-card' },
+      h('div', { class: 'set-row set-lang' }, h('span', { class: 'set-txt' }, h('b', { text: `🌐 ${t('set.lang')}` })), langSeg),
+      toggleRow(`🔔 ${t('set.sound')}`, t('set.soundSub'), au.sound, (on) => { app.audio.setSound(on); if (on) app.audio.sfx('tap'); }),
+      toggleRow(`🎵 ${t('set.music')}`, t('set.musicSub'), au.music, (on) => { app.audio.setMusic(on); app.audio.music(on ? 'menu' : null); }),
+      button(t('set.test'), { variant: 'secondary', cls: 'set-test', sfx: 'none', onClick: () => testSound(app, lumi) })),
+    h('div', { class: 'prof-actions' },
+      button(t('set.onboarding'), { variant: 'secondary', onClick: () => { st.onboarded = false; app.save(); app.home(); } }),
+      button(t('set.placement'), { variant: 'secondary', onClick: () => app.go('placement') }),
+      button(t('set.reset'), {
+        variant: 'ghost-danger', haptic: 'medium',
+        onClick: async () => {
+          const ok = await confirmDialog(t('set.resetText'), {
+            title: t('set.resetQ'), okLabel: t('set.resetOk'), cancelLabel: t('set.resetNo'), danger: true,
+          });
+          if (!ok) return;
+          await app.reset();
+          toast(t('set.resetDone'));
+        },
+      })));
 
   const sec = (title, extra, i) => setI(h('h2', { class: 'sec-title' }, title, extra ? h('span', { class: 'sec-extra', text: extra }) : null), i);
   root.append(h('div', { class: 'profile' },
     card, stats, cal,
-    sec('Медалі', `${badgeCount}/${worlds.length * 2}`, 3), setI(medals, 3),
-    sec('Арени й кубки', null, 4), arena,
-    sec('Колекція драконів', `${Object.keys(st.dragons).length}/${Object.keys(ELEMENTS).length}`, 5), setI(drag, 5),
-    sec('Налаштування', null, 6), setI(settings, 6)));
+    sec(t('prof.medals'), `${badgeCount}/${worlds.length * 2}`, 3), setI(medals, 3),
+    sec(t('prof.arenas'), null, 4), arena,
+    sec(t('prof.dragons'), `${Object.keys(st.dragons).length}/${Object.keys(ELEMENTS).length}`, 5), setI(drag, 5),
+    sec(t('prof.settings'), null, 6), setI(settings, 6)));
 
-  const lumi = app.makeLumi(lumiBox, { size: 96, emotion: 'proud' });
+  lumi = app.makeLumi(lumiBox, { size: 96, emotion: 'proud' });
   lumi.react && lumi.react('jump');
   requestAnimationFrame(() => requestAnimationFrame(() => {
     fx.countUp(lvlN, 0, p.level, 700);

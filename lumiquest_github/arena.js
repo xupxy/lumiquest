@@ -1,13 +1,14 @@
 // ⚔️ Бос-екзамен як карткова битва на арені. Порт game/arena.py + boss-run з engine.py.
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import * as UI from './ui.js?v=20261110183712';
-import * as L from './lumi.js?v=20261110183712';
-import { recordGame } from './games.js?v=20261110183712';
-import { createCharacter } from './characters.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import { tr, tc, sfx, starSfx } from './i18n_modes.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import * as UI from './ui.js?v=20261110185829';
+import * as L from './lumi.js?v=20261110185829';
+import { recordGame } from './games.js?v=20261110185829';
+import { createCharacter } from './characters.js?v=20261110185829';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110185829', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -125,11 +126,15 @@ export function arenaNameLocal(t) {
   for (const [lim, nm] of ARENAS) if (t >= lim) name = nm;
   return name;
 }
-const arenaName = (t) => (typeof S.arenaName === 'function' ? S.arenaName(t) : arenaNameLocal(t));
+const arenaName = (t) => arenaTr(typeof S.arenaName === 'function' ? S.arenaName(t) : arenaNameLocal(t));
+// v7: назви карт/арен/драконів — поточною мовою (дані лишаються українськими ключами)
+const DECK_UK = ['🗡 Лицар Дієслово', '🏹 Лучниця Артикль', '🔥 Вогняний Прийменник', '🛡 Голем Граматики', '⚡ Блискавка Лексики', '🧙 Маг Часів'];
+const cardName = (c) => { const k = DECK_UK.indexOf(c); return k >= 0 ? tr('arena.card' + k) : c; };
+function arenaTr(nm) { const k = ARENAS.findIndex((a) => a[1] === nm); return k >= 0 ? tr('arena.arena' + k) : nm; }
 export const bossNeed = (n) => Math.max(1, Math.ceil(n * 0.75));
 export const bossTowers = (n) => Math.max(1, n - bossNeed(n) + 1);
 // драконячі подарунки за босів (dragons.py)
-const ELEMENTS = { sun: 'Вогник', forest: 'Мох', clock: 'Тік-Так', crystal: 'Іскра', sky: 'Зорян' };
+const ELEMENTS = { get sun() { return tr('arena.el_sun'); }, get forest() { return tr('arena.el_forest'); }, get clock() { return tr('arena.el_clock'); }, get crystal() { return tr('arena.el_crystal'); }, get sky() { return tr('arena.el_sky'); } };
 const ELEMENT_EMOJI = { sun: '☀️', forest: '🌿', clock: '⏰', crystal: '💎', sky: '🌌' };
 const EGG_BY_WORLD_INDEX = { 1: 'forest', 2: 'clock', 3: 'crystal', 4: 'sky' };
 const SUN_BONUS_GROWTH = 30;
@@ -158,7 +163,7 @@ function grantDragonForBoss(st, wi) {
   if (wi === 0) {
     if ((st.dragons.sun || 0) < SUN_BONUS_GROWTH) {
       st.dragons.sun = SUN_BONUS_GROWTH;
-      return `🐉 ${ELEMENTS.sun} вилупився з яйця — тепер він Малюк!`;
+      return `🐉 ${ELEMENTS.sun} ${tr('arena.hatched')}`;
     }
     return null;
   }
@@ -166,7 +171,7 @@ function grantDragonForBoss(st, wi) {
   if (elx && !(elx in st.dragons)) {
     if (typeof S.giveDragon === 'function') { try { S.giveDragon(st, elx); } catch (e) { console.warn(e); } }
     if (!(elx in st.dragons)) st.dragons[elx] = 0;
-    return `🥚 Нове яйце: ${ELEMENT_EMOJI[elx]} ${ELEMENTS[elx]}! Загляни в 🐉 Дракони.`;
+    return `${tr('arena.egg', { 0: ELEMENT_EMOJI[elx], 1: ELEMENTS[elx] })}`;
   }
   return null;
 }
@@ -220,10 +225,10 @@ export function render(root, params, app) {
 
   const tasks = boss?.tasks || [];
   if (!w || !tasks.length || !(st.unlocked || []).includes(wid) || !bossOpen(st, w)) {
-    const why = !w || !(st.unlocked || []).includes(wid) ? 'Цей світ ще спить 🔒' : 'Арена відкриється, коли пройдеш усі 4 квести цього світу 🔒';
-    scr.innerHTML = `<header class="m-head"><button class="m-back" aria-label="Назад">‹</button><div class="m-title">⚔️ Арена</div></header>
+    const why = !w || !(st.unlocked || []).includes(wid) ? tr('arena.lock1') : tr('arena.lock2');
+    scr.innerHTML = `<header class="m-head"><button class="m-back" ${tr('common.back_aria')}>‹</button><div class="m-title">${tr('arena.title')}</div></header>
       <div class="m-locked"><div class="m-locked-ico">🏰</div><p>${why}</p>
-      <button class="m-btn" data-a="go">${w ? '🌍 До світу' : '🗺 Карта'}</button></div>`;
+      <button class="m-btn" data-a="go">${w ? tr('common.to_world') : tr('common.map')}</button></div>`;
     scr.querySelector('.m-back').onclick = () => app.back();
     scr.querySelector('[data-a=go]').onclick = () => (w ? app.go('world', { wid }) : app.go('map'));
     return () => { alive = false; };
@@ -234,11 +239,11 @@ export function render(root, params, app) {
   const towers = bossTowers(n);
   const r = { i: 0, correct: 0, mistakes: 0, combo: 0, busy: false, over: false };
   const bEmoji = boss.emoji || '👾';
-  const bName = boss.name || 'Бос';
+  const bName = tc(boss, 'name') || tr('arena.boss');
 
   scr.innerHTML = `
     <header class="m-head">
-      <button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
+      <button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
       <div class="m-title">⚔️ ${esc(arenaName(st.trophies || 0))}</div>
       <div class="m-chip m-ar-trophy">🏆 <b>${st.trophies || 0}</b></div>
     </header>
@@ -294,7 +299,7 @@ export function render(root, params, app) {
   const cardHtml = (name) => {
     const k = DECK.indexOf(name);
     const [emo, ...rest] = name.split(' ');
-    return `<div class="m-ar-card" style="--cc:${CARD_COLORS[k] || '#8f7bff'}"><span class="m-ar-card-emo">${emo}</span><span class="m-ar-card-name">${esc(rest.join(' '))}</span></div>`;
+    return `<div class="m-ar-card" style="--cc:${CARD_COLORS[k] || '#8f7bff'}"><span class="m-ar-card-emo">${emo}</span><span class="m-ar-card-name">${esc(cardName(name).split(' ').slice(1).join(' ') || rest.join(' '))}</span></div>`;
   };
   const shuffled = [...DECK].sort(() => Math.random() - 0.5);
   let hand = shuffled.slice(0, 4);
@@ -312,7 +317,7 @@ export function render(root, params, app) {
     const elixir = Math.min(10, 2 + r.i + r.correct);
     elSegs.forEach((s, k) => s.classList.toggle('on', k < elixir));
     elNum.textContent = elixir;
-    turnEl.innerHTML = `Хід <b>${Math.min(r.i + 1, n)}</b>/${n} · ${r.combo >= 2 ? `🔥 Серія ${r.combo}` : `Ударів ${hits}/${need}`}`;
+    turnEl.innerHTML = `${tr('arena.turn', { 0: Math.min(r.i + 1, n), 1: n })}${r.combo >= 2 ? `${tr('arena.streak', { 0: r.combo })}` : `${tr('arena.hits_n', { 0: hits, 1: need })}`}`;
   };
   // (вежі руйнуються справа наліво: перша помилка — крайня права)
   ptowers.reverse();
@@ -324,15 +329,15 @@ export function render(root, params, app) {
     ov.innerHTML = `<div class="m-ar-introcard">
       <div class="m-ar-introboss m-ar-introchar"></div>
       <div class="m-ar-vs">VS</div>
-      <h2>Арена: ${esc(bName)}</h2>
-      <p>${esc(boss.intro || '')}</p>
-      <div class="m-ar-rules">🏰 У тебе <b>${towers}</b> вежі. Правильна відповідь — кидаєш карту і б'єш боса. <b>${need}</b> ударів — перемога! Я поруч 💪</div>
-      <button class="m-btn m-btn-big m-btn-alt" data-a="go">⚔️ До бою!</button>
-      ${inTg ? '' : '<button class="m-btn m-btn-ghost m-ar-introback" data-a="back">‹ Назад</button>'}</div>`;
+      <h2>${tr('arena.intro_h', { 0: esc(bName) })}</h2>
+      <p>${esc(tc(boss, 'intro') || '')}</p>
+      <div class="m-ar-rules">${tr('arena.rules', { 0: towers, 1: need })}</div>
+      <button class="m-btn m-btn-big m-btn-alt" data-a="go">${tr('arena.fight')}</button>
+      ${inTg ? '' : '<button class="m-btn m-btn-ghost m-ar-introback" data-a="back">' + tr('common.back') + '</button>'}</div>`;
     scr.append(ov);
     const introCh = mkChar(ov.querySelector('.m-ar-introboss'), 150, 'talk');
-    introCh?.talk(boss.intro || bName);
-    bossCh?.talk(boss.intro || bName);
+    introCh?.talk(tc(boss, 'intro') || bName);
+    bossCh?.talk(tc(boss, 'intro') || bName);
     const bk = ov.querySelector('[data-a=back]');
     if (bk) bk.onclick = () => { hap(app); app.back(); };
     ov.querySelector('[data-a=go]').onclick = () => {
@@ -396,13 +401,13 @@ export function render(root, params, app) {
     // фідбек (як _arena_feedback)
     const fb = el('div', 'm-ar-fbbox ' + (ok ? 'good' : 'bad'));
     if (ok) {
-      fb.innerHTML = `<div>🃏 Ти кидаєш карту <b>${esc(card)}</b> — удар! 💥</div><div class="m-ar-gain">+10 XP · +1 🍀</div>`;
+      fb.innerHTML = `<div>${tr('arena.throw', { 0: esc(cardName(card)) })}</div><div class="m-ar-gain">+10 XP · +1 🍀</div>`;
     } else {
       const right = correctText(t);
-      fb.innerHTML = `<div>💥 Бос руйнує твою вежу! 🏚</div>${right ? `<div>Правильно: <b>${esc(right)}</b></div>` : ''}` +
-        (t.explain ? `<div class="m-ar-explain">💡 ${esc(t.explain)}</div>` : '') + '<div class="m-ar-cheer">Тримайся, я з тобою! 💛</div>';
+      fb.innerHTML = `<div>${tr('arena.tower_hit')}</div>${right ? `<div>${tr('arena.right')} <b>${esc(right)}</b></div>` : ''}` +
+        (tc(t, 'explain') ? `<div class="m-ar-explain">💡 ${esc(tc(t, 'explain'))}</div>` : '') + '<div class="m-ar-cheer">' + tr('arena.cheer') + '</div>';
     }
-    const next = el('button', 'm-btn m-btn-big ' + (last ? 'm-btn-alt' : ''), last ? '🏁 Результат бою' : '➡️ Далі');
+    const next = el('button', 'm-btn m-btn-big ' + (last ? 'm-btn-alt' : ''), last ? tr('arena.result') : tr('common.next'));
     next.onclick = () => {
       if (!alive || next.disabled) return;
       next.disabled = true;
@@ -423,6 +428,7 @@ export function render(root, params, app) {
   }
 
   async function throwCard(card) {
+    sfx('card');
     // карта в руці: якщо її немає — підміняємо випадковий слот
     let idx = hand.indexOf(card);
     if (idx < 0) {
@@ -443,6 +449,7 @@ export function render(root, params, app) {
     // вибух
     boom(btower, '💥');
     bossCh?.react('hit');
+    sfx('boss_hit');
     bossMood('hurt', 1000);
     btower.classList.remove('m-hit'); void btower.offsetWidth; btower.classList.add('m-hit');
     fx('shake', btower);
@@ -466,6 +473,7 @@ export function render(root, params, app) {
     const k = r.mistakes - 1;
     const tw = ptowers[k];
     if (!tw) return;
+    sfx('hit');
     const a = btower.getBoundingClientRect();
     const src = { left: a.left + a.width / 2 - 24, top: a.top + a.height * 0.3, width: 48, height: 48 };
     bossMood('happy', 1700); // бос сміється з помилки
@@ -503,21 +511,21 @@ export function render(root, params, app) {
     if (win) recordGame(st, `${wid}-boss`, r.mistakes === 0 ? 3 : r.mistakes === 1 ? 2 : 1);  // зірки боса на стежці
     if (win) {
       delta = `+${res.trophies}`;
-      if (res.first) lines.push(`🏅 Бейдж «${esc(w.name || '')}» твій! +${res.xp} XP`);
+      if (res.first) lines.push(`${tr('arena.badge', { 0: esc(tc(w, 'name') || ''), 1: res.xp })}`);
       if (res.gift) lines.push(esc(res.gift));
       const newArena = arenaName(st.trophies);
-      if (newArena !== oldArena) lines.push(`<span class="m-ar-newarena">🏟 Нова арена: <b>${esc(newArena)}</b>!</span>`);
+      if (newArena !== oldArena) lines.push(`<span class="m-ar-newarena">${tr('arena.new_arena', { 0: esc(newArena) })}</span>`);
       if (wi + 1 < worlds.length) {
         nextWorld = worlds[wi + 1];
-        if (res.unlocked) lines.push(`🔓 Відкрито новий світ: ${esc(res.unlocked.emoji || '')} <b>${esc(res.unlocked.name || '')}</b>!`);
+        if (res.unlocked) lines.push(`${tr('arena.unlocked', { 0: esc(res.unlocked.emoji || ''), 1: esc(tc(res.unlocked, 'name') || '') })}`);
       } else {
-        lines.push('🌟 Усі Слова-Світлячки зібрано! Лумі сяє на все небо. Дякую тобі! 💛');
+        lines.push(tr('arena.all_done'));
       }
     } else {
       const lost = -res.trophies;
       delta = lost ? `−${lost}` : '±0';
-      lines.push(lost ? `−${lost} 🏆 (усього ${st.trophies})` : 'кубки 🏆 без змін');
-      lines.push('Спробуй ще! Повтори квести — і наступного разу ми переможемо 💪');
+      lines.push(lost ? `${tr('arena.lost', { 0: lost, 1: st.trophies })}` : tr('arena.cups_same'));
+      lines.push(tr('arena.try_again'));
     }
     app.save?.();
     const newT = st.trophies || 0;
@@ -526,38 +534,40 @@ export function render(root, params, app) {
     ov.innerHTML = `
       <div class="m-ar-rays" aria-hidden="true"></div>
       <div class="m-ar-endcard">
-        <div class="m-ar-banner">${win ? 'ПЕРЕМОГА!' : 'ПОРАЗКА'}</div>
+        <div class="m-ar-banner">${win ? tr('arena.win') : tr('arena.lose')}</div>
         <div class="m-ar-endicon"><span class="m-ar-endboss"></span><span class="m-ar-endemo">${win ? '👑' : '💔'}</span></div>
-        <p class="m-ar-endsub">${win ? `Вежа «${esc(bName)}» впала!` : `Усі вежі впали… ${esc(bName)} цього разу сильніший.`}</p>
-        <div class="m-ar-hits">Ударів: <b>${r.correct}/${need}</b></div>
+        <p class="m-ar-endsub">${win ? `${tr('arena.fell', { 0: esc(bName) })}` : `${tr('arena.all_fell', { 0: esc(bName) })}`}</p>
+        <div class="m-ar-hits">${tr('arena.hits', { 0: r.correct, 1: need })}</div>
         <div class="m-ar-trophies"><span class="m-ar-cup">🏆</span><b class="m-ar-tcount">${oldT}</b><em>${delta}</em></div>
         <div class="m-ar-arena">${esc(arenaName(newT))}</div>
         <div class="m-ar-lines">${lines.map((x, k) => `<div style="animation-delay:${1.1 + k * 0.35}s">${x}</div>`).join('')}</div>
         <div class="m-ar-endlumi"></div>
         <div class="m-ar-endbtns">${win
-          ? `${nextWorld ? `<button class="m-btn m-btn-alt m-btn-big" data-a="next">➡️ ${esc((nextWorld.name || 'Далі').slice(0, 40))}</button>` : ''}
-             <button class="m-btn" data-a="map">🗺 Карта</button><button class="m-btn m-btn-ghost" data-a="home">🏠 Меню</button>`
-          : `<button class="m-btn m-btn-red m-btn-big" data-a="again">⚔️ Реванш</button>
-             <button class="m-btn" data-a="world">🌍 До світу</button><button class="m-btn m-btn-ghost" data-a="home">🏠 Меню</button>`}
+          ? `${nextWorld ? `<button class="m-btn m-btn-alt m-btn-big" data-a="next">➡️ ${esc((tc(nextWorld, 'name') || tr('arena.next_def')).slice(0, 40))}</button>` : ''}
+             <button class="m-btn" data-a="map">${tr('common.map')}</button><button class="m-btn m-btn-ghost" data-a="home">${tr('common.menu')}</button>`
+          : `<button class="m-btn m-btn-red m-btn-big" data-a="again">${tr('arena.rematch')}</button>
+             <button class="m-btn" data-a="world">${tr('common.to_world')}</button><button class="m-btn m-btn-ghost" data-a="home">${tr('common.menu')}</button>`}
         </div>
       </div>`;
     scr.append(ov);
     hap(app, win ? 'success' : 'error');
+    sfx(win ? 'win' : 'lose');
     if (win) {
+      starSfx(r.mistakes === 0 ? 3 : r.mistakes === 1 ? 2 : 1, 700);
       later(() => fx('confetti'), 300);
       later(() => fx('confetti'), 1400);
       btower.querySelector('.m-ar-tw')?.classList.add('m-fallen');
     }
     bossMood(win ? 'lose' : 'win');
     mkChar(ov.querySelector('.m-ar-endboss'), 104, win ? 'lose' : 'win');
-    const tc = ov.querySelector('.m-ar-tcount');
+    const tcEl = ov.querySelector('.m-ar-tcount');
     later(() => {
-      countUp(tc, oldT, newT, 1000);
+      countUp(tcEl, oldT, newT, 1000);
       fx('pop', ov.querySelector('.m-ar-cup'));
     }, 700);
     const emo = win ? 'proud' : 'sad';
     lumiRef = makeLumi(app, ov.querySelector('.m-ar-endlumi'), 72, emo);
-    later(() => lumiRef?.say?.(win ? 'Ми перемогли! 🏆' : 'Наступного разу точно! 💪'), 1600);
+    later(() => lumiRef?.say?.(win ? tr('arena.lumi_win') : tr('arena.lumi_lose')), 1600);
     const on = (a, fn) => { const b = ov.querySelector(`[data-a=${a}]`); if (b) b.onclick = () => { hap(app); fn(); }; };
     on('next', () => app.go('world', { wid: nextWorld.id }, { replace: true }));
     on('map', () => app.go('map', {}, { replace: true }));

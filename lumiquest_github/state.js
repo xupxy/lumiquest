@@ -63,7 +63,11 @@
  *  todayISO()
  */
 
+import { t, tc } from './i18n.js?v=20261110185829';
+
 export const STATE_VERSION = 1;
+/** v7: глобальне одноразове скидання прогресу. Збереження з іншим epoch замінюється новим станом. */
+export const RESET_EPOCH = 2;
 export const XP_PER_CORRECT = 10;
 export const XP_PER_LEVEL = 100;
 export const XP_BOSS = 50;
@@ -99,6 +103,16 @@ export function setContent(content) {
   });
 }
 export const getWorld = (wid) => worldById[wid] || null;
+/** Назва рівня стежки (games.js) поточною мовою. */
+export function gameTitle(g) {
+  if (!g) return '';
+  if (g.type === 'lesson') { const q = questById[g.id]; return q ? tc(q.quest, 'title') : g.title; }
+  const w = worldById[g.wid] || {};
+  if (g.type === 'story' && w.story) return tc(w.story, 'title') || t('game.story');
+  if (g.type === 'boss' && w.boss) return tc(w.boss, 'name') || t('game.boss');
+  if (g.type === 'drama' && w.drama) return tc(w.drama, 'title') || t('game.drama');
+  return t('game.' + g.type);
+}
 export const getQuest = (qid) => questById[qid] || null;   // {world, quest}
 export const worldIndex = (wid) => (wid in worldIdx ? worldIdx[wid] : -1);
 
@@ -118,8 +132,11 @@ export function newState(name) {
   const first = C.WORLDS && C.WORLDS[0] ? [C.WORLDS[0].id] : [];
   return {
     version: STATE_VERSION,
+    epoch: RESET_EPOCH,
     savedAt: 0,
-    name: name || 'друже',
+    name: name || t('common.friend'),
+    settings: { lang: null },
+    onboarded: false,
     xp: 0,
     fireflies: 0,
     food: 0,
@@ -144,7 +161,12 @@ export function newState(name) {
 /** Міграція/лагодження: будь-який обʼєкт -> валідний стан поточної версії. */
 export function sanitize(raw) {
   const st = raw && typeof raw === 'object' ? raw : {};
-  const out = newState(typeof st.name === 'string' && st.name.trim() ? st.name.slice(0, 40) : 'друже');
+  const out = newState(typeof st.name === 'string' && st.name.trim() ? st.name.slice(0, 40) : t('common.friend'));
+  if (Number.isInteger(st.epoch)) out.epoch = st.epoch;
+  out.onboarded = !!st.onboarded;
+  if (st.settings && typeof st.settings === 'object') {
+    out.settings.lang = st.settings.lang === 'uk' || st.settings.lang === 'ru' ? st.settings.lang : null;
+  }
   for (const k of ['xp', 'fireflies', 'food', 'trophies', 'durak_wins', 'durak_games', 'streak', 'savedAt']) {
     if (isNat(st[k])) out[k] = st[k];
   }
@@ -206,10 +228,16 @@ export function onCorrectAnswer(state) {
 
 // ── кубки / арени ──────────────────────────────────────────────────────────
 export function arenaName(trophies) {
-  let name = ARENAS[0][1];
-  for (const [lim, nm] of ARENAS) if ((trophies || 0) >= lim) name = nm;
-  return name;
+  let k = 0;
+  ARENAS.forEach(([lim], i) => { if ((trophies || 0) >= lim) k = i; });
+  return arenaLabel(k);
 }
+/** Назва арени за індексом поточною мовою. */
+export const arenaLabel = (i) => t('arena.' + i);
+/** Назва стадії дракона поточною мовою (code: egg|baby|teen|adult|legend). */
+export const stageLabel = (code) => t('stage.' + code);
+/** Імʼя дракона поточною мовою. */
+export const elementName = (el) => t('el.' + el);
 export function addTrophies(state, n) {
   const old = arenaName(state.trophies);
   const before = state.trophies || 0;
@@ -249,9 +277,12 @@ export function currentWorldId(state) {
 export function stageOf(growth) {
   let cur = STAGES[0];
   for (const s of STAGES) if ((growth || 0) >= s[1]) cur = s;
-  return cur;
+  return [cur[0], cur[1], stageLabel(cur[0])];
 }
-export const nextStage = (growth) => STAGES.find((s) => s[1] > (growth || 0)) || null;
+export const nextStage = (growth) => {
+  const s = STAGES.find((x) => x[1] > (growth || 0));
+  return s ? [s[0], s[1], stageLabel(s[0])] : null;
+};
 
 export function giveDragon(state, element) {
   if (!ELEMENTS[element] || state.dragons[element] !== undefined) return false;
@@ -264,12 +295,12 @@ export function grantDragonForBoss(state, wid) {
   if (wi === 0) {
     if ((state.dragons.sun || 0) < SUN_BONUS_GROWTH) {
       state.dragons.sun = SUN_BONUS_GROWTH;
-      return `🐉 ${ELEMENTS.sun} вилупився з яйця — тепер він Малюк!`;
+      return t('gift.sunHatch', { name: t('el.sun') });
     }
     return null;
   }
   const el = EGG_BY_WORLD_INDEX[wi];
-  if (el && giveDragon(state, el)) return `🥚 Нове яйце: ${ELEMENT_EMOJI[el]} ${ELEMENTS[el]}! Загляни в 🐉 Дракони.`;
+  if (el && giveDragon(state, el)) return t('gift.egg', { emoji: ELEMENT_EMOJI[el], name: t('el.' + el) });
   return null;
 }
 export function feedDragon(state) {

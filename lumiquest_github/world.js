@@ -1,9 +1,10 @@
 // 🌍 Світ: ігрова стежка з 13 рівнів (games.js) — звивиста дорога, вузли-медальйони з обкладинками,
 // Лумі стоїть на поточному рівні, паралакс-фон і частинки під настрій світу.
-import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261110183712';
-import { getWorld, worldIndex } from './state.js?v=20261110183712';
-import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261110183712';
-import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261110183712';
+import { h, starsRow, fx, toast, pauseOffscreen } from './ui.js?v=20261110185829';
+import { getWorld, worldIndex, gameTitle } from './state.js?v=20261110185829';
+import { t, tc } from './i18n.js?v=20261110185829';
+import { worldGames, isOpen, nextGame, gameStars } from './games.js?v=20261110185829';
+import { applyWorldTheme, worldProps, medalFrame, emblem } from './theme.js?v=20261110185829';
 
 const STEP = 186;        // відстань між вузлами по вертикалі
 const CUR_GAP = 56;      // додатковий простір навколо поточного (Лумі зверху, «Грати» знизу)
@@ -35,7 +36,7 @@ export function render(root, params, app) {
   const st = app.state;
   const w = getWorld(params.wid);
   if (!w || !st.unlocked.includes(w.id)) {
-    toast('Цей світ ще спить 🔒');
+    toast(t('world.sleeps'));
     setTimeout(() => app.back(), 0);
     return undefined;
   }
@@ -51,20 +52,20 @@ export function render(root, params, app) {
   const unTheme = applyWorldTheme(root, w.id, { page: true });
 
   // ── шапка світу
-  const tag = st.badges.includes(w.id) ? h('span', { class: 'pill pill-gold', text: '🏅 Боса переможено' })
-    : st.by_test.includes(w.id) ? h('span', { class: 'pill', text: '📘 Зараховано за тестом' }) : null;
+  const tag = st.badges.includes(w.id) ? h('span', { class: 'pill pill-gold', text: t('world.bossBeaten') })
+    : st.by_test.includes(w.id) ? h('span', { class: 'pill', text: t('world.byTest') }) : null;
   const counter = h('b', { class: 'wp-count-n', text: `${got}/${total}` });
   const head = h('header', { class: `wp-head wh-${wi}` },
     h('div', { class: 'world-emblem', 'aria-hidden': 'true' }, svgFrom(emblem(w.id))),
     h('div', { class: 'world-hd-txt' },
-      h('span', { class: 'pill pill-lvl', text: `Світ ${wi} · ${w.level}` }),
-      h('h1', { class: 'title-sticker', text: w.name }),
+      h('span', { class: 'pill pill-lvl', text: t('home.worldN', { n: wi, level: w.level }) }),
+      h('h1', { class: 'title-sticker', text: tc(w, 'name') }),
       tag),
-    h('div', { class: 'wp-count', 'aria-label': `Зірок: ${got} з ${total}` },
+    h('div', { class: 'wp-count', 'aria-label': t('world.starsAria', { n: got, total }) },
       h('span', { class: 'wp-count-star', 'aria-hidden': 'true', text: '⭐' }), counter,
       h('span', { class: 'wp-count-bar' }, h('i', { style: { transform: `scaleX(${total ? got / total : 0})` } })),
-      h('small', { text: `рівнів: ${doneN}/${list.length}` })));
-  const intro = h('p', { class: 'wp-intro', text: w.intro });
+      h('small', { text: t('world.levels', { n: doneN, total: list.length }) })));
+  const intro = h('p', { class: 'wp-intro', text: tc(w, 'intro') });
 
   // ── стежка
   const ys = [];
@@ -110,11 +111,11 @@ export function render(root, params, app) {
       h('span', { class: 'wp-num', 'aria-hidden': 'true', text: String(i + 1) }),
       open ? h('span', { class: 'wp-stars' }, starsRow(s, 3, 'sm')) : h('span', { class: 'wp-lock', 'aria-hidden': 'true', text: '🔒' }));
     const label = h('span', { class: 'wp-label' },
-      h('span', { class: 'wp-title', text: `${g.emoji} ${g.title}` }),
-      isCur ? h('span', { class: 'wp-play', text: s ? 'Ще раз' : 'Грати' }) : null);
+      h('span', { class: 'wp-title', text: `${g.emoji} ${gameTitle(g)}` }),
+      isCur ? h('span', { class: 'wp-play', text: s ? t('world.again') : t('world.play') }) : null);
     const btn = h('button', {
-      class: cls, type: 'button', style: { '--i': i },
-      'aria-label': `${i + 1}. ${g.title}${open ? `, зірок ${s} з 3` : ', закрито'}`,
+      class: cls, type: 'button', style: { '--i': i }, data: { sfx: open ? 'open' : 'none' },
+      'aria-label': open ? t('world.nodeAria', { i: i + 1, title: gameTitle(g), n: s }) : t('world.nodeLocked', { i: i + 1, title: gameTitle(g) }),
     }, medal, label);
     if (isCur || isEnd) {
       lumiBox = h('span', { class: 'wp-lumi' });
@@ -133,7 +134,7 @@ export function render(root, params, app) {
   if (lumiBox) {
     const side = xAt(curIdx) > 0.5 ? 'left' : 'right';
     lumi = app.makeLumi(lumiBox, { size: 66, emotion: next ? 'hello' : 'proud', bubble: side });
-    setTimeout(() => lumi && lumi.say(next ? (gameStars(st, next.id) ? 'Покращимо рекорд?' : 'Нам сюди! ✨') : 'Світ пройдено! 🏅'), 1100);
+    setTimeout(() => lumi && lumi.say(next ? (gameStars(st, next.id) ? t('world.improve') : t('world.here')) : t('world.done')), 1100);
   }
 
   function onTap(g, i, open, btn) {
@@ -144,9 +145,10 @@ export function render(root, params, app) {
       return;
     }
     app.tg.notify('warning');
+    app.audio.sfx('wrong');
     fx.shake(btn);
     const prevDone = i > 0 && gameStars(st, list[i - 1].id) >= 1;
-    const msg = g.type === 'boss' && (prevDone || st.by_test.includes(w.id)) ? 'Спочатку пройди всі уроки!' : 'Спочатку пройди попередній!';
+    const msg = g.type === 'boss' && (prevDone || st.by_test.includes(w.id)) ? t('world.lessonsFirst') : t('world.prevFirst');
     if (lumi) {
       lumi.set('thinking');
       lumi.react('shake');
@@ -158,6 +160,14 @@ export function render(root, params, app) {
     const vr = root.getBoundingClientRect();
     if (!r || r.bottom < vr.top || r.top > vr.bottom) toast(`🔒 ${msg}`);
   }
+
+  // ── щойно відкритий рівень (з минулого візиту) — звук і блиск
+  const seen = (app.session.seenCur = app.session.seenCur || {});
+  let unlockT = 0;
+  if (next && seen[w.id] !== undefined && next.idx > seen[w.id]) {
+    unlockT = setTimeout(() => { app.audio.sfx('unlock'); fx.sparkle(nodes[next.idx]); }, 900);
+  }
+  seen[w.id] = next ? next.idx : list.length;
 
   // ── розкладка (залежить від ширини)
   let pts = [];
@@ -204,6 +214,7 @@ export function render(root, params, app) {
 
   return () => {
     clearTimeout(scrollT);
+    clearTimeout(unlockT);
     cancelAnimationFrame(raf);
     root.removeEventListener('scroll', onScroll);
     ro.disconnect();

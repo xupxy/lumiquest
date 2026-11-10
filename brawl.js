@@ -2,15 +2,16 @@
 // Лумі в центрі арени, до неї повзуть «Помилки» (кумедні клякси) з українськими словами.
 // Знизу — 3 англійські варіанти для найближчого ворога: правильно — зоряний снаряд і вибух,
 // неправильно — ворог робить ривок. 3 ❤️, хвилі, супер-атака за серію, таймер 90 с.
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import * as L from './lumi.js?v=20261110183712';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110183712';
-import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import * as L from './lumi.js?v=20261110185829';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110185829';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110185829';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
-const G2_HREF = new URL('./games2.css?v=20261110183712', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110185829', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110185829', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {
@@ -154,7 +155,7 @@ export function render(root, params, app) {
   const st = app.state;
   const wid = params?.wid || 'w1';
   const world = (app.content?.WORLDS || []).find((w) => w.id === wid);
-  const words = (app.content?.WORDS?.[wid] || []).filter((p) => Array.isArray(p) && p[0] && p[1]);
+  const words = twords(app.content, wid).filter((p) => Array.isArray(p) && p[0] && p[1]);
   const gid = `${wid}-brawl`;
   const P = PAL[wid] || PAL.w1;
   let alive = true;
@@ -166,27 +167,27 @@ export function render(root, params, app) {
 
   if (!world || words.length < 4 || !(st.unlocked || []).includes(wid)) {
     scr.innerHTML = `<div class="m-locked"><div class="m-locked-ico">🔒</div>
-      <p>${world ? 'Цей світ ще спить. Переможи боса попереднього світу!' : 'Арена ще будується…'}</p>
-      <button class="m-btn" data-a="back">‹ Назад</button></div>`;
+      <p>${world ? tr('common.locked_world') : tr('brawl.building')}</p>
+      <button class="m-btn" data-a="back">${tr('common.back')}</button></div>`;
     scr.querySelector('[data-a=back]').onclick = () => app.back();
     return () => { alive = false; };
   }
 
   scr.innerHTML = `
     <header class="m-head g2-head">
-      <button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
-      <div class="g2-hearts" aria-label="Життя">${'<span class="g2-heart">❤️</span>'.repeat(MAX_HEARTS)}</div>
-      <div class="g2-timer" aria-label="Час"><span>⏱</span><b>${GAME_TIME}</b></div>
-      <div class="g2-score" aria-label="Переможено">💥 <b>0</b></div>
-      <button class="g2-pause" aria-label="Пауза">⏸</button>
+      <button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
+      <div class="g2-hearts" ${tr('common.lives_aria')}>${'<span class="g2-heart">❤️</span>'.repeat(MAX_HEARTS)}</div>
+      <div class="g2-timer" ${tr('brawl.time_aria')}><span>⏱</span><b>${GAME_TIME}</b></div>
+      <div class="g2-score" ${tr('brawl.kills_aria')}>💥 <b>0</b></div>
+      <button class="g2-pause" ${tr('common.pause_aria')}>⏸</button>
     </header>
-    <div class="g2-arena"><canvas class="g2-bgl" aria-hidden="true"></canvas><canvas aria-label="Арена"></canvas><div class="g2-banner" aria-live="polite"></div></div>
+    <div class="g2-arena"><canvas class="g2-bgl" aria-hidden="true"></canvas><canvas ${tr('brawl.arena_aria')}></canvas><div class="g2-banner" aria-live="polite"></div></div>
     <div class="g2-dock">
       <div class="g2-super">
         <div class="g2-super-bar"><i></i>${'<b></b>'.repeat(SUPER_N - 1)}</div>
-        <button class="g2-super-btn" disabled>💫 Супер</button>
+        <button class="g2-super-btn" disabled>${tr('brawl.super')}</button>
       </div>
-      <div class="g2-ask">Обери переклад для слова <b>…</b></div>
+      <div class="g2-ask">${tr('brawl.ask')} <b>…</b></div>
       <div class="g2-answers">${[0, 1, 2].map((k) => `<button class="g2-ans" data-k="${k}" disabled><small>${k + 1}</small><span>…</span></button>`).join('')}</div>
     </div>`;
   const $ = (q) => scr.querySelector(q);
@@ -408,7 +409,7 @@ export function render(root, params, app) {
     if (superBtn.disabled === ready) {
       superBtn.disabled = !ready;
       superBtn.classList.toggle('ready', ready);
-      if (ready) { banner('💫 Супер-атака готова!', 'gold'); hap(app, 'medium'); }
+      if (ready) { banner(tr('brawl.ready'), 'gold'); hap(app, 'medium'); }
     }
   }
   let bannerT = null;
@@ -455,7 +456,7 @@ export function render(root, params, app) {
     G.wave = n;
     G.waveLeft = 3 + n * 2;
     G.spawnT = 0.5;
-    banner(n === 1 ? '⚔️ Хвиля 1' : `🌊 Хвиля ${n}!`);
+    banner(n === 1 ? tr('brawl.wave1') : `${tr('brawl.wave', { 0: n })}`);
     hap(app, 'medium');
   }
   function spawn() {
@@ -493,12 +494,14 @@ export function render(root, params, app) {
     const a = Math.atan2(e.y, e.x);
     G.lumi.look = a;
     G.lumi.squash = 1;
+    sfx('shoot');
     G.shots.push({ x: Math.cos(a) * LR * 0.6, y: Math.sin(a) * LR * 0.6 - LR * 0.4, v: 520, target: e, trail: [], rot: 0, age: 0 });
     burst(Math.cos(a) * LR, Math.sin(a) * LR - LR * 0.3, 6, '#ffe48a', { speed: 140, size: 3, life: 0.3, star: true });
   }
   function explode(e, { big = false, score = true } = {}) {
     if (e.dead) return;
     e.dead = true;
+    if (!(G.t - (G.boomT ?? -9) < 0.07)) { G.boomT = G.t; sfx('explode'); }
     if (score) { G.kills += 1; floatTxt(e.x, e.y - e.r, big ? '💥' : '+1', '#fff', big ? 26 : 24); }
     burst(e.x, e.y, 22, e.c0, { speed: 260, size: 6, life: 0.75 });
     burst(e.x, e.y, 12, '#ffd84a', { speed: 330, size: 5, life: 0.6, star: true });
@@ -519,7 +522,8 @@ export function render(root, params, app) {
       shoot(e);
       G.lumi.happy = 0.8;
       b.classList.add('ok');
-      hap(app, 'light');
+      hap(app, 'light'); speak(e.word[1]);
+      if (G.streak >= 3 && G.streak % 3 === 0) sfx('combo');
       if (G.streak >= 3 && G.streak % 3 === 0) floatTxt(0, -LR * 2.4, `🔥 ×${G.streak}`, '#ffd84a', 20);
       G.lockUntil = performance.now() + 170;
       ansBtns.forEach((x) => { x.disabled = true; });
@@ -531,7 +535,7 @@ export function render(root, params, app) {
       fx('shake', b);
       floatTxt(e.x, e.y - e.r * 2.2, '✗', '#ff5a6a', 26);
       G.shake = Math.max(G.shake, 4);
-      hap(app, 'error');
+      hap(app, 'error'); sfx('wrong');
     }
     paintHud();
   }
@@ -546,8 +550,8 @@ export function render(root, params, app) {
       const a = (i / 26) * Math.PI * 2;
       G.parts.push({ x: 0, y: 0, vx: Math.cos(a) * 520, vy: Math.sin(a) * 520, life: 0.8, age: 0, size: 8, color: '#ffd84a', star: true, rot: a, drag: 1.6 });
     }
-    banner('🌟 ЗІРКОПАД!', 'gold');
-    hap(app, 'heavy'); hap(app, 'success');
+    banner(tr('brawl.starfall'), 'gold');
+    hap(app, 'heavy'); hap(app, 'success'); sfx('boss_hit');
     paintHud();
   }
   function hitLumi(e) {
@@ -559,7 +563,7 @@ export function render(root, params, app) {
     G.shake = 16; G.flash = 0.45; G.flashColor = '#ff3b55';
     paintHearts(G.hearts);
     floatTxt(0, -LR * 2.2, '−❤️', '#ff5a6a', 24);
-    hap(app, 'heavy'); hap(app, 'warning');
+    hap(app, 'heavy'); hap(app, 'warning'); sfx('hit');
     if (G.hearts <= 0) endGame('dead');
   }
 
@@ -576,11 +580,11 @@ export function render(root, params, app) {
     G.target = null; setOptions();
     superBtn.disabled = true; superBtn.classList.remove('ready');
     if (reason === 'time') {
-      banner('⏰ Час!', 'gold');
+      banner(tr('brawl.time'), 'gold');
       G.enemies.forEach((e, i) => later(() => explode(e, { score: false }), 80 * i));
       hap(app, 'success');
     } else {
-      banner('😵 Ой! Лумі втомилась…', 'bad');
+      banner(tr('brawl.tired'), 'bad');
     }
   }
 
@@ -619,8 +623,8 @@ export function render(root, params, app) {
     if (G.phase === 'count') {
       const before = Math.ceil(G.countdown);
       G.countdown -= dt;
-      if (Math.ceil(G.countdown) !== before && G.countdown > 0) hap(app, 'light');
-      if (G.countdown <= 0) { G.phase = 'play'; startWave(1); paintHud(); }
+      if (Math.ceil(G.countdown) !== before && G.countdown > 0) { hap(app, 'light'); sfx('countdown'); }
+      if (G.countdown <= 0) { sfx('go'); G.phase = 'play'; startWave(1); paintHud(); }
     }
     if (G.phase === 'play') {
       G.timeLeft = Math.max(0, G.timeLeft - dt);
@@ -636,7 +640,7 @@ export function render(root, params, app) {
         if (G.spawnT <= 0 && aliveN < 2 + G.wave) { spawn(); G.spawnT = Math.max(0.9, 2.9 - G.wave * 0.35); }
       } else if (!G.enemies.some((e) => !e.dead)) {
         G.waveBreak = 1.4;
-        floatTxt(0, -LR * 2.6, '✨ Хвилю відбито!', '#fff', 20);
+        floatTxt(0, -LR * 2.6, tr('brawl.wave_done'), '#fff', 20);
       }
     }
     // вороги
@@ -932,7 +936,7 @@ export function render(root, params, app) {
     if (G.phase === 'count') {
       const n = Math.ceil(G.countdown - 0.2);
       const f = (G.countdown - 0.2) % 1;
-      const txt = n > 0 ? String(n) : 'Бій!';
+      const txt = n > 0 ? String(n) : tr('brawl.fight');
       const sc = 1 + Math.max(0, f - 0.5) * 1.2;
       ctx.save();
       ctx.translate(cx, cy - LR * 3); ctx.scale(sc, sc);
@@ -960,21 +964,21 @@ export function render(root, params, app) {
     overlay.innerHTML = `
       <div class="m-end-card g2-card">
         <div class="g2-intro-ico">💥</div>
-        <h2>Зоряна Сутичка</h2>
-        <div class="g2-world">${esc(world.emoji || '')} ${esc(world.name || '')}</div>
+        ${tr('brawl.title')}
+        <div class="g2-world">${esc(world.emoji || '')} ${esc(tc(world, 'name') || '')}</div>
         <div class="g2-intro-lumi"></div>
         <ul class="g2-rules">
-          <li><span>🫧</span>До Лумі повзуть «Помилки» з українськими словами.</li>
-          <li><span>🎯</span>Обери англійський переклад для найближчої — Лумі стрельне зіркою!</li>
-          <li><span>💨</span>Помилишся — клякса робить ривок. Не підпускай їх: у тебе 3 ❤️.</li>
-          <li><span>💫</span>${SUPER_N} правильних поспіль — супер-атака по всіх!</li>
-          <li><span>⏱</span>${GAME_TIME} секунд. Влучай точно й швидко!</li>
+          <li><span>🫧</span>${tr('brawl.r1')}</li>
+          <li><span>🎯</span>${tr('brawl.r2')}</li>
+          <li><span>💨</span>${tr('brawl.r3')}</li>
+          <li><span>💫</span>${tr('brawl.r4', { 0: SUPER_N })}</li>
+          <li><span>⏱</span>${tr('brawl.r5', { 0: GAME_TIME })}</li>
         </ul>
-        ${best ? `<div class="g2-best">Найкраще: ${'⭐'.repeat(best)}${'☆'.repeat(3 - best)}</div>` : ''}
-        <p class="g2-keys">Клавіші: 1 2 3 — відповідь, пробіл — супер, Esc — пауза</p>
+        ${best ? `<div class="g2-best">${tr('brawl.best')} ${'⭐'.repeat(best)}${'☆'.repeat(3 - best)}</div>` : ''}
+        <p class="g2-keys">${tr('brawl.keys')}</p>
         <div class="m-end-btns">
-          <button class="m-btn m-btn-ghost g2-dark" data-a="back">‹ Назад</button>
-          <button class="m-btn m-btn-alt" data-a="go">▶ Почати</button>
+          <button class="m-btn m-btn-ghost g2-dark" data-a="back">${tr('common.back')}</button>
+          <button class="m-btn m-btn-alt" data-a="go">${tr('brawl.start')}</button>
         </div>
       </div>`;
     scr.append(overlay);
@@ -993,12 +997,12 @@ export function render(root, params, app) {
     overlay.innerHTML = `
       <div class="m-end-card g2-card">
         <div class="g2-intro-ico">⏸</div>
-        <h2>Пауза</h2>
-        <p class="g2-pause-stats">💥 ${G.kills} · ✅ ${G.correct} · ⏱ ${Math.ceil(G.timeLeft)} с</p>
+        ${tr('common.pause_h')}
+        <p class="g2-pause-stats">💥 ${G.kills} · ✅ ${G.correct} · ⏱ ${tr('brawl.sec', { 0: Math.ceil(G.timeLeft) })}</p>
         <div class="g2-col">
-          <button class="m-btn m-btn-alt m-btn-big" data-a="resume">▶ Продовжити</button>
-          <button class="m-btn m-btn-big" data-a="restart">🔁 Почати знову</button>
-          <button class="m-btn m-btn-ghost g2-dark m-btn-big" data-a="exit">🚪 Вийти</button>
+          <button class="m-btn m-btn-alt m-btn-big" data-a="resume">${tr('common.resume')}</button>
+          <button class="m-btn m-btn-big" data-a="restart">${tr('brawl.restart')}</button>
+          <button class="m-btn m-btn-ghost g2-dark m-btn-big" data-a="exit">${tr('common.exit')}</button>
         </div>
       </div>`;
     scr.append(overlay);
@@ -1024,7 +1028,7 @@ export function render(root, params, app) {
     const rec = recordGame(st, gid, stars);
     app.save?.(); G.dirty = false;
     const acc = Math.round((G.correct / Math.max(1, G.correct + G.wrong)) * 100);
-    const title = stars === 3 ? 'Неперевершено!' : stars === 2 ? 'Чудовий бій!' : stars === 1 ? 'Перемога!' : 'Спробуй ще!';
+    const title = stars === 3 ? tr('brawl.t3') : stars === 2 ? tr('brawl.t2') : stars === 1 ? tr('brawl.t1') : tr('brawl.t0');
     const big = stars === 3 ? '🏆' : stars ? '💥' : '🫧';
     const emo = stars === 3 ? 'proud' : stars ? 'happy' : 'sad';
     overlay = el('div', `m-overlay g2-ov g2-result s${stars}`);
@@ -1032,25 +1036,26 @@ export function render(root, params, app) {
       <div class="m-end-card g2-card">
         <div class="m-end-big">${big}</div>
         <h2>${title}</h2>
-        <div class="g2-sub">${dead ? 'Помилки дісталися до Лумі…' : 'Час вийшов — бій завершено!'}</div>
+        <div class="g2-sub">${dead ? tr('brawl.dead') : tr('brawl.timeup')}</div>
         <div class="g2-stars"></div>
-        ${rec.isRecord ? '<div class="m-end-badge">🏆 Новий рекорд!</div>' : ''}
+        ${rec.isRecord ? '<div class="m-end-badge">' + tr('brawl.record') + '</div>' : ''}
         <div class="g2-stats">
-          <div><b data-c="kills">0</b><small>💥 переможено</small></div>
-          <div><b data-c="correct">0</b><small>✅ правильно</small></div>
-          <div><b>${acc}%</b><small>🎯 точність</small></div>
-          <div><b>${G.bestStreak}</b><small>🔥 серія</small></div>
+          <div><b data-c="kills">0</b><small>${tr('brawl.s_kills')}</small></div>
+          <div><b data-c="correct">0</b><small>${tr('brawl.s_right')}</small></div>
+          <div><b>${acc}%</b><small>${tr('brawl.s_acc')}</small></div>
+          <div><b>${G.bestStreak}</b><small>${tr('brawl.s_streak')}</small></div>
         </div>
         <div class="m-end-xp">+<b>0</b> XP</div>
-        ${stars < 3 ? `<p class="m-end-tip">${G.correct < VOLUME_GOAL ? `Для ⭐⭐⭐ — ${VOLUME_GOAL}+ влучних і майже без помилок!` : 'Для ⭐⭐⭐ — точність 95%+ і не підпускай клякс до Лумі!'}</p>` : ''}
+        ${stars < 3 ? `<p class="m-end-tip">${G.correct < VOLUME_GOAL ? `${tr('brawl.tip1', { 0: VOLUME_GOAL })}` : tr('brawl.tip2')}</p>` : ''}
         <div class="m-end-lumi"></div>
         <div class="m-end-btns">
-          <button class="m-btn" data-a="again">🔁 Ще раз</button>
-          <button class="m-btn m-btn-alt" data-a="next">➡️ Далі</button>
+          <button class="m-btn" data-a="again">${tr('common.again')}</button>
+          <button class="m-btn m-btn-alt" data-a="next">${tr('common.next')}</button>
         </div>
       </div>`;
     scr.append(overlay);
     hap(app, stars ? 'success' : 'warning');
+    sfx(stars ? 'win' : 'lose'); starSfx(stars, 550);
     later(() => fx('starsDrop', overlay.querySelector('.g2-stars'), stars), 350);
     later(() => {
       countUp(overlay.querySelector('[data-c=kills]'), 0, G.kills, 700);
@@ -1059,7 +1064,7 @@ export function render(root, params, app) {
     }, 500);
     if (stars === 3) later(() => fx('confetti'), 900);
     lumiRef = makeLumi(app, overlay.querySelector('.m-end-lumi'), 84, emo);
-    later(() => lumiRef?.say?.(stars === 3 ? 'Ти справжній зоряний воїн! 🌟' : stars ? 'Гарний бій! Ще раз? 💥' : 'Нічого, наступного разу вийде! 💛'), 1100);
+    later(() => lumiRef?.say?.(stars === 3 ? tr('brawl.l3') : stars ? tr('brawl.l2') : tr('brawl.l1')), 1100);
     overlay.querySelector('[data-a=again]').onclick = () => { hap(app, 'medium'); closeOverlay(); fresh(); startCountdown(); };
     overlay.querySelector('[data-a=next]').onclick = () => { hap(app); app.back(); };
   }

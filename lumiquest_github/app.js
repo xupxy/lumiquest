@@ -17,17 +17,26 @@
  *  app.toast(text), app.confirm(text, opts) -> Promise<bool>
  *  app.session            {sleepy, firstRun} — прапорці поточного запуску
  *  app.setTopbar(visible) показати/сховати верхню панель (екран може експортувати meta = {topbar:false})
- *  app.reset()            скинути прогрес
+ *  app.reset()            скинути прогрес (новий стан, онбординг знову)
+ *  app.t, app.tc, app.tw  i18n (js/i18n.js);  app.setLang(l) — миттєве перемикання (перерендер екрана)
+ *  app.audio              безпечний проксі js/audio.js (sfx, music, speak…; без файла — no-op);  app.sfx(name)
+ *  app.rerender()         перемалювати поточний екран без анімації (напр. після зміни мови)
+ *
+ * Звук кнопок — глобальний делегат кліків: data-sfx="tap|back|open|none" на кнопці (за замовчуванням tap).
+ * Музика — у роутері за назвою екрана (MUSIC нижче).
  *
  * Екран: export function render(root, params, app) { ...; return cleanup? }
  *        export const meta = { topbar: true }   // необов'язково
  */
-import { tg, waitTelegram } from './tg.js?v=20261110183712';
-import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110183712';
-import * as S from './state.js?v=20261110183712';
-import * as UI from './ui.js?v=20261110183712';
+import { tg, waitTelegram } from './tg.js?v=20261110185829';
+import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110185829';
+import * as S from './state.js?v=20261110185829';
+import * as UI from './ui.js?v=20261110185829';
+import * as I18N from './i18n.js?v=20261110185829';
+const { t } = I18N;
 
 const stageEl = document.getElementById('stage');
+{ const m = document.querySelector('#splash .splash-msg'); if (m) m.textContent = t('app.loading'); }
 const shell = document.getElementById('app');
 
 let lumiMod = null;
@@ -44,6 +53,11 @@ export const app = {
   ui: UI,
   S,
   lumi: null,
+  t: I18N.t,
+  tc: I18N.tc,
+  tw: I18N.tw,
+  audio: UI.audio,
+  sfx: (n) => UI.audio.sfx(n),
   session: { sleepy: false, firstRun: false },
   topbar: null,
 
@@ -106,12 +120,35 @@ export const app = {
 
   async reset() {
     await clearState();
-    const name = this.state ? this.state.name : (tg.userName() || 'друже');
+    const name = this.state ? this.state.name : (tg.userName() || t('common.friend'));
     this.state = S.newState(name);
+    this.state.settings.lang = I18N.lang();
     this.session.firstRun = true;
+    this.session.greeted = false;
     this.save();
+    flushState();
     this.topbar.update(false);
     return this.home();
+  },
+
+  setLang(l) {
+    I18N.setLang(l); // пише state.settings.lang + зберігає; подія 'langchange' → rerender
+  },
+
+  /** Перебудувати верхню панель і заголовок під поточну мову. */
+  refreshChrome() {
+    document.title = t('app.title');
+    if (!this.topbar) return;
+    const old = this.topbar.el;
+    this.topbar = UI.topBar(this);
+    old.replaceWith(this.topbar.el);
+    this.topbar.update(false);
+    updateBack();
+  },
+
+  rerender() {
+    if (!current) return;
+    show(current.name, current.params, 'none');
   },
 };
 
@@ -129,13 +166,13 @@ function guardLumi(l) {
 
 const EMOTIONS = ['hello', 'happy', 'excited', 'thinking', 'surprised', 'sad', 'proud', 'cheer', 'sleepy'];
 function fallbackLumi(container, { size }) {
-  const img = UI.h('img', { class: 'lumi-img', alt: 'Лумі', draggable: 'false', src: app.asset('lumi/happy.png') });
+  const img = UI.h('img', { class: 'lumi-img', alt: t('common.lumi'), draggable: 'false', src: app.asset('lumi/happy.png') });
   const bubble = UI.h('div', { class: 'lumi-say', role: 'status', 'aria-live': 'polite' });
   const wrap = UI.h('div', { class: 'lumi-fallback' }, img, bubble);
   wrap.style.setProperty('--size', size + 'px');
   container.append(wrap);
   let sayT = null; let typeT = null;
-  const phrases = ['Хі-хі! 🤭', 'Лоскотно! ✨', 'Я сяю для тебе 🌟', 'Летімо далі? 💫'];
+  const phrases = [t('lumi.tickle1'), t('lumi.tickle2'), t('lumi.tickle3'), t('lumi.tickle4')];
   wrap.addEventListener('click', () => {
     wrap.classList.remove('hop'); void wrap.offsetWidth; wrap.classList.add('hop');
     api.say(phrases[Math.floor(Math.random() * phrases.length)]);
@@ -172,27 +209,43 @@ const screenCache = {};
 async function loadScreen(name) {
   if (screenCache[name]) return screenCache[name];
   if (!/^[a-z_]+$/.test(name)) throw new Error('bad screen name');
-  const mod = await import(`./${name}.js?v=20261110183712`);
+  const mod = await import(`./${name}.js?v=20261110185829`);
   screenCache[name] = mod;
   return mod;
 }
 
 function placeholder(root, name, err) {
-  const titles = { story: '💌 Історії', arena: '⚔️ Бос-арена', dragons: '🐉 Дракони', durak: '🃏 Картярня' };
+  const titles = { story: t('ph.story'), arena: t('ph.arena'), dragons: t('ph.dragons'), durak: t('ph.durak') };
   const box = UI.h('div', { class: 'ph-wrap' });
   const lumiBox = UI.h('div', { class: 'ph-lumi' });
   box.append(lumiBox,
-    UI.h('h2', { class: 'title-sticker', text: titles[name] || 'Скоро тут буде диво' }),
-    UI.h('p', { class: 'muted', text: 'Цей куточок світу ще будується. Лумі вже несе туди ліхтарики!' }),
-    UI.button('Повернутися', { variant: 'primary', onClick: () => app.back() }));
+    UI.h('h2', { class: 'title-sticker', text: titles[name] || t('ph.soon') }),
+    UI.h('p', { class: 'muted', text: t('ph.building') }),
+    UI.button(t('ph.return'), { variant: 'primary', sfx: 'back', onClick: () => app.back() }));
   root.append(box);
   app.makeLumi(lumiBox, { size: 150, emotion: 'sleepy' });
   if (err) console.warn(`[router] screen "${name}" unavailable:`, err);
 }
 
+// ─────────────────────────────────────────────────────────── music
+const MENU = new Set(['home', 'map', 'profile', 'dragons']);
+const GAME = new Set(['obby', 'runner', 'brawl']);
+function trackFor(name, params = {}) {
+  if (MENU.has(name)) return 'menu';
+  if (name === 'arena') return 'boss';
+  if (GAME.has(name)) return 'game';
+  let wid = params.wid;
+  if (!wid && params.qid) { const q = S.getQuest(params.qid); wid = q && q.world.id; }
+  if (!wid && app.state) wid = S.currentWorldId(app.state);
+  const i = S.worldIndex(wid);
+  return i >= 0 ? `w${Math.min(5, i + 1)}` : 'menu';
+}
+
 async function show(name, params, dir) {
   const token = ++navToken;
   tg.tap('soft');
+  if (dir === 'fwd' || dir === 'back') UI.audio.sfx('whoosh');
+  UI.audio.music(trackFor(name, params));
   let mod = null; let err = null;
   try { mod = await loadScreen(name); } catch (e) { err = e; }
   if (token !== navToken) return;
@@ -202,15 +255,15 @@ async function show(name, params, dir) {
     const old = current;
     try { old.cleanup && old.cleanup(); } catch (e) { console.warn('[router] cleanup', e); }
     if (app.lumi) { /* екран сам знищує свою Лумі разом з DOM */ }
-    old.el.classList.add(`leave-${dir}`);
+    if (dir !== 'none') old.el.classList.add(`leave-${dir}`);
     old.el.setAttribute('aria-hidden', 'true');
     old.el.inert = true;
     const oldLumis = screenLumis;
-    setTimeout(() => { old.el.remove(); oldLumis.forEach((l) => l.destroy()); }, 380);
+    setTimeout(() => { old.el.remove(); oldLumis.forEach((l) => l.destroy()); }, dir === 'none' ? 0 : 380);
   }
   screenLumis = [];
   app.lumi = null;
-  const el = UI.h('section', { class: `screen screen-${name} enter-${dir}`, data: { screen: name } });
+  const el = UI.h('section', { class: `screen screen-${name}${dir === 'none' ? '' : ` enter-${dir}`}`, data: { screen: name } });
   stageEl.append(el);
   const meta = (mod && mod.meta) || {};
   app.setTopbar(meta.topbar !== false);
@@ -247,10 +300,30 @@ function applyTheme() {
   tg.setColors(cs.getPropertyValue('--sky-top').trim() || '#C8D2FF', cs.getPropertyValue('--sky-bottom').trim() || '#FFE2CF');
 }
 
+// ─────────────────────────────────────────────────────────── sfx: глобальний делегат кліків
+function wireSound() {
+  let unlocked = false;
+  const unlock = () => {
+    if (unlocked) return;
+    unlocked = true;
+    UI.audio.initAudio();
+    if (current) UI.audio.music(trackFor(current.name, current.params)); // iOS: музика лише після першого жесту
+  };
+  document.addEventListener('pointerdown', unlock, { capture: true, passive: true });
+  document.addEventListener('keydown', unlock, { capture: true });
+  document.addEventListener('click', (e) => {
+    const b = e.target && e.target.closest && e.target.closest('[data-sfx], button, [role="button"], .tile');
+    if (!b || b.disabled) return;
+    let kind = b.dataset.sfx;
+    if (!kind) kind = b.matches('.chip-back, .m-back, [aria-label="Назад"], [aria-label="Назад "]') ? 'back' : 'tap';
+    if (kind !== 'none') UI.audio.sfx(kind);
+  }, { capture: true });
+}
+
 // ─────────────────────────────────────────────────────────── boot
 async function boot() {
   const [content] = await Promise.all([
-    fetch('content.json?v=20261110183712').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
+    fetch('content.json?v=20261110185829').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
     waitTelegram(),
   ]);
   tg.init();
@@ -260,21 +333,37 @@ async function boot() {
 
   // необовʼязкові модулі інших агентів — безпечно
   const [fxM, lumiM] = await Promise.all([
-    import('./fx.js?v=20261110183712').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
-    import('./lumi.js?v=20261110183712').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
+    import('./fx.js?v=20261110185829').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
+    import('./lumi.js?v=20261110185829').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
   ]);
   UI.setFx(fxM);
   lumiMod = lumiM;
 
+  // аудіо — модуль іншого агента; немає файла → no-op заглушка
+  import('./audio.js?v=20261110185829').then((m) => { UI.setAudio(m); if (current) UI.audio.music(trackFor(current.name, current.params)); })
+    .catch((e) => console.info('[app] audio.js not loaded, silent mode', e && e.message));
+  wireSound();
+
   app.content = content;
   S.setContent(content);
-  const raw = await loadState();
+  I18N.setContent(content);
+  I18N.bindState(() => app.state, () => app.save());
+  let raw = await loadState();
+  // v7: одноразове глобальне скидання — збереження іншої «епохи» замінюємо новим станом (і локально, і в хмарі)
+  let epochReset = false;
+  if (raw && raw.epoch !== S.RESET_EPOCH) { raw = null; epochReset = true; }
   app.state = S.sanitize(raw || S.newState(tg.userName()));
   app.session.firstRun = !raw;
+  app.session.epochReset = epochReset;
+  if (app.state.settings.lang) I18N.setLang(app.state.settings.lang, { silent: true });
+  else app.state.settings.lang = I18N.lang();
   const tgName = tg.userName();
   if (tgName) app.state.name = tgName.slice(0, 40);
   app.session.sleepy = S.markDay(app.state).sleepy;
   app.save();
+  if (epochReset) flushState();
+  window.addEventListener('langchange', () => { app.refreshChrome(); app.rerender(); });
+  document.title = t('app.title');
 
   app.topbar = UI.topBar(app);
   shell.insertBefore(app.topbar.el, stageEl);
@@ -324,5 +413,5 @@ function perfProbe() {
 boot().catch((e) => {
   console.error('[app] boot failed', e);
   const s = document.getElementById('splash');
-  if (s) s.querySelector('.splash-msg').textContent = 'Ой, не вдалося завантажити гру. Перевір інтернет і відкрий ще раз 🌙';
+  if (s) s.querySelector('.splash-msg').textContent = t('app.bootFail');
 });

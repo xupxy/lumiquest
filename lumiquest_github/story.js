@@ -1,12 +1,13 @@
 // 💌 Історії — візуальна новела з виборами. Порт game/story.py.
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import * as L from './lumi.js?v=20261110183712';
-import { createCharacter, characterIdFor } from './characters.js?v=20261110183712';
-import { recordGame } from './games.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import * as L from './lumi.js?v=20261110185829';
+import { createCharacter, characterIdFor } from './characters.js?v=20261110185829';
+import { recordGame } from './games.js?v=20261110185829';
+import { tr, tc, lang, sfx, speak, speakAuto, longPressSpeak, starSfx } from './i18n_modes.js?v=20261110185829';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110185829', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -152,8 +153,8 @@ export function render(root, params, app) {
 
   if (!s || !Array.isArray(s.scenes) || !s.scenes.length || !(st.unlocked || []).includes(wid)) {
     scr.innerHTML = `<div class="m-locked"><div class="m-locked-ico">🔒</div>
-      <p>Цей світ ще спить. Переможи боса попереднього світу!</p>
-      <button class="m-btn" data-a="map">🗺 Карта</button></div>`;
+      <p>${tr('common.locked_world')}</p>
+      <button class="m-btn" data-a="map">${tr('common.map')}</button></div>`;
     scr.querySelector('[data-a=map]').onclick = () => app.go('map');
     return () => { alive = false; };
   }
@@ -165,17 +166,17 @@ export function render(root, params, app) {
   scr.innerHTML = `
     <div class="m-st-sky" aria-hidden="true">${'<i></i>'.repeat(9)}</div>
     <header class="m-head">
-      <button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
-      <div class="m-title">${esc(s.emoji || '💌')} ${esc(s.title || 'Історія')}</div>
+      <button class="m-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
+      <div class="m-title">${esc(s.emoji || '💌')} ${esc(tc(s, 'title') || tr('story.title_def'))}</div>
       <div class="m-st-count"></div>
     </header>
-    <div class="m-st-hearts" aria-label="Симпатія"></div>
+    <div class="m-st-hearts" aria-label="${tr('story.hearts_aria')}"></div>
     <div class="m-st-stage">
       <div class="m-st-glow"></div>
       <div class="m-st-portrait m-st-chr" aria-label="${esc(cast)}"></div>
     </div>
     <div class="m-st-box" role="button" tabindex="0">
-      <div class="m-st-speaker"><span></span><button class="m-st-hintbtn" aria-label="Переклад">🇺🇦</button></div>
+      <div class="m-st-speaker"><span></span><button class="m-st-hintbtn" aria-label="${tr('common.translate_aria')}">${tr('common.flag')}</button><button class="m-st-hintbtn m-st-say" aria-label="${tr('common.listen')}">🔊</button></div>
       <div class="m-st-line"></div>
       <div class="m-st-hint"></div>
       <div class="m-st-more">▼</div>
@@ -188,7 +189,9 @@ export function render(root, params, app) {
   const portrait = $('.m-st-portrait');
   const box = $('.m-st-box');
   const speaker = $('.m-st-speaker span');
-  const hintBtn = $('.m-st-hintbtn');
+  const hintBtn = $('.m-st-hintbtn:not(.m-st-say)');
+  const sayBtn = $('.m-st-say');
+  let curLine = '';
   const lineEl = $('.m-st-line');
   const hintEl = $('.m-st-hint');
   const choicesEl = $('.m-st-choices');
@@ -207,7 +210,7 @@ export function render(root, params, app) {
   });
   const paintCount = () => {
     countEl.innerHTML = run.stage === 'intro' ? '' :
-      `<span>Сцена ${Math.min(run.i + 1, n)}/${n}</span><span class="m-dots">${
+      `<span>${tr('story.scene_n', { 0: Math.min(run.i + 1, n), 1: n })}</span><span class="m-dots">${
         Array.from({ length: n }, (_, k) => `<b class="${k < run.i ? 'done' : k === run.i ? 'cur' : ''}"></b>`).join('')}</span>`;
   };
 
@@ -217,6 +220,8 @@ export function render(root, params, app) {
     hintEl.textContent = hint;
     hintEl.classList.remove('show');
     hintBtn.hidden = !hint;
+    curLine = who === cast ? text : '';
+    sayBtn.hidden = !curLine;
     box.classList.add('typing');
     anim(box, [{ transform: 'translateY(6px)', opacity: 0.6 }, { transform: 'none', opacity: 1 }], 220);
     tw = typewriter(lineEl, text);
@@ -228,9 +233,10 @@ export function render(root, params, app) {
     return tw.done;
   };
   box.addEventListener('click', (e) => {
-    if (e.target === hintBtn) return;
+    if (e.target === hintBtn || e.target === sayBtn) return;
     if (tw?.typing) tw.finish();
   });
+  sayBtn.addEventListener('click', (e) => { e.stopPropagation(); hap(app); speak(curLine); });
   hintBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     hap(app);
@@ -249,9 +255,9 @@ export function render(root, params, app) {
   function showIntro() {
     run.stage = 'intro';
     paintCount(); paintHearts();
-    say('📖', s.intro || '', { italic: true });
-    choicesEl.innerHTML = `<p class="m-st-tip">Обирай відповіді англійською. Доречна і правильна — 💗 Симпатія росте!</p>`;
-    const b = el('button', 'm-btn m-btn-big m-st-go', '💬 Почати');
+    say('📖', tc(s, 'intro') || '', { italic: true });
+    choicesEl.innerHTML = `<p class="m-st-tip">${tr('story.tip')}</p>`;
+    const b = el('button', 'm-btn m-btn-big m-st-go', tr('story.start'));
     b.onclick = () => { hap(app); if (tw?.typing) tw.finish(); showScene(); };
     choicesEl.append(b);
     anim(choicesEl, [{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], 400);
@@ -265,12 +271,15 @@ export function render(root, params, app) {
     choicesEl.innerHTML = '';
     hero?.set('idle');
     anim(portrait, [{ transform: 'scale(.94)', opacity: 0.6 }, { transform: 'none', opacity: 1 }], 350);
-    await say(cast, sc.line || '', { hint: sc.hint || '' });
+    sfx('page');
+    await say(cast, sc.line || '', { hint: tc(sc, 'hint') || '' });
     if (!alive || run.stage !== 'scene') return;
+    speakAuto(sc.line, 250);
     (sc.choices || []).forEach((c, k) => {
       const b = el('button', 'm-choice', esc(c.text || '…'));
       b.style.animationDelay = `${k * 90}ms`;
       b.onclick = () => pick(k, b);
+      longPressSpeak(b, c.text);
       choicesEl.append(b);
     });
   }
@@ -303,13 +312,15 @@ export function render(root, params, app) {
         setTimeout(() => h.classList.remove('m-heart-pop'), 700);
         fx('sparkle', h);
       }
+      sfx('heart');
       floatText(portrait, '+1 💗', 'm-float-pink');
       spawnHearts(portrait, 6);
-      head = `<div class="m-fb-head good">💗 <b>+1 Симпатія!</b></div>`;
+      head = `<div class="m-fb-head good">💗 <b>${tr('story.plus')}</b></div>`;
     } else {
       const lostIdx = run.hearts - 1;
       run.hearts = Math.max(0, run.hearts - 1);
       btn.classList.add('bad');
+      sfx('wrong');
       fx('shake', btn);
       hap(app, 'error');
       react('bad');
@@ -322,17 +333,17 @@ export function render(root, params, app) {
         anim(heartsEl, [{ transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'none' }], 300);
       }
       const good = choices.find((c) => c.good)?.text || '';
-      head = `<div class="m-fb-head bad">💔 <b>Симпатія −1</b></div>` +
-        (good ? `<div class="m-fb-better">Краще було: <b>${esc(good)}</b></div>` : '');
-      if (sc.explain) head += `<div class="m-fb-explain">💡 ${esc(sc.explain)}</div>`;
+      head = `<div class="m-fb-head bad">💔 <b>${tr('story.minus')}</b></div>` +
+        (good ? `<div class="m-fb-better">${tr('story.better')} <b>${esc(good)}</b></div>` : '');
+      if (tc(sc, 'explain')) head += `<div class="m-fb-explain">💡 ${esc(tc(sc, 'explain'))}</div>`;
     }
     app.save?.();
     const last = run.i + 1 >= n;
     setTimeout(() => {
       if (!alive) return;
-      say('🎬', ch.reaction || '', { italic: true });
+      say('🎬', tc(ch, 'reaction') || '', { italic: true });
       const fb = el('div', 'm-st-fb ' + (ch.good ? 'good' : 'bad'), head);
-      const next = el('button', 'm-btn m-btn-big', last ? '✨ Фінал' : '➡️ Далі');
+      const next = el('button', 'm-btn m-btn-big', last ? tr('story.final') : tr('common.next'));
       next.onclick = () => {
         hap(app);
         if (tw?.typing) tw.finish();
@@ -384,7 +395,7 @@ export function render(root, params, app) {
     recordGame(st, `${wid}-story`, { good: 3, ok: 2, bad: 1 }[kind] || 1);
     app.save?.();
 
-    const title = { good: 'Чудова кінцівка!', ok: 'Непогана кінцівка', bad: 'Сумна кінцівка' }[kind];
+    const title = { good: tr('story.end_good'), ok: tr('story.end_ok'), bad: tr('story.end_bad') }[kind];
     const big = { good: '💞', ok: '🌤', bad: '🥀' }[kind];
     const emo = { good: 'proud', ok: 'happy', bad: 'sad' }[kind];
     const ov = el('div', `m-overlay m-st-end ${kind}`);
@@ -394,26 +405,28 @@ export function render(root, params, app) {
         <div class="m-end-big">${big}</div>
         <h2>${title}</h2>
         <div class="m-end-portrait m-st-chr"></div>
-        <p class="m-end-text">${esc(s.endings?.[kind] || '')}</p>
+        <p class="m-end-text">${esc((lang() === 'ru' && s.endings_ru?.[kind]) || tc(s.endings || {}, kind) || '')}</p>
         <div class="m-end-hearts">${Array.from({ length: n }, (_, k) => `<span class="${k < h ? 'on' : ''}" style="animation-delay:${400 + k * 160}ms">${k < h ? '💗' : '🤍'}</span>`).join('')}
           <small>(${h}/${n})</small></div>
         <div class="m-end-xp">+<b>0</b> XP</div>
-        ${badge ? `<div class="m-end-badge">🏅 Новий бейдж: 💌 ${esc(cast)}!</div>` : ''}
-        ${kind !== 'good' ? '<p class="m-end-tip">Спробуй ще раз — може, вийде найкраща кінцівка? 💌</p>' : ''}
+        ${badge ? `<div class="m-end-badge">${tr('story.badge', { 0: esc(cast) })}</div>` : ''}
+        ${kind !== 'good' ? '<p class="m-end-tip">' + tr('story.end_tip') + '</p>' : ''}
         <div class="m-end-lumi"></div>
         <div class="m-end-btns">
-          <button class="m-btn" data-a="again">🔁 Ще раз</button>
-          <button class="m-btn m-btn-alt" data-a="world">🌍 До світу</button>
+          <button class="m-btn" data-a="again">${tr('common.again')}</button>
+          <button class="m-btn m-btn-alt" data-a="world">${tr('common.to_world')}</button>
         </div>
       </div>`;
     scr.append(ov);
     hero?.set(kind === 'good' ? 'win' : kind === 'bad' ? 'sad' : 'happy');
     try { endHero = createCharacter(ov.querySelector('.m-end-portrait'), castId, { size: '100%', mood: kind === 'good' ? 'happy' : kind === 'bad' ? 'sad' : 'idle' }); } catch (e) { /* */ }
     hap(app, kind === 'bad' ? 'warning' : 'success');
+    sfx(kind === 'bad' ? 'lose' : 'win');
+    starSfx({ good: 3, ok: 2, bad: 1 }[kind] || 1, 600);
     later(() => countUp(ov.querySelector('.m-end-xp b'), 0, xp, 900), 400 + n * 160);
     if (kind === 'good') later(() => fx('confetti'), 500);
     lumiRef = makeLumi(app, ov.querySelector('.m-end-lumi'), 84, emo);
-    later(() => lumiRef?.say?.({ good: 'Ти чарівний співрозмовник! 💞', ok: 'Непогано! Ще трохи — і буде 💞', bad: 'Нічого, спробуємо ще раз! 💛' }[kind]), 900);
+    later(() => lumiRef?.say?.({ good: tr('story.lumi_good'), ok: tr('story.lumi_ok'), bad: tr('story.lumi_bad') }[kind]), 900);
     ov.querySelector('[data-a=again]').onclick = () => {
       hap(app);
       lumiRef?.destroy?.(); lumiRef = null;

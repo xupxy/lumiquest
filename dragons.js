@@ -1,10 +1,11 @@
 // 🐉 Мій дракон — вихованець. Порт game/dragons.py.
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import * as L from './lumi.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import * as L from './lumi.js?v=20261110185829';
+import { t } from './i18n.js?v=20261110185829';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110183712', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110185829', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -114,12 +115,14 @@ export const STAGES = [['egg', 0, 'Яйце 🥚'], ['baby', 30, 'Малюк'], 
   ['adult', 250, 'Дорослий'], ['legend', 500, 'Легенда ✨']];
 export const ELEMENTS = { sun: 'Вогник', forest: 'Мох', clock: 'Тік-Так', crystal: 'Іскра', sky: 'Зорян' };
 export const ELEMENT_EMOJI = { sun: '☀️', forest: '🌿', clock: '⏰', crystal: '💎', sky: '🌌' };
-const UNLOCK_HINT = { sun: 'є від початку', forest: 'бос світу 2', clock: 'бос світу 3', crystal: 'бос світу 4', sky: 'бос світу 5' };
+const UNLOCK_HINT = new Proxy({}, { get: (_, k) => t('dr.unlock.' + String(k)) });
+const NAME = (elx) => t('el.' + elx);
+const SLABEL = (code) => t('stage.' + code);
 const ELEMENT_COLOR = { sun: '#ffb347', forest: '#6fcf7f', clock: '#d9a066', crystal: '#7fd3ff', sky: '#9f8cff' };
 export function stageOf(g) {
   let cur = STAGES[0];
   for (const s of STAGES) if (g >= s[1]) cur = s;
-  return cur;
+  return [cur[0], cur[1], SLABEL(cur[0])];
 }
 const isNat = (v) => Number.isInteger(v) && v >= 0;
 const BLANK = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -215,13 +218,13 @@ export function render(root, params, app) {
   scr.innerHTML = `
     <div class="m-dr-bgstars" aria-hidden="true">${'<i></i>'.repeat(10)}</div>
     <header class="m-head">
-      <button class="m-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
-      <div class="m-title">🐉 Дракони</div>
+      <button class="m-back" aria-label="${esc(t('common.back'))}" data-sfx="back"${inTg ? ' hidden' : ''}>‹</button>
+      <div class="m-title">${esc(t('dr.title'))}</div>
       <div class="m-chip m-dr-food">🍀 <b>${st.food}</b></div>
     </header>
     <div class="m-dr-hero">
       <div class="m-dr-halo"></div>
-      <div class="m-dr-pet" role="button" aria-label="Погладити дракона">
+      <div class="m-dr-pet" role="button" aria-label="${esc(t('dr.pet'))}">
         <div class="m-dr-body"><img alt="" draggable="false"></div>
         <svg class="m-dr-cracks" viewBox="0 0 100 100" aria-hidden="true">
           <path d="M50 28 L46 38 L54 44 L47 52 L55 60" />
@@ -237,9 +240,9 @@ export function render(root, params, app) {
       <div class="m-dr-grow"><div class="m-dr-growbar"><i></i></div><div class="m-dr-growtxt"></div></div>
     </div>
     <div class="m-dr-note" aria-live="polite"></div>
-    <button class="m-btn m-btn-alt m-btn-big m-dr-feed">🍖 Нагодувати (${FOOD_COST} 🍀)</button>
-    <p class="m-dr-hintline">Кожна правильна відповідь будь-де = +1 🍀</p>
-    <h3 class="m-dr-colh">🔄 Мої дракони</h3>
+    <button class="m-btn m-btn-alt m-btn-big m-dr-feed" data-sfx="none">${esc(t('dr.feed', { n: FOOD_COST }))}</button>
+    <p class="m-dr-hintline">${esc(t('dr.hint'))}</p>
+    <h3 class="m-dr-colh">${esc(t('dr.mine'))}</h3>
     <div class="m-dr-grid"></div>`;
 
   const $ = (q) => scr.querySelector(q);
@@ -260,10 +263,10 @@ export function render(root, params, app) {
   const imgOf = (elx, g) => asset(`dragon/${elx}_${stageOf(g)[0]}.png`);
   const progress = (g) => {
     const nxt = STAGES.find((s) => s[1] > g);
-    if (!nxt) return { pct: 100, txt: `${g} — найвища стадія!` };
+    if (!nxt) return { pct: 100, txt: t('dr.top', { g }) };
     const prev = stageOf(g)[1];
     const span = nxt[1] - prev;
-    return { pct: span ? (100 * (g - prev)) / span : 100, txt: `${g}/${nxt[1]} до «${nxt[2]}»` };
+    return { pct: span ? (100 * (g - prev)) / span : 100, txt: t('dr.to', { g, need: nxt[1], stage: SLABEL(nxt[0]) }) };
   };
 
   function paint({ animateBar = false } = {}) {
@@ -276,13 +279,13 @@ export function render(root, params, app) {
       img.src = imgOf(elx, g);
       img.dataset.key = `${elx}_${code}`;
     }
-    nameEl.textContent = `${ELEMENT_EMOJI[elx]} ${ELEMENTS[elx]}`;
+    nameEl.textContent = `${ELEMENT_EMOJI[elx]} ${NAME(elx)}`;
     stageEl.textContent = sname;
     const p = progress(g);
     barI.style.transition = animateBar ? '' : 'none';
     barI.style.transform = `scaleX(${p.pct / 100})`;
     if (!animateBar) { void barI.offsetWidth; barI.style.transition = ''; }
-    growTxt.textContent = `🌱 Ріст: ${p.txt}`;
+    growTxt.textContent = t('dr.grow', { txt: p.txt });
     foodEl.textContent = st.food;
     feedBtn.classList.toggle('m-dr-poor', st.food < FOOD_COST);
     paintGrid();
@@ -298,7 +301,7 @@ export function render(root, params, app) {
       c.style.setProperty('--cc', ELEMENT_COLOR[elx]);
       c.dataset.el = elx;
       c.innerHTML = `<span class="m-dr-thumb"><img src="${owned ? imgOf(elx, g) : BLANK}" alt="" draggable="false"></span>
-        <span class="m-dr-cname">${owned ? `${ELEMENT_EMOJI[elx]} ${esc(ELEMENTS[elx])}` : '🔒 ???'}</span>
+        <span class="m-dr-cname">${owned ? `${ELEMENT_EMOJI[elx]} ${esc(NAME(elx))}` : '🔒 ???'}</span>
         <span class="m-dr-cstage">${owned ? esc(stageOf(g)[2]) : esc(UNLOCK_HINT[elx])}</span>
         ${active ? '<span class="m-dr-check">✅</span>' : ''}`;
       c.onclick = () => select(elx, c);
@@ -322,7 +325,8 @@ export function render(root, params, app) {
     if (!(elx in st.dragons)) {
       hap(app, 'warning');
       fx('shake', cell);
-      note(`Це яйце ще треба заслужити: ${UNLOCK_HINT[elx]} ⚔️`);
+      app.audio?.sfx?.('wrong');
+      note(t('dr.earn', { hint: UNLOCK_HINT[elx] }));
       return;
     }
     hap(app);
@@ -333,7 +337,8 @@ export function render(root, params, app) {
       if (!alive) return;
       paint();
       anim(body, [{ transform: 'scale(.4) rotate(20deg)', opacity: 0 }, { transform: 'scale(1.1)', opacity: 1, offset: 0.7 }, { transform: 'none', opacity: 1 }], { duration: 420 });
-      note(`Тепер з тобою ${ELEMENTS[elx]}!`);
+      app.audio?.sfx?.('pop');
+      note(t('dr.withYou', { name: NAME(elx) }));
     });
     scr.scrollTo?.({ top: 0, behavior: 'smooth' });
     window.scrollTo?.({ top: 0, behavior: 'smooth' });
@@ -349,7 +354,8 @@ export function render(root, params, app) {
     hearts(pet, 5);
     if (tapN % 4 === 0) {
       const code = stageOf(st.dragons[st.active_dragon] || 0)[0];
-      note(code === 'egg' ? 'Яйце тепленьке… всередині щось ворушиться! 🥚' : `${ELEMENTS[st.active_dragon]} муркоче від задоволення 💚`);
+      app.audio?.sfx?.('heart');
+      note(code === 'egg' ? t('dr.eggWarm') : t('dr.purr', { name: NAME(st.active_dragon) }));
     }
   }
   pet.addEventListener('click', tapPet);
@@ -374,11 +380,13 @@ export function render(root, params, app) {
     if (st.food < FOOD_COST) {
       hap(app, 'warning');
       fx('shake', feedBtn);
-      note(`Не вистачає корму 🍀 (треба ${FOOD_COST}). Відповідай правильно — і корм з'явиться!`, 'warn');
+      app.audio?.sfx?.('wrong');
+      note(t('dr.noFood', { n: FOOD_COST }), 'warn');
       return;
     }
     busy = true;
     hap(app, 'medium');
+    app.audio?.sfx?.('coin');
     const elx = st.active_dragon;
     const g0 = st.dragons[elx];
     const before = stageOf(g0)[0];
@@ -426,14 +434,17 @@ export function render(root, params, app) {
       anim(body, [{ transform: 'scale(.3)', filter: 'brightness(3)' }, { transform: 'scale(1.18)', filter: 'brightness(1.4)', offset: 0.6 }, { transform: 'none', filter: 'none' }], { duration: 650, easing: 'cubic-bezier(.3,1.4,.5,1)' });
       setTimeout(() => flashEl.remove(), 900);
       fx('confetti');
+      app.audio?.sfx?.('levelup');
+      app.audio?.sfx?.('win');
       hap(app, 'success');
       hearts(pet, 8);
       note(before === 'egg'
-        ? `Крак! Яйце тріснуло — ${ELEMENTS[elx]} тепер «${after[2]}»! 🎉`
-        : `Ого! Нова стадія: ${ELEMENTS[elx]} тепер «${after[2]}»! 🎉`, 'big');
+        ? t('dr.crack', { name: NAME(elx), stage: after[2] })
+        : t('dr.stageUp', { name: NAME(elx), stage: after[2] }), 'big');
     } else {
       paint({ animateBar: true });
-      note(`Ням! +${FEED_GROWTH} росту 💚`);
+      app.audio?.sfx?.('pop');
+      note(t('dr.yum', { n: FEED_GROWTH }));
     }
     busy = false;
   });
@@ -463,7 +474,7 @@ export function render(root, params, app) {
   }());
 
   paint();
-  if (st.food >= FOOD_COST) note(`Корму вистачає на ${Math.floor(st.food / FOOD_COST)} ${Math.floor(st.food / FOOD_COST) === 1 ? 'годування' : 'годувань'} 🍖`);
+  if (st.food >= FOOD_COST) { const nf = Math.floor(st.food / FOOD_COST); note(t('dr.enough', { n: nf, feeds: t('plural.feeds', { n: nf }) })); }
 
   return () => {
     alive = false;

@@ -1,6 +1,8 @@
 // 🧭 Тест рівня: 5 питань на рівень, рівень зараховано при ≥ 4/5, інакше тест завершується.
-import { h, button, richText, fx, wait } from './ui.js?v=20261110183712';
-import { applyPlacement, getWorld } from './state.js?v=20261110183712';
+import { h, button, richText, fx, wait } from './ui.js?v=20261110185829';
+import { applyPlacement, getWorld } from './state.js?v=20261110185829';
+import { t, tc } from './i18n.js?v=20261110185829';
+import { englishOf, speakBtn, audio } from './ui.js?v=20261110185829';
 
 export const meta = { topbar: false };
 
@@ -12,11 +14,11 @@ export function render(root, params, app) {
   let finished = false;
 
   const wrap = h('div', { class: 'pl' });
-  const ladder = h('div', { class: 'pl-ladder', 'aria-label': 'Рівні' },
+  const ladder = h('div', { class: 'pl-ladder', 'aria-label': t('pl.levels') },
     groups.map(([lv]) => h('span', { class: 'rung', text: lv })));
   const dots = h('div', { class: 'pl-dots', 'aria-hidden': 'true' });
   const head = h('div', { class: 'pl-head' },
-    h('div', { class: 'pl-title-row' }, h('h1', { class: 'title-sticker', text: 'Тест рівня' }), h('div', { class: 'pl-lumi' })),
+    h('div', { class: 'pl-title-row' }, h('h1', { class: 'title-sticker', text: t('pl.title') }), h('div', { class: 'pl-lumi' })),
     ladder, dots);
   const body = h('div', { class: 'pl-body' });
   wrap.append(head, body);
@@ -44,11 +46,11 @@ export function render(root, params, app) {
   function intro() {
     head.classList.add('is-intro');
     const card = h('div', { class: 'card pl-intro' },
-      h('p', { class: 'lead', text: 'По 5 питань на кожен рівень. Не хвилюйся — це не екзамен, я просто шукаю, з якої землі нам почати 💛' }),
+      h('p', { class: 'lead', text: t('pl.lead') }),
       h('ul', { class: 'pl-rules' },
-        h('li', { text: '4 правильні з 5 — рівень зараховано, летимо вище.' }),
-        h('li', { text: 'Не знаєш — обирай навмання, це нормально.' })),
-      button('Поїхали!', { variant: 'primary', onClick: () => { head.classList.remove('is-intro'); question(); } }));
+        h('li', { text: t('pl.rule1') }),
+        h('li', { text: t('pl.rule2') })),
+      button(t('pl.go'), { variant: 'primary', onClick: () => { head.classList.remove('is-intro'); question(); } }));
     swap(card);
     setLadder();
   }
@@ -62,7 +64,7 @@ export function render(root, params, app) {
     let picked = false;
     const opts = p.options.map((o, i) => {
       const b = button(h('span', { class: 'btn-label', lang: 'en', text: o }), {
-        variant: 'option',
+        variant: 'option', sfx: 'tap',
         onClick: async () => {
           if (picked) return;
           picked = true;
@@ -79,8 +81,8 @@ export function render(root, params, app) {
     });
     const card = h('div', { class: 'pl-q' },
       h('div', { class: 'task-q' },
-        h('span', { class: 'task-kind', text: `${lv} · питання ${pl.j + 1} з ${items.length}` }),
-        h('p', { class: 'task-text' }, richText(p.q))),
+        h('span', { class: 'task-kind', text: t('pl.qOf', { lv, n: pl.j + 1, total: items.length }) }),
+        h('p', { class: 'task-text' }, richText(tc(p, 'q')), englishOf(tc(p, 'q')) ? speakBtn(englishOf(tc(p, 'q')), 'say-q') : null)),
       h('div', { class: 'choices' + (short ? ' grid2' : '') }, opts));
     swap(card);
   }
@@ -99,13 +101,14 @@ export function render(root, params, app) {
     lumi.set('excited');
     lumi.react('jump');
     app.tg.notify('success');
+    audio.sfx('levelup');
     const rung = ladder.children[pl.lv - 1];
     fx.sparkle(rung);
     const card = h('div', { class: 'card pl-pass' },
       h('div', { class: 'medal small' }, h('span', { text: lv })),
-      h('h2', { class: 'title-sticker', text: `Рівень ${lv} зараховано!` }),
-      h('p', { class: 'muted', text: `Летимо вище — до ${groups[pl.lv][0]}.` }),
-      button('Летимо вище ✨', { variant: 'primary', onClick: () => { lumi.set('thinking'); question(); } }));
+      h('h2', { class: 'title-sticker', text: t('pl.passed', { lv }) }),
+      h('p', { class: 'muted', text: t('pl.higher', { lv: groups[pl.lv][0] }) }),
+      button(t('pl.higherBtn'), { variant: 'primary', onClick: () => { lumi.set('thinking'); question(); } }));
     swap(card);
     fx.confetti({ count: 40, y: innerHeight * 0.3 });
   }
@@ -123,15 +126,16 @@ export function render(root, params, app) {
     const worlds = res.unlocked.map(getWorld).filter(Boolean);
     const card = h('div', { class: 'pl-result' },
       medal,
-      h('h2', { class: 'title-sticker big', text: result ? `Твій рівень: ${result}!` : 'A1 — стартуємо з початку!' }),
+      h('h2', { class: 'title-sticker big', text: result ? t('pl.yourLevel', { lv: result }) : t('pl.fromStart') }),
       h('p', { class: 'lead', text: result
-        ? `Ого, ${app.state.name}, ти сяєш яскравіше за мене! ✨`
-        : 'Це чудово: кожен світлячок, якого ми спіймаємо, буде твоїм 💛' }),
-      h('p', { class: 'muted', text: worlds.length > 1 ? 'Відкриті світи:' : 'Відкритий світ:' }),
+        ? t('pl.wow', { name: app.state.name })
+        : t('pl.fine') }),
+      h('p', { class: 'muted', text: worlds.length > 1 ? t('pl.worldsOpen') : t('pl.worldOpen') }),
       h('div', { class: 'world-chips' }, worlds.map((w, i) => h('span', { class: 'world-chip', style: { '--i': i } },
-        h('b', { text: w.emoji }), `${w.name} · ${w.level}`))),
-      button('🗺 До карти!', { variant: 'primary', onClick: () => app.go('map', {}, { replace: true }) }));
+        h('b', { text: w.emoji }), `${tc(w, 'name')} · ${w.level}`))),
+      button(t('pl.toMap'), { sfx: 'open', variant: 'primary', onClick: () => app.go('map', {}, { replace: true }) }));
     swap(card);
+    if (worlds.length > 1) setTimeout(() => alive && audio.sfx('unlock'), 1200);
     setTimeout(() => { if (alive) { fx.flash('rgba(255,236,170,.7)'); fx.confetti({ count: 110 }); fx.sparkle(medal); } }, 450);
     setTimeout(() => alive && lumi.react('love'), 900);
   }

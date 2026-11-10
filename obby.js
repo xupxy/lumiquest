@@ -2,9 +2,11 @@
 // варіанти — платформи попереду. Правильна → стрибок угору; хибна → платформа розсипається,
 // Лумі падає на чекпоінт (−1 ❤️). 12 стрибків до вершини, чекпоінти кожні 4 платформи.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110183712';
-import * as FX from './fx.js?v=20261110183712';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110183712';
+import * as S from './state.js?v=20261110185829';
+import * as FX from './fx.js?v=20261110185829';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110185829';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110185829';
+const isEn = (s) => !/[а-яіїєґё]/i.test(String(s || ''));
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, індекс правильного варіанта, фаза. */
@@ -17,7 +19,7 @@ const XP_PER_CORRECT = 10;
 const G = 2700;           // гравітація, px/с²
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110183712', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110185829', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
@@ -240,14 +242,14 @@ function buildPool(content, wid) {
       const right = String(t.options[t.answer]);
       const wrong = shuffle(t.options.filter((_, i) => i !== t.answer).map(String)).slice(0, 3);
       const opts = shuffle([right, ...wrong]);
-      choice.push({ q: String(t.q || ''), opts, ans: opts.indexOf(right), explain: t.explain || '', kind: 'task' });
+      choice.push({ q: String(tc(t, 'q') || ''), opts, ans: opts.indexOf(right), explain: tc(t, 'explain') || '', kind: 'task' });
     }
   }
-  const pairs = (content?.WORDS?.[wid] || []).filter((p) => Array.isArray(p) && p.length === 2 && p[0] && p[1]);
+  const pairs = twords(content, wid).filter((p) => Array.isArray(p) && p.length === 2 && p[0] && p[1]);
   const words = pairs.map(([ua, en]) => {
     const others = shuffle(pairs.filter((p) => p[1].toLowerCase() !== en.toLowerCase()).map((p) => p[1]));
     const opts = shuffle([en, ...[...new Set(others)].slice(0, 3)]);
-    return { q: `«${ua}» англійською — це…`, opts, ans: opts.indexOf(en), explain: `${ua} = ${en}`, kind: 'word' };
+    return { q: `${tr('obby.word_q', { 0: ua })}`, opts, ans: opts.indexOf(en), explain: `${ua} = ${en}`, kind: 'word' };
   });
   return { choice: shuffle(choice), words: shuffle(words) };
 }
@@ -271,8 +273,8 @@ export function render(root, params, app) {
 
   const pool = buildPool(app.content, wid);
   if (!world || (!pool.choice.length && pool.words.length < 4)) {
-    scr.innerHTML = `<div class="g-locked"><div class="g-locked-ico">🧗</div><p>Для цієї вежі ще немає завдань 🌙</p>
-      <button class="g-btn" data-a="back">‹ Назад</button></div>`;
+    scr.innerHTML = `<div class="g-locked"><div class="g-locked-ico">🧗</div><p>${tr('obby.no_tasks')}</p>
+      <button class="g-btn" data-a="back">${tr('common.back')}</button></div>`;
     scr.querySelector('[data-a=back]').onclick = () => app.back();
     return () => { alive = false; };
   }
@@ -282,14 +284,14 @@ export function render(root, params, app) {
     <canvas class="g-canvas" aria-hidden="true"></canvas>
     <div class="g-hud">
       <div class="g-hud-row">
-        <button class="g-ibtn g-back" aria-label="Назад"${inTg ? ' hidden' : ''}>‹</button>
-        <div class="g-hearts" aria-label="Життя"></div>
+        <button class="g-ibtn g-back" ${tr('common.back_aria')}${inTg ? ' hidden' : ''}>‹</button>
+        <div class="g-hearts" ${tr('common.lives_aria')}></div>
         <div class="g-chip g-ob-height">🧗 <b>0</b>/${GOAL}</div>
         <div class="g-chip g-combo" hidden>🔥 <b>0</b></div>
-        <button class="g-ibtn g-pause" aria-label="Пауза">⏸</button>
+        <button class="g-ibtn g-pause" ${tr('common.pause_aria')}>⏸</button>
       </div>
       <div class="g-qcard" hidden>
-        <div class="g-qlabel">Стрибни на правильну платформу</div>
+        <div class="g-qlabel">${tr('obby.label')}</div>
         <div class="g-qtext"></div>
         <div class="g-qfb"></div>
       </div>
@@ -465,7 +467,7 @@ export function render(root, params, app) {
     const opts = q.opts.map((label, i) => ({ lvl, kind: 'opt', label, i, alpha: 0, born: gt + i * 0.07, press: 0, crack: 0, x: 0, w: 0 }));
     placeOptions(opts);
     g.plats.push(...opts);
-    hud.qlabel.textContent = lvl === GOAL ? '🏁 Останній стрибок — до вершини!' : (lvl % CP_EVERY === 0 ? '🚩 Попереду чекпоінт' : 'Стрибни на правильну платформу');
+    hud.qlabel.textContent = lvl === GOAL ? tr('obby.last') : (lvl % CP_EVERY === 0 ? tr('obby.cp_ahead') : tr('obby.label'));
     hud.qtext.textContent = q.q;
     hud.qtext.classList.toggle('g-long', q.q.length > 42);
     hud.qfb.innerHTML = '';
@@ -504,7 +506,7 @@ export function render(root, params, app) {
       L.state = 'air'; L.target = p; L.onLand = onLand; L.arms = 1;
       L.sqv -= 14;
       dust(x0, y0, 7, 0.7);
-      hap(app, 'light');
+      hap(app, 'light'); sfx('jump');
     });
   }
 
@@ -517,20 +519,21 @@ export function render(root, params, app) {
     dirty = true; // зберігаємо в кінці/на виході: app.save() під час гри смикає приховану topbar
     L.mood = 'joy';
     p.kind = 'stand'; p.label = null; p.flag = 0;
-    hap(app, 'success');
+    hap(app, 'success'); sfx('land'); sfx('correct');
+    if (isEn(g.q.opts[g.q.ans])) speak(g.q.opts[g.q.ans]);
     sparkBurst(p.x, surfY(p.lvl) - 10, 14, [th.accent, '#fff', '#ffd84a', '#b9a2ff']);
     textPop(p.x, surfY(p.lvl) - 120, `+${XP_PER_CORRECT} XP`, '#ffd23f');
-    if (g.combo >= 3) textPop(p.x, surfY(p.lvl) - 150, `🔥 Серія ${g.combo}`, '#ff7a3c');
+    if (g.combo >= 3) textPop(p.x, surfY(p.lvl) - 150, `${tr('arena.streak', { 0: g.combo })}`, '#ff7a3c');
     // інші варіанти зникають униз
     g.plats.forEach((o) => { if (o.kind === 'opt' && !o.dead) { o.dead = true; o.vy = -120; o.vr = rnd(-2, 2); } });
     hud.qfb.className = 'g-qfb good';
-    hud.qfb.textContent = ['Чудово! ✨', 'Так тримати! 💫', 'Супер-стрибок! 🌟', 'Влучно! ⭐'][g.correct % 4];
+    hud.qfb.textContent = [tr('obby.g1'), tr('obby.g2'), tr('obby.g3'), tr('obby.g4')][g.correct % 4];
     paintHud();
     if (g.lvl >= GOAL) return summit(p);
     if (g.lvl % CP_EVERY === 0) {
       g.cp = g.lvl; p.flag = 0.001; p.cp = true;
-      textPop(p.x, surfY(p.lvl) - 175, '🚩 Чекпоінт!', '#fff');
-      after(0.25, () => hap(app, 'medium'));
+      textPop(p.x, surfY(p.lvl) - 175, tr('obby.cp'), '#fff');
+      after(0.25, () => { hap(app, 'medium'); sfx('star'); });
     }
     after(0.5, () => { if (alive) nextQuestion(); });
   }
@@ -541,16 +544,17 @@ export function render(root, params, app) {
     g.hearts -= 1;
     L.mood = 'wow';
     p.crack = 0.001;
-    hap(app, 'warning');
+    hap(app, 'warning'); sfx('wrong');
+    if (isEn(g.q.opts[g.q.ans])) speak(g.q.opts[g.q.ans]);
     const right = g.plats.find((o) => o.kind === 'opt' && o.i === g.q.ans && !o.dead);
     if (right) right.glow = 1;
     hud.qfb.className = 'g-qfb bad';
-    hud.qfb.innerHTML = `Правильно: <b>${esc(g.q.opts[g.q.ans])}</b>${g.q.explain ? `<span>💡 ${esc(g.q.explain)}</span>` : ''}`;
+    hud.qfb.innerHTML = `${tr('arena.right')} <b>${esc(g.q.opts[g.q.ans])}</b>${g.q.explain ? `<span>💡 ${esc(g.q.explain)}</span>` : ''}`;
     // повторимо це питання згодом
     g.queue.splice(Math.min(2, g.queue.length), 0, g.q);
     after(0.42, () => {
       crumble(p);
-      hap(app, 'error');
+      hap(app, 'error'); sfx('fall');
       shake = Math.max(shake, 9);
       flash = 0.5;
       L.state = 'fall'; L.vy = -260; L.vx = 0; L.mood = 'hurt'; L.arms = 1;
@@ -1052,17 +1056,17 @@ export function render(root, params, app) {
     overlay = el('div', 'g-over g-intro');
     overlay.innerHTML = `<div class="g-card">
       <div class="g-card-ico">🧗</div>
-      <h2>Обі-Вежа</h2>
-      <div class="g-sub">${esc(world.emoji || '')} ${esc(world.name || '')}${best ? ` · найкраще ${'⭐'.repeat(best)}` : ''}</div>
+      ${tr('obby.title')}
+      <div class="g-sub">${esc(world.emoji || '')} ${esc(tc(world, 'name') || '')}${best ? `${tr('obby.best')}${'⭐'.repeat(best)}` : ''}</div>
       <div class="g-intro-lumi"></div>
       <ul class="g-rules">
-        <li>🟩 Платформи попереду — це варіанти відповіді. Тапни правильну!</li>
-        <li>🌟 Правильно — Лумі стрибає вище. Помилка — платформа розсипається, падаємо на 🚩 чекпоінт і −1 ❤️.</li>
-        <li>🏁 ${GOAL} стрибків до вершини. Чекпоінти — кожні ${CP_EVERY} платформи. ❤️ ×${HEARTS}.</li>
+        <li>${tr('obby.r1')}</li>
+        <li>${tr('obby.r2')}</li>
+        <li>${tr('obby.r3', { 0: GOAL, 1: CP_EVERY, 2: HEARTS })}</li>
       </ul>
-      <div class="g-keys">⌨️ клавіші 1–4 або ← → і Enter · P — пауза</div>
-      <button class="g-btn g-btn-big g-btn-go" data-a="go">▶️ Почати</button>
-      ${inTg ? '' : '<button class="g-btn g-btn-ghost" data-a="back">‹ Назад</button>'}
+      <div class="g-keys">${tr('obby.keys')}</div>
+      <button class="g-btn g-btn-big g-btn-go" data-a="go">${tr('obby.start')}</button>
+      ${inTg ? '' : '<button class="g-btn g-btn-ghost" data-a="back">' + tr('common.back') + '</button>'}
     </div>`;
     scr.append(overlay);
     lumiRefs.push(makeLumi(app, overlay.querySelector('.g-intro-lumi'), 88, 'excited'));
@@ -1082,11 +1086,11 @@ export function render(root, params, app) {
     _debug.phase = 'paused';
     overlay = el('div', 'g-over g-pausebox');
     overlay.innerHTML = `<div class="g-card g-card-sm">
-      <h2>⏸ Пауза</h2>
-      <div class="g-sub">Висота ${g?.lvl || 0}/${GOAL} · ❤️ ${g?.hearts ?? HEARTS}</div>
-      <button class="g-btn g-btn-big g-btn-go" data-a="resume">▶️ Продовжити</button>
-      <button class="g-btn g-btn-big" data-a="restart">🔁 Почати заново</button>
-      <button class="g-btn g-btn-big g-btn-ghost" data-a="exit">🚪 Вийти</button>
+      ${tr('obby.pause')}
+      <div class="g-sub">${tr('obby.height', { 0: g?.lvl || 0, 1: GOAL })} · ❤️ ${g?.hearts ?? HEARTS}</div>
+      <button class="g-btn g-btn-big g-btn-go" data-a="resume">${tr('obby.resume')}</button>
+      <button class="g-btn g-btn-big" data-a="restart">${tr('obby.restart')}</button>
+      <button class="g-btn g-btn-big g-btn-ghost" data-a="exit">${tr('common.exit')}</button>
     </div>`;
     scr.append(overlay);
     const on = (a, fn) => { overlay.querySelector(`[data-a=${a}]`).onclick = () => { hap(app); fn(); }; };
@@ -1107,25 +1111,26 @@ export function render(root, params, app) {
     hap(app, win ? 'success' : 'error');
     overlay = el('div', `g-over g-result ${win ? 'win' : 'lose'}`);
     overlay.innerHTML = `<div class="g-rays" aria-hidden="true"></div><div class="g-card">
-      <div class="g-banner">${win ? 'ВЕРШИНА!' : 'ОЙ, ПАДІННЯ'}</div>
+      <div class="g-banner">${win ? tr('obby.win') : tr('obby.lose')}</div>
       <div class="g-stars"></div>
-      <p class="g-sub">${win ? (stars === 3 ? 'Жодної помилки — ти справжній паркурник! 🏆' : 'Прапор на вершині наш! 🏁') : 'Сердечка скінчились… Ще трохи — і вершина наша!'}</p>
-      ${rec.isRecord ? '<div class="g-record">🎉 Новий рекорд!</div>' : ''}
+      <p class="g-sub">${win ? (stars === 3 ? tr('obby.perfect') : tr('obby.flag')) : tr('obby.out')}</p>
+      ${rec.isRecord ? '<div class="g-record">' + tr('common.record') + '</div>' : ''}
       <div class="g-stats">
-        <div><span>🧗 Висота</span><strong><b data-n="${g.lvl}">0</b><em>/${GOAL}</em></strong></div>
-        <div><span>✅ Правильно</span><strong><b data-n="${g.correct}">0</b></strong></div>
-        <div><span>❌ Помилки</span><strong><b data-n="${g.mistakes}">0</b></strong></div>
-        <div><span>🔥 Найдовша серія</span><strong><b data-n="${g.bestCombo}">0</b></strong></div>
+        <div><span>${tr('obby.s_height')}</span><strong><b data-n="${g.lvl}">0</b><em>/${GOAL}</em></strong></div>
+        <div><span>${tr('obby.s_right')}</span><strong><b data-n="${g.correct}">0</b></strong></div>
+        <div><span>${tr('obby.s_wrong')}</span><strong><b data-n="${g.mistakes}">0</b></strong></div>
+        <div><span>${tr('obby.s_combo')}</span><strong><b data-n="${g.bestCombo}">0</b></strong></div>
       </div>
       <div class="g-res-row"><div class="g-res-lumi"></div><div class="g-xp">+<b data-n="${g.xp}">0</b> XP</div></div>
       <div class="g-btns">
-        <button class="g-btn g-btn-big" data-a="again">🔁 Ще раз</button>
-        <button class="g-btn g-btn-big g-btn-go" data-a="next">➡️ Далі</button>
+        <button class="g-btn g-btn-big" data-a="again">${tr('common.again')}</button>
+        <button class="g-btn g-btn-big g-btn-go" data-a="next">${tr('common.next')}</button>
       </div>
     </div>`;
     scr.append(overlay);
     const ov = overlay;
     fx('starsDrop', ov.querySelector('.g-stars'), stars);
+    sfx(win ? 'win' : 'lose'); starSfx(stars, 450);
     ov.querySelectorAll('[data-n]').forEach((b, k) => setTimeout(() => alive && fx('countUp', b, 0, +b.dataset.n, 700), 500 + k * 120));
     if (stars === 3) { setTimeout(() => alive && fx('confetti'), 700); setTimeout(() => alive && fx('confetti', { x: W * 0.3 }), 1500); }
     const lr = makeLumi(app, ov.querySelector('.g-res-lumi'), 70, win ? 'proud' : 'sad');
