@@ -2,14 +2,14 @@
 // Лумі в центрі арени, до неї повзуть «Помилки» (кумедні клякси) з українськими словами.
 // Знизу — 3 англійські варіанти для найближчого ворога: правильно — зоряний снаряд і вибух,
 // неправильно — ворог робить ривок. 3 ❤️, хвилі, супер-атака за серію, таймер 90 с.
-import * as S from './state.js';
-import * as FX from './fx.js';
-import * as L from './lumi.js';
-import { recordGame, starsByRatio, gameStars } from './games.js';
+import * as S from './state.js?v=20261110022322';
+import * as FX from './fx.js?v=20261110022322';
+import * as L from './lumi.js?v=20261110022322';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110022322';
 
 // ---------------------------------------------------------------- спільні дрібниці
-const MODES_HREF = new URL('./modes.css', import.meta.url).href;
-const G2_HREF = new URL('./games2.css', import.meta.url).href;
+const MODES_HREF = new URL('./modes.css?v=20261110022322', import.meta.url).href;
+const G2_HREF = new URL('./games2.css?v=20261110022322', import.meta.url).href;
 function loadCss(key, href) {
   let l = document.querySelector(`link[data-${key}-css]`);
   if (!l) {

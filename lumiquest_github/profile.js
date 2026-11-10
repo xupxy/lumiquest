@@ -1,6 +1,6 @@
 // 👤 Профіль: рівень, XP, світлячки, бейджі, кубки й арена, дракон, стрік.
-import { h, button, plural, fx, confirmDialog, toast } from './ui.js';
-import { xpProgress, arenaName, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js';
+import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110022322';
+import { xpProgress, arenaName, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110022322';
 
 export function render(root, params, app) {
   const st = app.state;

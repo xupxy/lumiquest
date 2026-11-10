@@ -1,7 +1,7 @@
 // 🗺 Карта світів: вертикальна мальовнича карта, світ 1 внизу → світ 5 у небі.
-import { h, fx, toast } from './ui.js';
-import { currentWorldId } from './state.js';
-import { worldGames, gameStars } from './games.js';
+import { h, fx, toast } from './ui.js?v=20261110022322';
+import { currentWorldId } from './state.js?v=20261110022322';
+import { worldGames, gameStars } from './games.js?v=20261110022322';
 
 const INK = '#3B2A55';
 

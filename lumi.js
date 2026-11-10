@@ -1,6 +1,6 @@
 // LumiQuest — Lumi, the animated SVG mascot.
 //
-//   import { createLumi } from './lumi.js';
+//   import { createLumi } from './lumi.js?v=20261110022322';
 //   const lumi = createLumi(container, { size: 220 });
 //   lumi.set('happy');              // hello happy excited thinking surprised sad proud cheer sleepy
 //   lumi.say('Привіт!', { ms: 2500 });

@@ -2,9 +2,9 @@
 // варіанти — платформи попереду. Правильна → стрибок угору; хибна → платформа розсипається,
 // Лумі падає на чекпоінт (−1 ❤️). 12 стрибків до вершини, чекпоінти кожні 4 платформи.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js';
-import * as FX from './fx.js';
-import { recordGame, starsByRatio, gameStars } from './games.js';
+import * as S from './state.js?v=20261110022322';
+import * as FX from './fx.js?v=20261110022322';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110022322';
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, індекс правильного варіанта, фаза. */
@@ -17,7 +17,7 @@ const XP_PER_CORRECT = 10;
 const G = 2700;           // гравітація, px/с²
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110022322', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
