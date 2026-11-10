@@ -1572,3 +1572,12 @@ html[data-scheme='dark'] .lang-card, html[data-scheme='dark'] .onb-feat, html[da
 @media (prefers-reduced-motion: reduce) { .onb-pop, .onb-glow i, .lang-card::after, .say-btn.talk { animation: none !important; } }
 html[data-perf='lite'] .onb-glow, html[data-perf='lite'] .lang-card::after { display: none; }
 @media (max-height: 700px) { .onb7 .onb-lumi { min-height: 170px; padding-top: 64px; } .onb-feat { padding: 7px 8px; font-size: 12.5px; } .onb-how li { padding: 8px 12px; } }
+
+/* вибір голосу озвучки */
+.set-voice-row { flex-wrap: wrap; gap: 8px; }
+.set-voice-row .set-txt small { display: block; opacity: .7; font-size: 13px; }
+.set-voice-ctl { display: flex; gap: 8px; width: 100%; }
+.set-voice { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 10px 12px; border-radius: 14px;
+  border: 2px solid rgba(59,36,64,.25); background: #fff; color: #3a2433; }
+.set-voice-play { width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(59,36,64,.3);
+  background: linear-gradient(#fff4d6, #ffd98a); color: #3a2433; font-size: 18px; }

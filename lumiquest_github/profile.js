@@ -1,12 +1,12 @@
 // 👤 Профіль: картка гравця (Лумі в рамці арени, кільце XP, звання), лічильники, медалі світів, драконяча колекція,
 // кубки і шкала арен, стрік-календар тижня, налаштування.
-import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110185829';
-import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110185829';
-import { worldGames, gameStars } from './games.js?v=20261110185829';
-import { emblem, themeOf } from './theme.js?v=20261110185829';
-import { weekActivity, toggleRow, audioSettings, testSound } from './home.js?v=20261110185829';
-import { t, tc, lang, LANGS } from './i18n.js?v=20261110185829';
-import { arenaLabel } from './state.js?v=20261110185829';
+import { h, button, plural, fx, confirmDialog, toast } from './ui.js?v=20261110190353';
+import { xpProgress, ARENAS, stageOf, ELEMENTS, ELEMENT_EMOJI } from './state.js?v=20261110190353';
+import { worldGames, gameStars } from './games.js?v=20261110190353';
+import { emblem, themeOf } from './theme.js?v=20261110190353';
+import { weekActivity, toggleRow, audioSettings, testSound } from './home.js?v=20261110190353';
+import { t, tc, lang, LANGS } from './i18n.js?v=20261110190353';
+import { arenaLabel } from './state.js?v=20261110190353';
 
 const svgFrom = (str) => { const t = document.createElement('template'); t.innerHTML = str.trim(); return t.content.firstChild; };
 const setI = (el, i) => { el.style.setProperty('--i', i); return el; };
@@ -164,6 +164,7 @@ export function render(root, params, app) {
       h('div', { class: 'set-row set-lang' }, h('span', { class: 'set-txt' }, h('b', { text: `🌐 ${t('set.lang')}` })), langSeg),
       toggleRow(`🔔 ${t('set.sound')}`, t('set.soundSub'), au.sound, (on) => { app.audio.setSound(on); if (on) app.audio.sfx('tap'); }),
       toggleRow(`🎵 ${t('set.music')}`, t('set.musicSub'), au.music, (on) => { app.audio.setMusic(on); app.audio.music(on ? 'menu' : null); }),
+      voiceRow(app),
       button(t('set.test'), { variant: 'secondary', cls: 'set-test', sfx: 'none', onClick: () => testSound(app, lumi) })),
     h('div', { class: 'prof-actions' },
       button(t('set.onboarding'), { variant: 'secondary', onClick: () => { st.onboarded = false; app.save(); app.home(); } }),
@@ -198,4 +199,32 @@ export function render(root, params, app) {
     arenaTrack.querySelector('.ar-fill').style.transform = `scaleX(${posOf(tr)})`;
   }));
   return () => timers.forEach(clearTimeout);
+}
+
+
+// Вибір голосу озвучки англійської (голоси залежать від телефона).
+function voiceRow(app) {
+  const sel = h('select', { class: 'set-voice', 'aria-label': t('set.voice') });
+  const fill = () => {
+    const list = app.audio.listVoices() || [];
+    const cur = app.audio.getVoice() || '';
+    sel.innerHTML = '';
+    if (!list.length) { const o = document.createElement('option'); o.textContent = t('set.voiceNone'); sel.appendChild(o); sel.disabled = true; return; }
+    sel.disabled = false;
+    for (const v of list) {
+      const o = document.createElement('option');
+      o.value = v.id; o.textContent = `${v.name} (${v.lang})`;
+      if (v.id === cur) o.selected = true;
+      sel.appendChild(o);
+    }
+  };
+  fill();
+  try { window.speechSynthesis && window.speechSynthesis.addEventListener('voiceschanged', fill); } catch (e) { /* ignore */ }
+  setTimeout(fill, 600);
+  sel.addEventListener('change', () => { app.audio.setVoice(sel.value); app.audio.speak('Hello! I am Lumi. Nice to meet you!'); });
+  const play = h('button', { class: 'set-voice-play', type: 'button', 'aria-label': t('set.voiceTry'), text: '▶', 'data-sfx': 'none',
+    on: { click: () => app.audio.speak('Hello! I am Lumi. Nice to meet you!') } });
+  return h('div', { class: 'set-row set-voice-row' },
+    h('span', { class: 'set-txt' }, h('b', { text: `🗣 ${t('set.voice')}` }), h('small', { text: t('set.voiceSub') })),
+    h('div', { class: 'set-voice-ctl' }, sel, play));
 }

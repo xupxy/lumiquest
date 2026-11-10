@@ -1,6 +1,6 @@
 // Обгортка Telegram WebApp. Безпечна поза Telegram: усі методи — no-op/фолбеки.
 //
-//   import { tg, waitTelegram } from './tg.js?v=20261110185829';
+//   import { tg, waitTelegram } from './tg.js?v=20261110190353';
 //   await waitTelegram();          // дочекатися SDK (≤1.5 с), потім tg.init()
 //   tg.isTelegram                  // true лише всередині Telegram (є initData)
 //   tg.userName()                  // first_name або ''

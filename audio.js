@@ -571,8 +571,10 @@ const NOVELTY = /(albert|bad news|bahh|bells|boing|bubbles|cellos|deranged|good 
 function pickVoice(lang) {
   try {
     const ss = W.speechSynthesis; if (!ss) return null;
+    const vs0 = ss.getVoices() || [];
+    if (settings.voice) { const mine = vs0.find((v) => v.voiceURI === settings.voice || v.name === settings.voice); if (mine) return mine; }
     if (voiceCache[lang] !== undefined) return voiceCache[lang];
-    const vs = ss.getVoices() || [];
+    const vs = vs0;
     if (!vs.length) return null;          // not loaded yet (iOS/Chrome) — voiceschanged will reset the cache
     const want = lang.toLowerCase();
     let best = null, bs = -1e9;
@@ -607,17 +609,44 @@ export function speak(text, opts) {
       const v = pickVoice(lang); if (v) u.voice = v;
       u.rate = o.rate ?? 0.9; u.pitch = o.pitch ?? 1; u.volume = 1;
       let done = false, to = 0;
-      const fin = (ok) => { if (done) return; done = true; clearTimeout(to); speakDucks = Math.max(0, speakDucks - 1); applyDuck(); resolve(ok); };
+      const fin = (ok) => { if (done) return; done = true; clearTimeout(to); speakDucks = Math.max(0, speakDucks - 1); applyDuck(); speechHold(false); resolve(ok); };
       u.onend = () => fin(true);
       u.onerror = () => fin(false);
-      try { ss.cancel(); } catch (e) { /* ignore */ }
+      const wasSpeaking = ss.speaking || ss.pending;
+      try { if (wasSpeaking) ss.cancel(); } catch (e) { /* ignore */ }
       speakDucks++; applyDuck();
-      ss.speak(u);
-      try { if (ss.paused) ss.resume(); } catch (e) { /* ignore */ }
+      // iOS: коли одночасно працює WebAudio, системний голос звучить «зламаним роботом» —
+      // на час мовлення призупиняємо AudioContext (музику і звуки), потім відновлюємо.
+      speechHold(true);
+      const go = () => { try { ss.speak(u); if (ss.paused) ss.resume(); } catch (e) { fin(false); } };
+      if (wasSpeaking) setTimeout(go, 80); else go();
       to = setTimeout(() => fin(false), 2500 + str.length * 140);   // safety: some engines never fire onend
     } catch (e) { resolve(false); }
   });
 }
+
+let holdN = 0, holdT = 0;
+function speechHold(on) {
+  try {
+    if (!ctx) return;
+    if (on) { holdN++; clearTimeout(holdT); if (ctx.state === 'running') ctx.suspend().catch(() => {}); }
+    else {
+      holdN = Math.max(0, holdN - 1);
+      if (holdN === 0) { clearTimeout(holdT); holdT = setTimeout(() => { try { if (!holdN && !(doc && doc.hidden)) ctx.resume().catch(() => {}); } catch (e) { /* ignore */ } }, 250); }
+    }
+  } catch (e) { /* ignore */ }
+}
+
+/** Англійські голоси пристрою для вибору в налаштуваннях: [{id, name, lang, local}] */
+export function listVoices() {
+  try {
+    const vs = (W.speechSynthesis && W.speechSynthesis.getVoices()) || [];
+    return vs.filter((v) => String(v.lang || '').toLowerCase().startsWith('en') && !NOVELTY.test(v.name))
+      .map((v) => ({ id: v.voiceURI || v.name, name: v.name, lang: v.lang, local: !!v.localService }));
+  } catch (e) { return []; }
+}
+export function getVoice() { const v = pickVoice('en-US'); return v ? (v.voiceURI || v.name) : ''; }
+export function setVoice(id) { try { settings.voice = id || ''; voiceCache = {}; saveSettings(); } catch (e) { /* ignore */ } }
 
 // ---------------------------------------------------------------- settings API
 export function setSound(on) {

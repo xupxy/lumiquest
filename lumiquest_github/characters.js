@@ -1,6 +1,6 @@
 // LumiQuest — анімовані SVG-персонажі (боси, Лис Фокс, герої історій, актори драм).
 //
-//   import { createCharacter, CHARACTERS, characterIdFor } from './characters.js?v=20261110185829';
+//   import { createCharacter, CHARACTERS, characterIdFor } from './characters.js?v=20261110190353';
 //   const ch = createCharacter(box, 'boss_w1', { size: 160, mood: 'idle', flip: false });
 //   ch.set('happy');          // idle talk happy sad surprised angry hurt win lose
 //   ch.talk('Hello there!');  // lip-flap, поки «друкується» текст (або ms); ch.talk(0) — стоп
