@@ -1,10 +1,10 @@
 // 🗺 Карта світів: вертикальна мальовнича карта, світ 1 внизу → світ 5 у небі.
-import { h, fx, toast, pauseOffscreen } from './ui.js?v=20261110194247';
-import { currentWorldId } from './state.js?v=20261110194247';
-import { t, tc } from './i18n.js?v=20261110194247';
-import { worldGames, gameStars } from './games.js?v=20261110194247';
+import { h, fx, toast, pauseOffscreen } from './ui.js?v=20261110233151';
+import { currentWorldId } from './state.js?v=20261110233151';
+import { t, tc } from './i18n.js?v=20261110233151';
+import { worldGames, gameStars } from './games.js?v=20261110233151';
 
-import { applyWorldTheme, worldDecor, themeOf } from './theme.js?v=20261110194247';
+import { applyWorldTheme, worldDecor, themeOf } from './theme.js?v=20261110233151';
 
 // Острови — кожен у мові свого світу: форма основи, палітра, обвідка кольором світу (не чорна).
 const ISLES = [

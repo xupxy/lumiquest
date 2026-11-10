@@ -2,18 +2,18 @@
 // слова ПО ПОРЯДКУ (на полі є й зайві літери). Свайп/стрілки, швидкість росте зі словом.
 // 5 слів, 3 ❤️ (зіткнення зі стіною/собою або неправильна літера). З'їдене слово озвучується.
 // v6: DPR ≤ 2, фон і плитки — офскрин-спрайти, частинки — пул на типізованих масивах, без shadowBlur.
-import * as S from './state.js?v=20261110194247';
-import * as FX from './fx.js?v=20261110194247';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110194247';
-import { themeOf } from './theme.js?v=20261110194247';
+import * as S from './state.js?v=20261110233151';
+import * as FX from './fx.js?v=20261110233151';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110233151';
+import { themeOf } from './theme.js?v=20261110233151';
 
 // ---------------------------------------------------------------- безпечні мости (i18n, звук, Лумі)
 let I = {};
-try { I = await import('./i18n.js?v=20261110194247'); } catch (e) { /* без ядра i18n — власні словники */ }
+try { I = await import('./i18n.js?v=20261110233151'); } catch (e) { /* без ядра i18n — власні словники */ }
 let A = {};
-import('./audio.js?v=20261110194247').then((m) => { A = m; }).catch(() => { /* без звуку */ });
+import('./audio.js?v=20261110233151').then((m) => { A = m; }).catch(() => { /* без звуку */ });
 let LM = null;
-try { LM = await import('./lumi.js?v=20261110194247'); } catch (e) { /* фолбек через app.makeLumi */ }
+try { LM = await import('./lumi.js?v=20261110233151'); } catch (e) { /* фолбек через app.makeLumi */ }
 
 const DICT = {
   uk: {
@@ -114,7 +114,7 @@ const DX = [1, 0, -1, 0], DY = [0, 1, 0, -1];
 const MAXN = 256;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games4.css?v=20261110194247', import.meta.url).href;
+const CSS_HREF = new URL('./games4.css?v=20261110233151', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games4-css]');
   if (!l) {

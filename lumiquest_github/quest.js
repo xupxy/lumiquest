@@ -1,8 +1,8 @@
 // 📜 Квест: сюжет → підказка-урок → 5 завдань → результат із зірками.
-import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait, englishOf, speakBtn, answerSpeech, audio } from './ui.js?v=20261110194247';
-import { t, tc } from './i18n.js?v=20261110194247';
-import { applyWorldTheme } from './theme.js?v=20261110194247';
-import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110194247';
+import { h, button, renderTask, feedbackSheet, progressBar, richText, correctText, fx, wait, englishOf, speakBtn, answerSpeech, audio } from './ui.js?v=20261110233151';
+import { t, tc } from './i18n.js?v=20261110233151';
+import { applyWorldTheme } from './theme.js?v=20261110233151';
+import { addXP, onCorrectAnswer, questStars, recordQuest, getQuest, bossOpen, XP_PER_CORRECT } from './state.js?v=20261110233151';
 
 const CHEERS = ['quest.cheer1', 'quest.cheer2', 'quest.cheer3', 'quest.cheer4'];
 
@@ -147,18 +147,14 @@ export function render(root, params, app) {
     if (rec.isRecord) notes.push(h('p', { class: 'res-note gold', text: t('quest.record') }));
     else if (rec.best > stars) notes.push(h('p', { class: 'res-note' }, t('quest.best'), h('span', { text: '⭐'.repeat(rec.best) })));
     if (stars < 3) notes.push(h('p', { class: 'res-note muted', text: t('quest.try3') }));
-    if (!wasOpen && rec.bossOpened) notes.push(h('p', { class: 'res-note boss-open', text: t('quest.bossOpen') }));
+    void wasOpen;
     const unlockedNew = rec.best === 0 || (!wasOpen && rec.bossOpened);
 
     const qs = w.quests;
     const idx = qs.findIndex((x) => x.id === q.id);
     const btns = [];
-    if (idx >= 0 && idx < qs.length - 1) {
-      const nq = qs[idx + 1];
-      btns.push(button(`➡️ ${tc(nq, 'title')}`, { variant: 'primary', sfx: 'open', onClick: () => app.go('quest', { qid: nq.id }, { replace: true }) }));
-    } else if (bossOpen(st, w.id)) {
-      btns.push(button(t('quest.toArena'), { variant: 'primary', sfx: 'open', onClick: () => app.go('arena', { wid: w.id }, { replace: true }) }));
-    }
+    void idx;
+    btns.push(button(t('quest.toPath'), { variant: 'primary', sfx: 'open', onClick: () => app.back() }));
     btns.push(h('div', { class: 'btn-row' },
       button(t('quest.again'), { variant: 'secondary', onClick: () => app.go('quest', { qid: q.id }, { replace: true }) }),
       button(t('quest.toWorld'), { variant: 'secondary', sfx: 'back', onClick: () => app.back() })));

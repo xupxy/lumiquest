@@ -1,13 +1,13 @@
 // 🃏 «Словесний Дурень» у Картярні. Порт game/durak.py.
-import * as S from './state.js?v=20261110194247';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110194247';
-import * as FX from './fx.js?v=20261110194247';
-import * as L from './lumi.js?v=20261110194247';
-import { createCharacter } from './characters.js?v=20261110194247';
-import { recordGame } from './games.js?v=20261110194247';
+import * as S from './state.js?v=20261110233151';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110233151';
+import * as FX from './fx.js?v=20261110233151';
+import * as L from './lumi.js?v=20261110233151';
+import { createCharacter } from './characters.js?v=20261110233151';
+import { recordGame } from './games.js?v=20261110233151';
 
 // ---------------------------------------------------------------- спільні дрібниці режимів
-const CSS_HREF = new URL('./modes.css?v=20261110194247', import.meta.url).href;
+const CSS_HREF = new URL('./modes.css?v=20261110233151', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-modes-css]');
   if (!l) {
@@ -423,11 +423,11 @@ export function render(root, params, app) {
     const node = handNodes().get(id);
     const atkNode = $.slot.querySelector('.m-dk-atk');
     const from = node.getBoundingClientRect();
-    const tr = atkNode.getBoundingClientRect();
+    const ar = atkNode.getBoundingClientRect();
     node.style.visibility = 'hidden';
     const flying = el('div', '', cardHtml(c, { trump: dk.trump })).firstElementChild;
-    const target = { left: tr.left + 18, top: tr.top + 14, width: tr.width, height: tr.height };
-    await fly(flying, from, target, { ms: 420, arc: -30, rot0: 0, rot1: 12, s0: 1, s1: tr.width / from.width });
+    const target = { left: ar.left + 18, top: ar.top + 14, width: ar.width, height: ar.height };
+    await fly(flying, from, target, { ms: 420, arc: -30, rot0: 0, rot1: 12, s0: 1, s1: ar.width / from.width });
     if (!alive) return;
     // карта «лягла» зверху
     const def = el('div', 'm-dk-def', cardHtml(c, { trump: dk.trump }));

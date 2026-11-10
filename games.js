@@ -7,7 +7,7 @@
 // Рівень відкритий, якщо попередній має ≥ 1 ⭐ (або світ зараховано тестом рівня).
 // Бос — завжди 13-й; додатково вимагає ≥ 1 ⭐ у всіх уроках (bossOpen у state.js).
 
-import { getWorld, bossOpen } from './state.js?v=20261110194247';
+import { getWorld, bossOpen } from './state.js?v=20261110233151';
 
 /** Порядок рівнів на стежці. 'L' — наступний урок зі списку world.quests. */
 // v8: 23 рівні — 9 уроків, 8 міні-ігор, історія, драма, 3 «виклики» (складні версії), бос.
@@ -87,9 +87,10 @@ export function isOpen(state, wid, idx) {
   const g = list[idx];
   if (!g) return false;
   if (!(state.unlocked || []).includes(wid)) return false;
-  if (g.type === 'boss') return bossOpen(state, wid);
   if ((state.by_test || []).includes(wid)) return true;
-  return idx === 0 || gameStars(state, list[idx - 1].id) >= 1;
+  // суворий порядок: усі попередні рівні мають ≥ 1 ⭐
+  for (let i = 0; i < idx; i++) if (gameStars(state, list[i].id) < 1) return false;
+  return true;
 }
 
 /** Наступний непройдений відкритий рівень (для «Продовжити пригоду»). */

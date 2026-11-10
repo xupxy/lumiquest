@@ -18,8 +18,8 @@
  *  fx — проксі ефектів: викликає js/fx.js, якщо він є, інакше вбудовані фолбеки
  *  setFx(module), setHaptics(tg)                   (викликає app.js)
  */
-import { norm, levelOf, xpProgress } from './state.js?v=20261110194247';
-import { t, tc } from './i18n.js?v=20261110194247';
+import { norm, levelOf, xpProgress } from './state.js?v=20261110233151';
+import { t, tc } from './i18n.js?v=20261110233151';
 
 // ─────────────────────────────────────────────────────────── audio proxy (js/audio.js може ще не існувати)
 const NOOP_AUDIO = {

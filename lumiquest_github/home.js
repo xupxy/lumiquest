@@ -1,11 +1,11 @@
 // Головний екран: онбординг для нового гравця або «хаб» з плитками.
-import { h, button, plural, fx } from './ui.js?v=20261110194247';
-import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110194247';
-import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110194247';
-import { worldGames, nextGame, gameStars } from './games.js?v=20261110194247';
-import * as I18N from './i18n.js?v=20261110194247';
-import { t, tc } from './i18n.js?v=20261110194247';
-import { gameTitle } from './state.js?v=20261110194247';
+import { h, button, plural, fx } from './ui.js?v=20261110233151';
+import { applyPlacement, currentWorldId, getWorld, worldIndex, stageOf, ELEMENTS, levelOf } from './state.js?v=20261110233151';
+import { applyWorldTheme, emblem, pedestal, themeOf } from './theme.js?v=20261110233151';
+import { worldGames, nextGame, gameStars } from './games.js?v=20261110233151';
+import * as I18N from './i18n.js?v=20261110233151';
+import { t, tc } from './i18n.js?v=20261110233151';
+import { gameTitle } from './state.js?v=20261110233151';
 
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 function jelly(el) {

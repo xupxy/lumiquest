@@ -2,11 +2,11 @@
 // набігають 3 ворота з англ. словами. Свайп/тап/стрілки — зміна доріжки. Правильні ворота —
 // бонус і швидкість росте; неправильні — спотикання (−❤️). 15 слів, потім фініш.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110194247';
-import * as FX from './fx.js?v=20261110194247';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110194247';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110194247';
-import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110194247';
+import * as S from './state.js?v=20261110233151';
+import * as FX from './fx.js?v=20261110233151';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110233151';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110233151';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110233151';
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, доріжка правильних воріт (0..2), фаза. */
@@ -21,7 +21,7 @@ const Z_SPAWN = 36;
 const Z_FAR = 70;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110194247', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110233151', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {
@@ -357,6 +357,26 @@ export function render(root, params, app) {
     x.fillStyle = gr; x.fillRect(0, 0, W, H);
     return (spr.vig[c] = v);
   }
+  const WS_BASE = 56;            // розмір шрифту спрайта слова
+  const wordSpr = new Map();
+  function wordSprite(text) {
+    let sp = wordSpr.get(text);
+    if (sp) return sp;
+    const m = document.createElement('canvas').getContext('2d');
+    m.font = `800 ${WS_BASE}px ${FONT}`;
+    const tw = Math.max(4, m.measureText(text).width);
+    const pad = WS_BASE * 0.3;
+    const c = document.createElement('canvas');
+    c.width = Math.ceil(tw + pad * 2); c.height = Math.ceil(WS_BASE * 1.5);
+    const x = c.getContext('2d');
+    x.font = `800 ${WS_BASE}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.lineJoin = 'round'; x.lineWidth = WS_BASE * 0.18; x.strokeStyle = 'rgba(30,15,45,.55)';
+    x.strokeText(text, c.width / 2, c.height / 2);
+    x.fillStyle = '#fff'; x.fillText(text, c.width / 2, c.height / 2);
+    sp = { c, w1: tw / WS_BASE };
+    wordSpr.set(text, sp);
+    return sp;
+  }
   const wordW = new Map(); // ширина слова при 100px — measureText раз на слово
   function fitFontC(text, maxW, size, minSize = 7) {
     let w1 = wordW.get(text);
@@ -387,6 +407,8 @@ export function render(root, params, app) {
       speed: 0, want: SPEED0, dist: 0, spawnT: 0, finishSpawned: false,
       lumi: { x: 0, lane: 0, h: 0, vh: 0, step: 0, rot: 0, tilt: 0, sq: 0, sqv: 0, trip: 0, glance: 0, mood: 'happy', blink: 0, blinkT: 2, ant: 0, cheer: 0 },
     };
+    // прогрів: усі слова партії малюються в спрайти до старту (без фризів під час бігу)
+    try { for (const r of g.rounds) r.words.forEach(wordSprite); } catch (e) { /* ignore */ }
     // декор обабіч дороги
     for (let z = 3; z < Z_FAR; z += 3.2) {
       for (const side of [-1, 1]) if (Math.random() < 0.8) g.props.push(newProp(z + rnd(-1, 1), side));
@@ -437,7 +459,7 @@ export function render(root, params, app) {
       try { S.onCorrectAnswer(st); S.addXP(st, XP_PER_CORRECT); } catch (e) { console.warn(e); }
       dirty = true; // зберігаємо в кінці/на виході: app.save() під час гри смикає приховану topbar
       g.want = Math.min(SPEED_MAX, g.want + SPEED_STEP);
-      hap(app, 'success'); sfx('correct'); speak(row.en);
+      hap(app, 'success'); sfx('correct');
       burst(gx, gy, 26, ['#ffd84a', '#fff', th.accent, '#9cf5b8', '#b9a2ff'], 1.2);
       ring(gx, gy, '#9cf5b8');
       textPop(gx, gy - 30, `+${pts}`, '#ffd23f');
@@ -450,7 +472,7 @@ export function render(root, params, app) {
       g.wrong += 1; g.combo = 0; g.hearts -= 1;
       g.want = SPEED0;
       g.speed = Math.max(SPEED0 * 0.55, g.speed * 0.5);
-      hap(app, 'error'); sfx('wrong'); speak(row.en);
+      hap(app, 'error'); sfx('wrong');
       shake = 12; flash = 0.55; flashC = '255,60,80';
       burst(gx, gy, 16, ['#ff6b6b', '#ffb3b3', '#fff'], 1);
       L.trip = 0.75; L.vh = 3.2; L.mood = 'hurt'; L.glance = 1.1;
@@ -865,11 +887,12 @@ export function render(root, params, app) {
       ctx.fillStyle = th.accent; starPath(ctx, (xl + xr) / 2 + wob, bTop - k * 0.04, k * 0.07, T * 2, 0.45); ctx.fill();
       // слово
       if (k > 14) {
-        const fs = fitFontC(ws[i], bw - k * 0.06, Math.min(26, bh * 0.62), 7);
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.lineWidth = Math.max(2, fs * 0.18); ctx.strokeStyle = 'rgba(30,15,45,.55)';
-        ctx.strokeText(ws[i], (xl + xr) / 2 + wob, (bTop + bBot) / 2 + fs * 0.05);
-        ctx.fillStyle = '#fff'; ctx.fillText(ws[i], (xl + xr) / 2 + wob, (bTop + bBot) / 2 + fs * 0.05);
+        // v9-perf: слово — готовий спрайт (малюється раз), у кадрі лише drawImage з масштабом.
+        const sp = wordSprite(ws[i]);
+        const fs = Math.max(7, Math.min(Math.min(26, bh * 0.62), (bw - k * 0.06) / sp.w1));
+        const sc = fs / WS_BASE;
+        const dw = sp.c.width * sc, dh = sp.c.height * sc;
+        ctx.drawImage(sp.c, (xl + xr) / 2 + wob - dw / 2, (bTop + bBot) / 2 + fs * 0.05 - dh / 2, dw, dh);
       }
       // легке сяйво під воротами (доріжка-ціль)
       if (!judged && z < 14) {
