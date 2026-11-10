@@ -586,6 +586,12 @@ function pickVoice(lang) {
       if (GOOD.test(v.name)) s += 30;
       if (NICE.test(v.name)) s += 15;
       if (NOVELTY.test(v.name)) s -= 50;
+      // iOS/macOS: якість голосу видно з voiceURI (назви можуть бути локалізовані)
+      const uri = String(v.voiceURI || '').toLowerCase();
+      if (/eloquence|speech\.synthesis\.voice\.|novelty/.test(uri)) s -= 90;   // «роботи» та жартівливі
+      if (uri.includes('.premium.')) s += 45; else if (uri.includes('.enhanced.')) s += 35;
+      else if (uri.includes('super-compact')) s -= 15;
+      if (/samantha|ava|allison|daniel|karen|moira|serena/.test(uri)) s += 10;
       if (v.localService) s += 3;
       if (v.default) s += 2;
       if (s > bs) { bs = s; best = v; }
@@ -641,7 +647,7 @@ function speechHold(on) {
 export function listVoices() {
   try {
     const vs = (W.speechSynthesis && W.speechSynthesis.getVoices()) || [];
-    return vs.filter((v) => String(v.lang || '').toLowerCase().startsWith('en') && !NOVELTY.test(v.name))
+    return vs.filter((v) => String(v.lang || '').toLowerCase().startsWith('en') && !NOVELTY.test(v.name) && !/eloquence|speech\.synthesis\.voice\.|novelty/i.test(v.voiceURI || ''))
       .map((v) => ({ id: v.voiceURI || v.name, name: v.name, lang: v.lang, local: !!v.localService }));
   } catch (e) { return []; }
 }

@@ -28,11 +28,11 @@
  * Екран: export function render(root, params, app) { ...; return cleanup? }
  *        export const meta = { topbar: true }   // необов'язково
  */
-import { tg, waitTelegram } from './tg.js?v=20261110190353';
-import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110190353';
-import * as S from './state.js?v=20261110190353';
-import * as UI from './ui.js?v=20261110190353';
-import * as I18N from './i18n.js?v=20261110190353';
+import { tg, waitTelegram } from './tg.js?v=20261110190644';
+import { loadState, saveState, flushState, clearState } from './storage.js?v=20261110190644';
+import * as S from './state.js?v=20261110190644';
+import * as UI from './ui.js?v=20261110190644';
+import * as I18N from './i18n.js?v=20261110190644';
 const { t } = I18N;
 
 const stageEl = document.getElementById('stage');
@@ -209,7 +209,7 @@ const screenCache = {};
 async function loadScreen(name) {
   if (screenCache[name]) return screenCache[name];
   if (!/^[a-z_]+$/.test(name)) throw new Error('bad screen name');
-  const mod = await import(`./${name}.js?v=20261110190353`);
+  const mod = await import(`./${name}.js?v=20261110190644`);
   screenCache[name] = mod;
   return mod;
 }
@@ -323,7 +323,7 @@ function wireSound() {
 // ─────────────────────────────────────────────────────────── boot
 async function boot() {
   const [content] = await Promise.all([
-    fetch('content.json?v=20261110190353').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
+    fetch('content.json?v=20261110190644').then((r) => { if (!r.ok) throw new Error('content.json ' + r.status); return r.json(); }),
     waitTelegram(),
   ]);
   tg.init();
@@ -333,14 +333,14 @@ async function boot() {
 
   // необовʼязкові модулі інших агентів — безпечно
   const [fxM, lumiM] = await Promise.all([
-    import('./fx.js?v=20261110190353').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
-    import('./lumi.js?v=20261110190353').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
+    import('./fx.js?v=20261110190644').catch((e) => { console.info('[app] fx.js not loaded, using fallbacks', e && e.message); return null; }),
+    import('./lumi.js?v=20261110190644').catch((e) => { console.info('[app] lumi.js not loaded, using PNG fallback', e && e.message); return null; }),
   ]);
   UI.setFx(fxM);
   lumiMod = lumiM;
 
   // аудіо — модуль іншого агента; немає файла → no-op заглушка
-  import('./audio.js?v=20261110190353').then((m) => { UI.setAudio(m); if (current) UI.audio.music(trackFor(current.name, current.params)); })
+  import('./audio.js?v=20261110190644').then((m) => { UI.setAudio(m); if (current) UI.audio.music(trackFor(current.name, current.params)); })
     .catch((e) => console.info('[app] audio.js not loaded, silent mode', e && e.message));
   wireSound();
 

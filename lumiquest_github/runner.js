@@ -2,11 +2,11 @@
 // набігають 3 ворота з англ. словами. Свайп/тап/стрілки — зміна доріжки. Правильні ворота —
 // бонус і швидкість росте; неправильні — спотикання (−❤️). 15 слів, потім фініш.
 // Рендер: <canvas> + rAF (зупиняється в cleanup/паузі), HUD і екрани — DOM (css/games.css).
-import * as S from './state.js?v=20261110190353';
-import * as FX from './fx.js?v=20261110190353';
-import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110190353';
-import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110190353';
-import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110190353';
+import * as S from './state.js?v=20261110190644';
+import * as FX from './fx.js?v=20261110190644';
+import { recordGame, starsByRatio, gameStars } from './games.js?v=20261110190644';
+import { tr, tc, twords, sfx, speak, starSfx } from './i18n_modes.js?v=20261110190644';
+import { perfLite, fpsWatch, canvasGameOn } from './obby.js?v=20261110190644';
 
 export const meta = { topbar: false };
 /** Для тестів: кадри циклу, чи працює rAF, доріжка правильних воріт (0..2), фаза. */
@@ -21,7 +21,7 @@ const Z_SPAWN = 36;
 const Z_FAR = 70;
 
 // ---------------------------------------------------------------- дрібниці
-const CSS_HREF = new URL('./games.css?v=20261110190353', import.meta.url).href;
+const CSS_HREF = new URL('./games.css?v=20261110190644', import.meta.url).href;
 function ensureCss(root) {
   let l = document.querySelector('link[data-games-css]');
   if (!l) {

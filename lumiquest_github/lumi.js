@@ -1,6 +1,6 @@
 // LumiQuest — Лумі, анімована SVG-героїня (v6 «Ліхтарик-дух»).
 //
-//   import { createLumi } from './lumi.js?v=20261110190353';
+//   import { createLumi } from './lumi.js?v=20261110190644';
 //   const lumi = createLumi(container, { size: 220, emotion: 'hello', bubble: 'top' });
 //   lumi.set('happy');              // hello happy excited thinking surprised sad proud cheer sleepy
 //   lumi.say('Привіт!', { ms: 2500 }); // бульбашка + друк + говоріння (5 форм рота по голосних, кивки)
