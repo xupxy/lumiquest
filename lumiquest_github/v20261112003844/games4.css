@@ -1,0 +1,201 @@
+/* LumiQuest — 🐍 Змійка-Слово (snake.js) і 🎣 Словесна Риболовля (fishing.js).
+   Підключається динамічно з модулів. Префікс класів: .g4-
+   v6: анімуються лише transform/opacity; без backdrop-filter і фільтрів у циклі. */
+
+.screen.g4-host, #app.no-topbar .screen.g4-host { padding: 0; overflow: hidden; }
+.g4 {
+  --g4-ink: var(--w-ink, #2b1d3a);
+  --g4-acc: var(--w-accent, #ffc23d);
+  --g4-acc2: var(--w-accent2, #3fb487);
+  --g4-card: var(--w-card, #fffcf3);
+  --g4-good: #2fbf71;
+  --g4-bad: #ef4f5f;
+  position: absolute; inset: 0; overflow: hidden;
+  color: var(--g4-ink);
+  font-family: var(--font, system-ui, sans-serif);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+  touch-action: none;
+  background: var(--w-bg1, #2a5a4a);
+}
+.g4 *, .g4 *::before, .g4 *::after { box-sizing: border-box; }
+.g4 button { font: inherit; cursor: pointer; touch-action: manipulation; }
+.g4-cv { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+
+/* ------------------------------------------------ HUD */
+.g4-hud {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 3;
+  padding: calc(8px + var(--safe-top, env(safe-area-inset-top, 0px))) 10px 0;
+  pointer-events: none;
+}
+.g4-hud > *, .g4-row > * { pointer-events: auto; }
+.g4-row { display: flex; align-items: center; gap: 6px; }
+.g4-ibtn {
+  flex: none; width: 42px; height: 42px; border-radius: 14px; border: 0;
+  background: rgba(255,255,255,.82); color: #2b1d3a;
+  font-size: 22px; line-height: 1; display: grid; place-items: center;
+  box-shadow: 0 3px 0 rgba(30,15,50,.22), 0 6px 14px rgba(30,15,50,.14);
+  transition: transform .08s;
+}
+.g4-ibtn.g4-back { font-size: 28px; padding-bottom: 4px; }
+.g4-ibtn[hidden] { display: none; }
+.g4-ibtn:active { transform: scale(.9) translateY(2px); }
+.g4-pause { margin-left: auto; }
+.g4-hearts { display: flex; gap: 1px; padding: 6px 8px; border-radius: 999px; background: rgba(255,255,255,.78); box-shadow: 0 3px 0 rgba(30,15,50,.18); }
+.g4-hearts i { font-style: normal; font-size: 18px; line-height: 1; transition: opacity .3s, transform .3s; }
+.g4-hearts i.lost { opacity: .28; transform: scale(.75); }
+.g4-chip {
+  flex: none; display: inline-flex; align-items: center; gap: 4px;
+  padding: 7px 11px; border-radius: 999px; font-weight: 800; font-size: 15px; color: #2b1d3a;
+  background: rgba(255,255,255,.82); box-shadow: 0 3px 0 rgba(30,15,50,.18);
+  font-variant-numeric: tabular-nums;
+}
+.g4-chip[hidden] { display: none; }
+.g4-chip.g4-hot { background: linear-gradient(180deg, #ffd25e, #ff9a3c); color: #4a1f00; }
+.g4-chip.g4-warn { background: #ffe1e4; color: #b01e30; animation: g4-pulse .5s ease-in-out infinite alternate; }
+@keyframes g4-pulse { to { transform: scale(1.1); } }
+.g4-bump { animation: g4-jelly .45s ease-out; }
+@keyframes g4-jelly {
+  0% { transform: scale(1); } 30% { transform: scale(1.3, .8); } 50% { transform: scale(.85, 1.15); }
+  70% { transform: scale(1.08, .95); } 100% { transform: scale(1); }
+}
+
+/* ------------------------------------------------ картка-завдання */
+.g4-card-q {
+  position: relative; margin: 8px auto 0; max-width: 420px; min-height: 74px;
+  padding: 8px 64px 9px 14px; border-radius: var(--w-r, 20px);
+  background: var(--g4-card); color: var(--g4-ink);
+  box-shadow: 0 5px 0 rgba(30,15,50,.16), 0 14px 30px rgba(30,15,50,.2);
+  text-align: center;
+}
+.g4-card-q[hidden] { display: none; }
+.g4-qlabel { font-size: 11.5px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; opacity: .62; }
+.g4-qword { margin-top: 1px; font-family: var(--w-font-display, var(--font)); font-weight: 800; font-size: 22px; line-height: 1.15; }
+.g4-qword.g4-long { font-size: 17px; }
+.g4-in { animation: g4-cardin .42s cubic-bezier(.3,1.5,.5,1); }
+@keyframes g4-cardin { from { opacity: 0; transform: translateY(-12px) scale(.92); } }
+.g4-lumi { position: absolute; right: 4px; bottom: -6px; width: 58px; height: 62px; pointer-events: auto; }
+.g4-lumi .lq-bubble { --lq-fs: 13px; max-width: 190px; }
+
+/* слоти літер (змійка) */
+.g4-slots { display: flex; justify-content: center; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.g4-slots b {
+  width: 26px; height: 30px; border-radius: 9px; display: grid; place-items: center;
+  font-family: 'Poppins', var(--font); font-size: 18px; font-weight: 900; line-height: 1;
+  background: rgba(0,0,0,.07); color: transparent; box-shadow: inset 0 -3px 0 rgba(0,0,0,.08);
+  transition: background .2s, color .2s;
+}
+.g4-slots b.on { background: var(--g4-acc2); color: #fff; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); animation: g4-jelly .4s ease-out; }
+.g4-slots b.next { box-shadow: inset 0 -3px 0 rgba(0,0,0,.08), 0 0 0 2px var(--g4-acc); }
+.g4-card-q.g4-done .g4-slots b { background: var(--g4-good); }
+.g4-card-q.g4-shake { animation: g4-shake .45s ease-out; }
+@keyframes g4-shake {
+  0%, 100% { transform: translateX(0); } 20% { transform: translateX(-9px); } 40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); } 80% { transform: translateX(3px); }
+}
+
+.g4-tip {
+  position: absolute; left: 50%; bottom: calc(18px + var(--safe-bottom, env(safe-area-inset-bottom, 0px))); z-index: 2;
+  transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; white-space: nowrap;
+  background: rgba(255,255,255,.85); color: #2b1d3a; font-weight: 800; font-size: 14px;
+  box-shadow: 0 3px 0 rgba(30,15,50,.18); pointer-events: none;
+  transition: opacity .4s, transform .4s;
+}
+.g4-tip.g4-hide { opacity: 0; transform: translate(-50%, 10px); }
+
+/* ------------------------------------------------ оверлеї */
+.g4-over {
+  position: absolute; inset: 0; z-index: 10; display: grid; place-items: center;
+  padding: calc(16px + var(--safe-top, 0px)) 16px calc(16px + var(--safe-bottom, 0px));
+  background: rgba(20, 10, 40, .55);
+  animation: g4-fade .25s ease-out;
+  overflow-y: auto;
+}
+.g4-over.g4-out { opacity: 0; transition: opacity .2s; }
+@keyframes g4-fade { from { opacity: 0; } }
+.g4-box {
+  position: relative; width: 100%; max-width: 360px; padding: 20px 18px 18px;
+  border-radius: var(--w-r, 26px); text-align: center;
+  background: var(--g4-card); color: var(--g4-ink);
+  box-shadow: 0 8px 0 rgba(30,15,50,.22), 0 24px 50px rgba(0,0,0,.35);
+  animation: g4-cardin .45s cubic-bezier(.3,1.5,.5,1);
+}
+.g4-box-sm { max-width: 300px; }
+.g4-ico { font-size: 52px; line-height: 1; margin-top: -4px; animation: g4-bob 2.4s ease-in-out infinite; }
+@keyframes g4-bob { 50% { transform: translateY(-6px) rotate(-4deg); } }
+.g4-box h2 { margin: 6px 0 2px; font-family: var(--w-font-display, var(--font)); font-size: 25px; line-height: 1.15; }
+.g4-sub { margin: 0 0 4px; font-size: 14.5px; font-weight: 700; opacity: .75; }
+.g4-ilumi { width: 96px; height: 96px; margin: 2px auto -2px; }
+.g4-rules { list-style: none; margin: 8px 0 12px; padding: 0; text-align: left; font-size: 14.5px; line-height: 1.35; }
+.g4-rules li { position: relative; padding: 4px 0 4px 26px; }
+.g4-rules li::before { content: '✦'; position: absolute; left: 6px; top: 4px; color: var(--g4-acc2); font-weight: 900; }
+.g4-keys { font-size: 12px; opacity: .55; margin: -4px 0 10px; }
+.g4-btns { display: grid; gap: 8px; margin-top: 10px; }
+.g4-btns.g4-two { grid-template-columns: 1fr 1fr; }
+.g4-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 50px; padding: 10px 16px; border: 0; border-radius: var(--w-r-btn, 16px); width: 100%;
+  font-weight: 800; font-size: 17px; color: #fff;
+  background: linear-gradient(180deg, #8c6dff, #6a48f0);
+  box-shadow: 0 4px 0 #4a2fb8, 0 8px 18px rgba(80,50,200,.25);
+  transition: transform .08s, box-shadow .08s;
+}
+.g4-btn:active { transform: translateY(3px) scale(.98); box-shadow: 0 1px 0 #4a2fb8; }
+.g4-btn.g4-go { background: linear-gradient(180deg, var(--w-btn1, #ffd25e), var(--w-btn2, #f6a821)); color: #3a2400; box-shadow: 0 4px 0 rgba(0,0,0,.25), 0 8px 18px rgba(0,0,0,.2); }
+.g4-btn.g4-ghost { background: transparent; color: inherit; box-shadow: none; opacity: .7; min-height: 40px; }
+.g4-banner {
+  display: inline-block; margin: -40px auto 4px; padding: 8px 22px; border-radius: 14px;
+  font-family: var(--w-font-display, var(--font)); font-weight: 900; font-size: 24px; color: #fff;
+  background: linear-gradient(180deg, #46d184, #22a35d); box-shadow: 0 5px 0 #157642;
+  animation: g4-jelly .6s .1s ease-out both;
+}
+.g4-lose .g4-banner { background: linear-gradient(180deg, #8f8aa8, #6c6787); box-shadow: 0 5px 0 #4b4764; }
+.g4-stars { min-height: 64px; display: flex; justify-content: center; }
+.g4-record { display: inline-block; margin: 2px 0 6px; padding: 4px 12px; border-radius: 999px; background: #fff0b3; color: #7a4b00; font-weight: 900; font-size: 14px; animation: g4-jelly .5s 1s both; }
+.g4-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0 4px; }
+.g4-stats > div { padding: 7px 4px; border-radius: 14px; background: rgba(0,0,0,.06); }
+.g4-stats span { display: block; font-size: 11.5px; font-weight: 700; opacity: .7; }
+.g4-stats strong { font-size: 21px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.g4-stats em { font-style: normal; font-size: 14px; opacity: .6; }
+.g4-res { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.g4-rlumi { width: 72px; height: 72px; }
+.g4-xp { font-weight: 900; font-size: 20px; color: #7b4dff; }
+.g4-learned { margin: 6px 0 2px; font-size: 13px; font-weight: 700; opacity: .8; line-height: 1.5; }
+.g4-learned i { font-style: normal; display: inline-block; margin: 2px; padding: 2px 8px; border-radius: 999px; background: rgba(0,0,0,.07); font-family: 'Poppins', var(--font); }
+
+.g4-locked { position: absolute; inset: 0; display: grid; place-content: center; gap: 12px; text-align: center; padding: 24px; color: #fff; }
+.g4-locked div { font-size: 56px; }
+
+/* 🎣 Лумі в човні */
+.g4-fish .g4-boatlumi { position: absolute; z-index: 2; left: 6px; width: 64px; height: 64px; pointer-events: auto; will-change: transform; }
+.g4-fish .g4-boatlumi .lq-bubble { --lq-fs: 13px; max-width: 200px; }
+.g4-fish .g4-card-q { padding-right: 14px; }
+.g4-timer { min-width: 62px; justify-content: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .g4-ico, .g4-chip.g4-warn { animation: none; }
+}
+
+/* v6: статичні/паралакс-шари — окремі полотна, рух лише transform/opacity (композитор) */
+.g4-stage { position: absolute; inset: 0; overflow: hidden; }
+.g4-flash { position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; }
+.g4-flash-bad { background: #ff3355; animation: g4-flash .35s ease-out; }
+.g4-flash-good { background: #ffffff; animation: g4-flash .3s ease-out; }
+@keyframes g4-flash { from { opacity: .28; } to { opacity: 0; } }
+/* поки йде гра (екран непрозорий) — глобальне небо застосунку не малюємо й не анімуємо */
+html[data-g4] #sky { visibility: hidden; }
+html[data-g4] #sky, html[data-g4] #sky * { animation-play-state: paused !important; }
+
+/* v17: «+10 XP» вилітає з лічильника улову */
+.fx-float.g4-xpfly { color: #9cf5b8; font-size: 22px; font-weight: 900; text-shadow: 0 2px 0 rgba(20,40,60,.55); }
+/* v17: Лумі в човні тепер на canvas; тут лише бульбашка-репліка */
+.g4-fish .g4-boatlumi { pointer-events: none; }
+.g4-say {
+  position: absolute; left: 62px; top: -4px; max-width: min(220px, calc(100vw - 90px)); width: max-content;
+  padding: 7px 12px; border-radius: 16px 16px 16px 4px; background: #fff; color: #3d2852;
+  font-weight: 800; font-size: 13px; line-height: 1.25; box-shadow: 0 3px 0 rgba(30,20,60,.18);
+  opacity: 0; transform: translateY(6px) scale(.8); transform-origin: 0 100%;
+  transition: opacity .2s ease, transform .25s cubic-bezier(.3,1.6,.5,1);
+}
+.g4-say.on { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .g4-say { transition: none; } }
