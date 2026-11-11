@@ -6,7 +6,7 @@
 </head><body><div>✨ LumiQuest…</div>
 <script>
 (function () {
-  var fallback = "20261111133453";
+  var fallback = "20261111175623";
   function go(v) { location.replace("v" + v + "/index.html" + location.search + location.hash); }
   var done = false, t = setTimeout(function () { if (!done) { done = true; go(fallback); } }, 4000);
   fetch("version.json?t=" + Date.now(), { cache: "no-store" })
