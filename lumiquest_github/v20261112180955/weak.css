@@ -1,0 +1,59 @@
+/* v21 «Слабкі місця» — рогатка зі світлячком (screens/weak.js). Лише transform/opacity в анімаціях. */
+.wk{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;user-select:none;-webkit-user-select:none;
+  background:linear-gradient(180deg,var(--w-bg1,#bfe6ff) 0%,var(--w-bg2,#fdf0d5) 100%);color:var(--w-ink,#3a2433);font-family:inherit}
+.wk-top{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 10px 6px}
+.wk-btn{border:2px solid rgba(58,36,51,.5);background:rgba(255,255,255,.8);border-radius:12px;padding:6px 10px;font:inherit;font-weight:800;color:inherit}
+.wk-ttl{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.wk-name{font-family:var(--w-font-display,inherit);font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-prog{font-size:12px;font-weight:700;opacity:.75}
+.wk-ammo{display:flex;gap:4px}
+.wk-ammo i{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fffbd0,#ffd84a 60%,#f2a818);border:2px solid #6b4310;
+  transition:opacity .25s,transform .25s}
+.wk-ammo i:not(.on){opacity:.22;transform:scale(.75)}
+.wk-q{margin:0 10px 6px;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.92);border:3px solid rgba(58,36,51,.55);
+  box-shadow:0 4px 0 rgba(58,36,51,.18);text-align:center}
+.wk-badge{font-size:12px;font-weight:800;color:#b5520f;margin-bottom:2px}
+.wk-badge[hidden]{display:none}
+.wk-prompt{font-size:19px;font-weight:800;line-height:1.3}
+.wk-prompt u{text-decoration:none;display:inline-block;min-width:44px;border-bottom:3px dashed #f2a818;color:#b5520f}
+.wk-field{position:relative;flex:1;min-height:240px}
+.wk-cv{position:absolute;inset:0;display:block;touch-action:none;cursor:grab}
+.wk-cv:active{cursor:grabbing}
+.wk-tip{position:absolute;left:8px;right:8px;top:6px;padding:10px 12px;border-radius:14px;
+  background:rgba(255,255,255,.96);border:3px solid #3a2433;font-size:14px;line-height:1.35;animation:wk-up .28s ease-out both;z-index:2}
+.wk-tip[hidden]{display:none}
+.wk-tip b{display:block;font-size:15px}
+.wk-tip p{margin:4px 0 0}
+.wk-tip.ok{border-color:#1f8a3a;background:#effbea}
+.wk-tip.no{border-color:#d2343f;background:#fff1f1}
+.wk-tip.miss{left:auto;right:10px;padding:6px 10px;border-width:2px}
+.wk-tip.reveal{border-color:#b5520f;background:#fff6e6}
+.wk-rl{font-weight:800}
+.wk-go{display:block;width:100%;margin-top:8px;height:44px;border-radius:14px;border:3px solid #3a2433;background:linear-gradient(#ffe08a,#f7b733);
+  font:inherit;font-weight:900;font-size:16px;color:#3a2433;box-shadow:0 4px 0 rgba(58,36,51,.3)}
+.wk-go:active{transform:translateY(2px)}
+.wk-go.big{height:52px;font-size:18px}
+.wk-go.sec{background:#fff;height:42px;font-size:15px}
+.wk-ov{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(30,20,40,.45)}
+.wk-board{position:relative;width:min(420px,100%);padding:18px 14px 14px;border-radius:20px;background:#2f5a3e;border:8px solid #a86c3a;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.08),0 8px 0 rgba(0,0,0,.25);color:#f4f4e8}
+.wk-lumi{position:absolute;right:-6px;top:-46px;width:84px;height:84px}
+.wk-lumi img{width:100%;height:100%;object-fit:cover;border-radius:50%;background:#fff;border:3px solid #a86c3a;animation:wk-bob 2.4s ease-in-out infinite}
+.wk-glass{position:absolute;left:-6px;bottom:2px;font-size:34px;transform:rotate(-20deg)}
+.wk-chalk small{display:block;font-size:12px;opacity:.8;padding-right:72px}
+.wk-chalk h2{margin:4px 0 8px;font-family:var(--w-font-display,inherit);font-size:22px;color:#fff6a8;padding-right:60px}
+.wk-rule{font-size:16px;font-weight:700;line-height:1.4;margin:0 0 8px}
+.wk-ex{font-size:15px;margin:0 0 8px;padding:8px 10px;border:2px dashed rgba(255,255,255,.45);border-radius:10px}
+.wk-ex span{color:#ffd84a;font-weight:800}
+.wk-how{font-size:13px;opacity:.85;margin:0 0 4px}
+.wk-res{width:min(360px,100%);padding:18px 16px;border-radius:22px;background:#fff;border:3px solid #3a2433;text-align:center;color:#3a2433;
+  animation:wk-up .35s cubic-bezier(.2,1.3,.4,1) both}
+.wk-res h2{margin:4px 0}
+.wk-ico{font-size:52px;line-height:1}
+.wk-stars{min-height:70px;display:flex;justify-content:center;align-items:flex-end}
+.wk-fin{font-weight:800}.wk-fin.ok{color:#1f8a3a}.wk-fin.no{color:#b5520f}
+@keyframes wk-up{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes wk-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+html[data-perf='lite'] .wk-lumi img,html[data-perf='lite'] .wk-tip{animation:none}
+@media (prefers-reduced-motion:reduce){.wk-lumi img,.wk-tip,.wk-res{animation:none}}
+@media (max-height:600px){.wk-prompt{font-size:16px}.wk-q{padding:6px 10px}}
