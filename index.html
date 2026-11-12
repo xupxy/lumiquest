@@ -6,7 +6,7 @@
 </head><body><div>✨ LumiQuest…</div>
 <script>
 (function () {
-  var fallback = "20261112180955";
+  var fallback = "20261112181925";
   try { if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
   function go(v) { location.replace("v" + v + "/index.html" + location.search + location.hash); }
   var done = false, t = setTimeout(function () { if (!done) { done = true; go(fallback); } }, navigator.onLine === false ? 10 : 4000);
