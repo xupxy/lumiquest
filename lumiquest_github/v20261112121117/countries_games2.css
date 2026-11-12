@@ -1,0 +1,186 @@
+/* v19 «Ігри Б» — унікальні міні-ігри країн c6–c10 (screens/special_c6..c10.js, каркас _sp2kit.js). Префікс sp2-.
+   Анімації лише transform/opacity (+ окремі властивості scale/rotate/translate, що складаються з inline transform). */
+.sp2{position:absolute;inset:0;display:flex;flex-direction:column;gap:8px;padding:calc(10px + env(safe-area-inset-top,0px)) 10px calc(10px + env(safe-area-inset-bottom,0px));
+  overflow:hidden;color:#2b1d33;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  background:linear-gradient(180deg,#ffe2b8,#ffb5a0)}
+.sp2 button{font-family:inherit;color:inherit;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.sp2-top{position:relative;display:flex;align-items:center;gap:6px;flex:none;z-index:3}
+.sp2-btn{min-width:44px;height:44px;border-radius:14px;border:2px solid rgba(43,29,51,.35);background:#fffaf0;font-weight:900;font-size:20px}
+.sp2-chip{padding:7px 11px;border-radius:999px;background:#fffaf0;border:2px solid rgba(43,29,51,.22);font-weight:800;font-size:15px;white-space:nowrap}
+.sp2-combo{opacity:0;transform:scale(.6);transition:opacity .2s,transform .25s cubic-bezier(.3,1.6,.5,1);background:#ffe27a}
+.sp2-combo.on{opacity:1;transform:none}
+.sp2-bar{position:absolute;left:52px;right:0;bottom:-6px;height:4px;border-radius:4px;background:rgba(43,29,51,.15);overflow:hidden}
+.sp2-bar b{display:block;height:100%;background:linear-gradient(90deg,#ff6b6b,#ffd166);transform-origin:left;will-change:transform}
+.sp2-field{position:relative;flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
+.sp2-ov{position:absolute;inset:0;display:grid;place-items:center;padding:16px;background:rgba(30,16,40,.5);z-index:20;animation:sp2-fade .25s both;overflow:auto}
+.sp2-box{width:100%;max-width:370px;background:#fffaf0;border:3px solid #2b1d33;border-radius:26px;padding:18px 16px;text-align:center;box-shadow:0 8px 0 rgba(43,29,51,.3);animation:sp2-in .45s cubic-bezier(.3,1.4,.5,1) both}
+.sp2-box h2{margin:4px 0 8px;font-size:25px}
+.sp2-box p{margin:7px 0;padding:9px 11px;border-radius:14px;background:rgba(255,120,80,.1);text-align:left;font-size:15px;line-height:1.35}
+.sp2-box p.sp2-mini{background:none;text-align:center;font-size:13px;opacity:.75;padding:2px}
+.sp2-ico{font-size:56px;line-height:1;display:inline-block;animation:sp2-bob 1.6s ease-in-out infinite}
+.sp2-go{display:block;width:100%;height:52px;margin-top:10px;border-radius:16px;border:3px solid #2b1d33;background:linear-gradient(#ffe08a,#f7b733);font-weight:900;font-size:18px;box-shadow:0 4px 0 rgba(43,29,51,.3)}
+.sp2-go.sec{background:#fff;box-shadow:none;border-width:2px;font-weight:800}
+.sp2-go:active,.sp2-btn:active{transform:scale(.94)}
+.sp2-stars{display:flex;justify-content:center;gap:6px;font-size:46px;min-height:60px;align-items:center}
+.sp2-stars i{font-style:normal;opacity:.18;filter:grayscale(1)}
+.sp2-stars i.on{opacity:1;filter:none;animation:sp2-star .55s cubic-bezier(.3,1.7,.5,1) both}
+.sp2-res{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0}
+.sp2-res span{background:rgba(43,29,51,.06);border-radius:12px;padding:6px;font-size:12px;font-weight:700;display:flex;flex-direction:column}
+.sp2-res b{font-size:20px}
+.sp2-learn{display:flex;flex-direction:column;gap:4px;text-align:left;margin-top:6px;max-height:170px;overflow:auto}
+.sp2-learn small{opacity:.7;font-weight:700}
+.sp2-learn button{border:0;background:rgba(80,180,255,.12);border-radius:10px;padding:6px 9px;text-align:left;font-size:14px}
+.sp2-cd{position:absolute;left:50%;top:45%;font-size:96px;font-weight:900;color:#fff;-webkit-text-stroke:3px #2b1d33;z-index:15;pointer-events:none;opacity:0;transform:translate(-50%,-50%)}
+.sp2-cd.on{animation:sp2-cd .6s ease-out both}
+.sp2-toast{position:absolute;left:50%;top:22%;z-index:12;pointer-events:none;padding:8px 16px;border-radius:999px;background:#fffaf0;border:3px solid #2b1d33;font-weight:900;font-size:18px;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis;
+  animation:sp2-toast .9s ease-out both}
+.sp2-toast.ok{background:#c9f7d6}.sp2-toast.bad{background:#ffd3d3}.sp2-toast.combo{background:linear-gradient(90deg,#ffe27a,#ffb4d9)}
+.sp2-float{position:absolute;z-index:6;pointer-events:none;font-weight:900;font-size:17px;white-space:nowrap;color:#fff;-webkit-text-stroke:1px rgba(0,0,0,.45);transform:translate(-50%,0);animation:sp2-float .8s ease-out both}
+.sp2-float.ok{color:#7dffb0}.sp2-float.bad{color:#ff8a8a}
+.sp2-ok{animation:sp2-okp .45s ease-out}
+.sp2-bad{animation:sp2-badp .42s ease-out}
+.sp2-in{animation:sp2-in .4s cubic-bezier(.3,1.5,.5,1) both}
+@keyframes sp2-fade{from{opacity:0}to{opacity:1}}
+@keyframes sp2-in{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+@keyframes sp2-bob{0%,100%{transform:none}50%{transform:translateY(-7px) rotate(-4deg)}}
+@keyframes sp2-star{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
+@keyframes sp2-cd{0%{opacity:0;transform:translate(-50%,-50%) scale(1.8)}30%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.85)}}
+@keyframes sp2-toast{0%{opacity:0;transform:translate(-50%,10px) scale(.7)}20%{opacity:1;transform:translate(-50%,0) scale(1.05)}75%{opacity:1;transform:translate(-50%,-6px)}100%{opacity:0;transform:translate(-50%,-22px)}}
+@keyframes sp2-float{0%{opacity:0;transform:translate(-50%,6px) scale(.7)}25%{opacity:1;transform:translate(-50%,-6px) scale(1.1)}100%{opacity:0;transform:translate(-50%,-40px)}}
+@keyframes sp2-okp{0%{scale:1}35%{scale:1.15}70%{scale:.96}100%{scale:1}}
+@keyframes sp2-badp{0%,100%{translate:0}20%{translate:-8px}40%{translate:8px}60%{translate:-5px}80%{translate:3px}}
+
+/* ── c6 Фламенко-ритм */
+.sp2-c6{background:radial-gradient(120% 70% at 50% 0%,#ffcf6b,#e2462f 55%,#7a1430)}
+.sp2-c6-card{flex:none;background:#fff6e4;border:3px solid #5a0f22;border-radius:20px;padding:8px 10px;text-align:center;box-shadow:0 4px 0 rgba(90,15,34,.35)}
+.sp2-c6-tr{font-weight:800;font-size:16px;line-height:1.25}
+.sp2-c6-slots{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:6px}
+.sp2-c6-slots span{padding:3px 7px;border-radius:8px;background:rgba(90,15,34,.1);font-weight:800;font-size:14px;transition:transform .25s,background .25s}
+.sp2-c6-slots span.on{background:#ffd34d;transform:translateY(-2px)}
+.sp2-c6-slots span.next{outline:2px dashed #c2213b}
+.sp2-c6-stage{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;display:flex;background:linear-gradient(180deg,rgba(60,0,20,.25),rgba(60,0,20,.55));border:3px solid rgba(90,15,34,.6)}
+.sp2-c6-lane{flex:1;border-right:2px dashed rgba(255,220,160,.25)}.sp2-c6-lane:last-of-type{border:0}
+.sp2-c6-line{position:absolute;left:0;right:0;bottom:44px;height:6px;border-radius:3px;background:linear-gradient(90deg,#ffd34d,#fff1b0,#ffd34d);opacity:.9}
+.sp2-c6-dancer{position:absolute;right:4px;bottom:54px;font-size:44px;opacity:.85;pointer-events:none}
+.sp2-c6-dancer.twirl{animation:sp2-twirl .5s ease-out}
+@keyframes sp2-twirl{0%{transform:none}50%{transform:scaleX(-1) translateY(-10px)}100%{transform:none}}
+.sp2-c6-row{position:absolute;left:0;right:0;top:0;height:48px;display:flex;will-change:transform;transition:opacity .25s}
+.sp2-c6-row.gone{opacity:0}
+.sp2-c6-note{flex:1;display:grid;place-items:center;padding:0 4px}
+.sp2-c6-note em{font-style:normal;display:block;max-width:100%;padding:8px 6px;border-radius:24px 24px 12px 12px;background:radial-gradient(circle at 50% 120%,#ffe8a8,#ff9f43 70%);border:2px solid #5a0f22;
+  font-weight:900;font-size:15px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;box-shadow:0 3px 0 rgba(90,15,34,.4)}
+.sp2-c6-note.n1 em{background:radial-gradient(circle at 50% 120%,#ffd6e7,#ff5c8a 70%)}
+.sp2-c6-note.n2 em{background:radial-gradient(circle at 50% 120%,#e0f0ff,#7cc0ff 70%)}
+.sp2-c6-note.win em{background:#7be0a4}
+.sp2-c6-pads{flex:none;display:flex;gap:8px}
+.sp2-c6-pad{flex:1;height:58px;border-radius:18px;border:3px solid #5a0f22;background:linear-gradient(#fff3c4,#ffc94d);font-size:24px;font-weight:900;box-shadow:0 4px 0 rgba(90,15,34,.4)}
+.sp2-c6-pad.hit{animation:sp2-padhit .2s ease-out}
+@keyframes sp2-padhit{0%{transform:translateY(4px) scale(.95)}100%{transform:none}}
+
+/* ── c7 Хокейний пас */
+.sp2-c7{background:linear-gradient(180deg,#c9e8ff,#eaf6ff)}
+.sp2-c7-card{flex:none;background:#fff;border:3px solid #1d3557;border-radius:18px;padding:8px 10px;text-align:center;box-shadow:0 4px 0 rgba(29,53,87,.3)}
+.sp2-c7-card b{display:block;font-size:18px}.sp2-c7-card small{opacity:.7;font-weight:700}
+.sp2-c7-ice{position:relative;flex:1;min-height:0;border-radius:28px;overflow:hidden;border:4px solid #c1121f;
+  background:linear-gradient(180deg,#f4fbff,#dff1ff 60%,#eef8ff)}
+.sp2-c7-mark{position:absolute;left:0;right:0;top:50%;height:6px;margin-top:-3px;background:#e63946;opacity:.55}
+.sp2-c7-circle{position:absolute;left:50%;top:50%;width:110px;height:110px;margin:-55px;border-radius:50%;border:4px solid rgba(29,53,87,.35)}
+.sp2-c7-mates{position:absolute;left:0;right:0;top:12px;display:flex;justify-content:space-around;padding:0 6px;z-index:2}
+.sp2-c7-mate{width:31%;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:0}
+.sp2-c7-mate em{font-style:normal;display:block;max-width:100%;padding:7px 9px;border-radius:14px;background:#fff;border:3px solid #1d3557;font-weight:900;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp2-c7-jersey{width:52px;height:52px;border-radius:14px 14px 10px 10px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:20px;
+  background:linear-gradient(180deg,#d62828 0 40%,#fff 40% 52%,#d62828 52%);border:3px solid #1d3557}
+.sp2-c7-mate.right em{background:#b8f5c9;border-color:#1b7a3d}
+.sp2-c7-mate.wrong em{background:#ffc9c9;border-color:#a4161a}
+.sp2-c7-moose{position:absolute;left:0;top:0;width:64px;height:64px;font-size:54px;line-height:64px;text-align:center;will-change:transform;z-index:1}
+.sp2-c7-moose.block{animation:sp2-badp .45s ease-out}
+.sp2-c7-me{position:absolute;left:50%;bottom:6px;margin-left:-28px;font-size:44px;line-height:1}
+.sp2-c7-me i{position:absolute;right:-16px;top:12px;font-style:normal;font-size:30px;transform-origin:20% 20%}
+.sp2-c7-me.swing i{animation:sp2-swing .35s ease-out}
+@keyframes sp2-swing{0%{transform:none}40%{transform:rotate(-55deg)}100%{transform:none}}
+.sp2-c7-puck{position:absolute;left:0;top:0;width:22px;height:12px;border-radius:50%;background:#111;box-shadow:0 3px 0 #000;will-change:transform;transition:opacity .2s;z-index:3}
+
+/* ── c8 Серф-хвиля */
+.sp2-c8{background:linear-gradient(180deg,#ffe9a8,#ffb36b)}
+.sp2-c8-card{flex:none;background:#fffdf5;border:3px solid #0b4f6c;border-radius:18px;padding:8px 10px;text-align:center;box-shadow:0 4px 0 rgba(11,79,108,.3)}
+.sp2-c8-card b{display:block;font-size:22px}.sp2-c8-card small{display:block;font-style:italic;font-size:14px;opacity:.8}.sp2-c8-card i{display:block;font-style:normal;font-size:12px;font-weight:700;opacity:.6;margin-top:2px}
+.sp2-c8-sea{position:relative;flex:1;min-height:0;border-radius:26px;overflow:hidden;border:3px solid #0b4f6c;touch-action:none;
+  background:linear-gradient(180deg,#8fd8ff 0%,#c9f0ff 38%,#1fa2c9 38%,#0b6e99 100%)}
+.sp2-c8-sun{position:absolute;right:18px;top:14px;width:54px;height:54px;border-radius:50%;background:radial-gradient(#fff6b0,#ffd23f)}
+.sp2-c8-wave{position:absolute;left:-20%;right:-20%;bottom:0;height:72%;transform-origin:50% 100%;will-change:transform;
+  background:radial-gradient(120% 90% at 30% 100%,#0a5f86 55%,transparent 56%),radial-gradient(90% 80% at 75% 100%,#1287b3 55%,transparent 56%);opacity:.9}
+.sp2-c8-wave::before{content:'';position:absolute;left:8%;right:8%;top:16%;height:12px;border-radius:50%;background:rgba(255,255,255,.75)}
+.sp2-c8-opt{position:absolute;top:12%;max-width:44%;padding:9px 11px;border-radius:16px;background:#fffdf5;border:3px solid #0b4f6c;font-weight:900;font-size:16px;text-align:center;z-index:2;box-shadow:0 4px 0 rgba(11,79,108,.3)}
+.sp2-c8-opt.l{left:8px}.sp2-c8-opt.r{right:8px}
+.sp2-c8-opt.right{background:#b8f5c9}.sp2-c8-opt.wrong{background:#ffc9c9}
+.sp2-c8-meter{position:absolute;left:20%;right:20%;top:calc(12% + 62px);height:10px;border-radius:6px;background:linear-gradient(90deg,#ff7b7b,#fff 40% 60%,#ff7b7b);border:2px solid #0b4f6c}
+.sp2-c8-meter b{position:absolute;left:50%;top:-5px;width:6px;height:16px;margin-left:-3px;border-radius:3px;background:#0b4f6c;will-change:transform}
+.sp2-c8-time{position:absolute;left:30%;right:30%;top:calc(12% + 82px);height:5px;border-radius:3px;background:rgba(255,255,255,.4);overflow:hidden}
+.sp2-c8-time b{display:block;height:100%;background:#ffd23f;transform-origin:left;will-change:transform}
+.sp2-c8-surfer{position:absolute;left:50%;bottom:22%;width:120px;margin-left:-60px;will-change:transform;z-index:3}
+.sp2-c8-rider{display:flex;flex-direction:column;align-items:center;transform-origin:50% 90%;will-change:transform}
+.sp2-c8-rider span{font-size:58px;line-height:1}
+.sp2-c8-board{display:block;width:110px;height:14px;margin-top:-8px;border-radius:50%;background:linear-gradient(90deg,#ff5d8f,#ffd23f,#3ddc97);border:2px solid #0b4f6c}
+.sp2-c8-surfer.ride .sp2-c8-rider span{animation:sp2-hop .5s ease-out}
+.sp2-c8-surfer.wipe .sp2-c8-rider span{animation:sp2-wipe 1.1s ease-in-out}
+@keyframes sp2-hop{50%{transform:translateY(-22px) rotate(-12deg)}}
+@keyframes sp2-wipe{0%{transform:none;opacity:1}35%{transform:translateY(-30px) rotate(200deg);opacity:1}70%{transform:translateY(40px) rotate(360deg);opacity:0}100%{transform:none;opacity:1}}
+.sp2-c8-touch{position:absolute;bottom:10px;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#fff;background:rgba(11,79,108,.35);border:3px solid rgba(255,255,255,.7);z-index:4;pointer-events:none;transition:transform .12s,opacity .12s;opacity:.7}
+.sp2-c8-touch.l{left:12px}.sp2-c8-touch.r{right:12px}
+.sp2-c8-touch.on{transform:scale(1.15);opacity:1}
+
+/* ── c9 Футбол-фрістайл */
+.sp2-c9{background:linear-gradient(180deg,#ffe066,#2bb673)}
+.sp2-c9-card{flex:none;background:#fffdf0;border:3px solid #0b3d2e;border-radius:18px;padding:7px 10px;text-align:center;box-shadow:0 4px 0 rgba(11,61,46,.3)}
+.sp2-c9-card small{display:block;font-weight:700;opacity:.7}.sp2-c9-card b{font-size:22px}
+.sp2-c9-pitch{position:relative;flex:1;min-height:0;border-radius:26px;overflow:hidden;border:3px solid #0b3d2e;touch-action:none;
+  background:linear-gradient(180deg,#7fd3ff 0%,#c2ecff 45%,#2fae5b 45%,#1f8a45 100%)}
+.sp2-c9-sun{position:absolute;left:16px;top:14px;width:48px;height:48px;border-radius:50%;background:radial-gradient(#fff7c2,#ffcf33)}
+.sp2-c9-hill{position:absolute;left:52%;top:20%;width:90px;height:110px;border-radius:50% 50% 0 0;background:#3c7d4f;opacity:.7}
+.sp2-c9-zone{position:absolute;left:0;right:0;top:52%;bottom:0;background:linear-gradient(180deg,rgba(125,255,170,0),rgba(125,255,170,.35));opacity:0;transition:opacity .15s}
+.sp2-c9-pitch.hot .sp2-c9-zone{opacity:1}
+.sp2-c9-kicker{position:absolute;left:50%;bottom:6px;margin-left:-28px;font-size:56px;line-height:1}
+.sp2-c9-kicker.kick{animation:sp2-hop .3s ease-out}
+.sp2-c9-ball{position:absolute;left:0;top:0;width:80px;height:80px;display:flex;flex-direction:column;align-items:center;will-change:transform;pointer-events:none;z-index:3}
+.sp2-c9-ball span{font-size:52px;line-height:60px;will-change:transform}
+.sp2-c9-ball em{font-style:normal;margin-top:-4px;padding:3px 9px;border-radius:999px;background:#fff;border:2px solid #0b3d2e;font-weight:900;font-size:16px;white-space:nowrap}
+.sp2-c9-ball.kick em{animation:sp2-in .3s cubic-bezier(.3,1.6,.5,1)}
+.sp2-c9-ball.bounce em{animation:sp2-badp .3s}
+.sp2-c9-parade{position:absolute;left:0;right:0;bottom:70px;height:56px;pointer-events:none;z-index:2}
+.sp2-c9-parade span{position:absolute;left:0;bottom:0;font-size:40px;animation:sp2-parade 2.6s linear both}
+@keyframes sp2-parade{0%{transform:translate(-60px,0);opacity:0}10%{opacity:1}25%{transform:translate(25vw,-14px)}50%{transform:translate(50vw,0)}75%{transform:translate(75vw,-14px)}90%{opacity:1}100%{transform:translate(105vw,0);opacity:0}}
+
+/* ── c10 K-pop денс-баттл */
+.sp2-c10{background:linear-gradient(180deg,#1b0b3a,#3a0d5c 50%,#0c1d4d);color:#fff}
+.sp2-c10 .sp2-chip,.sp2-c10 .sp2-btn{color:#2b1d33}
+.sp2-c10-lyr{flex:none;min-height:56px;padding:8px 10px;border-radius:18px;text-align:center;background:rgba(255,255,255,.1);border:2px solid #ff4fd8;box-shadow:inset 0 0 18px rgba(255,79,216,.35)}
+.sp2-c10-lyr b{display:block;font-size:18px}.sp2-c10-lyr u{text-decoration:none;color:#ffe45e;border-bottom:3px solid #ffe45e;padding:0 4px}
+.sp2-c10-lyr small{opacity:.75;font-size:13px}
+.sp2-c10-stage{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;border:2px solid rgba(120,220,255,.55);background:linear-gradient(180deg,rgba(0,0,0,.2),rgba(80,0,120,.45))}
+.sp2-c10-lights{position:absolute;inset:0;pointer-events:none;background:radial-gradient(40% 50% at 20% 0%,rgba(255,79,216,.45),transparent),radial-gradient(40% 50% at 80% 0%,rgba(79,216,255,.45),transparent);will-change:opacity}
+.sp2-c10-lane{position:absolute;top:0;bottom:0;width:25%;border-right:1px solid rgba(255,255,255,.12)}
+.sp2-c10-line{position:absolute;left:4px;right:4px;bottom:40px;height:5px;border-radius:3px;background:linear-gradient(90deg,#ff4fd8,#4fd8ff,#ffe45e,#7dff8a)}
+.sp2-c10-dancer{position:absolute;left:50%;top:38%;margin-left:-34px;font-size:68px;line-height:1;opacity:.35;pointer-events:none}
+.sp2-c10-dancer.go{animation:sp2-d1 .35s ease-out}
+.sp2-c10-dancer.m0.go{animation-name:sp2-d0}.sp2-c10-dancer.m3.go{animation-name:sp2-d3}.sp2-c10-dancer.m1.go{animation-name:sp2-d2}
+@keyframes sp2-d0{50%{transform:translateX(-24px) rotate(-14deg)}}
+@keyframes sp2-d1{50%{transform:translateY(-26px) scale(1.1)}}
+@keyframes sp2-d2{50%{transform:translateY(10px) scale(1.1,.85)}}
+@keyframes sp2-d3{50%{transform:translateX(24px) rotate(14deg) scaleX(-1)}}
+.sp2-c10-note{position:absolute;top:0;width:22%;height:44px;display:grid;place-items:center;will-change:transform;transition:opacity .2s}
+.sp2-c10-note em{font-style:normal;display:grid;place-items:center;width:100%;height:100%;border-radius:14px;font-size:26px;font-weight:900;color:#1b0b3a;border:2px solid #fff}
+.sp2-c10-note.l0 em,.sp2-c10-pad.l0{background:#ff4fd8}.sp2-c10-note.l1 em,.sp2-c10-pad.l1{background:#4fd8ff}
+.sp2-c10-note.l2 em,.sp2-c10-pad.l2{background:#7dff8a}.sp2-c10-note.l3 em,.sp2-c10-pad.l3{background:#ffe45e}
+.sp2-c10-note.word{width:24%}
+.sp2-c10-note.word em{background:#fff!important;font-size:13px;padding:0 3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;border:3px solid #ff4fd8}
+.sp2-c10-note.gone{opacity:0}
+.sp2-c10-note.missed em{background:#777!important}
+.sp2-c10-pads{flex:none;display:flex;gap:6px}
+.sp2-c10-pad{flex:1;height:60px;border-radius:16px;border:3px solid #fff;font-size:26px;font-weight:900;color:#1b0b3a!important;opacity:.85}
+.sp2-c10-pad.hit{animation:sp2-padhit .18s ease-out}
+
+/* продуктивність */
+html[data-perf='lite'] .sp2-ico,html[data-perf='lite'] .sp2-c9-parade span:nth-child(n+5){animation:none}
+html[data-perf='lite'] .sp2-c10-lights,html[data-perf='lite'] .sp2-c8-wave::before{display:none}
+html[data-perf='lite'] .sp2-box,html[data-perf='lite'] .sp2-c6-note em{box-shadow:none}
+@media (prefers-reduced-motion:reduce){.sp2 *{animation-duration:.01s!important}}
