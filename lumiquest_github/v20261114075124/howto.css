@@ -1,0 +1,128 @@
+/* v22 «Як грати» (js/howto.js) — префікс ht-. Великі шрифти (≥18px), високий контраст, анімації лише transform/opacity. */
+.ht-fab {
+  position: fixed; z-index: 60;
+  right: calc(10px + env(safe-area-inset-right, 0px));
+  top: calc(60px + env(safe-area-inset-top, 0px));
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .9);
+  background: #2b2f6b; color: #fff; font-size: 21px; line-height: 1;
+  display: grid; place-items: center; padding: 0; cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .35);
+  opacity: .72; transition: opacity .2s, transform .2s;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.ht-fab:hover, .ht-fab:focus-visible { opacity: 1; }
+.ht-fab:active { transform: scale(.9); }
+.screen.is-leaving .ht-fab { display: none; }
+
+.ht-ov {
+  position: fixed; inset: 0; z-index: 9000;
+  display: flex; align-items: center; justify-content: center;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: rgba(8, 10, 30, .78);
+  opacity: 0; transition: opacity .25s ease;
+}
+.ht-ov.is-on { opacity: 1; }
+.ht-card {
+  width: 100%; max-width: 460px; max-height: 100%; overflow-y: auto; overscroll-behavior: contain;
+  background: #fffdf7; color: #14162e; border-radius: 22px;
+  padding: 18px 16px 16px; box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  font-size: 19px; line-height: 1.38;
+  transform: translateY(24px) scale(.96); transition: transform .3s cubic-bezier(.2, .9, .3, 1.2);
+}
+.ht-ov.is-on .ht-card { transform: none; }
+.ht-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.ht-ico { font-size: 42px; line-height: 1; }
+.ht-ttl { display: flex; flex-direction: column; min-width: 0; }
+.ht-how { font-size: 18px; font-weight: 700; color: #5b4bd6; text-transform: uppercase; letter-spacing: .04em; }
+.ht-name { font-size: 24px; font-weight: 800; line-height: 1.15; }
+
+.ht-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ht-step {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px; border-radius: 16px; background: #eef0ff; border: 2px solid transparent;
+  animation: ht-in .4s ease both; animation-delay: calc(var(--i) * 120ms + 80ms);
+}
+.ht-step.is-say { border-color: #5b4bd6; background: #e3e0ff; }
+@keyframes ht-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.ht-pic {
+  position: relative; flex: 0 0 auto; width: 70px; height: 70px; border-radius: 16px;
+  background: #fff; display: grid; place-items: center; box-shadow: inset 0 0 0 2px #d9dcf5;
+}
+.ht-emo { font-size: 38px; line-height: 1; }
+.ht-hand, .ht-eye {
+  position: absolute; right: -6px; bottom: -8px; font-size: 30px; line-height: 1;
+  pointer-events: none; will-change: transform, opacity;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25));
+}
+.ht-eye { font-size: 22px; right: -4px; bottom: -4px; animation: ht-look 2.4s ease-in-out infinite; }
+.ht-g-tap .ht-hand   { animation: ht-tap 1.3s ease-in-out infinite; }
+.ht-g-type .ht-hand  { animation: ht-type .9s ease-in-out infinite; }
+.ht-g-swipe .ht-hand { animation: ht-swipe 1.8s ease-in-out infinite; }
+.ht-g-drag .ht-hand  { animation: ht-drag 2s ease-in-out infinite; }
+.ht-g-hold .ht-hand  { animation: ht-hold 2s ease-in-out infinite; }
+@keyframes ht-tap {
+  0%, 100% { transform: translate(6px, 8px); opacity: .85; }
+  40% { transform: translate(-10px, -12px); opacity: 1; }
+  52% { transform: translate(-10px, -12px) scale(.82); }
+  64% { transform: translate(-10px, -12px); }
+}
+@keyframes ht-type {
+  0%, 100% { transform: translate(-8px, -10px); }
+  25% { transform: translate(-8px, -10px) scale(.85); }
+  50% { transform: translate(-22px, -6px); }
+  75% { transform: translate(-22px, -6px) scale(.85); }
+}
+@keyframes ht-swipe {
+  0% { transform: translate(-30px, -10px); opacity: 0; }
+  15% { opacity: 1; }
+  70% { transform: translate(8px, -10px); opacity: 1; }
+  100% { transform: translate(14px, -10px); opacity: 0; }
+}
+@keyframes ht-drag {
+  0%, 10% { transform: translate(-16px, -14px); opacity: 1; }
+  60% { transform: translate(10px, 14px); opacity: 1; }
+  70% { transform: translate(10px, 14px) scale(1.1); opacity: .2; }
+  100% { transform: translate(-16px, -14px); opacity: 1; }
+}
+@keyframes ht-hold {
+  0%, 100% { transform: translate(-10px, -12px); }
+  20%, 80% { transform: translate(-10px, -12px) scale(.82); }
+}
+@keyframes ht-look { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-6px); } }
+
+.ht-txt { flex: 1 1 auto; min-width: 0; }
+.ht-num {
+  position: absolute; left: -7px; top: -7px; width: 28px; height: 28px; border-radius: 50%;
+  background: #5b4bd6; color: #fff; font-size: 18px; font-weight: 800; display: grid; place-items: center;
+}
+.ht-p { margin: 0; width: auto; font-size: 19px; font-weight: 600; color: #14162e; }
+
+.ht-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.ht-btn {
+  width: 100%; min-height: 54px; border-radius: 16px; border: 0; cursor: pointer;
+  font: inherit; font-size: 20px; font-weight: 800; padding: 10px 14px;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; transition: transform .12s;
+}
+.ht-btn:active { transform: scale(.97); }
+.ht-go { background: #1fa45a; color: #fff; box-shadow: 0 4px 0 #13763f; order: 2; }
+.ht-again { background: #fff; color: #2b2f6b; border: 2px solid #2b2f6b; order: 1; font-size: 19px; }
+.ht-btn:focus-visible, .ht-fab:focus-visible { outline: 3px solid #ffbf00; outline-offset: 2px; }
+
+@media (max-height: 640px) {
+  .ht-card { padding: 14px 12px 12px; }
+  .ht-pic { width: 58px; height: 58px; } .ht-emo { font-size: 32px; }
+  .ht-step { padding: 8px; }
+  .ht-btn { min-height: 48px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ht-hand, .ht-eye, .ht-step { animation: none !important; opacity: 1; transform: none; }
+}
+html[data-scheme="dark"] .ht-card { background: #1c1f3f; color: #fff; }
+html[data-scheme="dark"] .ht-step { background: #2a2e5a; }
+html[data-scheme="dark"] .ht-step.is-say { background: #37327a; border-color: #a99bff; }
+html[data-scheme="dark"] .ht-p { color: #fff; }
+html[data-scheme="dark"] .ht-pic { background: #fff; }
+html[data-scheme="dark"] .ht-how { color: #b9adff; }
+html[data-scheme="dark"] .ht-again { background: transparent; color: #fff; border-color: #fff; }
