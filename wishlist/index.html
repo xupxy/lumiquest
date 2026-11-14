@@ -472,6 +472,35 @@ pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-br
 .secretbar{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:16px;background:var(--roseSoft);font-size:13px;color:var(--ink2);margin-bottom:6px}
 .secretbar b{color:var(--ink)}
 
+/* ===== ПРИВЕЗИ МНЕ ===== */
+.bringc{display:flex;align-items:center;gap:13px;width:100%;text-align:left;margin:12px 0 2px;padding:13px 14px;border-radius:22px;background:var(--card);box-shadow:var(--cardShadow);position:relative;overflow:hidden;transition:transform .2s var(--ease)}
+.bringc:active{transform:scale(.98)}
+.bringc .bico{width:50px;height:50px;border-radius:16px;flex:none;display:grid;place-items:center;font-size:26px;background:linear-gradient(140deg,#fff0c9,#ffd9b0)}
+.dark .bringc .bico{background:linear-gradient(140deg,#4a3a1c,#5a3520)}
+.bringc .bt{flex:1;min-width:0}
+.bringc .bt b{display:block;font:700 17px/1.2 var(--serif)}
+.bringc .bt span{display:block;font-size:12.5px;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bringc .bn{flex:none;min-width:30px;height:30px;padding:0 9px;border-radius:15px;background:#f0a32a;color:#fff;font:800 13px/30px var(--font);text-align:center}
+.bringc .bn.z{background:var(--bg2);color:var(--ink3)}
+.bringc .bv{position:absolute;right:0;top:0;padding:5px 10px;border-radius:0 0 0 12px;background:var(--roseSoft);color:var(--rose);font:800 10.5px/1 var(--font);letter-spacing:.04em}
+.visit{display:flex;align-items:center;gap:12px;padding:14px;border-radius:20px;background:linear-gradient(140deg,#ffe0e8,#ffeedd);margin-top:4px}
+.dark .visit{background:linear-gradient(140deg,#4b2534,#4a3326)}
+.visit .vi{font-size:30px}
+.visit .vt{flex:1;min-width:0}.visit .vt b{display:block;font:700 18px/1.2 var(--serif)}.visit .vt span{font-size:12.5px;color:var(--ink2)}
+.visit input{flex:none;width:150px;padding:10px 10px;border-radius:13px;border:1.5px solid var(--fline);background:var(--field);font:700 15px var(--font);color:var(--ink)}
+.blist{margin-top:8px}
+.bitem{display:flex;align-items:center;gap:12px;padding:12px 6px 12px 4px;border-bottom:1px solid var(--line)}
+.bitem:last-child{border-bottom:0}
+.bchk{width:30px;height:30px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 2px var(--ink3);display:grid;place-items:center;color:#fff;transition:transform .15s var(--ease),background .2s,box-shadow .2s}
+.bchk svg{width:16px;height:16px;opacity:0;transition:opacity .2s}
+.bchk:active{transform:scale(.88)}
+.bitem.ok .bchk{background:#2fb078;box-shadow:none}.bitem.ok .bchk svg{opacity:1}
+.bitem .btx{flex:1;min-width:0;font-size:16px;font-weight:600;word-break:break-word}
+.bitem .btx small{display:block;font-size:11.5px;color:var(--ink3);font-weight:600;margin-top:2px}
+.bitem.ok .btx{color:var(--ink3)}.bitem.ok .bt1{text-decoration:line-through;text-decoration-thickness:2px}.bitem.ok .btx small{color:#2fb078}
+.badd{display:flex;gap:8px;margin-top:6px}.badd .inp{flex:1;min-width:0}
+.badd .btn{width:auto;margin:0;min-height:0;padding:0 18px;flex:none}
+
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
 .welcome .hero{margin-bottom:22px;position:relative;animation:float 3.4s ease-in-out infinite}
@@ -569,6 +598,7 @@ function makeLocalStore() {
     async deleteItem(id) { const d = read(); delete d.items[id]; delete d.photos[id]; LS.set(KEY, d); emit(); },
     async getPhotos(id) { return read().photos[id] || []; },
     async saveMeta(patch) { const d = read(); d.meta = Object.assign(d.meta || {}, patch); LS.set(KEY, d); emit(); },
+    async setBring(id, val) { const d = read(); d.meta = d.meta || {}; d.meta.bring = d.meta.bring || {}; if (val) d.meta.bring[id] = val; else delete d.meta.bring[id]; LS.set(KEY, d); emit(); },
   };
 }
 
@@ -609,6 +639,7 @@ async function makeCloudStore(cfg) {
     },
     invalidatePhotos(id) { delete photoCache[id]; },
     async saveMeta(patch) { await fs.setDoc(ref("meta", "main"), patch, { merge: true }); },
+    async setBring(id, val) { await fs.setDoc(ref("meta", "main"), { bring: { [id]: val ? val : fs.deleteField() } }, { merge: true }); },
   };
 }
 
@@ -914,6 +945,7 @@ function render() {
       (isOwner() ? '<span class="medit">' + IC.pen + "</span>" : "") + "</button>";
   }
 
+  h += bringCardHtml();
   if (!isOwner()) h += viewerCardsHtml();
 
   // вкладки
@@ -992,6 +1024,7 @@ document.addEventListener("click", (e) => {
   else if (act === "dates") openDates();
   else if (act === "notes") openNotes();
   else if (act === "budget") openBudget();
+  else if (act === "bring") openBring();
 });
 document.addEventListener("click", async (e) => {
   const g = e.target.closest("[data-gst]"); if (!g || g.closest(".sheet")) return;
@@ -1456,6 +1489,71 @@ function openNotes() {
   });
 }
 
+/* ================= ПРИВЕЗИ МНЕ (общий список на его приезд) ================= */
+const BRING_IDEAS = ["Чипсы 🥔", "Шоколадку 🍫", "Мармеладки 🍬", "Газировку 🥤", "Мороженое 🍦", "Сырки 🧀", "Фрукты 🍓", "Печеньки 🍪", "Орешки 🥜", "Цветы 💐", "Себя 🤗"];
+const bringList = () => Object.entries(S.meta.bring || {}).filter(([, v]) => v && v.t).map(([id, v]) => Object.assign({ id }, v)).sort((a, b) => (a.ok ? 1 : 0) - (b.ok ? 1 : 0) || a.at - b.at);
+function visitLeft() {
+  const v = S.meta.visit; if (!v) return null;
+  const p = String(v).split("-").map(Number); if (p.length !== 3) return null;
+  const now = new Date(); const t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const left = Math.round((new Date(p[0], p[1] - 1, p[2]) - t0) / 86400000);
+  return left < 0 ? null : { left, d: p[2], m: p[1] };
+}
+function visitStr(owner) {
+  const v = visitLeft(); if (!v) return "";
+  const when = v.left === 0 ? "сегодня" : v.left === 1 ? "завтра" : "через " + v.left + " " + dayWord(v.left);
+  return (owner ? "Он приедет " : "Еду к " + herDat() + " ") + when + " · " + v.d + " " + MONTHS[v.m - 1];
+}
+const herDat = () => { const n = herName(); return /а$/i.test(n) ? n.slice(0, -1) + "е" : /я$/i.test(n) ? n.slice(0, -1) + "е" : n; };
+function bringCardHtml() {
+  const l = bringList(), open = l.filter((x) => !x.ok).length;
+  const vs = visitStr(isOwner());
+  let sub;
+  if (isOwner()) sub = vs ? vs + " 💕" : l.length ? open + " из " + l.length + " ещё не куплено" : "Чипсы, вкусняшки, всякие радости — он привезёт";
+  else sub = vs ? vs : open ? "Она ждёт: " + l.filter((x) => !x.ok).slice(0, 3).map((x) => x.t).join(", ") : "Пока ничего не просила";
+  return '<button class="bringc" data-act="bring"><span class="bico">🧺</span><span class="bt"><b>' + (isOwner() ? "Привези мне" : "Что привезти " + herDat()) + "</b><span>" + esc(sub) + "</span></span>" +
+    '<span class="bn' + (open ? "" : " z") + '">' + open + "</span>" + (!isOwner() && vs && open ? "" : "") + "</button>";
+}
+function openBring() {
+  const sh = openSheet("", null);
+  const draw = (keepVal) => {
+    const old = sh.querySelector(".dbody"); const keep = keepVal != null ? keepVal : old ? $("#br_txt", sh).value : "";
+    if (old) old.remove();
+    const l = bringList(), v = visitLeft(), doneN = l.filter((x) => x.ok).length;
+    const div = document.createElement("div"); div.className = "dbody";
+    div.innerHTML = "<h3>" + (isOwner() ? "Привези мне 🧺" : "Что привезти " + esc(herDat()) + " 🧺") + "</h3>" +
+      '<div class="visit"><span class="vi">' + (v && v.left === 0 ? "🥰" : "🚗") + '</span><span class="vt"><b>' + (v ? (v.left === 0 ? "Сегодня!" : v.left === 1 ? "Завтра" : "Через " + v.left + " " + dayWord(v.left)) : "Когда приезд?") + "</b><span>" +
+        (isOwner() ? (v ? "он приедет " + v.d + " " + MONTHS[v.m - 1] : "он может указать дату") : (v ? "ты приедешь " + v.d + " " + MONTHS[v.m - 1] : "укажи, когда приедешь — она увидит")) +
+        '</span></span><input type="date" id="br_date" value="' + esc(S.meta.visit || "") + '" aria-label="Дата приезда"></div>' +
+      (isOwner() ? '<p class="ssub" style="margin-top:14px">Напиши, что хочешь, чтобы он привёз — он увидит сразу.</p>' : '<p class="ssub" style="margin-top:14px">Отмечай, что уже купил — она видит галочки ✓</p>') +
+      '<div class="fl">Быстро добавить</div><div class="chips">' + BRING_IDEAS.filter((t) => !l.some((x) => x.t === t)).map((t) => '<button class="chip" data-bi="' + esc(t) + '">' + esc(t) + "</button>").join("") + "</div>" +
+      '<div class="badd" style="margin-top:14px"><input class="inp" id="br_txt" maxlength="80" placeholder="' + (isOwner() ? "Например: те острые чипсы Lay’s" : "Добавить что-то от себя") + '" value="' + esc(keep) + '"><button class="btn pri" id="br_add" aria-label="Добавить">' + IC.plus.replace("<svg", '<svg width="20" height="20"') + "</button></div>" +
+      (l.length ? '<div class="box blist" style="padding:2px 12px">' + l.map((x) => '<div class="bitem' + (x.ok ? " ok" : "") + '"><button class="bchk" data-bok="' + esc(x.id) + '" aria-label="Куплено">' + IC.check + '</button><span class="btx"><span class="bt1">' + esc(x.t) + "</span>" + (x.ok ? "<small>" + (isOwner() ? "он уже купил ✓" : "куплено") + "</small>" : x.by && x.by !== S.role ? "<small>" + (x.by === "owner" ? "просит она" : "добавил ты") + "</small>" : "") + '</span><button class="drm" data-brm="' + esc(x.id) + '" aria-label="Удалить">' + IC_X + "</button></div>").join("") + "</div>" : '<div class="hint" style="text-align:center;margin-top:18px">Список пуст 🧺</div>') +
+      (doneN ? '<button class="btn ghost" id="br_clear">Убрать купленное (' + doneN + ")</button>" : "");
+    sh.appendChild(div);
+  };
+  draw();
+  sh._redraw = () => draw();
+  const add = async (t) => {
+    t = (t || "").trim(); if (!t) { const i = $("#br_txt", sh); i.classList.add("err"); setTimeout(() => i.classList.remove("err"), 900); haptic("error"); return; }
+    const id = Date.now().toString(36) + uid(4);
+    try { await S.store.setBring(id, { t, at: Date.now(), by: S.role, ok: false }); haptic("ok"); draw(""); } catch (err) { toast("Ошибка: " + (err.message || err)); }
+  };
+  sh.addEventListener("click", async (e) => {
+    const bi = e.target.closest("[data-bi]"); if (bi) { add(bi.dataset.bi); return; }
+    if (e.target.closest("#br_add")) { add($("#br_txt", sh).value); return; }
+    const ok = e.target.closest("[data-bok]");
+    if (ok) { const x = (S.meta.bring || {})[ok.dataset.bok]; if (!x) return; await S.store.setBring(ok.dataset.bok, Object.assign({}, x, { ok: !x.ok })); haptic(x.ok ? "light" : "ok"); draw(); return; }
+    const rm = e.target.closest("[data-brm]"); if (rm) { await S.store.setBring(rm.dataset.brm, null); haptic("warning"); draw(); return; }
+    if (e.target.closest("#br_clear")) { for (const x of bringList().filter((x) => x.ok)) await S.store.setBring(x.id, null); haptic("ok"); draw(); toast("Купленное убрано ✓"); }
+  });
+  sh.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "br_txt") { e.preventDefault(); add(e.target.value); } });
+  sh.addEventListener("change", async (e) => {
+    if (e.target.id !== "br_date") return;
+    try { await S.store.saveMeta({ visit: e.target.value || null }); haptic("ok"); draw(); toast(e.target.value ? "Дата приезда сохранена 🚗" : "Дата убрана"); } catch (err) { toast("Ошибка: " + (err.message || err)); }
+  });
+}
+
 /* ================= новые желания вживую ================= */
 function onData(d) {
   const prevKnown = S.knownIds;
@@ -1467,7 +1565,14 @@ function onData(d) {
     else if (fresh.length > 1) { toast("✨ Новых желаний: " + fresh.length); haptic("ok"); }
   }
   S.knownIds = new Set(ids);
+  const bIds = Object.keys(S.meta.bring || {});
+  if (S.knownBring && !isOwner()) {
+    const nb = bIds.filter((id) => !S.knownBring.has(id) && S.meta.bring[id] && S.meta.bring[id].by === "owner");
+    if (nb.length) { toast("🧺 " + herName() + " просит привезти: " + nb.map((id) => S.meta.bring[id].t).join(", ")); haptic("ok"); }
+  }
+  S.knownBring = new Set(bIds);
   render();
+  sheets.forEach((e) => { if (e.sh._redraw && !(document.activeElement && document.activeElement.id === "br_txt")) e.sh._redraw(); });
 }
 
 /* ================= старт ================= */
