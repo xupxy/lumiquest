@@ -221,6 +221,11 @@ if (!(CFG.p && CFG.k && CFG.l)) {
   if (saved && saved.p && saved.k && saved.l) CFG = saved; else CFG = null;
 } else LS.set("wl_cfg", CFG);
 const LIST = CFG ? CFG.l : "demo";
+
+/* ================= доступ: только двое ================= */
+const ACCESS = { fllezzka: "owner", xupxy: "viewer" }; // ник в Telegram → роль
+const myNick = ((tgUser && tgUser.username) || "").toLowerCase();
+const ALLOWED = inTg && Object.prototype.hasOwnProperty.call(ACCESS, myNick);
 const K = (s) => "wl_" + LIST + "_" + s;
 
 function botLink(cfg) {
@@ -295,7 +300,7 @@ async function makeCloudStore(cfg) {
 /* ================= состояние ================= */
 const S = {
   store: null, items: {}, meta: {}, loaded: false, status: "demo",
-  role: LS.get(K("role"), null), // "owner" | "viewer"
+  role: ALLOWED ? ACCESS[myNick] : null, // "owner" | "viewer" — по нику
   tab: "all", seen: LS.get(K("seen"), null), knownIds: null,
 };
 function saveSeen() { LS.set(K("seen"), S.seen); }
@@ -641,8 +646,8 @@ function openMood() {
 function openSettings() {
   const link = CFG ? botLink(CFG) : "";
   let h = "<h3>Настройки</h3>" +
-    '<label class="fl">Кто я</label><div class="seg"><button data-r="owner" class="' + (isOwner() ? "on" : "") + '">👑 Хозяйка вишлиста</button><button data-r="viewer" class="' + (!isOwner() ? "on" : "") + '">🕵️ Смотрю</button></div>' +
-    '<div class="hint">Секретные отметки «я подарю» видны только тем, кто «смотрит».</div>';
+    '<label class="fl">Кто я</label><div class="box">' + (isOwner() ? "👑 Хозяйка вишлиста" : "🕵️ Смотрю вишлист") + " · @" + esc(myNick) + '</div>' +
+    '<div class="hint">🔒 Вишлист открывается только у @fllezzka и @xupxy.</div>';
   if (isOwner()) h += '<label class="fl">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" placeholder="Имя (он увидит «Вишлист Имя»)" value="' + esc(S.meta.ownerName || "") + '">';
   h += '<label class="fl">Синхронизация</label>';
   if (S.store.mode === "demo") h += '<div class="box">☁️ Сейчас <b>демо-режим</b>: желания хранятся только на этом устройстве.</div><button class="btn pri" data-s="setup">Подключить синхронизацию</button>';
@@ -709,7 +714,13 @@ function onData(d) {
 }
 
 /* ================= старт ================= */
+function renderLocked() {
+  $("#app").innerHTML = '<div class="welcome"><div class="hero">🔒</div><h1>Доступ закрыт</h1><p>' +
+    (inTg ? "Этот вишлист приватный." : "Открой вишлист через Telegram-бота.") + "</p></div>";
+}
 (async function boot() {
+  if (!ALLOWED) { try { if (tg) { tg.ready(); tg.expand(); } } catch (e) {} renderLocked(); return; }
+  if (!S.seen && S.role === "viewer") { S.seen = {}; saveSeen(); }
   try {
     if (tg) { tg.ready(); try { tg.expand(); } catch (e) {} }
     const dark = tg && tg.colorScheme === "dark";
