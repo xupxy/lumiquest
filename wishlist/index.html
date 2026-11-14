@@ -496,6 +496,37 @@ pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-br
 .badd{display:flex;gap:8px;margin-top:6px}.badd .inp{flex:1;min-width:0}
 .badd .btn{width:auto;margin:0;min-height:0;padding:0 18px;flex:none}
 
+/* ===== плитки «Привези мне» / «Про меня», алерты ===== */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 2px}
+.tile{position:relative;text-align:left;border-radius:22px;padding:13px 13px 12px;background:var(--card);box-shadow:var(--cardShadow);display:flex;flex-direction:column;gap:9px;min-height:112px;transition:transform .2s var(--ease)}
+.tile:active{transform:scale(.97)}
+.tile .ti2{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:22px}
+.tile.br .ti2{background:linear-gradient(140deg,#fff0c9,#ffd9b0)}
+.tile.ab .ti2{background:linear-gradient(140deg,#e9e0ff,#ffdce8)}
+.dark .tile.br .ti2{background:linear-gradient(140deg,#4a3a1c,#5a3520)}.dark .tile.ab .ti2{background:linear-gradient(140deg,#33284d,#4b2534)}
+.tile b{display:block;font:700 16px/1.15 var(--serif)}
+.tile span.ts{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.3;color:var(--ink2);margin-top:3px}
+.tile .bn{position:absolute;right:11px;top:11px;min-width:26px;height:26px;padding:0 8px;border-radius:13px;background:#f0a32a;color:#fff;font:800 12.5px/26px var(--font);text-align:center}
+.tile .bn.z{display:none}
+.alert{display:flex;gap:11px;align-items:flex-start;margin:12px 0 2px;padding:13px 14px;border-radius:18px;background:#fff1d6;color:#5a3d00;box-shadow:inset 0 0 0 1.5px #f3c86b}
+.dark .alert{background:#43361a;color:#ffe2a8;box-shadow:inset 0 0 0 1.5px #7a5a1a}
+.alert .ai{font-size:22px;line-height:1}
+.alert .at{flex:1;font-size:13.5px;line-height:1.4}.alert .at b{font-weight:800}
+.alert button{flex:none;align-self:center;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.75);font:800 12.5px/1 var(--font);color:#5a3d00}
+.dark .alert button{background:rgba(255,255,255,.12);color:#ffe2a8}
+.stats .sdone{color:inherit;font:inherit;padding:0;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.tabs{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 46px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 46px),transparent)}
+.tabs.end{-webkit-mask-image:none;mask-image:none}
+.bsec{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:8px;background:var(--roseSoft);color:var(--rose);font:800 10.5px/1.4 var(--font);vertical-align:middle;text-decoration:none!important}
+.about{margin-top:4px}
+.arow{display:flex;gap:12px;align-items:center;padding:11px 4px;border-bottom:1px solid var(--line)}
+.arow:last-child{border-bottom:0}
+.arow .ae{width:38px;height:38px;border-radius:12px;background:var(--bg2);display:grid;place-items:center;font-size:19px;flex:none}
+.arow .ak{font:700 11px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.arow .av{font-size:15.5px;font-weight:600;margin-top:4px;word-break:break-word;white-space:pre-wrap}
+.arow .inp{margin-top:6px;padding:11px 13px}
+.arow .af{flex:1;min-width:0}
+
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
 .welcome .hero{margin-bottom:22px;position:relative;animation:float 3.4s ease-in-out infinite}
@@ -676,7 +707,13 @@ const reduceMotion = () => { try { return matchMedia("(prefers-reduced-motion: r
 let toastT;
 const EMO_END = /\s*((?:\p{Extended_Pictographic})(?:️|‍|\p{Extended_Pictographic}|\p{Emoji_Modifier})*)\s*$/u;
 const EMO_START = /^\s*((?:\p{Extended_Pictographic})(?:️|‍|\p{Extended_Pictographic}|\p{Emoji_Modifier})*)\s*/u;
-function toast(msg, ico) {
+const toastQ = []; let toastBusy = false;
+function toast(msg, ico) { toastQ.push([msg, ico]); if (!toastBusy) toastNext(); }
+function toastNext() {
+  const n = toastQ.shift(); if (!n) { toastBusy = false; return; }
+  toastBusy = true; showToast(n[0], n[1]);
+}
+function showToast(msg, ico) {
   const t = $("#toast"); msg = String(msg == null ? "" : msg);
   const err = /^(Ошибка|Не удал|Не сохран|Не нашла|Нет связи|База не)/.test(msg);
   if (!ico && !err) {
@@ -688,7 +725,7 @@ function toast(msg, ico) {
   t.className = "toast" + (err ? " err" : "");
   t.innerHTML = '<span class="ti">' + esc(err ? "!" : ico || "💗") + '</span><span class="tt">' + esc(msg.trim()) + "</span>";
   void t.offsetWidth; t.classList.add("on");
-  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), err ? 3600 : 2600);
+  clearTimeout(toastT); toastT = setTimeout(() => { t.classList.remove("on"); setTimeout(toastNext, toastQ.length ? 380 : 0); }, (err ? 3600 : 2600) - Math.min(900, toastQ.length * 400));
 }
 function confetti() {
   const W = innerWidth, H = innerHeight;
@@ -886,7 +923,7 @@ function cardHtml(it, i) {
 }
 function headerHtml(stats) {
   const ownerName = herName();
-  const me = isOwner() ? ownerName : (tgUser && tgUser.first_name) || "";
+  const me = isOwner() ? ownerName : HIM;
   const hello = greet() + (me ? ", " + esc(me) : "") + (isOwner() ? " 🌸" : " 🤫");
   const title = isOwner() ? "Мой вишлист" : ownerName ? "Что хочет " + esc(ownerName) : "Вишлист любимой";
   const st = { demo: ["", "демо"], on: ["on", "онлайн"], cache: ["wait", "подключаюсь…"], err: ["err", "нет связи"] }[S.status] || ["", ""];
@@ -922,7 +959,7 @@ function render() {
   if (!all.length) stats = "<span>Пока ни одного желания</span>";
   else {
     stats = "<span><b>" + active.length + "</b> " + plural(active.length, ["желание", "желания", "желаний"]) + "</span>";
-    if (done.length) stats += '<span class="sep"></span><span><b>' + done.length + "</b> " + plural(done.length, ["сбылось", "сбылось", "сбылось"]) + "</span>";
+    if (done.length) stats += '<span class="sep"></span><button class="sdone" data-tab="done"><b>' + done.length + "</b> сбылось 🎉</button>";
     const g = active.filter((i) => i.gift).length;
     if (!isOwner() && g) stats += '<span class="sep"></span><span class="gifted">🎁 <b>' + g + "</b> от тебя</span>";
   }
@@ -940,8 +977,8 @@ function render() {
       (isOwner() ? '<span class="medit">' + IC.pen + "</span>" : "") + "</button>";
   }
 
-  h += bringCardHtml();
-  if (!isOwner()) h += viewerCardsHtml();
+  h += duoHtml();
+  if (!isOwner()) { syncTitles(); h += alertsHtml() + viewerCardsHtml(); }
 
   // вкладки
   const mineN = active.filter((i) => i.gift).length;
@@ -971,6 +1008,8 @@ function render() {
 
   const tb = $(".tabs");
   tb.scrollLeft = tabsX;
+  const endChk = () => tb.classList.toggle("end", tb.scrollLeft + tb.clientWidth >= tb.scrollWidth - 6);
+  tb.addEventListener("scroll", endChk, { passive: true }); setTimeout(endChk, 0);
   placeTabInd(tabChanged);
   if (tabChanged) {
     const on = $(".tab.on");
@@ -1020,8 +1059,15 @@ document.addEventListener("click", (e) => {
   else if (act === "notes") openNotes();
   else if (act === "budget") openBudget();
   else if (act === "bring") openBring();
+  else if (act === "about") openAbout();
 });
 document.addEventListener("click", async (e) => {
+  const ak = e.target.closest("[data-ack]");
+  if (ak && !ak.closest(".sheet")) {
+    e.stopPropagation(); const [kind, id] = ak.dataset.ack.split(":");
+    if (kind === "done") { SPY.ack[id] = 1; } else { delete SPY.tt[id]; delete SPY.st[id]; }
+    haptic("light"); saveSpyMain(); render(); return;
+  }
   const g = e.target.closest("[data-gst]"); if (!g || g.closest(".sheet")) return;
   e.stopPropagation(); const id = g.dataset.gst; SPY.st[id] = (gstOf(id) + 1) % 4; haptic("light"); render(); saveSpyMain();
   if (SPY.st[id] === 3) toast("Спрятано 🤫 Она не найдёт");
@@ -1110,7 +1156,7 @@ async function openDetail(id) {
 function openEditor(it, photosIn) {
   const isNew = !it;
   const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false, loading: false };
-  const defCur = LS.get("wl_cur", "€");
+  const defCur = (() => { const c = {}; Object.values(S.items).forEach((i) => { if (i.cur && String(i.price || "").trim()) c[i.cur] = (c[i.cur] || 0) + 1; }); const top = Object.keys(c).sort((a, b) => c[b] - c[a])[0]; return top || LS.get("wl_cur", "€"); })();
   const curOpts = CURS.map((c) => '<option' + ((it ? it.cur || defCur : defCur) === c ? " selected" : "") + ">" + c + "</option>").join("");
   const noteV = it ? it.note || "" : "";
   const head = '<button class="lk" data-close>Отмена</button><b>' + (isNew ? "Новое желание" : "Изменить") + '</b><button class="lk go" id="f_save2">Готово</button>';
@@ -1119,7 +1165,7 @@ function openEditor(it, photosIn) {
     '<div class="fl">Насколько важно</div><div class="cats" id="cats" role="radiogroup">' +
       [1, 2, 3].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '" role="radio" aria-checked="' + (st.cat === k) + '"><span class="ci">' + CATS[k].emo + '</span><span class="ct"><b>' + CATS[k].name + "</b><span>" + CATS[k].sub + '</span></span><span class="rd"></span></button>').join("") +
     "</div>" +
-    '<label class="fl" for="f_price">Цена <span class="opt">примерно</span></label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="f_price" inputmode="decimal" autocomplete="off" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"></div><select class="inp cur" id="f_cur" aria-label="Валюта">' + curOpts + "</select></div>" +
+    '<label class="fl" for="f_price">Цена <span class="opt">примерно</span></label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="f_price" inputmode="decimal" autocomplete="off" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"></div><select class="inp cur" id="f_cur" aria-label="Валюта">' + curOpts + "</select></div>" + '<div class="ferr" id="e_price">Цена — это число, например 49 или 1 200</div>' +
     '<label class="fl" for="f_link">Ссылка на товар</label><div class="ifield"><span class="ic">🔗</span><input class="inp" id="f_link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '"></div><div class="ferr" id="e_link">Похоже, это не ссылка — проверь адрес</div>' +
     '<label class="fl" for="f_details">Детали</label><input class="inp" id="f_details" maxlength="300" placeholder="Размер, цвет, модель, магазин…" value="' + esc(it ? it.details || "" : "") + '">' +
     '<label class="fl" for="f_note">Почему хочу <span class="opt">комментарий</span></label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Зачем это нужно или что важно при выборе">' + esc(noteV) + '</textarea><div class="fcnt" id="c_note"></div>' +
@@ -1143,6 +1189,7 @@ function openEditor(it, photosIn) {
   const setErr = (f, on) => { $("#f_" + f, sh).classList.toggle("err", on); $("#e_" + f, sh).classList.toggle("on", on); };
   $("#f_title", sh).addEventListener("input", () => setErr("title", false));
   $("#f_link", sh).addEventListener("input", () => setErr("link", false));
+  $("#f_price", sh).addEventListener("input", () => setErr("price", false));
   const fileIn = $("#file");
   sh.addEventListener("click", (e) => {
     const c = e.target.closest("[data-cat]");
@@ -1170,10 +1217,12 @@ function openEditor(it, photosIn) {
     const tEl = $("#f_title", sh), title = tEl.value.trim();
     const link = $("#f_link", sh).value.trim();
     const badLink = !!link && (/\s/.test(link) || !/[^.\s]\.[^.\s]/.test(link));
-    setErr("title", !title); setErr("link", badLink);
-    if (!title || badLink) {
+    const rawP = $("#f_price", sh).value.trim(), numP = rawP.replace(/[\s\u00a0]/g, "").replace(",", ".").replace(/[€₴₽$£]|zł|грн|руб|eur/gi, "");
+    const badPrice = !!rawP && !(numP !== "" && isFinite(Number(numP)) && Number(numP) >= 0);
+    setErr("title", !title); setErr("link", badLink); setErr("price", badPrice);
+    if (!title || badLink || badPrice) {
       haptic("error");
-      const bad = !title ? tEl : $("#f_link", sh);
+      const bad = !title ? tEl : badPrice ? $("#f_price", sh) : $("#f_link", sh);
       try { bad.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" }); } catch (er) {}
       if (!title) setTimeout(() => tEl.focus({ preventScroll: true }), 250);
       return;
@@ -1184,7 +1233,7 @@ function openEditor(it, photosIn) {
       const now = Date.now(); const cur = $("#f_cur", sh).value; LS.set("wl_cur", cur);
       const item = {
         id: it ? it.id : now.toString(36) + uid(6),
-        title, cat: st.cat, price: $("#f_price", sh).value.trim(), cur,
+        title, cat: st.cat, price: rawP ? String(Number(numP)) : "", cur,
         link, details: $("#f_details", sh).value.trim(), note: noteEl.value.trim(),
         thumb: st.photos.length ? await thumbFrom(st.photos[0]) : "", photoCount: st.photos.length,
         createdAt: it ? it.createdAt || now : now, editedAt: now,
@@ -1289,7 +1338,7 @@ function openSetup() {
 /* ================= для него: план подарков, даты, шпионские заметки =================
    Всё это хранится в личном облаке Telegram (CloudStorage) — оно привязано к его аккаунту,
    Арина не может это увидеть даже в базе. Без Telegram — в localStorage. */
-const HER = "Арина";
+const HER = "Арина", HIM = "Саша";
 const herName = () => (S.meta.ownerName || HER);
 const herGen = () => { const n = herName(); return /а$/i.test(n) ? n.slice(0, -1) + "ы" : /я$/i.test(n) ? n.slice(0, -1) + "и" : n; };
 const PRIV = (() => {
@@ -1310,19 +1359,19 @@ const PRIV = (() => {
     async del(k) { try { localStorage.removeItem(lk(k)); } catch (e) {} if (cs) { try { await call("removeItem", k); } catch (e) {} } },
   };
 })();
-const SPY = { loaded: false, budget: 0, cur: "€", dates: [], st: {}, notes: [] };
+const SPY = { loaded: false, budget: 0, cur: "€", dates: [], st: {}, notes: [], bring: [], tt: {}, ack: {} };
 async function loadSpy() {
   try {
     const keys = await PRIV.keys();
     const nk = keys.filter((k) => k.startsWith("n_"));
     const got = await PRIV.get(["spy_main"].concat(nk));
     const m = JSON.parse(got.spy_main || "{}");
-    SPY.budget = m.budget || 0; SPY.cur = m.cur || LS.get("wl_cur", "€"); SPY.dates = m.dates || []; SPY.st = m.st || {};
+    SPY.budget = m.budget || 0; SPY.cur = m.cur || LS.get("wl_cur", "€"); SPY.dates = m.dates || []; SPY.st = m.st || {}; SPY.bring = m.bring || []; SPY.tt = m.tt || {}; SPY.ack = m.ack || {};
     SPY.notes = nk.map((k) => { try { return Object.assign({ id: k.slice(2) }, JSON.parse(got[k])); } catch (e) { return null; } }).filter((n) => n && n.t).sort((a, b) => b.at - a.at);
   } catch (e) { console.error(e); }
   SPY.loaded = true; if (S.loaded) render();
 }
-function saveSpyMain() { return PRIV.set("spy_main", JSON.stringify({ budget: SPY.budget, cur: SPY.cur, dates: SPY.dates, st: SPY.st })); }
+function saveSpyMain() { return PRIV.set("spy_main", JSON.stringify({ budget: SPY.budget, cur: SPY.cur, dates: SPY.dates, st: SPY.st, bring: SPY.bring, tt: SPY.tt, ack: SPY.ack })); }
 
 /* даты */
 const MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
@@ -1484,60 +1533,167 @@ function openNotes() {
   });
 }
 
-/* ================= ПРИВЕЗИ МНЕ (общий список на его приезд) ================= */
+/* ================= ПРИВЕЗИ МНЕ (общий список) + его тайные сюрпризы ================= */
 const BRING_IDEAS = ["Чипсы 🥔", "Шоколадку 🍫", "Мармеладки 🍬", "Газировку 🥤", "Мороженое 🍦", "Сырки 🧀", "Фрукты 🍓", "Печеньки 🍪", "Орешки 🥜", "Цветы 💐", "Себя 🤗"];
-const bringList = () => Object.entries(S.meta.bring || {}).filter(([, v]) => v && v.t).map(([id, v]) => Object.assign({ id }, v)).sort((a, b) => (a.ok ? 1 : 0) - (b.ok ? 1 : 0) || a.at - b.at);
-const herDat = () => { const n = herName(); return /а$/i.test(n) ? n.slice(0, -1) + "е" : /я$/i.test(n) ? n.slice(0, -1) + "е" : n; };
-function bringCardHtml() {
-  const l = bringList(), open = l.filter((x) => !x.ok).length;
-  let sub;
-  if (isOwner()) sub = l.length ? open + " из " + l.length + " ещё не куплено" : "Чипсы, вкусняшки, всякие радости — он привезёт";
-  else sub = open ? "Она ждёт: " + l.filter((x) => !x.ok).slice(0, 3).map((x) => x.t).join(", ") : "Пока ничего не просила";
-  return '<button class="bringc" data-act="bring"><span class="bico">🧺</span><span class="bt"><b>' + (isOwner() ? "Привези мне" : "Что привезти " + herDat()) + "</b><span>" + esc(sub) + "</span></span>" +
-    '<span class="bn' + (open ? "" : " z") + '">' + open + "</span>" + "</button>";
+const SURPRISE_IDEAS = ["Цветы 💐", "Сладкое 🍰", "Мягкую игрушку 🧸", "Открытку 💌", "Её любимое 🍫"];
+const normT = (t) => String(t || "").toLowerCase().replace(/ё/g, "е").replace(/[^\p{L}\p{N} ]/gu, "").replace(/\s+/g, " ").trim();
+const herAcc = () => { const n = herName(); return /а$/i.test(n) ? n.slice(0, -1) + "у" : /я$/i.test(n) ? n.slice(0, -1) + "ю" : n; };
+const herDat = () => { const n = herName(); return /[ая]$/i.test(n) ? n.slice(0, -1) + "е" : n; };
+const bringList = () => Object.entries(S.meta.bring || {}).filter(([, v]) => v && v.t).map(([id, v]) => Object.assign({ id }, v));
+const secretList = () => (SPY.bring || []).map((x) => Object.assign({ sec: true }, x));
+function allBring() {
+  const l = bringList().concat(isOwner() ? [] : secretList());
+  return l.sort((a, b) => (a.ok ? 1 : 0) - (b.ok ? 1 : 0) || a.at - b.at);
+}
+function bringOkLabel(x) {
+  if (x.sec) return "куплено";
+  const by = x.okBy || "viewer";
+  if (isOwner()) return by === "owner" ? "отмечено тобой ✓" : HIM + " уже купил ✓";
+  return by === "owner" ? "она отметила ✓" : "куплено";
+}
+function duoHtml() {
+  const l = allBring(), open = l.filter((x) => !x.ok);
+  let bsub;
+  if (isOwner()) bsub = l.length ? (open.length ? open.length + " из " + l.length + " ещё не куплено" : "Всё куплено 🥰") : "Чипсы, вкусняшки — " + HIM + " привезёт";
+  else bsub = open.length ? open.slice(0, 3).map((x) => x.t).join(", ") : "Пока ничего не просила";
+  const ab = S.meta.about || {}, filled = ABOUT.filter((f) => String(ab[f[0]] || "").trim());
+  let asub;
+  if (isOwner()) asub = filled.length ? "Заполнено " + filled.length + " из " + ABOUT.length : "Размеры, любимое, аллергии";
+  else asub = filled.length ? filled.slice(0, 2).map((f) => ABOUT_SHORT[f[0]] + " " + ab[f[0]]).join(" · ") : "Она ещё не заполнила";
+  return '<div class="duo"><button class="tile br" data-act="bring"><span class="ti2">🧺</span><span><b>' + (isOwner() ? "Привези мне" : "Что привезти") + '</b><span class="ts">' + esc(bsub) + '</span></span><span class="bn' + (open.length ? "" : " z") + '">' + open.length + "</span></button>" +
+    '<button class="tile ab" data-act="about"><span class="ti2">💁‍♀️</span><span><b>' + (isOwner() ? "Про меня" : "Про " + esc(herAcc())) + '</b><span class="ts">' + esc(asub) + "</span></span></button></div>";
 }
 function openBring() {
   const sh = openSheet("", null);
   const draw = (keepVal) => {
     const old = sh.querySelector(".dbody"); const keep = keepVal != null ? keepVal : old ? $("#br_txt", sh).value : "";
     if (old) old.remove();
-    const l = bringList(), doneN = l.filter((x) => x.ok).length;
+    const l = allBring(), doneN = l.filter((x) => x.ok).length;
+    const ideas = (isOwner() ? BRING_IDEAS : SURPRISE_IDEAS).filter((t) => !l.some((x) => normT(x.t) === normT(t)));
     const div = document.createElement("div"); div.className = "dbody";
     div.innerHTML = "<h3>" + (isOwner() ? "Привези мне 🧺" : "Что привезти " + esc(herDat()) + " 🧺") + "</h3>" +
-      (isOwner() ? '<p class="ssub" style="margin-top:2px">Напиши, что хочешь, чтобы он привёз — он увидит сразу.</p>' : '<p class="ssub" style="margin-top:2px">Отмечай, что уже купил — она видит галочки ✓</p>') +
-      '<div class="fl">Быстро добавить</div><div class="chips">' + BRING_IDEAS.filter((t) => !l.some((x) => x.t === t)).map((t) => '<button class="chip" data-bi="' + esc(t) + '">' + esc(t) + "</button>").join("") + "</div>" +
-      '<div class="badd" style="margin-top:14px"><input class="inp" id="br_txt" maxlength="80" placeholder="' + (isOwner() ? "Например: те острые чипсы Lay’s" : "Добавить что-то от себя") + '" value="' + esc(keep) + '"><button class="btn pri" id="br_add" aria-label="Добавить">' + IC.plus.replace("<svg", '<svg width="20" height="20"') + "</button></div>" +
-      (l.length ? '<div class="box blist" style="padding:2px 12px">' + l.map((x) => '<div class="bitem' + (x.ok ? " ok" : "") + '"><button class="bchk" data-bok="' + esc(x.id) + '" aria-label="Куплено">' + IC.check + '</button><span class="btx"><span class="bt1">' + esc(x.t) + "</span>" + (x.ok ? "<small>" + (isOwner() ? "он уже купил ✓" : "куплено") + "</small>" : x.by && x.by !== S.role ? "<small>" + (x.by === "owner" ? "просит она" : "добавил ты") + "</small>" : "") + '</span><button class="drm" data-brm="' + esc(x.id) + '" aria-label="Удалить">' + IC_X + "</button></div>").join("") + "</div>" : '<div class="hint" style="text-align:center;margin-top:18px">Список пуст 🧺</div>') +
+      (isOwner() ? '<p class="ssub">Напиши, что хочешь, чтобы он привёз — он увидит сразу.</p>'
+        : '<p class="ssub">Её просьбы — отмечай, что купил (она видит галочки ✓). А свои сюрпризы добавляй сюда — <b>она их не увидит</b> 🤫</p>') +
+      (ideas.length ? '<div class="fl">' + (isOwner() ? "Быстро добавить" : "Сюрприз от себя 🤫") + '</div><div class="chips">' + ideas.map((t) => '<button class="chip" data-bi="' + esc(t) + '">' + esc(t) + "</button>").join("") + "</div>" : "") +
+      '<div class="badd" style="margin-top:14px"><input class="inp" id="br_txt" maxlength="80" placeholder="' + (isOwner() ? "Например: те острые чипсы Lay’s" : "Свой сюрприз — она не увидит 🤫") + '" value="' + esc(keep) + '"><button class="btn pri" id="br_add" aria-label="Добавить">' + IC.plus.replace("<svg", '<svg width="20" height="20"') + "</button></div>" +
+      (l.length ? '<div class="box blist" style="padding:2px 12px">' + l.map((x) => {
+        const key = (x.sec ? "s:" : "") + x.id;
+        const sub = x.ok ? "<small>" + bringOkLabel(x) + "</small>" : x.sec ? "<small>🤫 сюрприз — она не видит</small>" : !isOwner() ? "<small>просит она</small>" : "";
+        return '<div class="bitem' + (x.ok ? " ok" : "") + '"><button class="bchk" data-bok="' + esc(key) + '" aria-label="Куплено">' + IC.check + '</button><span class="btx"><span class="bt1">' + esc(x.t) + "</span>" + sub + '</span><button class="drm" data-brm="' + esc(key) + '" aria-label="Удалить">' + IC_X + "</button></div>";
+      }).join("") + "</div>" : '<div class="hint" style="text-align:center;margin-top:18px">Список пуст 🧺</div>') +
       (doneN ? '<button class="btn ghost" id="br_clear">Убрать купленное (' + doneN + ")</button>" : "");
     sh.appendChild(div);
   };
   draw();
   sh._redraw = () => draw();
   const add = async (t) => {
-    t = (t || "").trim(); if (!t) { const i = $("#br_txt", sh); i.classList.add("err"); setTimeout(() => i.classList.remove("err"), 900); haptic("error"); return; }
-    const id = Date.now().toString(36) + uid(4);
-    try { await S.store.setBring(id, { t, at: Date.now(), by: S.role, ok: false }); haptic("ok"); draw(""); } catch (err) { toast("Ошибка: " + (err.message || err)); }
+    t = (t || "").trim(); const inp = $("#br_txt", sh);
+    if (!t) { inp.classList.add("err"); setTimeout(() => inp.classList.remove("err"), 900); haptic("error"); return; }
+    if (allBring().some((x) => normT(x.t) === normT(t))) { toast("Это уже есть в списке 🧺"); haptic("warning"); return; }
+    try {
+      if (isOwner()) await S.store.setBring(Date.now().toString(36) + uid(4), { t, at: Date.now(), by: "owner", ok: false });
+      else { SPY.bring = (SPY.bring || []).concat([{ id: uid(8), t, at: Date.now(), ok: false }]); await saveSpyMain(); render(); }
+      haptic("ok"); draw("");
+    } catch (err) { toast("Ошибка: " + (err.message || err)); }
   };
   sh.addEventListener("click", async (e) => {
     const bi = e.target.closest("[data-bi]"); if (bi) { add(bi.dataset.bi); return; }
     if (e.target.closest("#br_add")) { add($("#br_txt", sh).value); return; }
     const ok = e.target.closest("[data-bok]");
-    if (ok) { const x = (S.meta.bring || {})[ok.dataset.bok]; if (!x) return; await S.store.setBring(ok.dataset.bok, Object.assign({}, x, { ok: !x.ok })); haptic(x.ok ? "light" : "ok"); draw(); return; }
-    const rm = e.target.closest("[data-brm]"); if (rm) { await S.store.setBring(rm.dataset.brm, null); haptic("warning"); draw(); return; }
-    if (e.target.closest("#br_clear")) { for (const x of bringList().filter((x) => x.ok)) await S.store.setBring(x.id, null); haptic("ok"); draw(); toast("Купленное убрано ✓"); }
+    if (ok) {
+      const k = ok.dataset.bok;
+      if (k.startsWith("s:")) { const x = (SPY.bring || []).find((y) => y.id === k.slice(2)); if (x) { x.ok = !x.ok; haptic(x.ok ? "ok" : "light"); await saveSpyMain(); } }
+      else { const x = (S.meta.bring || {})[k]; if (!x) return; await S.store.setBring(k, Object.assign({}, x, { ok: !x.ok, okBy: S.role })); haptic(x.ok ? "light" : "ok"); }
+      draw(); render(); return;
+    }
+    const rm = e.target.closest("[data-brm]");
+    if (rm) {
+      const k = rm.dataset.brm;
+      if (k.startsWith("s:")) { SPY.bring = (SPY.bring || []).filter((y) => y.id !== k.slice(2)); await saveSpyMain(); }
+      else await S.store.setBring(k, null);
+      haptic("warning"); draw(); render(); return;
+    }
+    if (e.target.closest("#br_clear")) {
+      for (const x of bringList().filter((x) => x.ok)) await S.store.setBring(x.id, null);
+      if (!isOwner() && (SPY.bring || []).some((x) => x.ok)) { SPY.bring = SPY.bring.filter((x) => !x.ok); await saveSpyMain(); }
+      haptic("ok"); draw(); render(); toast("Купленное убрано ✓");
+    }
   });
   sh.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "br_txt") { e.preventDefault(); add(e.target.value); } });
 }
 
+/* ================= ПРО МЕНЯ ================= */
+const ABOUT_SHORT = { size: "одежда", shoes: "обувь", ring: "кольцо", flowers: "цветы:", colors: "цвета:", sweets: "сладкое:", scent: "ароматы:", allergy: "не любит:", other: "" };
+const ABOUT = [
+  ["size", "👗", "Размер одежды", "S / 42"], ["shoes", "👟", "Размер обуви", "38"], ["ring", "💍", "Размер кольца", "16,5"],
+  ["flowers", "💐", "Любимые цветы", "пионы, тюльпаны"], ["colors", "🎨", "Любимые цвета", "пастельно-розовый, бежевый"],
+  ["sweets", "🍫", "Любимые сладости", "Kinder, макаруны"], ["scent", "🌸", "Любимые ароматы", "ваниль, жасмин"],
+  ["allergy", "🚫", "Аллергия и «не люблю»", "лилии, орехи, жёлтый цвет"], ["other", "💭", "Ещё обо мне", "что важно знать о подарках"],
+];
+function openAbout() {
+  const ab = S.meta.about || {};
+  if (isOwner()) {
+    const sh = openSheet('<h3>Про меня 💁‍♀️</h3><p class="ssub">Заполни один раз — он всегда будет знать твои размеры и что ты любишь. Можно не всё.</p>' +
+      '<div class="box about" style="padding:2px 12px">' + ABOUT.map((f) => '<div class="arow"><span class="ae">' + f[1] + '</span><div class="af"><div class="ak">' + f[2] + '</div><input class="inp" data-ab="' + f[0] + '" maxlength="120" autocomplete="off" placeholder="' + esc(f[3]) + '" value="' + esc(ab[f[0]] || "") + '"></div></div>').join("") + "</div>" +
+      '<button class="btn pri" id="ab_save" style="margin-top:18px">Сохранить</button>');
+    sh.addEventListener("click", async (e) => {
+      if (!e.target.closest("#ab_save")) return;
+      const o = {}; sh.querySelectorAll("[data-ab]").forEach((i) => { o[i.dataset.ab] = i.value.trim(); });
+      try { await S.store.saveMeta({ about: o, aboutAt: Date.now() }); haptic("ok"); closeSheet(); toast("Сохранено 💁‍♀️"); } catch (err) { toast("Ошибка: " + (err.message || err)); }
+    });
+  } else {
+    const filled = ABOUT.filter((f) => String(ab[f[0]] || "").trim());
+    openSheet("<h3>Про " + esc(herAcc()) + " 💁‍♀️</h3>" + (S.meta.aboutAt ? '<p class="ssub">обновлено ' + ago(S.meta.aboutAt) + "</p>" : "") +
+      (filled.length ? '<div class="box about" style="padding:2px 12px">' + filled.map((f) => '<div class="arow"><span class="ae">' + f[1] + '</span><div class="af"><div class="ak">' + f[2] + '</div><div class="av">' + esc(ab[f[0]]) + "</div></div></div>").join("") + "</div>"
+        : '<div class="empty" style="padding:30px 10px"><div class="eart"><span>💁‍♀️</span></div><h3>Пока пусто</h3><p>Она ещё не заполнила. А свои наблюдения записывай в «Мои заметки» 🕵️</p></div>') +
+      (filled.length ? '<div class="hint" style="text-align:center">Своё подслушанное — в «🕵️ Мои заметки»</div>' : ""));
+  }
+}
+
+/* ================= конфликты в его плане ================= */
+function conflicts() {
+  if (isOwner() || !S.loaded || !SPY.loaded) return [];
+  const out = [];
+  Object.values(S.items).forEach((i) => { if (i.gift && i.done && gstOf(i.id) >= 1 && !(SPY.ack || {})[i.id]) out.push({ id: i.id, kind: "done", t: i.title }); });
+  Object.keys(SPY.tt || {}).forEach((id) => { if (!S.items[id]) out.push({ id, kind: "del", t: SPY.tt[id] }); });
+  return out;
+}
+let ttSaveT;
+function syncTitles() {
+  if (isOwner() || !S.loaded || !SPY.loaded) return;
+  SPY.tt = SPY.tt || {}; let ch = false;
+  Object.values(S.items).forEach((i) => {
+    if (i.gift && !i.done) { if (SPY.tt[i.id] !== i.title) { SPY.tt[i.id] = i.title; ch = true; } }
+    else if (SPY.tt[i.id] && !(i.gift && i.done)) { delete SPY.tt[i.id]; ch = true; }
+  });
+  if (ch) { clearTimeout(ttSaveT); ttSaveT = setTimeout(saveSpyMain, 800); }
+}
+function alertsHtml() {
+  return conflicts().map((c) => {
+    const st = GST[gstOf(c.id)];
+    return '<div class="alert"><span class="ai">' + (c.kind === "done" ? "⚠️" : "🗑") + '</span><span class="at">' +
+      (c.kind === "done" ? "<b>Ей уже подарили «" + esc(c.t) + "»</b>, а у тебя это «" + st[0] + " " + st[1] + "». Возможно, стоит отменить заказ."
+        : "<b>Она удалила «" + esc(c.t) + "»</b> из вишлиста — а это было в твоём плане" + (gstOf(c.id) ? " («" + st[0] + " " + st[1] + "»)" : "") + ".") +
+      '</span><button data-ack="' + esc(c.kind + ":" + c.id) + '">Понятно</button></div>';
+  }).join("");
+}
+
 /* ================= новые желания вживую ================= */
 function onData(d) {
-  const prevKnown = S.knownIds;
+  const prevKnown = S.knownIds, prevItems = S.items;
   S.items = d.items || {}; S.meta = d.meta || {}; S.loaded = true;
   const ids = Object.keys(S.items);
   if (prevKnown && !isOwner()) {
     const fresh = ids.filter((id) => !prevKnown.has(id));
     if (fresh.length === 1) { toast("✨ Новое желание: " + S.items[fresh[0]].title); haptic("ok"); }
     else if (fresh.length > 1) { toast("✨ Новых желаний: " + fresh.length); haptic("ok"); }
+  }
+  if (!isOwner() && !LS.get(K("seen_v2"), false)) {
+    S.seen = S.seen || {}; const t = Date.now(); ids.forEach((id) => { if (S.seen[id] == null) S.seen[id] = t; });
+    saveSeen(); LS.set(K("seen_v2"), true);
+  }
+  if (prevKnown && !isOwner()) {
+    ids.forEach((id) => { const a = prevItems[id], b = S.items[id]; if (a && b && a.gift && !a.done && b.done) { toast("⚠️ Ей подарили «" + b.title + "» — это было в твоём плане"); haptic("warning"); } });
   }
   S.knownIds = new Set(ids);
   const bIds = Object.keys(S.meta.bring || {});
