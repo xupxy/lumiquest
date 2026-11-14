@@ -512,6 +512,18 @@ pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-br
 .dark .alert{background:#43361a;color:#ffe2a8;box-shadow:inset 0 0 0 1.5px #7a5a1a}
 .alert .ai{font-size:22px;line-height:1}
 .alert .at{flex:1;font-size:13.5px;line-height:1.4}.alert .at b{font-weight:800}
+.alert.ask{background:linear-gradient(135deg,#ffe4ec,#fff1d6);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--rose2)}
+.dark .alert.ask{background:linear-gradient(135deg,#4b2534,#43361a);color:var(--ink)}
+.alert .abtns{display:flex;gap:8px;margin-top:10px}
+.alert .abtns button{padding:10px 14px}
+.alert .abtns button.yes{background:linear-gradient(135deg,#ef6b8f,#e2537a);color:#fff}
+.stlist{display:grid;gap:9px;margin-top:14px}
+.stopt{display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);text-align:left;font-size:16px}
+.stopt .se2{font-size:24px}.stopt b{flex:1}
+.stopt.on{box-shadow:inset 0 0 0 2px var(--rose)}
+.stopt .ck{width:26px;height:26px;border-radius:50%;background:var(--rose);color:#fff;display:grid;place-items:center}.stopt .ck svg{width:14px;height:14px}
+.gstrow{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;padding:14px 16px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-size:15px;color:var(--ink2)}
+.gstrow b{margin-left:auto;color:var(--ink)}.gstrow svg{width:16px;height:16px;color:var(--ink3)}
 .alert button{flex:none;align-self:center;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.75);font:800 12.5px/1 var(--font);color:#5a3d00}
 .dark .alert button{background:rgba(255,255,255,.12);color:#ffe2a8}
 .stats .sdone{color:inherit;font:inherit;padding:0;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
@@ -792,6 +804,36 @@ html.dark[data-theme=autumn]{
   #thgar .hl{opacity:.75}
 }
 
+/* ===== настроение 2.0, праздники, «всё просмотрено» ===== */
+.mood .txt{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.mood.stale{filter:saturate(.55)}
+.mood.stale .txt{opacity:.7}
+.mood .mfoot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.mood .mfoot .when{margin-top:0}
+.mood .seen{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:var(--glass);font:700 11.5px/1 var(--font);color:var(--ink2)}
+.mood .reply{display:flex;gap:9px;align-items:flex-start;margin-top:11px;padding:10px 12px;border-radius:16px 16px 16px 6px;background:var(--glass);font-size:14px;line-height:1.35}
+.mood .reply .re{font-size:22px;line-height:1}
+.mood .reply b{display:block;font-size:12px;color:var(--rose);margin-bottom:2px}
+.mood .stq{display:flex;align-items:center;gap:8px;margin-top:11px;padding-top:11px;border-top:1px dashed rgba(0,0,0,.12);font:700 13px/1.2 var(--font);color:var(--ink2)}
+.mood .stq button{padding:8px 12px;border-radius:12px;background:var(--glass);font:800 12.5px/1 var(--font);color:var(--ink)}
+.mood .stq button.y{background:var(--rose);color:#fff}
+.mood .rhint{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;background:var(--rose);color:#fff;font:800 11.5px/1 var(--font)}
+.rgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.rbtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 4px 10px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);font:700 11.5px/1.15 var(--font);color:var(--ink2);text-align:center;transition:transform .15s var(--ease)}
+.rbtn span{font-size:28px;line-height:1}
+.rbtn:active{transform:scale(.92)}
+.rbtn.on{box-shadow:inset 0 0 0 2px var(--rose);background:var(--roseSoft);color:var(--ink)}
+.mquote{margin-top:6px;padding:14px 16px;border-radius:18px;background:var(--roseSoft);font:600 17px/1.4 var(--serif);white-space:pre-wrap;word-break:break-word}
+.seenall{margin-left:auto;padding:6px 11px;border-radius:999px;background:var(--card);box-shadow:var(--cardShadow);font:800 12px/1 var(--font);color:var(--rose)}
+.fest{position:relative;overflow:hidden;margin:12px 0 2px;padding:18px 18px 16px;border-radius:24px;color:#fff;background:linear-gradient(135deg,#ef6b8f,#e2537a 45%,#f0a32a);box-shadow:0 14px 30px -12px rgba(226,83,122,.6)}
+.fest.ny{background:linear-gradient(135deg,#2a3a7a,#5a3a9a 50%,#e2537a)}
+.fest.val{background:linear-gradient(135deg,#c2185b,#e2537a 50%,#ff8fab)}
+.fest.mar{background:linear-gradient(135deg,#3fae86,#7bd3a8 40%,#ff8fab)}
+.fest b{display:block;font:700 22px/1.15 var(--serif);position:relative}
+.fest span{display:block;margin-top:6px;font-size:13.5px;opacity:.92;position:relative}
+.fest i{position:absolute;right:10px;top:50%;transform:translateY(-50%) rotate(-10deg);font-size:64px;font-style:normal;opacity:.35;animation:float 3s ease-in-out infinite}
+.fest:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0,rgba(255,255,255,.35),transparent 50%)}
+
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
 .welcome .hero{margin-bottom:22px;position:relative;animation:float 3.4s ease-in-out infinite}
@@ -1052,7 +1094,7 @@ function openSheet(html, mount, opts) {
   sh.setAttribute("role", "dialog"); sh.setAttribute("aria-modal", "true"); sh.tabIndex = -1;
   sh.innerHTML = '<div class="grab' + (opts.head ? " hd" : "") + '"><i></i>' + (opts.head ? '<div class="shead">' + opts.head + "</div>" : '<button class="x" data-close aria-label="Закрыть">' + IC_X + "</button>") + "</div>" + html;
   document.body.append(veil, sh); document.body.classList.add("lock");
-  const entry = { veil, sh, onClose: opts.onClose }; sheets.push(entry);
+  const entry = { veil, sh, onClose: opts.onClose, beforeClose: opts.beforeClose }; sheets.push(entry); sh._entry = entry;
   veil.style.zIndex = 38 + sheets.length * 3; sh.style.zIndex = 39 + sheets.length * 3;
   void sh.offsetHeight; // чтобы анимация открытия точно сработала
   requestAnimationFrame(() => { veil.classList.add("on"); sh.classList.add("on"); });
@@ -1098,8 +1140,10 @@ function openSheet(html, mount, opts) {
   if (mount) mount(sh);
   return sh;
 }
-function closeSheet(which) {
+function closeSheet(which, force) {
   const i = which ? sheets.indexOf(which) : sheets.length - 1; if (i < 0) return;
+  const cand = sheets[i];
+  if (!force && cand.beforeClose && cand.beforeClose(cand) === false) { cand.sh.style.transform = ""; cand.veil.style.opacity = ""; return; }
   const e = sheets.splice(i, 1)[0];
   e.veil.style.opacity = ""; e.veil.classList.remove("on"); e.veil.classList.add("out");
   e.sh.style.transform = ""; e.sh.classList.add("out"); e.sh.classList.remove("on");
@@ -1168,7 +1212,7 @@ window.addEventListener("resize", () => placeTabInd(false));
 
 function cardHtml(it, i) {
   const c = CATS[it.cat] || CATS[2]; const flag = itemFlag(it);
-  const gifted = !isOwner() && it.gift && !it.done;
+  const gifted = !isOwner() && G(it.id) && !it.done;
   const ini = initial(it.title);
   const media = it.thumb ? '<img loading="lazy" src="' + it.thumb + '" alt="">'
     : (ini ? '<span class="ini">' + esc(ini) + '</span><span class="wm">' + c.emo + "</span>" : '<span class="ini" style="font-style:normal">' + c.emo + "</span>");
@@ -1225,28 +1269,25 @@ function render() {
   else {
     stats = "<span><b>" + active.length + "</b> " + plural(active.length, ["желание", "желания", "желаний"]) + "</span>";
     if (done.length) stats += '<span class="sep"></span><button class="sdone" data-tab="done"><b>' + done.length + "</b> сбылось 🎉</button>";
-    const g = active.filter((i) => i.gift).length;
+    const g = active.filter((i) => G(i.id)).length;
     if (!isOwner() && g) stats += '<span class="sep"></span><span class="gifted">🎁 <b>' + g + "</b> от тебя</span>";
+    const fl = isOwner() ? 0 : all.filter((i) => itemFlag(i)).length;
+    if (fl) stats += '<button class="seenall" data-act="seenall">✓ всё просмотрено · ' + fl + "</button>";
   }
   let h = headerHtml(stats);
 
   if (S.store.mode === "demo") h += '<button class="banner" data-act="setup"><span class="bi">' + IC.cloud + '</span><span><b>Демо-режим</b>Список виден только тут</span><span class="go">Подключить' + IC.chev + "</span></button>";
 
-  // мысли / настроение
+  h += festHtml();
+  // мысли / настроение (+ его реакция, «видел», устаревание)
   const mood = S.meta.mood || "";
-  if (isOwner() || mood) {
-    h += '<button class="mood' + (isOwner() ? " own" : "") + '" ' + (isOwner() ? 'data-act="mood"' : "") + '><div class="mh"><span class="lbl">' + (isOwner() ? "Сейчас у меня на уме" : "Сейчас у неё на уме") + "</span>" +
-      "</div>" +
-      '<div class="txt' + (mood ? "" : " plh") + '">' + (mood ? esc(mood) : "О чём думаешь? Чего хочется прямо сейчас — настроение, мечта, намёк…") + "</div>" +
-      (mood && S.meta.moodAt ? '<div class="when">обновлено ' + ago(S.meta.moodAt) + "</div>" : "") +
-      (isOwner() ? '<span class="medit">' + IC.pen + "</span>" : "") + "</button>";
-  }
+  if (isOwner() || mood) h += moodHtml(mood);
 
   h += duoHtml();
   if (!isOwner()) { syncTitles(); h += alertsHtml() + viewerCardsHtml(); }
 
   // вкладки
-  const mineN = active.filter((i) => i.gift).length;
+  const mineN = active.filter((i) => G(i.id)).length;
   const tabs = [["all", "Все", active.length]].concat(isOwner() ? [] : [["mine", "🎁 Я дарю", mineN]]).concat([ ["1", "🔥 Срочно", cnt(1)], ["2", "🌿 Нужно", cnt(2)], ["3", "✨ Хочу", cnt(3)], ["done", "🎉 Сбылось", done.length]]);
   h += '<div class="tabs"><div class="tabrail"><span class="tabind"></span>' + tabs.map((t) => '<button class="tab' + (S.tab === t[0] ? " on" : "") + '" data-tab="' + t[0] + '">' + t[1] + (t[2] || t[0] === "all" ? " <b>" + t[2] + "</b>" : "") + "</button>").join("") + "</div></div>";
 
@@ -1325,6 +1366,9 @@ document.addEventListener("click", (e) => {
   else if (act === "budget") openBudget();
   else if (act === "bring") openBring();
   else if (act === "about") openAbout();
+  else if (act === "seenall") { const t = Date.now(); S.seen = S.seen || {}; Object.keys(S.items).forEach((id) => { S.seen[id] = t; }); saveSeen(); haptic("light"); SFX.play("tick"); render(); }
+  else if (act === "react") openReact();
+  else if (act === "moodok") { S.store.saveMeta({ moodAt: Date.now() }).catch(() => {}); haptic("ok"); toast("Отлично, оставили 💭"); }
 });
 document.addEventListener("click", async (e) => {
   const ak = e.target.closest("[data-ack]");
@@ -1333,9 +1377,15 @@ document.addEventListener("click", async (e) => {
     if (kind === "done") { SPY.ack[id] = 1; } else { delete SPY.tt[id]; delete SPY.st[id]; }
     haptic("light"); saveSpyMain(); render(); return;
   }
+  const an = e.target.closest("[data-ans]");
+  if (an && !an.closest(".sheet")) {
+    e.stopPropagation(); const [v, id] = an.dataset.ans.split(":");
+    if (v === "yes") { SPY.given[id] = Date.now(); heartsFrom(an, 12); SFX.play("tada"); haptic("ok"); toast("Это был ты 💗 Подарок вручён"); }
+    else { SPY.ack[id] = 1; haptic("light"); if (gstOf(id) >= 1) toast("⚠️ Тогда, возможно, стоит отменить свой заказ"); }
+    saveSpyMain(); setTimeout(render, an.dataset.ans.startsWith("yes") ? 500 : 0); return;
+  }
   const g = e.target.closest("[data-gst]"); if (!g || g.closest(".sheet")) return;
-  e.stopPropagation(); const id = g.dataset.gst; SPY.st[id] = (gstOf(id) + 1) % 4; haptic("light"); render(); saveSpyMain();
-  if (SPY.st[id] === 3) toast("Спрятано 🤫 Она не найдёт");
+  e.stopPropagation(); openStatus(g.dataset.gst);
 }, true);
 
 function setRole(role) {
@@ -1370,14 +1420,14 @@ async function openDetail(id) {
     '<div class="dtitle">' + esc(it.title) + "</div>" +
     (priceStr(it) ? '<div class="dprice"><small>цена</small>' + priceStr(it) + "</div>" : "") +
     (rows.length ? '<div class="dinfo">' + rows.join("") + "</div>" : "") +
-    (!isOwner() && it.gift && !it.done ? '<div class="dsecret"><span class="se">🤫</span><div><b>Ты даришь это</b><span>Отметку видишь только ты — для неё это сюрприз.</span></div></div>' : "") +
+    (!isOwner() && G(it.id) && !it.done ? '<div class="dsecret"><span class="se">🤫</span><div><b>Ты даришь это</b><span>Отметка хранится только в твоём Telegram — она её не увидит.</span></div></div><button class="gstrow" data-d="status"><span>Статус</span><b>' + GST[gstOf(it.id)][0] + " " + GST[gstOf(it.id)][1] + "</b>" + IC.chev + "</button>" : "") +
     '<div class="dmeta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div></div>";
   let bar = "";
   if (isOwner()) {
     bar = (it.done ? '<button class="btn" data-d="undone">↩️ Вернуть в список</button>' : '<button class="btn ok" data-d="done">🎉 Мне это подарили!</button>') +
       '<button class="btn sq" data-d="edit" aria-label="Изменить">' + IC_EDIT + '</button><button class="btn sq rm" data-d="del" aria-label="Удалить">' + IC_DEL + "</button>";
   } else if (!it.done) {
-    bar = it.gift ? '<button class="btn" data-d="ungift">Передумал — снять отметку</button>'
+    bar = G(it.id) ? '<button class="btn" data-d="ungift">Передумал — снять отметку</button>'
       : '<button class="btn pri" data-d="gift">🎁 Я подарю это</button><div class="dbhint">🤫 Секретно — она не увидит эту отметку</div>';
   }
   h += bar ? '<div class="dbar">' + bar + "</div>" : '<div class="dend"></div>';
@@ -1397,8 +1447,9 @@ async function openDetail(id) {
       }
       else if (d === "done") { b.classList.add("busy"); await S.store.patchItem(id, { done: true, doneAt: Date.now() }); haptic("ok"); closeSheet(); confetti(); SFX.play("tada"); toast("Ура! Желание сбылось 🎉"); }
       else if (d === "undone") { b.classList.add("busy"); await S.store.patchItem(id, { done: false, doneAt: null }); closeSheet(); toast("Вернули в список", "↩️"); }
-      else if (d === "gift") { b.classList.add("busy"); heartsFrom(b, 10); SFX.play("heart"); await S.store.patchItem(id, { gift: true, giftAt: Date.now() }); haptic("ok"); closeSheet(); toast("Отмечено. Она не узнает 🤫"); }
-      else if (d === "ungift") { b.classList.add("busy"); await S.store.patchItem(id, { gift: false }); closeSheet(); toast("Отметка снята", "✓"); }
+      else if (d === "gift") { b.classList.add("busy"); heartsFrom(b, 10); SFX.play("heart"); SPY.gift[id] = Date.now(); await saveSpyMain(); render(); haptic("ok"); closeSheet(); toast("Отмечено. Она не узнает 🤫"); }
+      else if (d === "ungift") { b.classList.add("busy"); delete SPY.gift[id]; delete SPY.st[id]; await saveSpyMain(); render(); closeSheet(); toast("Отметка снята", "✓"); }
+      else if (d === "status") { openStatus(id, () => { closeSheet(); openDetail(id); }); }
     } catch (err) { b.classList.remove("busy"); toast("Ошибка: " + (err.message || err)); }
   });
   // полные фото
@@ -1421,7 +1472,7 @@ async function openDetail(id) {
 function openEditor(it, photosIn) {
   const isNew = !it;
   const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false, loading: false };
-  const defCur = (() => { const c = {}; Object.values(S.items).forEach((i) => { if (i.cur && String(i.price || "").trim()) c[i.cur] = (c[i.cur] || 0) + 1; }); const top = Object.keys(c).sort((a, b) => c[b] - c[a])[0]; return top || LS.get("wl_cur", "€"); })();
+  const defCur = LS.get("wl_cur", "€");
   const curOpts = CURS.map((c) => '<option' + ((it ? it.cur || defCur : defCur) === c ? " selected" : "") + ">" + c + "</option>").join("");
   const noteV = it ? it.note || "" : "";
   const head = '<button class="lk" data-close>Отмена</button><b>' + (isNew ? "Новое желание" : "Изменить") + '</b><button class="lk go" id="f_save2">Готово</button>';
@@ -1454,7 +1505,17 @@ function openEditor(it, photosIn) {
   const setErr = (f, on) => { $("#f_" + f, sh).classList.toggle("err", on); $("#e_" + f, sh).classList.toggle("on", on); };
   $("#f_title", sh).addEventListener("input", () => setErr("title", false));
   $("#f_link", sh).addEventListener("input", () => setErr("link", false));
-  $("#f_price", sh).addEventListener("input", () => setErr("price", false));
+  $("#f_price", sh).addEventListener("input", () => { setErr("price", false); const c = curFromText($("#f_price", sh).value); if (c) { $("#f_cur", sh).value = c; st.curTouched = true; } });
+  $("#f_cur", sh).addEventListener("change", () => { st.curTouched = true; });
+  $("#f_link", sh).addEventListener("input", () => { if (st.curTouched) return; const c = curFromDomain(extractUrl($("#f_link", sh).value)); if (c) $("#f_cur", sh).value = c; });
+  // черновик: не теряем недописанное
+  const snap = () => [$("#f_title", sh).value, $("#f_price", sh).value, $("#f_link", sh).value, $("#f_details", sh).value, noteEl.value, st.cat, st.photos.length].join("\u0001");
+  const snap0 = snap();
+  sh._entry.beforeClose = (entry) => {
+    if (st.saved || snap() === snap0) return true;
+    confirmSheet({ icon: "✏️", title: isNew ? "Выйти без сохранения?" : "Не сохранять изменения?", text: isNew ? "Недописанное желание пропадёт." : "Изменения пропадут.", ok: "Выйти", cancel: "Продолжить", danger: true }).then((ok) => { if (ok) closeSheet(entry, true); });
+    return false;
+  };
   const fileIn = $("#file");
   sh.addEventListener("click", (e) => {
     const c = e.target.closest("[data-cat]");
@@ -1480,10 +1541,13 @@ function openEditor(it, photosIn) {
   async function save() {
     if (st.busy || st.loading) return;
     const tEl = $("#f_title", sh), title = tEl.value.trim();
-    const link = $("#f_link", sh).value.trim();
-    const badLink = !!link && (/\s/.test(link) || !/[^.\s]\.[^.\s]/.test(link));
-    const rawP = $("#f_price", sh).value.trim(), numP = rawP.replace(/[\s\u00a0]/g, "").replace(",", ".").replace(/[€₴₽$£]|zł|грн|руб|eur/gi, "");
-    const badPrice = !!rawP && !(numP !== "" && isFinite(Number(numP)) && Number(numP) >= 0);
+    const rawLink = $("#f_link", sh).value.trim();
+    const link = extractUrl(rawLink);
+    const extra = (link ? rawLink.replace(link, "") : rawLink).replace(/\s+/g, " ").trim();
+    if (extra) { const dEl = $("#f_details", sh); if (!dEl.value.includes(extra)) dEl.value = (dEl.value.trim() ? dEl.value.trim() + " · " : "") + extra; }
+    const badLink = false;
+    const rawP = $("#f_price", sh).value.trim(), mP = rawP.replace(/\u00a0/g, " ").match(/\d[\d ]*(?:[.,]\d+)?/), numP = mP ? mP[0].replace(/ /g, "").replace(",", ".") : "";
+    const badPrice = !!rawP && !(numP !== "" && isFinite(Number(numP)));
     setErr("title", !title); setErr("link", badLink); setErr("price", badPrice);
     if (!title || badLink || badPrice) {
       haptic("error");
@@ -1495,7 +1559,7 @@ function openEditor(it, photosIn) {
     st.busy = true; const btn = $("#f_save", sh), b2 = $("#f_save2", sh);
     btn.classList.add("busy"); btn.innerHTML = '<span class="mspin"></span>Сохраняю…'; b2.style.opacity = .4;
     try {
-      const now = Date.now(); const cur = $("#f_cur", sh).value; LS.set("wl_cur", cur);
+      const now = Date.now(); const cur = $("#f_cur", sh).value; LS.set("wl_cur", cur); st.saved = true;
       const item = {
         id: it ? it.id : now.toString(36) + uid(6),
         title, cat: st.cat, price: rawP ? String(Number(numP)) : "", cur,
@@ -1628,19 +1692,32 @@ const PRIV = (() => {
     async del(k) { try { localStorage.removeItem(lk(k)); } catch (e) {} if (cs) { try { await call("removeItem", k); } catch (e) {} } },
   };
 })();
-const SPY = { loaded: false, budget: 0, cur: "€", dates: [], st: {}, notes: [], bring: [], tt: {}, ack: {} };
+const SPY = { loaded: false, budget: 0, cur: "€", dates: [], st: {}, notes: [], bring: [], tt: {}, ack: {}, gift: {}, given: {} };
+const G = (id) => !!(SPY.gift || {})[id];
+// старые отметки «я подарю» лежали в общей базе — переносим в его личное облако и стираем из базы
+function migrateGifts() {
+  if (isOwner() || !SPY.loaded || !S.loaded || !S.store) return;
+  let ch = false;
+  Object.values(S.items).forEach((i) => {
+    if (i.gift || i.giftAt) {
+      if (i.gift && !SPY.gift[i.id]) { SPY.gift[i.id] = i.giftAt || Date.now(); ch = true; }
+      S.store.patchItem(i.id, { gift: false, giftAt: null }).catch(() => {});
+    }
+  });
+  if (ch) saveSpyMain();
+}
 async function loadSpy() {
   try {
     const keys = await PRIV.keys();
     const nk = keys.filter((k) => k.startsWith("n_"));
     const got = await PRIV.get(["spy_main"].concat(nk));
     const m = JSON.parse(got.spy_main || "{}");
-    SPY.budget = m.budget || 0; SPY.cur = m.cur || LS.get("wl_cur", "€"); SPY.dates = m.dates || []; SPY.st = m.st || {}; SPY.bring = m.bring || []; SPY.tt = m.tt || {}; SPY.ack = m.ack || {};
+    SPY.budget = m.budget || 0; SPY.cur = m.cur || LS.get("wl_cur", "€"); SPY.dates = m.dates || []; SPY.st = m.st || {}; SPY.bring = m.bring || []; SPY.tt = m.tt || {}; SPY.ack = m.ack || {}; SPY.gift = m.gift || {}; SPY.given = m.given || {};
     SPY.notes = nk.map((k) => { try { return Object.assign({ id: k.slice(2) }, JSON.parse(got[k])); } catch (e) { return null; } }).filter((n) => n && n.t).sort((a, b) => b.at - a.at);
   } catch (e) { console.error(e); }
-  SPY.loaded = true; if (S.loaded) render();
+  SPY.loaded = true; migrateGifts(); if (S.loaded) render();
 }
-function saveSpyMain() { return PRIV.set("spy_main", JSON.stringify({ budget: SPY.budget, cur: SPY.cur, dates: SPY.dates, st: SPY.st, bring: SPY.bring, tt: SPY.tt, ack: SPY.ack })); }
+function saveSpyMain() { return PRIV.set("spy_main", JSON.stringify({ budget: SPY.budget, cur: SPY.cur, dates: SPY.dates, st: SPY.st, bring: SPY.bring, tt: SPY.tt, ack: SPY.ack, gift: SPY.gift, given: SPY.given })); }
 
 /* даты */
 const MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
@@ -1672,8 +1749,9 @@ function viewerCardsHtml() {
   const nt = '<button class="spyc nt" data-act="notes"><span class="sl">🕵️ Мои заметки</span><span><span class="big">' + nn + '<small style="font-family:var(--font)">' + plural(nn, ["заметка", "заметки", "заметок"]) + "</small></span>" +
     '<div class="sd">' + (nn ? "«" + esc(SPY.notes[0].t) + "»" : "Размеры, намёки, что она обронила…") + "</div></span></button>";
   let hint = "";
-  if (nx && nx.left <= 30) {
-    const gifted = Object.values(S.items).filter((i) => i.gift && !i.done).length;
+  if (nx && nx.left === 0) hint = '<div class="spyhint">🎉 Сегодня — <b>' + esc(nx.title) + "</b>. Не забудь поздравить 💗</div>";
+  else if (nx && nx.left <= 30) {
+    const gifted = Object.values(S.items).filter((i) => G(i.id) && !i.done).length;
     const urgent = Object.values(S.items).filter((i) => !i.done && i.cat == 1).length;
     hint = '<div class="spyhint">' + (gifted ? "🎁 Ты уже выбрал " + gifted + " " + plural(gifted, ["подарок", "подарка", "подарков"]) + " — загляни в «Я дарю»" : "👀 Пора выбрать подарок" + (urgent ? " — у неё <b>" + urgent + "</b> " + plural(urgent, ["срочное желание", "срочных желания", "срочных желаний"]) : "")) + "</div>";
   }
@@ -1681,8 +1759,8 @@ function viewerCardsHtml() {
 }
 
 function planHtml() {
-  const mine = sortedItems((i) => i.gift && !i.done);
-  const given = sortedItems((i) => i.gift && i.done);
+  const mine = sortedItems((i) => G(i.id) && !i.done);
+  const given = sortedItems((i) => i.done && (SPY.given || {})[i.id]);
   let sum = 0; const other = {};
   mine.forEach((i) => { const n = numPrice(i); if (!n) return; const c = i.cur || "€"; if (c === SPY.cur) sum += n; else other[c] = (other[c] || 0) + n; });
   const otherStr = Object.keys(other).map((c) => "+ " + money(other[c], c)).join(" · ");
@@ -1703,8 +1781,11 @@ function planHtml() {
     return '<div class="grow"><button class="gimg k' + c.key + '" data-open="' + esc(it.id) + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + "</button>" +
       '<button class="gt" data-open="' + esc(it.id) + '" style="text-align:left"><b>' + esc(it.title) + "</b><span>" + (priceStr(it) || c.emo + " " + c.name) + "</span></button>" +
       '<button class="gst s' + s + '" data-gst="' + esc(it.id) + '">' + GST[s][0] + " " + GST[s][1] + "</button></div>";
-  }).join("") + "</div>" + '<div class="hint" style="text-align:center">Нажми на статус, чтобы сменить: думаю → заказал → едет → спрятал</div>';
-  if (given.length) h += '<div class="gsub">Уже подарено · ' + given.length + '</div><div class="grid">' + given.map((it, i) => cardHtml(it, i)).join("") + "</div>";
+  }).join("") + "</div>" + '<div class="hint" style="text-align:center">Нажми на статус, чтобы выбрать: думаю · заказал · едет · спрятал</div>';
+  if (given.length) {
+    const gs = {}; given.forEach((i) => { const n = numPrice(i); if (n) gs[i.cur || "€"] = (gs[i.cur || "€"] || 0) + n; });
+    h += '<div class="gsub">🎁 Подарено тобой · ' + given.length + (Object.keys(gs).length ? " · " + Object.keys(gs).map((c) => money(gs[c], c)).join(" + ") : "") + '</div><div class="grid">' + given.map((it, i) => cardHtml(it, i)).join("") + "</div>";
+  }
   return h + "</div>";
 }
 
@@ -1756,6 +1837,7 @@ function openDates() {
     if (pre) {
       const p = DATE_PRESETS[+pre.dataset.pre];
       if (p.d) { SPY.dates.push({ id: uid(8), title: p.title(), emo: p.emo, d: p.d, m: p.m }); await saveSpyMain(); haptic("ok"); draw(); render(); toast("Дата добавлена " + p.emo); }
+      else if (p.emo === "🎂" && parseDM((S.meta.about || {}).bday)) { const bd = parseDM(S.meta.about.bday); SPY.dates.push({ id: uid(8), title: p.title(), emo: p.emo, d: bd.d, m: bd.m }); await saveSpyMain(); haptic("ok"); draw(); render(); toast("Дата из «Про " + herAcc() + "» добавлена 🎂"); }
       else { $("#d_title", sh).value = p.title(); $("#d_emo", sh).value = p.emo; $("#d_title", sh).scrollIntoView({ block: "center", behavior: "smooth" }); toast("Теперь выбери день и месяц 👇"); haptic("light"); }
       return;
     }
@@ -1824,7 +1906,7 @@ function duoHtml() {
   const l = allBring(), open = l.filter((x) => !x.ok);
   let bsub;
   if (isOwner()) bsub = l.length ? (open.length ? open.length + " из " + l.length + " ещё не куплено" : "Всё куплено 🥰") : "Чипсы, вкусняшки — " + HIM + " привезёт";
-  else bsub = open.length ? open.slice(0, 3).map((x) => x.t).join(", ") : "Пока ничего не просила";
+  else bsub = open.length ? open.slice().sort((a, b) => b.at - a.at).slice(0, 3).map((x) => x.t).join(", ") : "Пока ничего не просила";
   const ab = S.meta.about || {}, filled = ABOUT.filter((f) => String(ab[f[0]] || "").trim());
   let asub;
   if (isOwner()) asub = filled.length ? "Заполнено " + filled.length + " из " + ABOUT.length : "Размеры, любимое, аллергии";
@@ -1872,7 +1954,7 @@ function openBring() {
     if (ok) {
       const k = ok.dataset.bok;
       if (k.startsWith("s:")) { const x = (SPY.bring || []).find((y) => y.id === k.slice(2)); if (x) { x.ok = !x.ok; haptic(x.ok ? "ok" : "light"); await saveSpyMain(); } }
-      else { const x = (S.meta.bring || {})[k]; if (!x) return; await S.store.setBring(k, Object.assign({}, x, { ok: !x.ok, okBy: S.role })); haptic(x.ok ? "light" : "ok"); }
+      else { const x = (S.meta.bring || {})[k]; if (!x) return; await S.store.setBring(k, Object.assign({}, x, { ok: !x.ok, okBy: S.role })); haptic(x.ok ? "light" : "ok"); if (!x.ok && !isOwner()) NOTIFY.bought(x.t); }
       SFX.play("tick"); draw(); render(); return;
     }
     const rm = e.target.closest("[data-brm]");
@@ -1891,10 +1973,29 @@ function openBring() {
   sh.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "br_txt") { e.preventDefault(); add(e.target.value); } });
 }
 
+/* ---- разбор ссылок и валют ---- */
+function extractUrl(t) {
+  t = String(t || ""); const m = t.match(/https?:\/\/[^\s<>"'«»]+/i) || t.match(/\b(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:com|ua|ru|nl|de|fr|it|es|eu|pl|uk|net|org|shop|store|io|me|by|kz|co)(?:\/[^\s<>"'«»]*)?/i);
+  return m ? m[0].replace(/[).,!?]+$/, "") : "";
+}
+function curFromText(t) {
+  t = String(t || "");
+  return /₴|грн|uah/i.test(t) ? "₴" : /€|eur/i.test(t) ? "€" : /₽|руб|rub/i.test(t) ? "₽" : /zł|pln|злот/i.test(t) ? "zł" : /£|gbp/i.test(t) ? "£" : /\$|usd|долл/i.test(t) ? "$" : "";
+}
+function curFromDomain(u) {
+  const m = String(u || "").toLowerCase().match(/^(?:https?:\/\/)?([^\/?#]+)/); if (!m) return "";
+  const h = m[1];
+  if (/\.ua$|\/ua\b/.test(h) || /rozetka|prom\.ua|kasta|makeup\.com\.ua/.test(h)) return "₴";
+  if (/\.ru$/.test(h)) return "₽"; if (/\.pl$/.test(h)) return "zł"; if (/\.co\.uk$|\.uk$/.test(h)) return "£";
+  if (/\.(nl|de|fr|it|es|eu|be|at|ie|pt|fi)$/.test(h) || /bol\.com|zalando/.test(h)) return "€";
+  const path = String(u).toLowerCase(); if (/\/uk-ua\/|\/ua\/|\/ua-/.test(path)) return "₴"; if (/\/nl\/|\/de\/|\/nl-|\/de-/.test(path)) return "€";
+  return "";
+}
+
 /* ================= ПРО МЕНЯ ================= */
-const ABOUT_SHORT = { size: "одежда", shoes: "обувь", ring: "кольцо", flowers: "цветы:", colors: "цвета:", sweets: "сладкое:", scent: "ароматы:", allergy: "не любит:", other: "" };
+const ABOUT_SHORT = { bday: "ДР", size: "одежда", shoes: "обувь", ring: "кольцо", flowers: "цветы:", colors: "цвета:", sweets: "сладкое:", scent: "ароматы:", allergy: "не любит:", other: "" };
 const ABOUT = [
-  ["size", "👗", "Размер одежды", "S / 42"], ["shoes", "👟", "Размер обуви", "38"], ["ring", "💍", "Размер кольца", "16,5"],
+  ["bday", "🎂", "День рождения", "ДД.ММ, например 05.12"], ["size", "👗", "Размер одежды", "S / 42"], ["shoes", "👟", "Размер обуви", "38"], ["ring", "💍", "Размер кольца", "16,5"],
   ["flowers", "💐", "Любимые цветы", "пионы, тюльпаны"], ["colors", "🎨", "Любимые цвета", "пастельно-розовый, бежевый"],
   ["sweets", "🍫", "Любимые сладости", "Kinder, макаруны"], ["scent", "🌸", "Любимые ароматы", "ваниль, жасмин"],
   ["allergy", "🚫", "Аллергия и «не люблю»", "лилии, орехи, жёлтый цвет"], ["other", "💭", "Ещё обо мне", "что важно знать о подарках"],
@@ -1902,9 +2003,13 @@ const ABOUT = [
 function openAbout() {
   const ab = S.meta.about || {};
   if (isOwner()) {
-    const sh = openSheet('<h3>Про меня 💁‍♀️</h3><p class="ssub">Заполни один раз — он всегда будет знать твои размеры и что ты любишь. Можно не всё.</p>' +
+    const sh = openSheet('<h3>Про меня 💁‍♀️</h3><p class="ssub">Заполни один раз — он всегда будет знать твои размеры и что ты любишь. Можно не всё, сохраняется само ✓</p>' +
       '<div class="box about" style="padding:2px 12px">' + ABOUT.map((f) => '<div class="arow"><span class="ae">' + f[1] + '</span><div class="af"><div class="ak">' + f[2] + '</div><input class="inp" data-ab="' + f[0] + '" maxlength="120" autocomplete="off" placeholder="' + esc(f[3]) + '" value="' + esc(ab[f[0]] || "") + '"></div></div>').join("") + "</div>" +
       '<button class="btn pri" id="ab_save" style="margin-top:18px">Сохранить</button>');
+    const collect = () => { const o = {}; sh.querySelectorAll("[data-ab]").forEach((i) => { o[i.dataset.ab] = i.value.trim(); }); return o; };
+    let abT; const auto = () => { clearTimeout(abT); abT = setTimeout(() => S.store.saveMeta({ about: collect(), aboutAt: Date.now() }).catch(() => {}), 500); };
+    sh.addEventListener("change", (e) => { if (e.target.matches("[data-ab]")) auto(); });
+    sh._entry.onClose = () => { clearTimeout(abT); const o = collect(); if (JSON.stringify(o) !== JSON.stringify(Object.assign({}, ...ABOUT.map((f) => ({ [f[0]]: (S.meta.about || {})[f[0]] || "" }))))) S.store.saveMeta({ about: o, aboutAt: Date.now() }).catch(() => {}); };
     sh.addEventListener("click", async (e) => {
       if (!e.target.closest("#ab_save")) return;
       const o = {}; sh.querySelectorAll("[data-ab]").forEach((i) => { o[i.dataset.ab] = i.value.trim(); });
@@ -1923,7 +2028,7 @@ function openAbout() {
 function conflicts() {
   if (isOwner() || !S.loaded || !SPY.loaded) return [];
   const out = [];
-  Object.values(S.items).forEach((i) => { if (i.gift && i.done && gstOf(i.id) >= 1 && !(SPY.ack || {})[i.id]) out.push({ id: i.id, kind: "done", t: i.title }); });
+  Object.values(S.items).forEach((i) => { if (G(i.id) && i.done && !(SPY.given || {})[i.id] && !(SPY.ack || {})[i.id]) out.push({ id: i.id, kind: "ask", t: i.title }); });
   Object.keys(SPY.tt || {}).forEach((id) => { if (!S.items[id]) out.push({ id, kind: "del", t: SPY.tt[id] }); });
   return out;
 }
@@ -1932,19 +2037,30 @@ function syncTitles() {
   if (isOwner() || !S.loaded || !SPY.loaded) return;
   SPY.tt = SPY.tt || {}; let ch = false;
   Object.values(S.items).forEach((i) => {
-    if (i.gift && !i.done) { if (SPY.tt[i.id] !== i.title) { SPY.tt[i.id] = i.title; ch = true; } }
-    else if (SPY.tt[i.id] && !(i.gift && i.done)) { delete SPY.tt[i.id]; ch = true; }
+    if (G(i.id) && !i.done) { if (SPY.tt[i.id] !== i.title) { SPY.tt[i.id] = i.title; ch = true; } }
+    else if (SPY.tt[i.id] && !(G(i.id) && i.done)) { delete SPY.tt[i.id]; ch = true; }
   });
   if (ch) { clearTimeout(ttSaveT); ttSaveT = setTimeout(saveSpyMain, 800); }
 }
 function alertsHtml() {
   return conflicts().map((c) => {
+    if (c.kind === "ask") return '<div class="alert ask"><span class="ai">🎉</span><span class="at"><b>' + esc(herName()) + " получила «" + esc(c.t) + "»!</b> Это твой подарок?" +
+      '<span class="abtns"><button class="yes" data-ans="yes:' + esc(c.id) + '">🎁 Да, это я</button><button data-ans="no:' + esc(c.id) + '">Нет, не я</button></span></span></div>';
     const st = GST[gstOf(c.id)];
-    return '<div class="alert"><span class="ai">' + (c.kind === "done" ? "⚠️" : "🗑") + '</span><span class="at">' +
-      (c.kind === "done" ? "<b>Ей уже подарили «" + esc(c.t) + "»</b>, а у тебя это «" + st[0] + " " + st[1] + "». Возможно, стоит отменить заказ."
-        : "<b>Она удалила «" + esc(c.t) + "»</b> из вишлиста — а это было в твоём плане" + (gstOf(c.id) ? " («" + st[0] + " " + st[1] + "»)" : "") + ".") +
+    return '<div class="alert"><span class="ai">🗑</span><span class="at"><b>Она удалила «' + esc(c.t) + "»</b> из вишлиста — а это было в твоём плане" + (gstOf(c.id) ? " («" + st[0] + " " + st[1] + "»)" : "") + "." +
       '</span><button data-ack="' + esc(c.kind + ":" + c.id) + '">Понятно</button></div>';
   }).join("");
+}
+function openStatus(id, after) {
+  const cur = gstOf(id), it = S.items[id] || {};
+  const sh = openSheet("<h3>Статус подарка</h3>" + (it.title ? '<p class="ssub">' + esc(it.title) + "</p>" : "") +
+    '<div class="stlist">' + GST.map((g, k) => '<button class="stopt s' + k + (k === cur ? " on" : "") + '" data-stk="' + k + '"><span class="se2">' + g[0] + "</span><b>" + g[1] + "</b>" + (k === cur ? '<span class="ck">' + IC.check + "</span>" : "") + "</button>").join("") + "</div>", null, { cls: "compact" });
+  sh.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-stk]"); if (!b) return;
+    SPY.st[id] = +b.dataset.stk; haptic("light"); SFX.play("tick"); await saveSpyMain(); closeSheet(); render();
+    if (SPY.st[id] === 3) toast("Спрятано 🤫 Она не найдёт");
+    if (after) after();
+  });
 }
 
 /* ================= ЗВУКИ ================= */
@@ -1986,17 +2102,19 @@ function heartsFrom(el, n) {
    Когда Арина что-то добавляет, её приложение само отправляет Саше сообщение от бота. */
 const NOTIFY = (() => {
   const appUrl = () => location.origin + location.pathname + location.search;
-  const ready = () => S.meta.bot && S.meta.viewerId;
+  let target = "viewer";
+  const chat = () => target === "owner" ? S.meta.ownerId : S.meta.viewerId;
+  const ready = () => S.meta.bot && chat();
   const escH = (t) => String(t || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   function dataUrlBlob(u) { const [h, b] = u.split(","); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], { type: (h.match(/:(.*?);/) || [])[1] || "image/jpeg" }); }
   function form(text, photo, btn) {
-    const fd = new FormData(); fd.append("chat_id", String(S.meta.viewerId)); fd.append("parse_mode", "HTML");
+    const fd = new FormData(); fd.append("chat_id", String(chat())); fd.append("parse_mode", "HTML");
     if (photo) { fd.append("photo", dataUrlBlob(photo), "wish.jpg"); fd.append("caption", text); } else { fd.append("text", text); fd.append("disable_web_page_preview", "true"); }
     if (btn && !S.meta.botNoBtn) fd.append("reply_markup", JSON.stringify({ inline_keyboard: [[{ text: "Открыть вишлист 💝", web_app: { url: appUrl() } }]] }));
     return fd;
   }
   async function send(text, photo, opts) {
-    opts = opts || {};
+    opts = opts || {}; target = opts.to || "viewer";
     if (!ready() && !opts.force) return { ok: false, skip: true };
     const url = "https://api.telegram.org/bot" + S.meta.bot + "/" + (photo ? "sendPhoto" : "sendMessage");
     try {
@@ -2015,9 +2133,17 @@ const NOTIFY = (() => {
   // пачка «привези»: собираем 6 сек, чтобы не спамить
   let bq = [], bt = null;
   function flushBring() { clearTimeout(bt); bt = null; if (!bq.length) return; const l = bq; bq = []; send("🧺 <b>" + escH(herName()) + " просит привезти:</b>\n" + l.map((t) => "• " + escH(t)).join("\n")); }
-  document.addEventListener("visibilitychange", () => { if (document.hidden) flushBring(); });
+  let bb = [], btT = null;
+  function flushBought() {
+    clearTimeout(btT); btT = null; if (!bb.length) return; const l = bb; bb = [];
+    const left = bringList().filter((x) => !x.ok).length;
+    send("🧺 <b>" + escH(HIM) + " купил:</b>\n" + l.map((t) => "✓ " + escH(t)).join("\n") + (left ? "" : "\n\n🎉 Всё из списка куплено!"), null, { to: "owner" });
+  }
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { flushBring(); flushBought(); } });
   return {
     escH, send,
+    toOwner(text) { if (isOwner()) return; send(text, null, { to: "owner" }); },
+    bought(t) { if (isOwner() || !S.meta.bot || !S.meta.ownerId) return; bb.push(t); clearTimeout(btT); btT = setTimeout(flushBought, 6000); },
     wish(it, photo) { if (!isOwner()) return; const c = CATS[it.cat] || CATS[2]; const pr = priceStr(it).replace(/&[^;]+;/g, "");
       send("💝 <b>" + escH(herName()) + " добавила желание</b>\n\n<b>" + escH(it.title) + "</b>\n" + c.emo + " " + c.name + (pr ? " · " + escH(pr) : "") + (it.note ? "\n<i>" + escH(it.note).slice(0, 300) + "</i>" : ""), photo); },
     bring(t) { if (!isOwner() || !ready()) return; bq.push(t); clearTimeout(bt); bt = setTimeout(flushBring, 6000); },
@@ -2027,7 +2153,8 @@ const NOTIFY = (() => {
 })();
 function notifySettingsHtml() {
   const on = !!(S.meta.bot && S.meta.viewerId);
-  if (isOwner()) return '<div class="fl">Уведомления</div><div class="box sbox' + (on ? " on" : "") + '"><span class="sdot"></span><div><b>' + (on ? "Саша получает уведомления" : "Уведомления выключены") + "</b><span>" + (on ? "Когда ты добавляешь желание, просьбу «привези» или мысли — ему приходит сообщение от бота 💌" : "Он может включить их у себя в настройках") + "</span></div></div>";
+  if (isOwner()) return '<div class="fl">Уведомления</div><div class="box sbox' + (on ? " on" : "") + '"><span class="sdot"></span><div><b>' + (on ? esc(HIM) + " получает уведомления" : "Уведомления выключены") + "</b><span>" + (on ? "Когда ты добавляешь желание, просьбу «привези» или мысли — ему приходит сообщение от бота 💌" : "Он может включить их у себя в настройках") + "</span></div></div>" +
+    (S.meta.bot ? '<div class="box sbox' + (S.meta.ownerId ? " on" : "") + '"><span class="sdot"></span><div><b>Тебе тоже приходят</b><span>Когда ' + esc(HIM) + " отвечает на твою мысль или покупает что-то из «Привези мне». Нажми Start в чате с ботом, если ещё не нажимала.</span></div></div>" + '<button class="btn" id="n_me">🔔 Проверить уведомление мне</button>' : "");
   return '<div class="fl">🔔 Уведомления в Telegram</div>' +
     '<div class="box sbox' + (on ? " on" : "") + '"><span class="sdot"></span><div><b>' + (on ? "Включены" : "Выключены") + "</b><span>" + (on ? "Бот напишет тебе, когда Арина что-то добавит" : "Подключи один раз — займёт минуту") + "</span></div></div>" +
     '<div class="box nbox"><b>Как включить:</b><ol><li>Открой чат с ботом и нажми <b>Start</b> (если ещё не нажимал).</li><li>В <b>@BotFather</b>: <b>/mybots</b> → твой бот → <b>API Token</b> → скопируй.</li><li>Вставь сюда и нажми «Проверить».</li></ol></div>' +
@@ -2041,6 +2168,12 @@ function bindNotifySettings(sh) {
   sh.addEventListener("click", async (e) => {
     const sn = e.target.closest("#snd");
     if (sn) { const v = !SFX.on(); LS.set("wl_sound", v); sn.classList.toggle("on", v); haptic("light"); if (v) SFX.play("chime"); return; }
+    if (e.target.closest("#n_me")) {
+      if (!tgUser || !tgUser.id) { toast("Открой вишлист через Telegram"); return; }
+      if (S.meta.ownerId !== tgUser.id) await S.store.saveMeta({ ownerId: tgUser.id });
+      const r = await NOTIFY.send("✅ <b>Готово!</b> Теперь я напишу, когда " + NOTIFY.escH(HIM) + " ответит или что-то купит 💌", null, { force: true, to: "owner" });
+      toast(r.ok ? "Проверь чат с ботом 💬" : "Бот ответил: " + (r.description || "ошибка") + (/chat not found|blocked/i.test(r.description || "") ? " — нажми Start в чате с ботом" : "")); return;
+    }
     if (e.target.closest("#n_off")) { await S.store.saveMeta({ bot: "" }); toast("Уведомления выключены", "🔕"); closeSheet(); return; }
     const t = e.target.closest("#n_test"); if (!t) return;
     const tok = $("#n_tok", sh).value.trim();
@@ -2326,6 +2459,64 @@ function bindThemePicker(sheetEl) {
   });
 }
 
+/* ================= НАСТРОЕНИЕ: реакции, «видел», устаревание ================= */
+const REACTS = [["❤️", "Люблю"], ["🤗", "Обнимаю"], ["🥺", "Скучаю"], ["😘", "Целую"], ["💪", "Ты справишься"], ["😂", "Ахаха"], ["🔥", "Огонь"], ["🍫", "Привезу вкусняшку"]];
+const STALE_MS = 4 * 86400000;
+function moodHtml(mood) {
+  const at = S.meta.moodAt || 0, stale = mood && Date.now() - at > STALE_MS;
+  const rep = S.meta.moodReply && S.meta.moodReply.for === at ? S.meta.moodReply : null;
+  const seen = mood && (S.meta.moodSeenAt || 0) >= at;
+  let h = '<div class="mood' + (isOwner() ? " own" : "") + (stale ? " stale" : "") + '" role="button" tabindex="0" data-act="' + (isOwner() ? "mood" : "react") + '"><div class="mh"><span class="lbl">' + (isOwner() ? "Сейчас у меня на уме" : "Сейчас у неё на уме") + "</span></div>" +
+    '<div class="txt' + (mood ? "" : " plh") + '">' + (mood ? esc(mood) : "О чём думаешь? Чего хочется прямо сейчас — настроение, мечта, намёк…") + "</div>";
+  if (mood) {
+    h += '<div class="mfoot">' + (at ? '<span class="when">' + (stale ? "давно · " : "") + ago(at) + "</span>" : "") +
+      (isOwner() ? (seen ? '<span class="seen">👀 ' + esc(HIM) + " видел</span>" : "") : (rep ? "" : '<span class="rhint">💬 Ответить</span>')) + "</div>";
+    if (rep) h += '<div class="reply"><span class="re">' + esc(rep.r) + "</span><div><b>" + (isOwner() ? esc(HIM) : "Ты") + " · " + ago(rep.at) + "</b>" + esc(rep.l) + (rep.t ? " — «" + esc(rep.t) + "»" : "") + "</div></div>";
+    if (isOwner() && stale) h += '<div class="stq">Ещё актуально?<button class="y" data-act="moodok">Да ✓</button><button data-act="mood">Изменить</button></div>';
+  }
+  if (isOwner()) h += '<span class="medit">' + IC.pen + "</span>";
+  return h + "</div>";
+}
+function openReact() {
+  const mood = S.meta.mood || ""; if (!mood) return;
+  const at = S.meta.moodAt || 0, prev = S.meta.moodReply && S.meta.moodReply.for === at ? S.meta.moodReply : null;
+  let pick = prev ? prev.r : "";
+  const sh = openSheet("<h3>Ответить " + esc(herDat()) + " 💬</h3>" + '<div class="mquote">' + esc(mood) + "</div>" +
+    '<div class="rgrid">' + REACTS.map((r) => '<button class="rbtn' + (pick === r[0] ? " on" : "") + '" data-rx="' + r[0] + '"><span>' + r[0] + "</span>" + r[1] + "</button>").join("") + "</div>" +
+    '<input class="inp" id="rx_t" maxlength="140" placeholder="Пара слов от себя (необязательно)" value="' + esc(prev ? prev.t || "" : "") + '" style="margin-top:14px">' +
+    '<button class="btn pri" id="rx_send" style="margin-top:14px">Отправить 💌</button><div class="hint" style="text-align:center">Она увидит ответ под своей мыслью' + (S.meta.bot && S.meta.ownerId ? " и получит уведомление" : "") + "</div>");
+  sh.addEventListener("click", async (e) => {
+    const r = e.target.closest("[data-rx]");
+    if (r) { pick = r.dataset.rx; sh.querySelectorAll(".rbtn").forEach((b) => b.classList.toggle("on", b === r)); haptic("light"); SFX.play("tick"); return; }
+    const sb = e.target.closest("#rx_send"); if (!sb) return;
+    const t = $("#rx_t", sh).value.trim();
+    if (!pick && !t) { toast("Выбери реакцию или напиши пару слов 🙂"); haptic("error"); return; }
+    const rr = REACTS.find((x) => x[0] === pick) || ["💌", "Пишет"];
+    const reply = { r: rr[0], l: rr[1], t, at: Date.now(), for: at };
+    try { heartsFrom(sb, 10); SFX.play("heart"); await S.store.saveMeta({ moodReply: reply, moodSeenAt: Date.now() }); NOTIFY.toOwner("💬 <b>" + NOTIFY.escH(HIM) + " ответил на твою мысль:</b>\n" + rr[0] + " " + NOTIFY.escH(rr[1]) + (t ? "\n<i>«" + NOTIFY.escH(t) + "»</i>" : "")); haptic("ok"); closeSheet(); toast("Отправлено 💌"); }
+    catch (err) { toast("Ошибка: " + (err.message || err)); }
+  });
+}
+
+/* ================= ПРАЗДНИКИ ================= */
+function parseDM(v) { const m = String(v || "").match(/(\d{1,2})\s*[.\/\- ]\s*(\d{1,2})/); if (!m) return null; const d = +m[1], mo = +m[2]; return d >= 1 && d <= 31 && mo >= 1 && mo <= 12 ? { d, m: mo } : null; }
+function festive() {
+  const n = new Date(), d = n.getDate(), m = n.getMonth() + 1, own = isOwner(), her = herName();
+  const bd = parseDM((S.meta.about || {}).bday);
+  if (bd && bd.d === d && bd.m === m) return own ? { k: "bd", cls: "", e: "🎂", b: "С днём рождения, " + her + "!", t: "Пусть сбудется всё из этого списка — и даже больше 💗" } : { k: "bd", cls: "", e: "🎂", b: "Сегодня день рождения " + herGen() + "!", t: "Поздравь её первым — и загляни в «Я дарю» 🎁" };
+  if (!own) { const an = (SPY.dates || []).find((x) => /годовщ/i.test(x.title) && x.d === d && x.m === m); if (an) return { k: "an", cls: "val", e: "💍", b: "Сегодня ваша годовщина!", t: "Самое время сказать ей что-то тёплое 💗" }; }
+  if ((m === 12 && d === 31) || (m === 1 && d <= 2)) return { k: "ny", cls: "ny", e: "🎄", b: "С Новым годом!", t: own ? "Пусть в новом году сбудутся все твои желания ✨" : "Пусть в этом году у неё сбудется всё из списка ✨" };
+  if (m === 2 && d === 14) return { k: "val", cls: "val", e: "💘", b: "С Днём влюблённых!", t: own ? "Ты самая любимая 💕" : "Не забудь — сегодня её день тоже 💕" };
+  if (m === 3 && d === 8) return { k: "mar", cls: "mar", e: "🌷", b: own ? "С 8 Марта, " + her + "!" : "Сегодня 8 Марта", t: own ? "Весны, цветов и сбывшихся желаний 🌸" : "Цветы и поздравление — обязательно 🌷" };
+  return null;
+}
+function festHtml() {
+  const f = festive(); if (!f) return "";
+  const key = "wl_fest_" + f.k + "_" + new Date().toDateString();
+  if (!LS.get(key, false)) { LS.set(key, true); setTimeout(() => { confetti(); SFX.play("tada"); haptic("ok"); }, 700); }
+  return '<div class="fest ' + f.cls + '"><b>' + esc(f.b) + "</b><span>" + esc(f.t) + "</span><i>" + f.e + "</i></div>";
+}
+
 /* ================= новые желания вживую ================= */
 function onData(d) {
   const prevKnown = S.knownIds, prevItems = S.items;
@@ -2342,9 +2533,13 @@ function onData(d) {
     saveSeen(); LS.set(K("seen_v2"), true);
   }
   if (prevKnown && !isOwner()) {
-    ids.forEach((id) => { const a = prevItems[id], b = S.items[id]; if (a && b && a.gift && !a.done && b.done) { toast("⚠️ Ей подарили «" + b.title + "» — это было в твоём плане"); haptic("warning"); } });
+    ids.forEach((id) => { const a = prevItems[id], b = S.items[id]; if (a && b && G(id) && !a.done && b.done) { toast("🎉 " + herName() + " отметила «" + b.title + "» подаренным — это от тебя?"); haptic("ok"); } });
   }
   S.knownIds = new Set(ids);
+  migrateGifts();
+  if (!isOwner() && S.meta.mood && (S.meta.moodSeenAt || 0) < (S.meta.moodAt || 0) && !document.hidden && S.store) S.store.saveMeta({ moodSeenAt: Date.now() }).catch(() => {});
+  if (isOwner() && S.knownReply != null && S.meta.moodReply && S.meta.moodReply.at > S.knownReply) { toast(S.meta.moodReply.r + " " + HIM + ": " + S.meta.moodReply.l + (S.meta.moodReply.t ? " — «" + S.meta.moodReply.t + "»" : "")); SFX.play("chime"); haptic("ok"); }
+  S.knownReply = S.meta.moodReply ? S.meta.moodReply.at : 0;
   if (!isOwner() && tgUser && tgUser.id && S.meta.bot && S.meta.viewerId !== tgUser.id && S.store) S.store.saveMeta({ viewerId: tgUser.id }).catch(() => {});
   const bIds = Object.keys(S.meta.bring || {});
   if (S.knownBring && !isOwner()) {
@@ -2392,7 +2587,7 @@ function renderLocked() {
   if (!S.role) render();
   // если открыла хозяйка из Telegram — запомним имя
   setTimeout(() => {
-    if (isOwner() && tgUser && S.loaded && !S.meta.ownerId) S.store.saveMeta({ ownerId: tgUser.id }).catch(() => {});
+    if (isOwner() && tgUser && S.loaded && S.meta.ownerId !== tgUser.id) S.store.saveMeta({ ownerId: tgUser.id }).catch(() => {});
   }, 1500);
 })();
 </script>
