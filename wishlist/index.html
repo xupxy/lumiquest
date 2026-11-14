@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbf4ef">
+<title>Вишлист 💗</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+@font-face{font-family:"WInter";src:url(inter-medium-cyr.woff) format("woff");font-weight:500;font-display:swap}
+@font-face{font-family:"WInter";src:url(inter-bold-cyr.woff) format("woff");font-weight:700;font-display:swap}
+@font-face{font-family:"WInter";src:url(inter-extrabold-cyr.woff) format("woff");font-weight:800;font-display:swap}
+:root{
+  --bg:#fbf4ef;--bg2:#f5e9e2;--card:#fff;--ink:#2e1d27;--ink2:#7a6470;--ink3:#b5a2ab;--line:#efe2db;
+  --rose:#e2537a;--rose2:#ff8fab;--roseSoft:#ffe4ec;
+  --c1:#ff5f4a;--c1s:#ffe7e2;--c2:#3fae86;--c2s:#ddf4ea;--c3:#8f6bf0;--c3s:#ece6ff;
+  --shadow:0 6px 24px rgba(120,60,80,.10),0 1px 3px rgba(120,60,80,.06);
+  --r:22px;--safeB:env(safe-area-inset-bottom,0px);
+  --font:"WInter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+}
+.dark{
+  --bg:#1b1418;--bg2:#251b21;--card:#2a2026;--ink:#f7ecf0;--ink2:#c2aab5;--ink3:#7e6872;--line:#3a2d34;
+  --roseSoft:#4a2533;--c1s:#4a2622;--c2s:#1d3a30;--c3s:#30274f;
+  --shadow:0 6px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.4 var(--font);-webkit-font-smoothing:antialiased}
+body{min-height:100vh;overflow-x:hidden}
+body.lock{overflow:hidden}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+input,textarea,select{font:inherit;color:var(--ink)}
+.hidden{display:none!important}
+#app{max-width:640px;margin:0 auto;padding:0 16px calc(110px + var(--safeB))}
+
+/* header */
+.top{padding:18px 2px 6px;display:flex;align-items:flex-start;gap:10px}
+.top h1{margin:0;font:700 30px/1.1 var(--serif);letter-spacing:-.3px;flex:1}
+.top h1 small{display:block;font:600 12px/1.2 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--rose);margin-bottom:6px}
+.iconbtn{width:42px;height:42px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);display:grid;place-items:center;font-size:19px;flex:none}
+.sync{font-family:var(--font);font-weight:500;letter-spacing:0;display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);margin:2px 0 0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
+.dot.on{background:#35c47a;box-shadow:0 0 0 0 rgba(53,196,122,.6);animation:pulse 2.2s infinite}
+.dot.err{background:#ff5f4a}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(53,196,122,.55)}70%{box-shadow:0 0 0 8px rgba(53,196,122,0)}100%{box-shadow:0 0 0 0 rgba(53,196,122,0)}}
+
+/* mood */
+.mood{margin:14px 0 6px;background:linear-gradient(135deg,#ffd9e4 0%,#ffe9d6 55%,#efe3ff 100%);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;text-align:left;width:100%;display:block}
+.dark .mood{background:linear-gradient(135deg,#4b2534 0%,#4a3326 55%,#33284d 100%)}
+.mood .lbl{font:700 11px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;color:var(--rose)}
+.mood .txt{font:600 17px/1.35 var(--serif);margin-top:8px;padding-right:34px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.mood .txt.plh{color:var(--ink2);font-style:italic}
+.mood .when{font-size:11.5px;color:var(--ink2);margin-top:8px}
+.mood:after{content:"💭";position:absolute;right:12px;top:8px;font-size:34px;opacity:.35}
+
+/* tabs */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 6px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none;position:sticky;top:0;z-index:5;background:linear-gradient(var(--bg) 78%,transparent)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:9px 14px;border-radius:999px;background:var(--card);box-shadow:0 1px 3px rgba(120,60,80,.08);font-weight:700;font-size:13.5px;color:var(--ink2);display:flex;gap:6px;align-items:center;transition:.2s}
+.tab b{font-weight:700;font-size:11.5px;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--bg2);display:grid;place-items:center;color:var(--ink2)}
+.tab.on{background:var(--ink);color:var(--bg)}
+.tab.on b{background:rgba(255,255,255,.18);color:var(--bg)}
+.dark .tab.on b{background:rgba(0,0,0,.15)}
+
+/* sections & cards */
+.sec{margin-top:18px}
+.sechead{display:flex;align-items:center;gap:10px;margin:0 2px 10px}
+.secico{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;font-size:18px}
+.sechead h2{margin:0;font:700 19px/1.1 var(--serif)}
+.sechead p{margin:2px 0 0;font-size:12.5px;color:var(--ink2)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:520px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;text-align:left;display:flex;flex-direction:column;position:relative;animation:pop .35s ease both}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.card:active{transform:scale(.98)}
+.ph{aspect-ratio:1/1;background:var(--bg2);position:relative;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .emo{position:absolute;inset:0;display:grid;place-items:center;font-size:44px}
+.ph.g1{background:linear-gradient(140deg,#ffd3c9,#ffeee2)}.ph.g2{background:linear-gradient(140deg,#c9f0de,#eefaf3)}.ph.g3{background:linear-gradient(140deg,#ddd1ff,#f5f0ff)}
+.dark .ph.g1{background:linear-gradient(140deg,#5a2c26,#3a2522)}.dark .ph.g2{background:linear-gradient(140deg,#1f4a3b,#1d2f29)}.dark .ph.g3{background:linear-gradient(140deg,#3d3166,#2a2440)}
+.cbody{padding:10px 12px 12px}
+.ctitle{font-weight:700;font-size:14.5px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.cprice{font-size:13px;color:var(--ink2);margin-top:4px;font-weight:700}
+.badge{position:absolute;top:8px;left:8px;padding:4px 8px;border-radius:999px;font:800 10.5px/1 var(--font);letter-spacing:.04em;text-transform:uppercase;background:var(--rose);color:#fff;box-shadow:0 2px 8px rgba(226,83,122,.4)}
+.badge.upd{background:#8f6bf0;box-shadow:0 2px 8px rgba(143,107,240,.4)}
+.gift{position:absolute;top:8px;right:8px;padding:5px 8px;border-radius:999px;font:700 11px/1 var(--font);background:rgba(46,29,39,.82);color:#fff;backdrop-filter:blur(6px)}
+.multi{position:absolute;bottom:8px;right:8px;padding:3px 7px;border-radius:8px;font:700 11px/1.2 var(--font);background:rgba(0,0,0,.45);color:#fff}
+.card.done .ph img{filter:saturate(.6)}
+.donechip{position:absolute;bottom:8px;left:8px;padding:4px 8px;border-radius:999px;background:#fff;color:#2e8a5f;font:800 11px/1 var(--font)}
+
+.empty{text-align:center;padding:48px 20px;color:var(--ink2)}
+.empty .big{font-size:56px;margin-bottom:8px}
+.empty h3{font:700 21px/1.2 var(--serif);color:var(--ink);margin:0 0 6px}
+
+/* FAB */
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + var(--safeB));z-index:20;background:linear-gradient(135deg,var(--rose),#f07a5a);color:#fff;font:800 16px/1 var(--font);padding:17px 28px;border-radius:999px;box-shadow:0 10px 28px rgba(226,83,122,.45);display:flex;gap:8px;align-items:center}
+.fab:active{transform:translateX(-50%) scale(.96)}
+
+/* banner */
+.banner{margin:12px 0 0;padding:12px 14px;border-radius:16px;background:var(--card);box-shadow:var(--shadow);display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink2);width:100%;text-align:left}
+.banner b{color:var(--ink)}
+.banner .go{margin-left:auto;color:var(--rose);font-weight:800;white-space:nowrap}
+
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(30,15,22,.42);z-index:40;opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
+.veil.on{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:640px;margin:0 auto;background:var(--bg);border-radius:28px 28px 0 0;max-height:94vh;overflow-y:auto;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.9,.25,1);padding:0 18px calc(24px + var(--safeB));overscroll-behavior:contain}
+.sheet.on{transform:none}
+.grab{position:sticky;top:0;padding:10px 0 6px;background:var(--bg);z-index:3;display:flex;align-items:center;justify-content:center}
+.grab i{width:42px;height:5px;border-radius:3px;background:var(--line)}
+.grab .x{position:absolute;right:-4px;top:8px;width:34px;height:34px;border-radius:50%;background:var(--bg2);font-size:15px;display:grid;place-items:center;color:var(--ink2)}
+.sheet h3{font:700 24px/1.15 var(--serif);margin:6px 0 14px;padding-right:30px}
+
+/* detail */
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin:0 -18px;padding:0 18px;scrollbar-width:none}
+.gal::-webkit-scrollbar{display:none}
+.gal img{flex:none;width:100%;aspect-ratio:1/1;max-height:62vh;object-fit:cover;border-radius:22px;scroll-snap-align:center;background:var(--bg2)}
+.gal .ph{flex:none;width:100%;border-radius:22px}
+.galdots{display:flex;gap:5px;justify-content:center;margin-top:8px}
+.galdots i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:.2s}
+.galdots i.on{background:var(--rose);width:16px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-weight:700;font-size:12.5px}
+.p1{background:var(--c1s);color:var(--c1)}.p2{background:var(--c2s);color:var(--c2)}.p3{background:var(--c3s);color:var(--c3)}
+.dtitle{font:700 26px/1.15 var(--serif);margin:14px 0 6px;word-break:break-word}
+.dprice{font:800 20px/1 var(--font);margin:10px 0 0}
+.box{background:var(--card);border-radius:18px;padding:13px 15px;margin-top:12px;box-shadow:0 1px 3px rgba(120,60,80,.06)}
+.box .k{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+.box .v{white-space:pre-wrap;word-break:break-word}
+.meta{font-size:12px;color:var(--ink3);margin-top:14px;text-align:center}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:16px;font-weight:800;font-size:15px;background:var(--card);box-shadow:0 1px 3px rgba(120,60,80,.08);margin-top:10px}
+.btn.pri{background:linear-gradient(135deg,var(--rose),#f07a5a);color:#fff;box-shadow:0 8px 20px rgba(226,83,122,.35)}
+.btn.dark2{background:var(--ink);color:var(--bg)}
+.btn.ok{background:#2fb078;color:#fff}
+.btn.danger{color:#e0413a;background:transparent;box-shadow:none}
+.row2{display:flex;gap:10px}.row2 .btn{flex:1}
+.secret{background:repeating-linear-gradient(-45deg,var(--roseSoft),var(--roseSoft) 10px,transparent 10px,transparent 20px);border:1.5px dashed var(--rose2);border-radius:18px;padding:12px 14px;margin-top:12px;font-size:13px;color:var(--ink2)}
+.secret b{color:var(--ink)}
+
+/* form */
+.fl{display:block;font:700 12px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:18px 2px 8px}
+.inp{width:100%;padding:14px 15px;border-radius:15px;border:1.5px solid var(--line);background:var(--card);outline:none;font-size:16px;transition:border .15s}
+.inp:focus{border-color:var(--rose2)}
+textarea.inp{min-height:84px;resize:vertical}
+.pricerow{display:flex;gap:8px}.pricerow .inp:first-child{flex:1}
+.pricerow select{width:86px;flex:none;appearance:none;text-align:center}
+.cats{display:grid;gap:9px}
+.cat{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:17px;background:var(--card);border:2px solid transparent;text-align:left;transition:.15s}
+.cat .ci{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:21px;flex:none}
+.cat b{display:block;font-size:15px}.cat span{font-size:12.5px;color:var(--ink2)}
+.cat.on.k1{border-color:var(--c1);background:var(--c1s)}.cat.on.k2{border-color:var(--c2);background:var(--c2s)}.cat.on.k3{border-color:var(--c3);background:var(--c3s)}
+.photos{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.pth{flex:none;width:92px;height:92px;border-radius:18px;overflow:hidden;position:relative;background:var(--bg2)}
+.pth img{width:100%;height:100%;object-fit:cover}
+.pth .rm{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:13px;display:grid;place-items:center}
+.pth .first{position:absolute;left:5px;bottom:5px;font:800 9.5px/1 var(--font);padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.9);color:#2e1d27;text-transform:uppercase}
+.addph{flex:none;width:92px;height:92px;border-radius:18px;border:2px dashed var(--ink3);display:grid;place-items:center;text-align:center;color:var(--ink2);font-size:12px;font-weight:700;line-height:1.2}
+.addph .pl{font-size:26px;display:block}
+.hint{font-size:12.5px;color:var(--ink2);margin:6px 2px 0}
+
+/* setup / settings */
+.steps{counter-reset:s;padding:0;margin:0;list-style:none}
+.steps li{position:relative;padding:0 0 14px 40px;font-size:14.5px}
+.steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:28px;height:28px;border-radius:50%;background:var(--roseSoft);color:var(--rose);font-weight:800;display:grid;place-items:center;font-size:13px}
+code,.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:var(--bg2);padding:2px 6px;border-radius:6px;word-break:break-all}
+pre.code{display:block;padding:12px;white-space:pre-wrap;margin:8px 0 0;line-height:1.45}
+.seg{display:flex;background:var(--bg2);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;padding:11px 8px;border-radius:11px;font-weight:700;font-size:13.5px;color:var(--ink2)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* welcome */
+.welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;text-align:center;padding:30px 6px}
+.welcome .hero{font-size:74px;margin-bottom:6px;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.welcome h1{font:700 34px/1.1 var(--serif);margin:0 0 10px}
+.welcome p{color:var(--ink2);margin:0 0 26px;font-size:15.5px}
+.choice{display:flex;gap:14px;align-items:center;text-align:left;padding:18px;border-radius:22px;background:var(--card);box-shadow:var(--shadow);margin-bottom:12px;width:100%}
+.choice .e{font-size:34px}
+.choice b{display:block;font-size:16.5px}.choice span{font-size:13px;color:var(--ink2)}
+
+/* toast + confetti */
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:16px;font-weight:700;font-size:14px;z-index:60;transition:transform .35s cubic-bezier(.2,.9,.25,1);max-width:90vw;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.on{transform:translate(-50%,0)}
+.conf{position:fixed;top:-30px;z-index:70;font-size:24px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--rose);animation:sp 0.8s linear infinite;margin:60px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="app"><div class="spin"></div></div>
+<input type="file" id="file" accept="image/*" multiple class="hidden">
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+/* ================= базовое ================= */
+const tg = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData !== undefined ? Telegram.WebApp : null;
+const inTg = !!(tg && tg.initData);
+const tgUser = (inTg && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = (n = 16) => { const a = "abcdefghijkmnpqrstuvwxyz23456789"; const b = crypto.getRandomValues(new Uint8Array(n)); return Array.from(b, (x) => a[x % a.length]).join(""); };
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+};
+const haptic = (t) => { try { if (!tg || !tg.HapticFeedback) return; if (t === "ok" || t === "error" || t === "warning") tg.HapticFeedback.notificationOccurred(t === "ok" ? "success" : t); else tg.HapticFeedback.impactOccurred(t || "light"); } catch (e) {} };
+
+const CATS = {
+  1: { key: 1, emo: "🔥", name: "Очень нужно", sub: "Срочно, прям горит", short: "Срочно" },
+  2: { key: 2, emo: "🌿", name: "Нужно", sub: "Не горит, но пригодится", short: "Нужно" },
+  3: { key: 3, emo: "✨", name: "Хочу-хочу", sub: "Не горит, но очень хочется", short: "Хочу" },
+};
+const CURS = ["€", "₴", "₽", "$", "zł", "£"];
+
+/* ================= параметры ссылки ================= */
+const qs = new URLSearchParams(location.search);
+let CFG = { p: qs.get("p"), k: qs.get("k"), l: qs.get("l") };
+if (!(CFG.p && CFG.k && CFG.l)) {
+  const saved = LS.get("wl_cfg", null);
+  if (saved && saved.p && saved.k && saved.l) CFG = saved; else CFG = null;
+} else LS.set("wl_cfg", CFG);
+const LIST = CFG ? CFG.l : "demo";
+const K = (s) => "wl_" + LIST + "_" + s;
+
+function botLink(cfg) {
+  const base = location.origin + location.pathname.replace(/index\.html$/, "");
+  return base + "?p=" + encodeURIComponent(cfg.p) + "&k=" + encodeURIComponent(cfg.k) + "&l=" + encodeURIComponent(cfg.l);
+}
+
+/* ================= хранилище ================= */
+// Демо: localStorage. Облако: Firebase Firestore (обновляется в реальном времени).
+function makeLocalStore() {
+  const KEY = "wl_demo_db";
+  const read = () => LS.get(KEY, { items: {}, photos: {}, meta: {} });
+  let subs = [];
+  const emit = () => { const d = read(); subs.forEach((f) => f(d)); };
+  window.addEventListener("storage", (e) => { if (e.key === KEY) emit(); });
+  return {
+    mode: "demo",
+    start(onData) { subs.push(onData); setTimeout(emit, 0); },
+    async saveItem(item, photos) {
+      const d = read(); d.items[item.id] = Object.assign(d.items[item.id] || {}, item);
+      if (photos) d.photos[item.id] = photos;
+      if (!LS.set(KEY, d)) throw new Error("Память демо-режима заполнена — подключи синхронизацию");
+      emit();
+    },
+    async patchItem(id, patch) { const d = read(); if (!d.items[id]) return; Object.assign(d.items[id], patch); LS.set(KEY, d); emit(); },
+    async deleteItem(id) { const d = read(); delete d.items[id]; delete d.photos[id]; LS.set(KEY, d); emit(); },
+    async getPhotos(id) { return read().photos[id] || []; },
+    async saveMeta(patch) { const d = read(); d.meta = Object.assign(d.meta || {}, patch); LS.set(KEY, d); emit(); },
+  };
+}
+
+async function makeCloudStore(cfg) {
+  const V = "10.12.2";
+  const appM = await import("https://www.gstatic.com/firebasejs/" + V + "/firebase-app.js");
+  const fs = await import("https://www.gstatic.com/firebasejs/" + V + "/firebase-firestore.js");
+  const app = appM.initializeApp({ apiKey: cfg.k, projectId: cfg.p, authDomain: cfg.p + ".firebaseapp.com" }, "wl");
+  let db;
+  try { db = fs.initializeFirestore(app, { experimentalAutoDetectLongPolling: true }); } catch (e) { db = fs.getFirestore(app); }
+  const L = cfg.l;
+  const col = (c) => fs.collection(db, "lists", L, c);
+  const ref = (c, id) => fs.doc(db, "lists", L, c, id);
+  const photoCache = {};
+  return {
+    mode: "cloud",
+    start(onData, onStatus) {
+      const state = { items: {}, meta: {} }; let gotItems = false, gotMeta = false;
+      const push = () => { if (gotItems) onData({ items: state.items, meta: state.meta }); };
+      fs.onSnapshot(col("items"), { includeMetadataChanges: true }, (snap) => {
+        const items = {}; snap.forEach((d) => { items[d.id] = Object.assign({ id: d.id }, d.data()); });
+        state.items = items; gotItems = true; push();
+        onStatus(snap.metadata.fromCache ? "cache" : "on");
+      }, (err) => onStatus("err", err));
+      fs.onSnapshot(ref("meta", "main"), (d) => { state.meta = d.exists() ? d.data() : {}; gotMeta = true; push(); }, (err) => onStatus("err", err));
+    },
+    async saveItem(item, photos) {
+      if (photos) { await fs.setDoc(ref("photos", item.id), { p: photos }); photoCache[item.id] = photos; }
+      const data = Object.assign({}, item); delete data.id;
+      await fs.setDoc(ref("items", item.id), data, { merge: true });
+    },
+    async patchItem(id, patch) { await fs.setDoc(ref("items", id), patch, { merge: true }); },
+    async deleteItem(id) { await fs.deleteDoc(ref("items", id)); try { await fs.deleteDoc(ref("photos", id)); } catch (e) {} delete photoCache[id]; },
+    async getPhotos(id) {
+      if (photoCache[id]) return photoCache[id];
+      const d = await fs.getDoc(ref("photos", id)); const p = d.exists() ? d.data().p || [] : [];
+      photoCache[id] = p; return p;
+    },
+    invalidatePhotos(id) { delete photoCache[id]; },
+    async saveMeta(patch) { await fs.setDoc(ref("meta", "main"), patch, { merge: true }); },
+  };
+}
+
+/* ================= состояние ================= */
+const S = {
+  store: null, items: {}, meta: {}, loaded: false, status: "demo",
+  role: LS.get(K("role"), null), // "owner" | "viewer"
+  tab: "all", seen: LS.get(K("seen"), null), knownIds: null,
+};
+function saveSeen() { LS.set(K("seen"), S.seen); }
+const isOwner = () => S.role === "owner";
+
+/* ================= фото ================= */
+function loadImg(file) {
+  return new Promise((res, rej) => { const u = URL.createObjectURL(file); const im = new Image(); im.onload = () => { res(im); }; im.onerror = () => rej(new Error("Не получилось открыть фото")); im.src = u; });
+}
+function drawTo(im, max, q, square) {
+  let w = im.naturalWidth, h = im.naturalHeight, sx = 0, sy = 0, sw = w, sh = h;
+  if (square) { const m = Math.min(w, h); sx = (w - m) / 2; sy = (h - m) / 2; sw = sh = m; w = h = m; }
+  const s = Math.min(1, max / Math.max(w, h)); const cw = Math.round(w * s), ch = Math.round(h * s);
+  const c = document.createElement("canvas"); c.width = cw; c.height = ch;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, cw, ch); x.drawImage(im, sx, sy, sw, sh, 0, 0, cw, ch);
+  return c.toDataURL("image/jpeg", q);
+}
+async function compress(file) {
+  const im = await loadImg(file);
+  let full = drawTo(im, 1280, 0.8);
+  if (full.length > 230000) full = drawTo(im, 1024, 0.72);
+  if (full.length > 230000) full = drawTo(im, 820, 0.65);
+  return full;
+}
+async function thumbFrom(dataUrl) {
+  const im = await new Promise((r, j) => { const i = new Image(); i.onload = () => r(i); i.onerror = j; i.src = dataUrl; });
+  return drawTo(im, 420, 0.72, true);
+}
+
+/* ================= утилиты UI ================= */
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+function confetti() {
+  const em = ["🎉", "💖", "✨", "🎁", "🌸", "💫"];
+  for (let i = 0; i < 28; i++) {
+    const s = document.createElement("div"); s.className = "conf"; s.textContent = em[i % em.length];
+    s.style.left = Math.random() * 100 + "vw"; s.style.animationDuration = 1.8 + Math.random() * 1.6 + "s"; s.style.animationDelay = Math.random() * 0.4 + "s";
+    document.body.appendChild(s); setTimeout(() => s.remove(), 4200);
+  }
+}
+function ago(ts) {
+  if (!ts) return ""; const d = (Date.now() - ts) / 1000;
+  if (d < 60) return "только что"; if (d < 3600) return Math.floor(d / 60) + " мин назад";
+  if (d < 86400) return Math.floor(d / 3600) + " ч назад";
+  const days = Math.floor(d / 86400); if (days === 1) return "вчера"; if (days < 7) return days + " дн назад";
+  return new Date(ts).toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+}
+function priceStr(it) { if (!it.price && it.price !== 0) return ""; const n = Number(String(it.price).replace(",", ".")); const v = isFinite(n) && String(it.price).trim() !== "" ? n.toLocaleString("ru-RU") : esc(it.price); return v + " " + esc(it.cur || "€"); }
+function fixLink(u) { u = (u || "").trim(); if (!u) return ""; if (!/^https?:\/\//i.test(u)) u = "https://" + u; return u; }
+function openLink(u) { u = fixLink(u); if (!u) return; try { if (tg && tg.openLink) { tg.openLink(u); return; } } catch (e) {} window.open(u, "_blank"); }
+function copy(text) {
+  const done = () => { toast("Скопировано 📋"); haptic("ok"); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  function fallback() { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); done(); } catch (e) { toast("Не удалось скопировать"); } t.remove(); }
+}
+
+/* ================= шторки (bottom sheets) ================= */
+const sheets = [];
+function openSheet(html, mount) {
+  const veil = document.createElement("div"); veil.className = "veil";
+  const sh = document.createElement("div"); sh.className = "sheet";
+  sh.innerHTML = '<div class="grab"><i></i><button class="x" data-close>✕</button></div>' + html;
+  document.body.append(veil, sh); document.body.classList.add("lock");
+  const entry = { veil, sh }; sheets.push(entry);
+  requestAnimationFrame(() => { veil.classList.add("on"); sh.classList.add("on"); });
+  veil.onclick = () => closeSheet();
+  sh.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeSheet(); });
+  // свайп вниз, чтобы закрыть
+  let y0 = null, dy = 0;
+  sh.addEventListener("touchstart", (e) => { if (sh.scrollTop <= 0 && !e.target.closest("input,textarea,.gal,.photos")) { y0 = e.touches[0].clientY; dy = 0; sh.style.transition = "none"; } }, { passive: true });
+  sh.addEventListener("touchmove", (e) => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); if (dy > 0) sh.style.transform = "translateY(" + dy + "px)"; }, { passive: true });
+  sh.addEventListener("touchend", () => { if (y0 == null) return; sh.style.transition = ""; if (dy > 110) closeSheet(); else sh.style.transform = ""; y0 = null; });
+  syncBack();
+  if (mount) mount(sh);
+  return sh;
+}
+function closeSheet() {
+  const e = sheets.pop(); if (!e) return;
+  e.veil.classList.remove("on"); e.sh.style.transform = ""; e.sh.classList.remove("on");
+  setTimeout(() => { e.veil.remove(); e.sh.remove(); }, 320);
+  if (!sheets.length) document.body.classList.remove("lock");
+  syncBack();
+}
+function closeAll() { while (sheets.length) closeSheet(); }
+function syncBack() { try { if (!tg || !tg.BackButton) return; if (sheets.length) tg.BackButton.show(); else tg.BackButton.hide(); } catch (e) {} }
+if (tg && tg.BackButton) try { tg.BackButton.onClick(() => closeSheet()); } catch (e) {}
+
+/* ================= рендер ================= */
+function sortedItems(filter) {
+  return Object.values(S.items).filter(filter).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+function itemFlag(it) {
+  if (isOwner() || !S.seen) return "";
+  const s = S.seen[it.id];
+  if (s == null) return "new";
+  if ((it.editedAt || 0) > s) return "upd";
+  return "";
+}
+function cardHtml(it) {
+  const c = CATS[it.cat] || CATS[2]; const flag = itemFlag(it);
+  const ph = it.thumb ? '<img loading="lazy" src="' + it.thumb + '" alt="">' : '<div class="emo">' + c.emo + "</div>";
+  return '<button class="card' + (it.done ? " done" : "") + '" data-open="' + esc(it.id) + '">' +
+    '<div class="ph g' + c.key + '">' + ph +
+      (flag === "new" ? '<span class="badge">Новое</span>' : flag === "upd" ? '<span class="badge upd">Изменено</span>' : "") +
+      (!isOwner() && it.gift && !it.done ? '<span class="gift">🎁 ты даришь</span>' : "") +
+      (it.photoCount > 1 ? '<span class="multi">📷 ' + it.photoCount + "</span>" : "") +
+      (it.done ? '<span class="donechip">✓ Сбылось</span>' : "") +
+    "</div>" +
+    '<div class="cbody"><div class="ctitle">' + esc(it.title) + "</div>" +
+      (priceStr(it) ? '<div class="cprice">' + priceStr(it) + "</div>" : "") +
+    "</div></button>";
+}
+function render() {
+  const app = $("#app");
+  if (!S.role) return renderWelcome();
+  if (!S.loaded) { app.innerHTML = '<div class="spin"></div>'; return; }
+  const all = Object.values(S.items);
+  const active = all.filter((i) => !i.done), done = all.filter((i) => i.done);
+  const cnt = (k) => active.filter((i) => i.cat == k).length;
+  const ownerName = S.meta.ownerName || "";
+  const title = isOwner() ? "Мой вишлист" : "Вишлист " + (ownerName ? esc(ownerName) : "любимой");
+  const statusTxt = { demo: "демо-режим · только на этом устройстве", on: "онлайн · обновляется вживую", cache: "подключаюсь…", err: "нет связи с базой" }[S.status] || "";
+  const scrollY = window.scrollY;
+
+  let h = '<div class="top"><h1><small>' + (isOwner() ? "мои желания" : "💌 смотрю, что она хочет") + "</small>" + title +
+    '<div class="sync"><span class="dot ' + (S.status === "on" ? "on" : S.status === "err" ? "err" : "") + '"></span>' + statusTxt + "</div></h1>" +
+    '<button class="iconbtn" data-act="settings" aria-label="Настройки">⚙️</button></div>';
+
+  if (S.store.mode === "demo") h += '<button class="banner" data-act="setup"><span style="font-size:22px">☁️</span><span><b>Демо-режим.</b> Подключи синхронизацию, чтобы вы видели один список.</span><span class="go">Настроить →</span></button>';
+
+  // мысли / настроение
+  const mood = S.meta.mood || "";
+  if (isOwner() || mood) {
+    h += '<button class="mood" ' + (isOwner() ? 'data-act="mood"' : "") + '><div class="lbl">' + (isOwner() ? "Сейчас у меня на уме" : "Сейчас у неё на уме") + "</div>" +
+      '<div class="txt' + (mood ? "" : " plh") + '">' + (mood ? esc(mood) : "Нажми, чтобы написать, о чём думаешь и чего хочется прямо сейчас…") + "</div>" +
+      (mood && S.meta.moodAt ? '<div class="when">обновлено ' + ago(S.meta.moodAt) + "</div>" : "") + "</button>";
+  }
+
+  // вкладки
+  const tabs = [["all", "Все", active.length], ["1", "🔥 Срочно", cnt(1)], ["2", "🌿 Нужно", cnt(2)], ["3", "✨ Хочу", cnt(3)], ["done", "🎉 Сбылось", done.length]];
+  h += '<div class="tabs">' + tabs.map((t) => '<button class="tab' + (S.tab === t[0] ? " on" : "") + '" data-tab="' + t[0] + '">' + t[1] + " <b>" + t[2] + "</b></button>").join("") + "</div>";
+
+  if (S.tab === "all") {
+    if (!active.length) h += emptyHtml();
+    [1, 2, 3].forEach((k) => {
+      const list = sortedItems((i) => !i.done && i.cat == k); if (!list.length) return;
+      h += sectionHead(k) + '<div class="grid">' + list.map(cardHtml).join("") + "</div></div>";
+    });
+  } else if (S.tab === "done") {
+    const list = sortedItems((i) => i.done).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
+    h += list.length ? '<div class="sec"><div class="grid">' + list.map(cardHtml).join("") + "</div></div>"
+      : '<div class="empty"><div class="big">🎁</div><h3>Пока ничего не сбылось</h3>' + (isOwner() ? "Когда тебе что-то подарят — открой желание и нажми «Мне подарили»." : "Подари что-нибудь из списка — и оно появится здесь 😉") + "</div>";
+  } else {
+    const k = +S.tab; const list = sortedItems((i) => !i.done && i.cat == k);
+    h += list.length ? sectionHead(k) + '<div class="grid">' + list.map(cardHtml).join("") + "</div></div>"
+      : '<div class="empty"><div class="big">' + CATS[k].emo + "</div><h3>Здесь пусто</h3>" + CATS[k].sub + "</div>";
+  }
+  if (isOwner()) h += '<button class="fab" data-act="add"><span style="font-size:20px">＋</span> Хочу</button>';
+  app.innerHTML = h;
+  window.scrollTo(0, scrollY);
+}
+function sectionHead(k) {
+  const c = CATS[k];
+  return '<div class="sec"><div class="sechead"><div class="secico p' + k + '">' + c.emo + "</div><div><h2>" + c.name + "</h2><p>" + c.sub + "</p></div></div>";
+}
+function emptyHtml() {
+  return isOwner()
+    ? '<div class="empty"><div class="big">🌷</div><h3>Здесь будут твои желания</h3>Нажми «Хочу» внизу — добавь фото, название и насколько это важно.</div>'
+    : '<div class="empty"><div class="big">💌</div><h3>Пока пусто</h3>Как только она что-то добавит — ты сразу увидишь это здесь.</div>';
+}
+function renderWelcome() {
+  $("#app").innerHTML = '<div class="welcome"><div class="hero">💝</div><h1>Вишлист</h1><p>Список желаний, который обновляется вживую.<br>Кто ты в этой истории?</p>' +
+    '<button class="choice" data-role="owner"><span class="e">👑</span><span><b>Это мой вишлист</b><span>Буду добавлять, чего хочу</span></span></button>' +
+    '<button class="choice" data-role="viewer"><span class="e">🕵️</span><span><b>Я смотрю вишлист любимой</b><span>Вижу её желания и тайно отмечаю подарки</span></span></button></div>';
+}
+
+/* ================= действия ================= */
+document.addEventListener("click", (e) => {
+  const r = e.target.closest("[data-role]");
+  if (r) { setRole(r.dataset.role); return; }
+  const t = e.target.closest("[data-tab]");
+  if (t) { S.tab = t.dataset.tab; haptic("light"); render(); return; }
+  const o = e.target.closest("[data-open]");
+  if (o && !o.closest(".sheet")) { openDetail(o.dataset.open); return; }
+  const a = e.target.closest("[data-act]");
+  if (!a || a.closest(".sheet")) return;
+  const act = a.dataset.act;
+  if (act === "add") openEditor(null);
+  else if (act === "settings") openSettings();
+  else if (act === "setup") openSetup();
+  else if (act === "mood") openMood();
+});
+
+function setRole(role) {
+  S.role = role; LS.set(K("role"), role); haptic("medium");
+  if (role === "owner") {
+    const patch = {};
+    if (tgUser && tgUser.first_name && !S.meta.ownerName) patch.ownerName = tgUser.first_name;
+    if (tgUser && tgUser.id) patch.ownerId = tgUser.id;
+    if (Object.keys(patch).length && S.store && S.loaded) S.store.saveMeta(patch).catch(() => {});
+  } else if (!S.seen) { S.seen = {}; saveSeen(); }
+  render();
+}
+
+async function openDetail(id) {
+  const it = S.items[id]; if (!it) return;
+  const c = CATS[it.cat] || CATS[2];
+  haptic("light");
+  // отметить как просмотренное
+  if (!isOwner() && S.seen) { S.seen[id] = Date.now(); saveSeen(); setTimeout(render, 350); }
+  const ph0 = it.thumb ? '<img src="' + it.thumb + '" alt="">' : '<div class="ph g' + c.key + '" style="aspect-ratio:1/1"><div class="emo" style="font-size:80px">' + c.emo + "</div></div>";
+  let h = '<div class="gal" id="gal">' + ph0 + '</div><div class="galdots" id="galdots"></div>' +
+    '<div style="margin-top:14px"><span class="pill p' + c.key + '">' + c.emo + " " + c.name + " · " + c.sub.toLowerCase() + "</span></div>" +
+    '<div class="dtitle">' + esc(it.title) + "</div>" +
+    (priceStr(it) ? '<div class="dprice">' + priceStr(it) + "</div>" : "") +
+    (it.details ? '<div class="box"><div class="k">Детали — размер, цвет, модель</div><div class="v">' + esc(it.details) + "</div></div>" : "") +
+    (it.note ? '<div class="box"><div class="k">' + (isOwner() ? "Почему хочу" : "Почему она хочет") + '</div><div class="v">' + esc(it.note) + "</div></div>" : "") +
+    (it.link ? '<button class="btn dark2" data-d="link">🔗 Открыть ссылку</button>' : "");
+  if (isOwner()) {
+    h += it.done
+      ? '<button class="btn" data-d="undone">↩️ Вернуть в список</button>'
+      : '<button class="btn ok" data-d="done">🎉 Мне это подарили!</button>';
+    h += '<div class="row2"><button class="btn" data-d="edit">✏️ Изменить</button><button class="btn" data-d="del" style="color:#e0413a">🗑 Удалить</button></div>';
+  } else if (!it.done) {
+    h += it.gift
+      ? '<div class="secret">🤫 <b>Ты отметил, что подаришь это.</b> Она этого не видит.</div><button class="btn" data-d="ungift">Передумал — снять отметку</button>'
+      : '<button class="btn pri" data-d="gift">🎁 Я подарю это</button><div class="hint" style="text-align:center">Отметка секретная — она её не увидит</div>';
+  }
+  h += '<div class="meta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div>";
+
+  const sh = openSheet(h, () => {});
+  sh.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-d]"); if (!b) return;
+    const d = b.dataset.d;
+    try {
+      if (d === "link") openLink(it.link);
+      else if (d === "edit") { const photos = await S.store.getPhotos(id).catch(() => []); closeSheet(); openEditor(it, photos); }
+      else if (d === "del") {
+        if (b.dataset.sure) { await S.store.deleteItem(id); haptic("warning"); closeSheet(); toast("Удалено"); }
+        else { b.dataset.sure = 1; b.textContent = "Точно удалить?"; haptic("warning"); }
+      }
+      else if (d === "done") { await S.store.patchItem(id, { done: true, doneAt: Date.now() }); haptic("ok"); closeSheet(); confetti(); toast("Ура! Желание сбылось 🎉"); }
+      else if (d === "undone") { await S.store.patchItem(id, { done: false, doneAt: null }); closeSheet(); toast("Вернули в список"); }
+      else if (d === "gift") { await S.store.patchItem(id, { gift: true, giftAt: Date.now() }); haptic("ok"); closeSheet(); toast("Отмечено 🤫 Она не узнает"); }
+      else if (d === "ungift") { await S.store.patchItem(id, { gift: false }); closeSheet(); toast("Отметка снята"); }
+    } catch (err) { toast("Ошибка: " + (err.message || err)); }
+  });
+  // полные фото
+  if (it.photoCount) {
+    try {
+      const photos = await S.store.getPhotos(id);
+      if (photos.length && sh.isConnected) {
+        $("#gal", sh).innerHTML = photos.map((p) => '<img src="' + p + '" alt="">').join("");
+        if (photos.length > 1) {
+          const dots = $("#galdots", sh); dots.innerHTML = photos.map((_, i) => "<i" + (i ? "" : ' class="on"') + "></i>").join("");
+          const g = $("#gal", sh); g.addEventListener("scroll", () => { const i = Math.round(g.scrollLeft / (g.clientWidth + 8)); dots.querySelectorAll("i").forEach((d, j) => d.classList.toggle("on", i === j)); }, { passive: true });
+        }
+      }
+    } catch (e) {}
+  }
+}
+
+function openEditor(it, photosIn) {
+  const isNew = !it;
+  const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false };
+  const defCur = LS.get("wl_cur", "€");
+  const curOpts = CURS.map((c) => '<option' + ((it ? it.cur || defCur : defCur) === c ? " selected" : "") + ">" + c + "</option>").join("");
+  const h = "<h3>" + (isNew ? "Новое желание ✨" : "Изменить желание") + "</h3>" +
+    '<label class="fl">Фото</label><div class="photos" id="phs"></div><div class="hint">До 4 фото. Первое будет обложкой.</div>' +
+    '<label class="fl">Что хочешь? *</label><input class="inp" id="f_title" maxlength="120" placeholder="Например: белые кроссовки New Balance" value="' + esc(it ? it.title : "") + '">' +
+    '<label class="fl">Насколько важно</label><div class="cats" id="cats">' +
+      [1, 2, 3].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '"><span class="ci p' + k + '">' + CATS[k].emo + "</span><span><b>" + CATS[k].name + "</b><span>" + CATS[k].sub + "</span></span></button>").join("") +
+    "</div>" +
+    '<label class="fl">Цена (примерно)</label><div class="pricerow"><input class="inp" id="f_price" inputmode="decimal" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"><select class="inp" id="f_cur">' + curOpts + "</select></div>" +
+    '<label class="fl">Ссылка на товар</label><input class="inp" id="f_link" inputmode="url" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '">' +
+    '<label class="fl">Детали</label><input class="inp" id="f_details" maxlength="300" placeholder="Размер, цвет, модель, магазин…" value="' + esc(it ? it.details || "" : "") + '">' +
+    '<label class="fl">Почему хочу / комментарий</label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Можно написать, зачем это нужно или что важно при выборе">' + esc(it ? it.note || "" : "") + "</textarea>" +
+    '<button class="btn pri" id="f_save" style="margin-top:22px">' + (isNew ? "Добавить в вишлист 💗" : "Сохранить") + "</button>";
+  const sh = openSheet(h);
+  const drawPhotos = () => {
+    $("#phs", sh).innerHTML = st.photos.map((p, i) => '<div class="pth"><img src="' + p + '"><button class="rm" data-rm="' + i + '">✕</button>' + (i === 0 && st.photos.length > 1 ? '<span class="first">обложка</span>' : "") + "</div>").join("") +
+      (st.photos.length < 4 ? '<button class="addph" id="addph"><span><span class="pl">📷</span>Добавить</span></button>' : "");
+  };
+  drawPhotos();
+  const fileIn = $("#file");
+  sh.addEventListener("click", (e) => {
+    const c = e.target.closest("[data-cat]");
+    if (c) { st.cat = +c.dataset.cat; sh.querySelectorAll(".cat").forEach((x) => x.classList.toggle("on", +x.dataset.cat === st.cat)); haptic("light"); return; }
+    const rm = e.target.closest("[data-rm]");
+    if (rm) { st.photos.splice(+rm.dataset.rm, 1); drawPhotos(); return; }
+    if (e.target.closest("#addph")) {
+      fileIn.value = "";
+      fileIn.onchange = async () => {
+        const files = Array.from(fileIn.files || []).slice(0, 4 - st.photos.length);
+        if (!files.length) return;
+        const btn = $("#addph", sh); if (btn) btn.innerHTML = '<span><span class="pl">⏳</span>Сжимаю…</span>';
+        for (const f of files) { try { st.photos.push(await compress(f)); } catch (err) { toast(err.message); } }
+        drawPhotos();
+      };
+      fileIn.click();
+      return;
+    }
+    if (e.target.closest("#f_save")) save();
+  });
+  async function save() {
+    if (st.busy) return;
+    const title = $("#f_title", sh).value.trim();
+    if (!title) { $("#f_title", sh).focus(); toast("Напиши, что ты хочешь 🙂"); haptic("error"); return; }
+    st.busy = true; const btn = $("#f_save", sh); btn.textContent = "Сохраняю…"; btn.style.opacity = .7;
+    try {
+      const now = Date.now(); const cur = $("#f_cur", sh).value; LS.set("wl_cur", cur);
+      const item = {
+        id: it ? it.id : now.toString(36) + uid(6),
+        title, cat: st.cat, price: $("#f_price", sh).value.trim(), cur,
+        link: $("#f_link", sh).value.trim(), details: $("#f_details", sh).value.trim(), note: $("#f_note", sh).value.trim(),
+        thumb: st.photos.length ? await thumbFrom(st.photos[0]) : "", photoCount: st.photos.length,
+        createdAt: it ? it.createdAt || now : now, editedAt: now,
+      };
+      if (isNew) { item.done = false; item.gift = false; }
+      if (S.store.invalidatePhotos) S.store.invalidatePhotos(item.id);
+      await S.store.saveItem(item, st.photos);
+      haptic("ok"); closeSheet(); toast(isNew ? "Добавлено в вишлист 💗" : "Сохранено ✓");
+      if (isNew && S.tab !== "all" && S.tab !== String(st.cat)) { S.tab = "all"; render(); }
+    } catch (err) {
+      st.busy = false; btn.textContent = "Попробовать ещё раз"; btn.style.opacity = 1; haptic("error");
+      toast("Не сохранилось: " + (err.code === "permission-denied" ? "проверь правила Firestore" : err.message || err));
+    }
+  }
+}
+
+function openMood() {
+  const sh = openSheet('<h3>О чём ты сейчас думаешь? 💭</h3><textarea class="inp" id="m_txt" maxlength="500" style="min-height:130px" placeholder="Например: очень хочу на море, и мечтаю о новом свитере, потому что холодно 🥶">' + esc(S.meta.mood || "") + '</textarea><div class="hint">Он увидит это сразу, вверху вишлиста.</div><button class="btn pri" id="m_save" style="margin-top:18px">Сохранить</button>' + (S.meta.mood ? '<button class="btn danger" id="m_clear">Очистить</button>' : ""));
+  setTimeout(() => { try { $("#m_txt", sh).focus(); } catch (e) {} }, 350);
+  sh.addEventListener("click", async (e) => {
+    if (e.target.closest("#m_save") || e.target.closest("#m_clear")) {
+      const v = e.target.closest("#m_clear") ? "" : $("#m_txt", sh).value.trim();
+      try { await S.store.saveMeta({ mood: v, moodAt: Date.now() }); haptic("ok"); closeSheet(); toast(v ? "Обновлено 💭" : "Очищено"); }
+      catch (err) { toast("Ошибка: " + (err.message || err)); }
+    }
+  });
+}
+
+function openSettings() {
+  const link = CFG ? botLink(CFG) : "";
+  let h = "<h3>Настройки</h3>" +
+    '<label class="fl">Кто я</label><div class="seg"><button data-r="owner" class="' + (isOwner() ? "on" : "") + '">👑 Хозяйка вишлиста</button><button data-r="viewer" class="' + (!isOwner() ? "on" : "") + '">🕵️ Смотрю</button></div>' +
+    '<div class="hint">Секретные отметки «я подарю» видны только тем, кто «смотрит».</div>';
+  if (isOwner()) h += '<label class="fl">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" placeholder="Имя (он увидит «Вишлист Имя»)" value="' + esc(S.meta.ownerName || "") + '">';
+  h += '<label class="fl">Синхронизация</label>';
+  if (S.store.mode === "demo") h += '<div class="box">☁️ Сейчас <b>демо-режим</b>: желания хранятся только на этом устройстве.</div><button class="btn pri" data-s="setup">Подключить синхронизацию</button>';
+  else h += '<div class="box">✅ Подключено к базе <code>' + esc(CFG.p) + "</code>.<br>Список: <code>" + esc(CFG.l) + '</code></div><button class="btn" data-s="copy">📋 Скопировать ссылку для BotFather</button>';
+  h += '<div class="meta">Вишлист 💗 сделан с любовью</div>';
+  const sh = openSheet(h);
+  sh.addEventListener("click", (e) => {
+    const r = e.target.closest("[data-r]");
+    if (r) { closeSheet(); setRole(r.dataset.r); return; }
+    const s = e.target.closest("[data-s]"); if (!s) return;
+    if (s.dataset.s === "setup") { closeSheet(); openSetup(); }
+    if (s.dataset.s === "copy") copy(link);
+  });
+  const nm = $("#s_name", sh);
+  if (nm) nm.addEventListener("change", () => S.store.saveMeta({ ownerName: nm.value.trim() }).then(() => toast("Имя сохранено")).catch(() => {}));
+}
+
+const RULES = "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /lists/{list}/{col}/{doc} {\n      allow read, write: if list.size() >= 12\n        && col in ['items', 'photos', 'meta'];\n    }\n  }\n}";
+function openSetup() {
+  const h = "<h3>Подключить синхронизацию ☁️</h3>" +
+    '<p style="color:var(--ink2);margin:-4px 0 16px">Один раз, ~5 минут. Бесплатно (Firebase от Google). После этого вы оба видите один и тот же список, и он обновляется вживую.</p>' +
+    '<ol class="steps">' +
+    '<li>Открой <b>console.firebase.google.com</b> → <b>Создать проект</b> (любое имя, аналитику можно выключить).</li>' +
+    '<li>Слева <b>Build → Firestore Database → Create database</b>. Регион — <b>europe-west</b>, режим — <b>production</b>.</li>' +
+    '<li>Там же вкладка <b>Rules</b> — замени всё на это и нажми <b>Publish</b>:<pre class="code" id="rules">' + esc(RULES) + '</pre><button class="btn" data-x="rules" style="margin-top:8px">📋 Скопировать правила</button></li>' +
+    '<li>Шестерёнка → <b>Project settings</b> → внизу значок <b>&lt;/&gt;</b> (Web app) → любое имя → <b>Register</b>. Скопируй весь блок <code>firebaseConfig</code> и вставь сюда:</li>' +
+    "</ol>" +
+    '<textarea class="inp" id="cfg" style="min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:13px" placeholder="const firebaseConfig = {\n  apiKey: &quot;…&quot;,\n  projectId: &quot;…&quot;,\n  …\n};"></textarea>' +
+    '<button class="btn pri" data-x="make" style="margin-top:14px">Готово — сделать ссылку</button><div id="out"></div>';
+  const sh = openSheet(h);
+  sh.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-x]"); if (!b) return;
+    if (b.dataset.x === "rules") copy(RULES);
+    if (b.dataset.x === "copylink") copy(b.dataset.link);
+    if (b.dataset.x === "openlink") location.href = b.dataset.link;
+    if (b.dataset.x === "make") {
+      const t = $("#cfg", sh).value;
+      const get = (k) => { const m = t.match(new RegExp('["\']?' + k + '["\']?\\s*:\\s*["\']([^"\']+)["\']')); return m ? m[1].trim() : ""; };
+      const p = get("projectId"), k = get("apiKey");
+      if (!p || !k) { toast("Не нашла apiKey и projectId — вставь весь блок"); haptic("error"); return; }
+      const cfg = { p, k, l: (CFG && CFG.p === p && CFG.l) || uid(18) };
+      const link = botLink(cfg);
+      $("#out", sh).innerHTML = '<div class="box" style="margin-top:16px"><div class="k">Ссылка для BotFather</div><div class="v code" style="background:none;padding:0">' + esc(link) + "</div></div>" +
+        '<button class="btn dark2" data-x="copylink" data-link="' + esc(link) + '">📋 Скопировать ссылку</button>' +
+        '<button class="btn" data-x="openlink" data-link="' + esc(link) + '">Открыть вишлист по ней →</button>' +
+        '<div class="hint">В @BotFather: <b>/mybots</b> → твой бот → <b>Bot Settings → Configure Mini App</b> (или Menu Button) → вставь эту ссылку.</div>';
+      haptic("ok");
+    }
+  });
+}
+
+/* ================= новые желания вживую ================= */
+function onData(d) {
+  const prevKnown = S.knownIds;
+  S.items = d.items || {}; S.meta = d.meta || {}; S.loaded = true;
+  const ids = Object.keys(S.items);
+  if (prevKnown && !isOwner()) {
+    const fresh = ids.filter((id) => !prevKnown.has(id));
+    if (fresh.length === 1) { toast("✨ Новое желание: " + S.items[fresh[0]].title); haptic("ok"); }
+    else if (fresh.length > 1) { toast("✨ Новых желаний: " + fresh.length); haptic("ok"); }
+  }
+  S.knownIds = new Set(ids);
+  render();
+}
+
+/* ================= старт ================= */
+(async function boot() {
+  try {
+    if (tg) { tg.ready(); try { tg.expand(); } catch (e) {} }
+    const dark = tg && tg.colorScheme === "dark";
+    if (dark) document.documentElement.classList.add("dark");
+    const bg = dark ? "#1b1418" : "#fbf4ef";
+    try { if (tg && tg.setHeaderColor) tg.setHeaderColor(bg); if (tg && tg.setBackgroundColor) tg.setBackgroundColor(bg); } catch (e) {}
+    try { if (tg && tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch (e) {}
+  } catch (e) {}
+
+  render();
+  try {
+    S.store = CFG ? await makeCloudStore(CFG) : makeLocalStore();
+    S.status = CFG ? "cache" : "demo";
+  } catch (e) {
+    console.error(e); S.store = makeLocalStore(); S.status = "demo";
+    toast("Не удалось подключиться к облаку — открыт демо-режим");
+  }
+  S.store.start(onData, (st, err) => {
+    S.status = st;
+    if (st === "err") { console.error(err); toast(err && err.code === "permission-denied" ? "База не пускает: проверь правила Firestore" : "Нет связи с базой"); }
+    const dot = $(".sync"); if (dot) render();
+  });
+  if (!S.role) render();
+  // если открыла хозяйка из Telegram — запомним имя
+  setTimeout(() => {
+    if (isOwner() && tgUser && tgUser.first_name && S.loaded && !S.meta.ownerName) S.store.saveMeta({ ownerName: tgUser.first_name, ownerId: tgUser.id }).catch(() => {});
+  }, 1500);
+})();
+</script>
+</body>
+</html>
