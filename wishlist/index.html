@@ -211,70 +211,203 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .dark .ph.g1{background:linear-gradient(140deg,#5a2c26,#3a2522)}.dark .ph.g2{background:linear-gradient(140deg,#1f4a3b,#1d2f29)}.dark .ph.g3{background:linear-gradient(140deg,#3d3166,#2a2440)}
 
 /* sheet */
-.veil{position:fixed;inset:0;background:rgba(30,15,22,.42);z-index:40;opacity:0;transition:opacity .25s;backdrop-filter:blur(2px)}
+:root{--ease:cubic-bezier(.32,.72,0,1);--field:#fff;--fline:#eedfd8;--danger:#e0413a;--okc1:#3cc58f;--okc2:#1f9e6c;--sshadow:0 -14px 50px rgba(110,40,70,.18);--glow:rgba(255,143,171,.24)}
+.dark{--field:#2a2026;--fline:#3e3038;--danger:#ff6b63;--sshadow:0 -14px 50px rgba(0,0,0,.55);--glow:rgba(226,83,122,.28)}
+.veil{position:fixed;inset:0;z-index:40;background:rgba(46,20,34,.34);opacity:0;transition:opacity .45s var(--ease);-webkit-backdrop-filter:blur(6px) saturate(115%);backdrop-filter:blur(6px) saturate(115%)}
+.dark .veil{background:rgba(6,2,5,.62)}
 .veil.on{opacity:1}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:640px;margin:0 auto;background:var(--bg);border-radius:28px 28px 0 0;max-height:94vh;overflow-y:auto;transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.9,.25,1);padding:0 18px calc(24px + var(--safeB));overscroll-behavior:contain}
+.veil.out{pointer-events:none}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:640px;margin:0 auto;background:var(--bg);border-radius:30px 30px 0 0;max-height:94vh;max-height:calc(100dvh - 22px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transform:translate3d(0,105%,0);transition:transform .52s var(--ease);padding:0 18px calc(26px + var(--safeB));box-shadow:var(--sshadow);outline:none}
 .sheet.on{transform:none}
-.grab{position:sticky;top:0;padding:10px 0 6px;background:var(--bg);z-index:3;display:flex;align-items:center;justify-content:center}
-.grab i{width:42px;height:5px;border-radius:3px;background:var(--line)}
-.grab .x{position:absolute;right:-4px;top:8px;width:34px;height:34px;border-radius:50%;background:var(--bg2);font-size:15px;display:grid;place-items:center;color:var(--ink2)}
-.sheet h3{font:700 24px/1.15 var(--serif);margin:6px 0 14px;padding-right:30px}
+.sheet.out{transition:transform .3s cubic-bezier(.4,0,.85,.55);pointer-events:none}
+.grab{position:sticky;top:0;z-index:6;margin:0 -18px;height:52px;background:var(--bg);transition:box-shadow .2s}
+.grab.sc{box-shadow:0 1px 0 var(--line)}
+.grab i{position:absolute;left:50%;top:7px;width:40px;height:5px;margin-left:-20px;border-radius:3px;background:var(--ink3);opacity:.45}
+.grab .x{position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--bg2);color:var(--ink2);display:grid;place-items:center;transition:transform .15s var(--ease)}
+.grab .x:active{transform:scale(.88)}
+.sheet.hero{padding-bottom:0}
+.sheet.hero .grab{height:0;background:none;box-shadow:none}
+.sheet.hero .grab i{background:#fff;opacity:.92;box-shadow:0 1px 6px rgba(0,0,0,.3)}
+.sheet.hero .grab .x{top:16px;right:16px;width:36px;height:36px;background:rgba(30,14,22,.36);color:#fff;-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);box-shadow:0 2px 12px rgba(0,0,0,.14)}
+.grab.hd{height:auto;padding:18px 16px 10px}
+.shead{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.shead b{font:700 18px/1.2 var(--serif);text-align:center;white-space:nowrap}
+.shead .lk{justify-self:start;font-weight:700;font-size:16px;color:var(--ink2);padding:8px 4px;transition:opacity .15s}
+.shead .lk.go{justify-self:end;color:var(--rose);font-weight:800}
+.shead .lk:active{opacity:.45}
+.sheet h3{font:700 27px/1.14 var(--serif);letter-spacing:-.4px;margin:0 0 6px;padding-right:44px}
+.ssub{margin:0;color:var(--ink2);font-size:14.5px;line-height:1.45}
+.sheet.compact{text-align:center;padding-bottom:calc(18px + var(--safeB))}
+.sheet.compact .grab{height:30px}
+.sheet.compact .grab .x{display:none}
+.btn{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:54px;padding:14px 18px;border-radius:18px;font:800 16px/1.2 var(--font);background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(120,60,80,.06);margin-top:10px;transition:transform .16s var(--ease),opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:linear-gradient(135deg,#ef6b8f,#e2537a 48%,#f07a5a);color:#fff;box-shadow:0 12px 26px -8px rgba(226,83,122,.6),inset 0 1px 0 rgba(255,255,255,.28)}
+.btn.ok{background:linear-gradient(135deg,var(--okc1),var(--okc2));color:#fff;box-shadow:0 12px 26px -8px rgba(31,158,108,.55),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn.dark2{background:var(--ink);color:var(--bg);box-shadow:none}
+.btn.del{background:var(--danger);color:#fff;box-shadow:0 12px 26px -8px rgba(224,65,58,.55)}
+.btn.ghost,.btn.danger{background:transparent;box-shadow:none;color:var(--ink2)}
+.btn.danger{color:var(--danger)}
+.btn.busy{opacity:.72;pointer-events:none}
+.btn.sq{flex:none;width:54px;padding:0;margin-top:0}
+.btn.sq.rm{color:var(--danger)}
+.row2{display:flex;gap:10px}.row2 .btn{flex:1}
+.mspin{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .8s linear infinite;display:inline-block;flex:none}
+.mspin.ink{border-color:var(--line);border-top-color:var(--rose)}
+@keyframes fin{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
 
 /* detail */
-.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin:0 -18px;padding:0 18px;scrollbar-width:none}
-.gal::-webkit-scrollbar{display:none}
-.gal img{flex:none;width:100%;aspect-ratio:1/1;max-height:62vh;object-fit:cover;border-radius:22px;scroll-snap-align:center;background:var(--bg2)}
-.gal .ph{flex:none;width:100%;border-radius:22px}
-.galdots{display:flex;gap:5px;justify-content:center;margin-top:8px}
-.galdots i{width:6px;height:6px;border-radius:3px;background:var(--line);transition:.2s}
-.galdots i.on{background:var(--rose);width:16px}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-weight:700;font-size:12.5px}
 .p1{background:var(--c1s);color:var(--c1)}.p2{background:var(--c2s);color:var(--c2)}.p3{background:var(--c3s);color:var(--c3)}
-.dtitle{font:700 26px/1.15 var(--serif);margin:14px 0 6px;word-break:break-word}
-.dprice{font:800 20px/1 var(--font);margin:10px 0 0}
-.box{background:var(--card);border-radius:18px;padding:13px 15px;margin-top:12px;box-shadow:0 1px 3px rgba(120,60,80,.06)}
-.box .k{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
-.box .v{white-space:pre-wrap;word-break:break-word}
-.meta{font-size:12px;color:var(--ink3);margin-top:14px;text-align:center}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border-radius:16px;font-weight:800;font-size:15px;background:var(--card);box-shadow:0 1px 3px rgba(120,60,80,.08);margin-top:10px}
-.btn.pri{background:linear-gradient(135deg,var(--rose),#f07a5a);color:#fff;box-shadow:0 8px 20px rgba(226,83,122,.35)}
-.btn.dark2{background:var(--ink);color:var(--bg)}
-.btn.ok{background:#2fb078;color:#fff}
-.btn.danger{color:#e0413a;background:transparent;box-shadow:none}
-.row2{display:flex;gap:10px}.row2 .btn{flex:1}
-.secret{background:repeating-linear-gradient(-45deg,var(--roseSoft),var(--roseSoft) 10px,transparent 10px,transparent 20px);border:1.5px dashed var(--rose2);border-radius:18px;padding:12px 14px;margin-top:12px;font-size:13px;color:var(--ink2)}
-.secret b{color:var(--ink)}
+.dhero{position:relative;margin:0 -18px;background:var(--bg2)}
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.gal::-webkit-scrollbar{display:none}
+.gal>*{flex:none;width:100%;aspect-ratio:1/1;max-height:60vh;scroll-snap-align:center;scroll-snap-stop:always}
+.gal img{object-fit:cover;display:block;background:var(--bg2)}
+.dph{display:grid;place-items:center;font-size:104px}
+.dph span{filter:drop-shadow(0 14px 22px rgba(120,40,70,.22));animation:float 3.2s ease-in-out infinite}
+.dph.k1{background:radial-gradient(circle at 50% 46%,#fff4ee 0,transparent 55%),linear-gradient(150deg,#ffcfc4,#ffe9dc 60%,#fff3ea)}
+.dph.k2{background:radial-gradient(circle at 50% 46%,#f3fcf7 0,transparent 55%),linear-gradient(150deg,#bfeed9,#e3f7ec 60%,#f2fbf6)}
+.dph.k3{background:radial-gradient(circle at 50% 46%,#faf7ff 0,transparent 55%),linear-gradient(150deg,#d8caff,#ece4ff 60%,#f7f3ff)}
+.dark .dph.k1{background:radial-gradient(circle at 50% 46%,rgba(255,140,120,.18) 0,transparent 55%),linear-gradient(150deg,#5a2c26,#33201f)}
+.dark .dph.k2{background:radial-gradient(circle at 50% 46%,rgba(90,220,170,.14) 0,transparent 55%),linear-gradient(150deg,#1f4a3b,#1a2a25)}
+.dark .dph.k3{background:radial-gradient(circle at 50% 46%,rgba(170,140,255,.16) 0,transparent 55%),linear-gradient(150deg,#3d3166,#251f38)}
+.dhero.img:after{content:"";position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(rgba(20,8,14,0),rgba(20,8,14,.26));pointer-events:none}
+.galdots{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:2;display:flex;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(30,14,22,.3);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.galdots:empty{display:none}
+.galdots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.5);transition:width .35s var(--ease),background .25s}
+.galdots i.on{width:18px;background:#fff}
+.dbody{position:relative;z-index:2;margin:-24px -18px 0;padding:22px 18px 0;background:var(--bg);border-radius:26px 26px 0 0}
+.dtags{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.dpill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 10px;border-radius:999px;font:700 13px/1 var(--font)}
+.dpill.k1{background:var(--c1s);color:var(--c1)}.dpill.k2{background:var(--c2s);color:var(--c2)}.dpill.k3{background:var(--c3s);color:var(--c3)}
+.dpill.dn{background:#dcf5e9;color:#1f8a5c}
+.dark .dpill.dn{background:#1d3a30;color:#6fdcaa}
+.dpill em{font-style:normal;font-weight:500;opacity:.75}
+.dtitle{font:700 29px/1.13 var(--serif);letter-spacing:-.5px;margin:13px 0 0;word-break:break-word;text-wrap:balance}
+.dprice{display:inline-flex;align-items:baseline;gap:7px;margin-top:14px;padding:11px 16px 10px;border-radius:15px;background:var(--ink);color:var(--bg);font:800 22px/1 var(--font);letter-spacing:-.3px;font-variant-numeric:tabular-nums;box-shadow:0 8px 20px -10px rgba(46,29,39,.6)}
+.dprice small{font:700 10.5px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;opacity:.55}
+.dinfo{margin-top:20px;background:var(--card);border-radius:20px;box-shadow:inset 0 0 0 1px var(--line);overflow:hidden}
+.drow{display:flex;gap:13px;align-items:flex-start;padding:14px 16px;width:100%;text-align:left}
+.drow+.drow{border-top:1px solid var(--line)}
+.drow .di{width:36px;height:36px;border-radius:12px;background:var(--bg2);display:grid;place-items:center;font-size:17px;flex:none}
+.drow>div{flex:1;min-width:0}
+.drow .k{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:3px 0 6px}
+.drow .v{white-space:pre-wrap;word-break:break-word;font-size:15.5px;line-height:1.45}
+.drow.q .v{font:500 italic 17px/1.45 var(--serif)}
+.drow.lnk{align-items:center}
+.drow.lnk .v{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drow.lnk .di{background:var(--roseSoft)}
+.drow.lnk .go{flex:none;padding:8px 12px;border-radius:999px;background:var(--ink);color:var(--bg);font:800 13px/1 var(--font)}
+.drow.lnk:active{background:var(--bg2)}
+.dsecret{margin-top:16px;padding:15px 16px;border-radius:20px;background:linear-gradient(135deg,#ffe2ea,#f3e6ff);border:1.5px dashed rgba(226,83,122,.4);display:flex;gap:13px;align-items:center;animation:fin .4s var(--ease)}
+.dark .dsecret{background:linear-gradient(135deg,#4a2533,#33284d);border-color:rgba(255,143,171,.35)}
+.dsecret .se{font-size:30px;flex:none}
+.dsecret b{display:block;font-size:15.5px}
+.dsecret span{font-size:13px;color:var(--ink2)}
+.dmeta{font-size:12.5px;color:var(--ink3);margin:18px 0 0;text-align:center}
+.dbar{position:sticky;bottom:0;z-index:5;display:flex;flex-wrap:wrap;gap:10px;margin:8px -18px 0;padding:16px 18px calc(14px + var(--safeB));background:linear-gradient(to top,var(--bg) 72%,rgba(251,244,239,0))}
+.dark .dbar{background:linear-gradient(to top,var(--bg) 72%,rgba(27,20,24,0))}
+.dbar .btn{margin-top:0;flex:1}
+.dbar .btn.sq{flex:none}
+.dbhint{width:100%;text-align:center;font-size:12.5px;color:var(--ink2);margin-top:-2px}
+.dend{height:calc(22px + var(--safeB))}
+.cfm{padding:0 2px}
+.cfmico{width:80px;height:80px;margin:4px auto 16px;border-radius:26px;background:var(--roseSoft);display:grid;place-items:center;font-size:38px;overflow:hidden;box-shadow:0 10px 26px -10px rgba(226,83,122,.5);animation:fin .4s var(--ease)}
+.cfmico img{width:100%;height:100%;object-fit:cover;display:block}
+.cfm h3{padding:0}
+.cfm p{color:var(--ink2);margin:6px 0 20px;font-size:15px;line-height:1.45}
+.cfm .btn+.btn{margin-top:6px}
 
 /* form */
-.fl{display:block;font:700 12px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:18px 2px 8px}
-.inp{width:100%;padding:14px 15px;border-radius:15px;border:1.5px solid var(--line);background:var(--card);outline:none;font-size:16px;transition:border .15s}
-.inp:focus{border-color:var(--rose2)}
-textarea.inp{min-height:84px;resize:vertical}
-.pricerow{display:flex;gap:8px}.pricerow .inp:first-child{flex:1}
-.pricerow select{width:86px;flex:none;appearance:none;text-align:center}
+.fl{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:700 12px/1 var(--font);letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);margin:24px 4px 10px}
+.fl .opt{font:500 12.5px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--ink3)}
+.inp{display:block;width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid var(--fline);background:var(--field);outline:none;font-size:16px;line-height:1.35;transition:border-color .15s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.inp::placeholder{color:var(--ink3);opacity:1}
+.inp:focus{border-color:var(--rose2);box-shadow:0 0 0 4px var(--glow)}
+.inp.err{border-color:var(--danger);box-shadow:0 0 0 4px rgba(224,65,58,.13);animation:shake .38s}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.ferr{display:none;color:var(--danger);font-size:13px;font-weight:700;margin:8px 4px 0}
+.ferr.on{display:block;animation:fin .25s var(--ease)}
+textarea.inp{min-height:100px;resize:none}
+.ifield{position:relative}
+.ifield .ic{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;opacity:.75}
+.ifield .inp{padding-left:44px}
+.pricerow{display:flex;gap:8px}.pricerow .ifield{flex:1}
+.inp.cur{width:96px;flex:none;font-weight:800;text-align:center;text-align-last:center;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.5 6 6l4.5-4.5' fill='none' stroke='%23b5a2ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.fcnt{text-align:right;font-size:12px;color:var(--ink3);margin:6px 4px 0;font-variant-numeric:tabular-nums;transition:color .2s}
+.fcnt.warn{color:var(--rose);font-weight:700}
 .cats{display:grid;gap:9px}
-.cat{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:17px;background:var(--card);border:2px solid transparent;text-align:left;transition:.15s}
-.cat .ci{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:21px;flex:none}
-.cat b{display:block;font-size:15px}.cat span{font-size:12.5px;color:var(--ink2)}
-.cat.on.k1{border-color:var(--c1);background:var(--c1s)}.cat.on.k2{border-color:var(--c2);background:var(--c2s)}.cat.on.k3{border-color:var(--c3);background:var(--c3s)}
-.photos{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
-.pth{flex:none;width:92px;height:92px;border-radius:18px;overflow:hidden;position:relative;background:var(--bg2)}
-.pth img{width:100%;height:100%;object-fit:cover}
-.pth .rm{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:13px;display:grid;place-items:center}
-.pth .first{position:absolute;left:5px;bottom:5px;font:800 9.5px/1 var(--font);padding:3px 6px;border-radius:6px;background:rgba(255,255,255,.9);color:#2e1d27;text-transform:uppercase}
-.addph{flex:none;width:92px;height:92px;border-radius:18px;border:2px dashed var(--ink3);display:grid;place-items:center;text-align:center;color:var(--ink2);font-size:12px;font-weight:700;line-height:1.2}
-.addph .pl{font-size:26px;display:block}
-.hint{font-size:12.5px;color:var(--ink2);margin:6px 2px 0}
+.cat{display:flex;gap:13px;align-items:center;width:100%;padding:12px 14px 12px 12px;border-radius:19px;background:var(--field);box-shadow:inset 0 0 0 1.5px var(--fline);text-align:left;transition:background .25s,box-shadow .25s,transform .16s var(--ease)}
+.cat:active{transform:scale(.98)}
+.cat .ci{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none;transition:background .25s,transform .3s var(--ease)}
+.cat.k1 .ci{background:var(--c1s)}.cat.k2 .ci{background:var(--c2s)}.cat.k3 .ci{background:var(--c3s)}
+.cat .ct{flex:1;min-width:0}
+.cat b{display:block;font-size:15.5px;line-height:1.25}
+.cat .ct span{font-size:13px;color:var(--ink2)}
+.cat .rd{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--fline);flex:none;display:grid;place-items:center;transition:background .25s,box-shadow .25s}
+.cat.on .rd:after{content:"";width:10px;height:5px;border:2.5px solid #fff;border-top:0;border-right:0;transform:translateY(-1.5px) rotate(-45deg)}
+.cat.on .ci{background:var(--field);transform:scale(1.04)}
+.cat.on.k1{background:var(--c1s);box-shadow:inset 0 0 0 2px var(--c1)}.cat.on.k1 .rd{background:var(--c1);box-shadow:none}
+.cat.on.k2{background:var(--c2s);box-shadow:inset 0 0 0 2px var(--c2)}.cat.on.k2 .rd{background:var(--c2);box-shadow:none}
+.cat.on.k3{background:var(--c3s);box-shadow:inset 0 0 0 2px var(--c3)}.cat.on.k3 .rd{background:var(--c3);box-shadow:none}
+.photos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pth{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:var(--bg2);animation:fin .3s var(--ease);transition:transform .16s var(--ease)}
+.pth:active{transform:scale(.95)}
+.pth img{width:100%;height:100%;object-fit:cover;display:block}
+.pth.cov{box-shadow:0 0 0 2.5px var(--bg),0 0 0 4.5px var(--rose)}
+.pth .rm{position:absolute;top:5px;right:5px;width:24px;height:24px;border-radius:50%;background:rgba(20,10,15,.58);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;display:grid;place-items:center}
+.pth .cv{position:absolute;left:5px;right:5px;bottom:5px;padding:4px 0;border-radius:8px;background:rgba(255,255,255,.93);color:#c23d68;font:800 9.5px/1 var(--font);letter-spacing:.05em;text-transform:uppercase;text-align:center}
+.addph{aspect-ratio:1/1;border-radius:16px;border:1.5px dashed var(--ink3);background:var(--field);color:var(--ink2);display:grid;place-items:center;align-content:center;gap:3px;font-size:11.5px;font-weight:700;transition:transform .16s var(--ease)}
+.addph:active{transform:scale(.95)}
+.addph .pl{font-size:22px;line-height:1;color:var(--rose)}
+.phzone{width:100%;display:flex;flex-direction:column;align-items:center;gap:3px;padding:22px 16px 20px;border-radius:22px;border:1.5px dashed rgba(226,83,122,.42);background:linear-gradient(135deg,rgba(255,224,234,.7),rgba(255,236,222,.6) 55%,rgba(236,226,255,.7));color:var(--ink2);font-size:13px;transition:transform .16s var(--ease)}
+.dark .phzone{background:linear-gradient(135deg,rgba(75,37,52,.55),rgba(74,51,38,.45) 55%,rgba(51,40,77,.55));border-color:rgba(255,143,171,.35)}
+.phzone:active{transform:scale(.98)}
+.phzone .pzi{width:50px;height:50px;border-radius:17px;background:var(--card);display:grid;place-items:center;font-size:24px;box-shadow:0 8px 18px -8px rgba(226,83,122,.5);margin-bottom:8px}
+.phzone b{color:var(--ink);font-size:15.5px}
+.hint{font-size:12.5px;color:var(--ink2);margin:9px 4px 0;line-height:1.4}
+.mbox{position:relative;margin-top:18px}
+.mbox textarea{min-height:150px;padding-bottom:34px;font:500 17px/1.45 var(--serif)}
+.mbox .fcnt{position:absolute;right:14px;bottom:11px;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 13px;border-radius:999px;background:var(--field);box-shadow:inset 0 0 0 1.5px var(--fline);font-weight:700;font-size:14px;color:var(--ink);transition:transform .16s var(--ease),background .2s,box-shadow .2s}
+.chip:active{transform:scale(.93)}
+.chip.on{background:var(--roseSoft);box-shadow:inset 0 0 0 1.5px var(--rose2)}
 
 /* setup / settings */
-.steps{counter-reset:s;padding:0;margin:0;list-style:none}
-.steps li{position:relative;padding:0 0 14px 40px;font-size:14.5px}
-.steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:28px;height:28px;border-radius:50%;background:var(--roseSoft);color:var(--rose);font-weight:800;display:grid;place-items:center;font-size:13px}
+.who{display:flex;gap:14px;align-items:center;margin-top:16px;padding:14px;border-radius:22px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.who img{width:54px;height:54px;border-radius:17px;flex:none;box-shadow:0 8px 18px -8px rgba(226,83,122,.5)}
+.who .wt{flex:1;min-width:0}
+.who b{display:block;font-size:16.5px}
+.who .wt span{font-size:13.5px;color:var(--ink2)}
+.who .wr{flex:none;width:40px;height:40px;border-radius:50%;background:var(--roseSoft);display:grid;place-items:center;font-size:19px}
+.box{background:var(--card);border-radius:18px;padding:14px 16px;margin-top:12px;box-shadow:inset 0 0 0 1px var(--line);font-size:14.5px;line-height:1.45}
+.box .k{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:7px}
+.box .v{white-space:pre-wrap;word-break:break-word}
+.sbox{display:flex;gap:12px;align-items:center;margin-top:0}
+.sbox .sdot{width:10px;height:10px;border-radius:50%;background:#f0a640;flex:none;box-shadow:0 0 0 4px rgba(240,166,64,.18)}
+.sbox.on .sdot{background:#35c47a;box-shadow:0 0 0 4px rgba(53,196,122,.18)}
+.sbox b{display:block;font-size:15px}
+.sbox span{font-size:13px;color:var(--ink2)}
+.sfoot{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:28px;font-size:12.5px;color:var(--ink3)}
+.sfoot img{width:20px;height:20px;border-radius:6px}
+.steps{counter-reset:s;padding:0;margin:18px 0 0;list-style:none}
+.steps li{position:relative;padding:0 0 18px 42px;font-size:14.5px;line-height:1.5}
+.steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:29px;height:29px;border-radius:10px;background:var(--roseSoft);color:var(--rose);font-weight:800;display:grid;place-items:center;font-size:13px}
+.steps li:not(:last-child):after{content:"";position:absolute;left:14px;top:32px;bottom:4px;width:1.5px;background:var(--line)}
 code,.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:var(--bg2);padding:2px 6px;border-radius:6px;word-break:break-all}
-pre.code{display:block;padding:12px;white-space:pre-wrap;margin:8px 0 0;line-height:1.45}
+pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-break:normal;font-size:11.5px;margin:10px 0 0;line-height:1.5;border-radius:14px}
 .seg{display:flex;background:var(--bg2);border-radius:14px;padding:4px;gap:4px}
 .seg button{flex:1;padding:11px 8px;border-radius:11px;font-weight:700;font-size:13.5px;color:var(--ink2)}
 .seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+@media(prefers-reduced-motion:reduce){
+  .sheet{transform:none;opacity:0;transition:opacity .2s}
+  .sheet.on{opacity:1}
+  .sheet.out{transition:opacity .15s}
+  .veil{transition:opacity .2s}
+  .dph span,.inp.err,.pth,.dsecret,.cfmico,.ferr.on{animation:none}
+}
 
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -292,10 +425,15 @@ pre.code{display:block;padding:12px;white-space:pre-wrap;margin:8px 0 0;line-hei
 .choice .e + span span{display:block;margin-top:2px}
 
 /* toast + confetti */
-.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:16px;font-weight:700;font-size:14px;z-index:60;transition:transform .35s cubic-bezier(.2,.9,.25,1);max-width:90vw;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.toast.on{transform:translate(-50%,0)}
-.conf{position:fixed;top:-30px;z-index:70;font-size:24px;pointer-events:none;animation:fall linear forwards}
-@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));z-index:60;display:flex;align-items:center;gap:10px;width:max-content;max-width:min(92vw,440px);padding:7px 18px 7px 7px;border-radius:999px;background:rgba(46,29,39,.9);color:#fff;-webkit-backdrop-filter:blur(18px) saturate(160%);backdrop-filter:blur(18px) saturate(160%);font:700 14.5px/1.3 var(--font);box-shadow:0 16px 36px -10px rgba(46,29,39,.5);transform:translate(-50%,-160%) scale(.92);opacity:0;transition:transform .5s var(--ease),opacity .3s;pointer-events:none}
+.toast.on{transform:translate(-50%,0) scale(1);opacity:1}
+.dark .toast{background:rgba(255,246,249,.95);color:#2e1d27;box-shadow:0 16px 36px -10px rgba(0,0,0,.6)}
+.toast .ti{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:17px;background:rgba(255,255,255,.14)}
+.dark .toast .ti{background:#ffe4ec}
+.toast.err .ti{background:var(--danger);color:#fff;font:900 17px/1 var(--font)}
+.toast .tt{min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(prefers-reduced-motion:reduce){.toast{transition:opacity .2s;transform:translate(-50%,0)}}
+.conf{position:fixed;left:0;top:0;z-index:70;pointer-events:none;line-height:1;will-change:transform,opacity}
 .spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--rose);animation:sp 0.8s linear infinite;margin:60px auto}
 @keyframes sp{to{transform:rotate(360deg)}}
 </style>
@@ -445,14 +583,55 @@ async function thumbFrom(dataUrl) {
 }
 
 /* ================= утилиты UI ================= */
+const reduceMotion = () => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } };
 let toastT;
-function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+const EMO_END = /\s*((?:\p{Extended_Pictographic})(?:️|‍|\p{Extended_Pictographic}|\p{Emoji_Modifier})*)\s*$/u;
+const EMO_START = /^\s*((?:\p{Extended_Pictographic})(?:️|‍|\p{Extended_Pictographic}|\p{Emoji_Modifier})*)\s*/u;
+function toast(msg, ico) {
+  const t = $("#toast"); msg = String(msg == null ? "" : msg);
+  const err = /^(Ошибка|Не удал|Не сохран|Не нашла|Нет связи|База не)/.test(msg);
+  if (!ico && !err) {
+    let m = msg.match(EMO_END);
+    if (m && m.index > 0) { ico = m[1]; msg = msg.slice(0, m.index); }
+    else if ((m = msg.match(EMO_START)) && m[0].length < msg.length) { ico = m[1]; msg = msg.slice(m[0].length); }
+  }
+  t.setAttribute("role", "status"); t.setAttribute("aria-live", "polite");
+  t.className = "toast" + (err ? " err" : "");
+  t.innerHTML = '<span class="ti">' + esc(err ? "!" : ico || "💗") + '</span><span class="tt">' + esc(msg.trim()) + "</span>";
+  void t.offsetWidth; t.classList.add("on");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), err ? 3600 : 2600);
+}
 function confetti() {
-  const em = ["🎉", "💖", "✨", "🎁", "🌸", "💫"];
-  for (let i = 0; i < 28; i++) {
-    const s = document.createElement("div"); s.className = "conf"; s.textContent = em[i % em.length];
-    s.style.left = Math.random() * 100 + "vw"; s.style.animationDuration = 1.8 + Math.random() * 1.6 + "s"; s.style.animationDelay = Math.random() * 0.4 + "s";
-    document.body.appendChild(s); setTimeout(() => s.remove(), 4200);
+  const W = innerWidth, H = innerHeight;
+  if (reduceMotion()) {
+    const s = document.createElement("div"); s.className = "conf"; s.textContent = "💖";
+    s.style.cssText = "left:50%;top:42%;font-size:72px;transform:translate(-50%,-50%)"; document.body.appendChild(s);
+    const a = s.animate([{ opacity: 0 }, { opacity: 1, offset: 0.2 }, { opacity: 1, offset: 0.7 }, { opacity: 0 }], { duration: 1500 });
+    a.onfinish = () => s.remove(); return;
+  }
+  const em = ["💖", "✨", "🎁", "💗", "🌸", "💝", "🎉"];
+  const cols = ["#e2537a", "#ff8fab", "#ffb38a", "#8f6bf0", "#3fae86", "#ffd36e", "#ffc6d6"];
+  const N = Math.min(72, Math.round(W / 5.5)), ox = W / 2, oy = H * 0.6, g = H * 2.3;
+  for (let i = 0; i < N; i++) {
+    const el = document.createElement("div"); el.className = "conf"; const kind = i % 4;
+    if (kind === 0) { el.textContent = em[i % em.length]; el.style.fontSize = 18 + Math.random() * 14 + "px"; }
+    else if (kind === 1) { el.textContent = "♥"; el.style.color = cols[i % cols.length]; el.style.fontSize = 14 + Math.random() * 14 + "px"; }
+    else { const w = 6 + Math.random() * 5; el.style.width = w + "px"; el.style.height = (kind === 2 ? w * 1.7 : w) + "px"; el.style.borderRadius = kind === 2 ? "2px" : "50%"; el.style.background = cols[(i * 3) % cols.length]; }
+    el.style.left = ox + "px"; el.style.top = oy + "px";
+    document.body.appendChild(el);
+    const ang = (-90 + (Math.random() * 2 - 1) * 64) * Math.PI / 180, sp = H * (1.05 + Math.random() * 0.5);
+    const vx = Math.cos(ang) * sp * 0.85, vy = Math.sin(ang) * sp, T = 1.6 + Math.random() * 0.9;
+    const rot = (Math.random() * 2 - 1) * 900, sway = 14 + Math.random() * 26, ph = Math.random() * 6;
+    const frames = [];
+    for (let k = 0; k <= 16; k++) {
+      const t = (T * k) / 16, p = k / 16;
+      const x = (vx * (1 - Math.exp(-2.6 * t))) / 2.6 + Math.sin(t * 5 + ph) * sway * p;
+      const y = vy * t + 0.5 * g * t * t * (1 - 0.35 * p);
+      const sc = p < 0.08 ? 0.3 + (p / 0.08) * 0.7 : 1;
+      frames.push({ transform: "translate(-50%,-50%) translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px) rotate(" + (rot * p).toFixed(0) + "deg) scale(" + sc.toFixed(2) + ")", opacity: p > 0.78 ? (1 - p) / 0.22 : 1 });
+    }
+    const a = el.animate(frames, { duration: T * 1000, delay: Math.random() * 140, easing: "linear", fill: "both" });
+    a.onfinish = () => el.remove(); setTimeout(() => el.remove(), T * 1000 + 600);
   }
 }
 function ago(ts) {
@@ -473,34 +652,85 @@ function copy(text) {
 
 /* ================= шторки (bottom sheets) ================= */
 const sheets = [];
-function openSheet(html, mount) {
+const IC_X = '<svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg>';
+// opts: { cls: доп. класс шторки, head: html шапки вместо крестика, onClose }
+function openSheet(html, mount, opts) {
+  opts = opts || {};
   const veil = document.createElement("div"); veil.className = "veil";
-  const sh = document.createElement("div"); sh.className = "sheet";
-  sh.innerHTML = '<div class="grab"><i></i><button class="x" data-close>✕</button></div>' + html;
+  const sh = document.createElement("div"); sh.className = "sheet" + (opts.cls ? " " + opts.cls : "");
+  sh.setAttribute("role", "dialog"); sh.setAttribute("aria-modal", "true"); sh.tabIndex = -1;
+  sh.innerHTML = '<div class="grab' + (opts.head ? " hd" : "") + '"><i></i>' + (opts.head ? '<div class="shead">' + opts.head + "</div>" : '<button class="x" data-close aria-label="Закрыть">' + IC_X + "</button>") + "</div>" + html;
   document.body.append(veil, sh); document.body.classList.add("lock");
-  const entry = { veil, sh }; sheets.push(entry);
+  const entry = { veil, sh, onClose: opts.onClose }; sheets.push(entry);
+  veil.style.zIndex = 38 + sheets.length * 3; sh.style.zIndex = 39 + sheets.length * 3;
+  void sh.offsetHeight; // чтобы анимация открытия точно сработала
   requestAnimationFrame(() => { veil.classList.add("on"); sh.classList.add("on"); });
-  veil.onclick = () => closeSheet();
+  veil.onclick = () => { if (sheets[sheets.length - 1] === entry) closeSheet(); };
   sh.addEventListener("click", (e) => { if (e.target.closest("[data-close]")) closeSheet(); });
-  // свайп вниз, чтобы закрыть
-  let y0 = null, dy = 0;
-  sh.addEventListener("touchstart", (e) => { if (sh.scrollTop <= 0 && !e.target.closest("input,textarea,.gal,.photos")) { y0 = e.touches[0].clientY; dy = 0; sh.style.transition = "none"; } }, { passive: true });
-  sh.addEventListener("touchmove", (e) => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); if (dy > 0) sh.style.transform = "translateY(" + dy + "px)"; }, { passive: true });
-  sh.addEventListener("touchend", () => { if (y0 == null) return; sh.style.transition = ""; if (dy > 110) closeSheet(); else sh.style.transform = ""; y0 = null; });
+  const grab = sh.firstElementChild;
+  sh.addEventListener("scroll", () => grab.classList.toggle("sc", sh.scrollTop > 4), { passive: true });
+  // поле ввода не прячется под клавиатурой
+  sh.addEventListener("focusin", (e) => {
+    if (!e.target.matches("input,textarea")) return;
+    setTimeout(() => { try { e.target.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" }); } catch (er) {} }, 320);
+  });
+  // свайп вниз, чтобы закрыть (с учётом направления и скорости)
+  let x0 = null, y0 = 0, dy = 0, lock = null, lastY = 0, lastT = 0, vel = 0;
+  sh.addEventListener("touchstart", (e) => {
+    if (e.touches.length > 1 || e.target.closest("input,textarea,select")) { x0 = null; return; }
+    x0 = e.touches[0].clientX; y0 = lastY = e.touches[0].clientY; lastT = e.timeStamp; dy = 0; vel = 0; lock = null;
+  }, { passive: true });
+  sh.addEventListener("touchmove", (e) => {
+    if (x0 == null) return;
+    const cx = e.touches[0].clientX, cy = e.touches[0].clientY, ddx = cx - x0, ddy = cy - y0;
+    if (lock == null) {
+      if (Math.abs(ddx) < 6 && Math.abs(ddy) < 6) return;
+      lock = ddy > 0 && Math.abs(ddy) > Math.abs(ddx) && sh.scrollTop <= 0 ? "y" : "no";
+      if (lock === "y") { sh.style.transition = "none"; veil.style.transition = "none"; y0 = cy; }
+    }
+    if (lock !== "y") return;
+    e.preventDefault();
+    dy = Math.max(0, cy - y0); dy = dy > 0 ? dy : (cy - y0) * 0.2;
+    const dt = e.timeStamp - lastT; if (dt > 0) vel = (cy - lastY) / dt; lastY = cy; lastT = e.timeStamp;
+    sh.style.transform = "translate3d(0," + Math.max(0, dy) + "px,0)";
+    veil.style.opacity = String(Math.max(0, 1 - dy / (sh.offsetHeight * 1.1)));
+  }, { passive: false });
+  const end = () => {
+    if (x0 == null) return; x0 = null;
+    if (lock !== "y") return;
+    sh.style.transition = ""; veil.style.transition = "";
+    if (dy > 120 || (vel > 0.55 && dy > 24)) closeSheet(entry);
+    else { sh.style.transform = ""; veil.style.opacity = ""; }
+  };
+  sh.addEventListener("touchend", end); sh.addEventListener("touchcancel", end);
   syncBack();
   if (mount) mount(sh);
   return sh;
 }
-function closeSheet() {
-  const e = sheets.pop(); if (!e) return;
-  e.veil.classList.remove("on"); e.sh.style.transform = ""; e.sh.classList.remove("on");
-  setTimeout(() => { e.veil.remove(); e.sh.remove(); }, 320);
+function closeSheet(which) {
+  const i = which ? sheets.indexOf(which) : sheets.length - 1; if (i < 0) return;
+  const e = sheets.splice(i, 1)[0];
+  e.veil.style.opacity = ""; e.veil.classList.remove("on"); e.veil.classList.add("out");
+  e.sh.style.transform = ""; e.sh.classList.add("out"); e.sh.classList.remove("on");
+  if (document.activeElement && e.sh.contains(document.activeElement)) try { document.activeElement.blur(); } catch (er) {}
+  setTimeout(() => { e.veil.remove(); e.sh.remove(); }, 380);
   if (!sheets.length) document.body.classList.remove("lock");
   syncBack();
+  if (e.onClose) try { e.onClose(); } catch (er) {}
 }
 function closeAll() { while (sheets.length) closeSheet(); }
 function syncBack() { try { if (!tg || !tg.BackButton) return; if (sheets.length) tg.BackButton.show(); else tg.BackButton.hide(); } catch (e) {} }
 if (tg && tg.BackButton) try { tg.BackButton.onClick(() => closeSheet()); } catch (e) {}
+// аккуратное подтверждение в отдельной шторке: resolve(true|false)
+function confirmSheet(o) {
+  return new Promise((res) => {
+    let done = false; const fin = (v) => { if (!done) { done = true; res(v); } };
+    const sh = openSheet('<div class="cfm"><div class="cfmico">' + o.icon + "</div><h3>" + esc(o.title) + "</h3><p>" + o.text + "</p>" +
+      '<button class="btn ' + (o.danger ? "del" : "pri") + '" data-c="1">' + esc(o.ok) + '</button><button class="btn ghost" data-c="0">' + esc(o.cancel || "Отмена") + "</button></div>",
+      null, { cls: "compact", onClose: () => fin(false) });
+    sh.addEventListener("click", (e) => { const b = e.target.closest("[data-c]"); if (!b) return; fin(b.dataset.c === "1"); closeSheet(); });
+  });
+}
 
 /* ================= рендер ================= */
 function sortedItems(filter) {
@@ -704,58 +934,70 @@ function setRole(role) {
   render();
 }
 
+const IC_EDIT = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg>';
+const IC_DEL = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
 async function openDetail(id) {
   const it = S.items[id]; if (!it) return;
   const c = CATS[it.cat] || CATS[2];
   haptic("light");
   // отметить как просмотренное
   if (!isOwner() && S.seen) { S.seen[id] = Date.now(); saveSeen(); setTimeout(render, 350); }
-  const ph0 = it.thumb ? '<img src="' + it.thumb + '" alt="">' : '<div class="ph g' + c.key + '" style="aspect-ratio:1/1"><div class="emo" style="font-size:80px">' + c.emo + "</div></div>";
-  let h = '<div class="gal" id="gal">' + ph0 + '</div><div class="galdots" id="galdots"></div>' +
-    '<div style="margin-top:14px"><span class="pill p' + c.key + '">' + c.emo + " " + c.name + " · " + c.sub.toLowerCase() + "</span></div>" +
-    '<div class="dtitle">' + esc(it.title) + "</div>" +
-    (priceStr(it) ? '<div class="dprice">' + priceStr(it) + "</div>" : "") +
-    (it.details ? '<div class="box"><div class="k">Детали — размер, цвет, модель</div><div class="v">' + esc(it.details) + "</div></div>" : "") +
-    (it.note ? '<div class="box"><div class="k">' + (isOwner() ? "Почему хочу" : "Почему она хочет") + '</div><div class="v">' + esc(it.note) + "</div></div>" : "") +
-    (it.link ? '<button class="btn dark2" data-d="link">🔗 Открыть ссылку</button>' : "");
-  if (isOwner()) {
-    h += it.done
-      ? '<button class="btn" data-d="undone">↩️ Вернуть в список</button>'
-      : '<button class="btn ok" data-d="done">🎉 Мне это подарили!</button>';
-    h += '<div class="row2"><button class="btn" data-d="edit">✏️ Изменить</button><button class="btn" data-d="del" style="color:#e0413a">🗑 Удалить</button></div>';
-  } else if (!it.done) {
-    h += it.gift
-      ? '<div class="secret">🤫 <b>Ты отметил, что подаришь это.</b> Она этого не видит.</div><button class="btn" data-d="ungift">Передумал — снять отметку</button>'
-      : '<button class="btn pri" data-d="gift">🎁 Я подарю это</button><div class="hint" style="text-align:center">Отметка секретная — она её не увидит</div>';
-  }
-  h += '<div class="meta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div>";
+  const ph0 = it.thumb ? '<img src="' + it.thumb + '" alt="">' : '<div class="dph k' + c.key + '"><span>' + c.emo + "</span></div>";
+  let host = "";
+  if (it.link) { try { host = new URL(fixLink(it.link)).hostname.replace(/^www\./, ""); } catch (e) { host = it.link; } }
+  const rows = [];
+  if (it.details) rows.push('<div class="drow"><span class="di">📐</span><div><div class="k">Детали · размер, цвет, модель</div><div class="v">' + esc(it.details) + "</div></div></div>");
+  if (it.note) rows.push('<div class="drow q"><span class="di">💭</span><div><div class="k">' + (isOwner() ? "Почему хочу" : "Почему она хочет") + '</div><div class="v">' + esc(it.note) + "</div></div></div>");
+  if (it.link) rows.push('<button class="drow lnk" data-d="link"><span class="di">🔗</span><div><div class="k">Где посмотреть</div><div class="v">' + esc(host) + '</div></div><span class="go">Открыть ↗</span></button>');
 
-  const sh = openSheet(h, () => {});
+  let h = '<div class="dhero' + (it.thumb ? " img" : "") + '"><div class="gal" id="gal">' + ph0 + '</div><div class="galdots" id="galdots"></div></div>' +
+    '<div class="dbody"><div class="dtags"><span class="dpill k' + c.key + '">' + c.emo + " " + c.name + " <em>· " + c.sub.toLowerCase() + "</em></span>" +
+      (it.done ? '<span class="dpill dn">✓ Сбылось</span>' : "") + "</div>" +
+    '<div class="dtitle">' + esc(it.title) + "</div>" +
+    (priceStr(it) ? '<div class="dprice"><small>цена</small>' + priceStr(it) + "</div>" : "") +
+    (rows.length ? '<div class="dinfo">' + rows.join("") + "</div>" : "") +
+    (!isOwner() && it.gift && !it.done ? '<div class="dsecret"><span class="se">🤫</span><div><b>Ты даришь это</b><span>Отметку видишь только ты — для неё это сюрприз.</span></div></div>' : "") +
+    '<div class="dmeta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div></div>";
+  let bar = "";
+  if (isOwner()) {
+    bar = (it.done ? '<button class="btn" data-d="undone">↩️ Вернуть в список</button>' : '<button class="btn ok" data-d="done">🎉 Мне это подарили!</button>') +
+      '<button class="btn sq" data-d="edit" aria-label="Изменить">' + IC_EDIT + '</button><button class="btn sq rm" data-d="del" aria-label="Удалить">' + IC_DEL + "</button>";
+  } else if (!it.done) {
+    bar = it.gift ? '<button class="btn" data-d="ungift">Передумал — снять отметку</button>'
+      : '<button class="btn pri" data-d="gift">🎁 Я подарю это</button><div class="dbhint">🤫 Секретно — она не увидит эту отметку</div>';
+  }
+  h += bar ? '<div class="dbar">' + bar + "</div>" : '<div class="dend"></div>';
+
+  const sh = openSheet(h, null, { cls: "hero" });
   sh.addEventListener("click", async (e) => {
-    const b = e.target.closest("[data-d]"); if (!b) return;
+    const b = e.target.closest("[data-d]"); if (!b || b.classList.contains("busy")) return;
     const d = b.dataset.d;
     try {
-      if (d === "link") openLink(it.link);
-      else if (d === "edit") { const photos = await S.store.getPhotos(id).catch(() => []); closeSheet(); openEditor(it, photos); }
+      if (d === "link") { haptic("light"); openLink(it.link); }
+      else if (d === "edit") { haptic("light"); const photos = await S.store.getPhotos(id).catch(() => []); closeSheet(); openEditor(it, photos); }
       else if (d === "del") {
-        if (b.dataset.sure) { await S.store.deleteItem(id); haptic("warning"); closeSheet(); toast("Удалено"); }
-        else { b.dataset.sure = 1; b.textContent = "Точно удалить?"; haptic("warning"); }
+        haptic("warning");
+        const ok = await confirmSheet({ icon: it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo, title: "Удалить желание?", text: "«" + esc(it.title) + "» исчезнет из вишлиста насовсем. Это нельзя отменить.", ok: "Удалить", cancel: "Оставить", danger: true });
+        if (!ok) return;
+        await S.store.deleteItem(id); haptic("warning"); closeSheet(); toast("Удалено", "🗑");
       }
-      else if (d === "done") { await S.store.patchItem(id, { done: true, doneAt: Date.now() }); haptic("ok"); closeSheet(); confetti(); toast("Ура! Желание сбылось 🎉"); }
-      else if (d === "undone") { await S.store.patchItem(id, { done: false, doneAt: null }); closeSheet(); toast("Вернули в список"); }
-      else if (d === "gift") { await S.store.patchItem(id, { gift: true, giftAt: Date.now() }); haptic("ok"); closeSheet(); toast("Отмечено 🤫 Она не узнает"); }
-      else if (d === "ungift") { await S.store.patchItem(id, { gift: false }); closeSheet(); toast("Отметка снята"); }
-    } catch (err) { toast("Ошибка: " + (err.message || err)); }
+      else if (d === "done") { b.classList.add("busy"); await S.store.patchItem(id, { done: true, doneAt: Date.now() }); haptic("ok"); closeSheet(); confetti(); toast("Ура! Желание сбылось 🎉"); }
+      else if (d === "undone") { b.classList.add("busy"); await S.store.patchItem(id, { done: false, doneAt: null }); closeSheet(); toast("Вернули в список", "↩️"); }
+      else if (d === "gift") { b.classList.add("busy"); await S.store.patchItem(id, { gift: true, giftAt: Date.now() }); haptic("ok"); closeSheet(); toast("Отмечено. Она не узнает 🤫"); }
+      else if (d === "ungift") { b.classList.add("busy"); await S.store.patchItem(id, { gift: false }); closeSheet(); toast("Отметка снята", "✓"); }
+    } catch (err) { b.classList.remove("busy"); toast("Ошибка: " + (err.message || err)); }
   });
   // полные фото
   if (it.photoCount) {
     try {
       const photos = await S.store.getPhotos(id);
       if (photos.length && sh.isConnected) {
-        $("#gal", sh).innerHTML = photos.map((p) => '<img src="' + p + '" alt="">').join("");
+        $(".dhero", sh).classList.add("img");
+        const g = $("#gal", sh); g.innerHTML = photos.map((p, i) => '<img src="' + p + '" alt="Фото ' + (i + 1) + '">').join("");
         if (photos.length > 1) {
           const dots = $("#galdots", sh); dots.innerHTML = photos.map((_, i) => "<i" + (i ? "" : ' class="on"') + "></i>").join("");
-          const g = $("#gal", sh); g.addEventListener("scroll", () => { const i = Math.round(g.scrollLeft / (g.clientWidth + 8)); dots.querySelectorAll("i").forEach((d, j) => d.classList.toggle("on", i === j)); }, { passive: true });
+          let cur = 0;
+          g.addEventListener("scroll", () => { const i = Math.round(g.scrollLeft / g.clientWidth); if (i === cur) return; cur = i; haptic("light"); dots.querySelectorAll("i").forEach((d, j) => d.classList.toggle("on", i === j)); }, { passive: true });
         }
       }
     } catch (e) {}
@@ -764,79 +1006,122 @@ async function openDetail(id) {
 
 function openEditor(it, photosIn) {
   const isNew = !it;
-  const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false };
+  const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false, loading: false };
   const defCur = LS.get("wl_cur", "€");
   const curOpts = CURS.map((c) => '<option' + ((it ? it.cur || defCur : defCur) === c ? " selected" : "") + ">" + c + "</option>").join("");
-  const h = "<h3>" + (isNew ? "Новое желание ✨" : "Изменить желание") + "</h3>" +
-    '<label class="fl">Фото</label><div class="photos" id="phs"></div><div class="hint">До 4 фото. Первое будет обложкой.</div>' +
-    '<label class="fl">Что хочешь? *</label><input class="inp" id="f_title" maxlength="120" placeholder="Например: белые кроссовки New Balance" value="' + esc(it ? it.title : "") + '">' +
-    '<label class="fl">Насколько важно</label><div class="cats" id="cats">' +
-      [1, 2, 3].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '"><span class="ci p' + k + '">' + CATS[k].emo + "</span><span><b>" + CATS[k].name + "</b><span>" + CATS[k].sub + "</span></span></button>").join("") +
+  const noteV = it ? it.note || "" : "";
+  const head = '<button class="lk" data-close>Отмена</button><b>' + (isNew ? "Новое желание" : "Изменить") + '</b><button class="lk go" id="f_save2">Готово</button>';
+  const h = '<label class="fl" style="margin-top:8px">Фото <span class="opt">до 4 штук</span></label><div class="photos" id="phs"></div><div class="hint" id="phhint"></div>' +
+    '<label class="fl" for="f_title">Что хочешь?</label><input class="inp" id="f_title" maxlength="120" autocomplete="off" placeholder="Например: белые кроссовки New Balance" value="' + esc(it ? it.title : "") + '"><div class="ferr" id="e_title">Напиши, что ты хочешь 🙂</div>' +
+    '<div class="fl">Насколько важно</div><div class="cats" id="cats" role="radiogroup">' +
+      [1, 2, 3].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '" role="radio" aria-checked="' + (st.cat === k) + '"><span class="ci">' + CATS[k].emo + '</span><span class="ct"><b>' + CATS[k].name + "</b><span>" + CATS[k].sub + '</span></span><span class="rd"></span></button>').join("") +
     "</div>" +
-    '<label class="fl">Цена (примерно)</label><div class="pricerow"><input class="inp" id="f_price" inputmode="decimal" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"><select class="inp" id="f_cur">' + curOpts + "</select></div>" +
-    '<label class="fl">Ссылка на товар</label><input class="inp" id="f_link" inputmode="url" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '">' +
-    '<label class="fl">Детали</label><input class="inp" id="f_details" maxlength="300" placeholder="Размер, цвет, модель, магазин…" value="' + esc(it ? it.details || "" : "") + '">' +
-    '<label class="fl">Почему хочу / комментарий</label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Можно написать, зачем это нужно или что важно при выборе">' + esc(it ? it.note || "" : "") + "</textarea>" +
-    '<button class="btn pri" id="f_save" style="margin-top:22px">' + (isNew ? "Добавить в вишлист 💗" : "Сохранить") + "</button>";
-  const sh = openSheet(h);
+    '<label class="fl" for="f_price">Цена <span class="opt">примерно</span></label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="f_price" inputmode="decimal" autocomplete="off" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"></div><select class="inp cur" id="f_cur" aria-label="Валюта">' + curOpts + "</select></div>" +
+    '<label class="fl" for="f_link">Ссылка на товар</label><div class="ifield"><span class="ic">🔗</span><input class="inp" id="f_link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '"></div><div class="ferr" id="e_link">Похоже, это не ссылка — проверь адрес</div>' +
+    '<label class="fl" for="f_details">Детали</label><input class="inp" id="f_details" maxlength="300" placeholder="Размер, цвет, модель, магазин…" value="' + esc(it ? it.details || "" : "") + '">' +
+    '<label class="fl" for="f_note">Почему хочу <span class="opt">комментарий</span></label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Зачем это нужно или что важно при выборе">' + esc(noteV) + '</textarea><div class="fcnt" id="c_note"></div>' +
+    '<button class="btn pri" id="f_save" style="margin-top:26px">' + (isNew ? "Добавить в вишлист 💗" : "Сохранить изменения") + "</button>";
+  const sh = openSheet(h, null, { head });
   const drawPhotos = () => {
-    $("#phs", sh).innerHTML = st.photos.map((p, i) => '<div class="pth"><img src="' + p + '"><button class="rm" data-rm="' + i + '">✕</button>' + (i === 0 && st.photos.length > 1 ? '<span class="first">обложка</span>' : "") + "</div>").join("") +
-      (st.photos.length < 4 ? '<button class="addph" id="addph"><span><span class="pl">📷</span>Добавить</span></button>' : "");
+    const n = st.photos.length;
+    if (!n && !st.loading) {
+      $("#phs", sh).innerHTML = '<button class="phzone" id="addph" style="grid-column:1/-1"><span class="pzi">📷</span><b>Добавить фото</b><span>Первое станет обложкой</span></button>';
+    } else {
+      $("#phs", sh).innerHTML = st.photos.map((p, i) => '<div class="pth' + (i === 0 ? " cov" : "") + '" data-cover="' + i + '"><img src="' + p + '" alt=""><button class="rm" data-rm="' + i + '" aria-label="Убрать фото">' + IC_X.replace(/13/g, "10") + "</button>" + (i === 0 ? '<span class="cv">Обложка</span>' : "") + "</div>").join("") +
+        (st.loading ? '<div class="addph"><span class="mspin ink"></span>Сжимаю…</div>' : n < 4 ? '<button class="addph" id="addph"><span class="pl">＋</span>Ещё</button>' : "");
+    }
+    $("#phhint", sh).textContent = n > 1 ? "Нажми на фото, чтобы сделать его обложкой" : "";
+    $("#phhint", sh).style.display = n > 1 ? "" : "none";
   };
   drawPhotos();
+  const noteEl = $("#f_note", sh), cntEl = $("#c_note", sh);
+  const upd = () => { const l = noteEl.value.length; cntEl.textContent = l ? l + " / 1000" : ""; cntEl.classList.toggle("warn", l > 900); };
+  noteEl.addEventListener("input", upd); upd();
+  const setErr = (f, on) => { $("#f_" + f, sh).classList.toggle("err", on); $("#e_" + f, sh).classList.toggle("on", on); };
+  $("#f_title", sh).addEventListener("input", () => setErr("title", false));
+  $("#f_link", sh).addEventListener("input", () => setErr("link", false));
   const fileIn = $("#file");
   sh.addEventListener("click", (e) => {
     const c = e.target.closest("[data-cat]");
-    if (c) { st.cat = +c.dataset.cat; sh.querySelectorAll(".cat").forEach((x) => x.classList.toggle("on", +x.dataset.cat === st.cat)); haptic("light"); return; }
+    if (c) { st.cat = +c.dataset.cat; sh.querySelectorAll(".cat").forEach((x) => { const on = +x.dataset.cat === st.cat; x.classList.toggle("on", on); x.setAttribute("aria-checked", on); }); haptic("light"); return; }
     const rm = e.target.closest("[data-rm]");
-    if (rm) { st.photos.splice(+rm.dataset.rm, 1); drawPhotos(); return; }
+    if (rm) { st.photos.splice(+rm.dataset.rm, 1); haptic("light"); drawPhotos(); return; }
+    const cv = e.target.closest("[data-cover]");
+    if (cv) { const i = +cv.dataset.cover; if (i > 0) { st.photos.unshift(st.photos.splice(i, 1)[0]); haptic("medium"); drawPhotos(); } return; }
     if (e.target.closest("#addph")) {
       fileIn.value = "";
       fileIn.onchange = async () => {
         const files = Array.from(fileIn.files || []).slice(0, 4 - st.photos.length);
         if (!files.length) return;
-        const btn = $("#addph", sh); if (btn) btn.innerHTML = '<span><span class="pl">⏳</span>Сжимаю…</span>';
+        st.loading = true; drawPhotos();
         for (const f of files) { try { st.photos.push(await compress(f)); } catch (err) { toast(err.message); } }
-        drawPhotos();
+        st.loading = false; drawPhotos();
       };
       fileIn.click();
       return;
     }
-    if (e.target.closest("#f_save")) save();
+    if (e.target.closest("#f_save") || e.target.closest("#f_save2")) save();
   });
   async function save() {
-    if (st.busy) return;
-    const title = $("#f_title", sh).value.trim();
-    if (!title) { $("#f_title", sh).focus(); toast("Напиши, что ты хочешь 🙂"); haptic("error"); return; }
-    st.busy = true; const btn = $("#f_save", sh); btn.textContent = "Сохраняю…"; btn.style.opacity = .7;
+    if (st.busy || st.loading) return;
+    const tEl = $("#f_title", sh), title = tEl.value.trim();
+    const link = $("#f_link", sh).value.trim();
+    const badLink = !!link && (/\s/.test(link) || !/[^.\s]\.[^.\s]/.test(link));
+    setErr("title", !title); setErr("link", badLink);
+    if (!title || badLink) {
+      haptic("error");
+      const bad = !title ? tEl : $("#f_link", sh);
+      try { bad.scrollIntoView({ block: "center", behavior: reduceMotion() ? "auto" : "smooth" }); } catch (er) {}
+      if (!title) setTimeout(() => tEl.focus({ preventScroll: true }), 250);
+      return;
+    }
+    st.busy = true; const btn = $("#f_save", sh), b2 = $("#f_save2", sh);
+    btn.classList.add("busy"); btn.innerHTML = '<span class="mspin"></span>Сохраняю…'; b2.style.opacity = .4;
     try {
       const now = Date.now(); const cur = $("#f_cur", sh).value; LS.set("wl_cur", cur);
       const item = {
         id: it ? it.id : now.toString(36) + uid(6),
         title, cat: st.cat, price: $("#f_price", sh).value.trim(), cur,
-        link: $("#f_link", sh).value.trim(), details: $("#f_details", sh).value.trim(), note: $("#f_note", sh).value.trim(),
+        link, details: $("#f_details", sh).value.trim(), note: noteEl.value.trim(),
         thumb: st.photos.length ? await thumbFrom(st.photos[0]) : "", photoCount: st.photos.length,
         createdAt: it ? it.createdAt || now : now, editedAt: now,
       };
       if (isNew) { item.done = false; item.gift = false; }
       if (S.store.invalidatePhotos) S.store.invalidatePhotos(item.id);
       await S.store.saveItem(item, st.photos);
-      haptic("ok"); closeSheet(); toast(isNew ? "Добавлено в вишлист 💗" : "Сохранено ✓");
+      haptic("ok"); closeSheet(); if (isNew) toast("Добавлено в вишлист 💗"); else toast("Сохранено", "✓");
       if (isNew && S.tab !== "all" && S.tab !== String(st.cat)) { S.tab = "all"; render(); }
     } catch (err) {
-      st.busy = false; btn.textContent = "Попробовать ещё раз"; btn.style.opacity = 1; haptic("error");
+      st.busy = false; btn.classList.remove("busy"); btn.textContent = "Попробовать ещё раз"; b2.style.opacity = ""; haptic("error");
       toast("Не сохранилось: " + (err.code === "permission-denied" ? "проверь правила Firestore" : err.message || err));
     }
   }
 }
 
+const MOOD_IDEAS = ["Хочу на море 🌊", "Мечтаю о тёплом 🧣", "Хочу цветов 💐", "Сладкого бы 🍫", "Хочу на свидание 🕯️", "Нужны обнимашки 🤗", "Хочу в кино 🍿", "Мечтаю выспаться 😴"];
 function openMood() {
-  const sh = openSheet('<h3>О чём ты сейчас думаешь? 💭</h3><textarea class="inp" id="m_txt" maxlength="500" style="min-height:130px" placeholder="Например: очень хочу на море, и мечтаю о новом свитере, потому что холодно 🥶">' + esc(S.meta.mood || "") + '</textarea><div class="hint">Он увидит это сразу, вверху вишлиста.</div><button class="btn pri" id="m_save" style="margin-top:18px">Сохранить</button>' + (S.meta.mood ? '<button class="btn danger" id="m_clear">Очистить</button>' : ""));
-  setTimeout(() => { try { $("#m_txt", sh).focus(); } catch (e) {} }, 350);
+  const cur = S.meta.mood || "";
+  const sh = openSheet('<h3>О чём ты сейчас думаешь?</h3><p class="ssub">Он увидит это сразу — вверху вишлиста 💭</p>' +
+    '<div class="mbox"><textarea class="inp" id="m_txt" maxlength="500" placeholder="Например: очень хочу на море и мечтаю о новом свитере, потому что холодно 🥶">' + esc(cur) + '</textarea><div class="fcnt" id="m_cnt"></div></div>' +
+    '<div class="fl">Быстрые идеи <span class="opt">нажми, чтобы добавить</span></div><div class="chips">' + MOOD_IDEAS.map((t) => '<button class="chip" data-idea="' + esc(t) + '">' + esc(t) + "</button>").join("") + "</div>" +
+    '<button class="btn pri" id="m_save" style="margin-top:24px">Сохранить</button>' + (cur ? '<button class="btn danger" id="m_clear">Очистить</button>' : ""));
+  const ta = $("#m_txt", sh), cnt = $("#m_cnt", sh);
+  const upd = () => {
+    const l = ta.value.length; cnt.textContent = l + " / 500"; cnt.classList.toggle("warn", l > 450);
+    sh.querySelectorAll("[data-idea]").forEach((c) => c.classList.toggle("on", ta.value.includes(c.dataset.idea)));
+  };
+  ta.addEventListener("input", upd); upd();
   sh.addEventListener("click", async (e) => {
+    const idea = e.target.closest("[data-idea]");
+    if (idea) {
+      const t = idea.dataset.idea, v = ta.value.trimEnd();
+      if (v.includes(t)) ta.value = v.replace(t, "").replace(/\n{2,}/g, "\n").trim();
+      else if ((v + "\n" + t).length <= 500) ta.value = v ? v + "\n" + t : t;
+      haptic("light"); upd(); return;
+    }
     if (e.target.closest("#m_save") || e.target.closest("#m_clear")) {
-      const v = e.target.closest("#m_clear") ? "" : $("#m_txt", sh).value.trim();
-      try { await S.store.saveMeta({ mood: v, moodAt: Date.now() }); haptic("ok"); closeSheet(); toast(v ? "Обновлено 💭" : "Очищено"); }
+      const v = e.target.closest("#m_clear") ? "" : ta.value.trim();
+      try { await S.store.saveMeta({ mood: v, moodAt: Date.now() }); haptic("ok"); closeSheet(); toast(v ? "Обновлено 💭" : "Очищено", v ? "" : "✓"); }
       catch (err) { toast("Ошибка: " + (err.message || err)); }
     }
   });
@@ -845,13 +1130,13 @@ function openMood() {
 function openSettings() {
   const link = CFG ? botLink(CFG) : "";
   let h = "<h3>Настройки</h3>" +
-    '<label class="fl">Кто я</label><div class="box">' + (isOwner() ? "👑 Хозяйка вишлиста" : "🕵️ Смотрю вишлист") + " · @" + esc(myNick) + '</div>' +
+    '<div class="who"><img src="logo.svg" alt=""><div class="wt"><b>' + (isOwner() ? "Хозяйка вишлиста" : "Смотрю вишлист") + "</b><span>@" + esc(myNick) + '</span></div><span class="wr" aria-hidden="true">' + (isOwner() ? "👑" : "🕵️") + "</span></div>" +
     '<div class="hint">🔒 Вишлист открывается только у @fllezzka и @xupxy.</div>';
-  if (isOwner()) h += '<label class="fl">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" placeholder="Имя (он увидит «Вишлист Имя»)" value="' + esc(S.meta.ownerName || "") + '">';
-  h += '<label class="fl">Синхронизация</label>';
-  if (S.store.mode === "demo") h += '<div class="box">☁️ Сейчас <b>демо-режим</b>: желания хранятся только на этом устройстве.</div><button class="btn pri" data-s="setup">Подключить синхронизацию</button>';
-  else h += '<div class="box">✅ Подключено к базе <code>' + esc(CFG.p) + "</code>.<br>Список: <code>" + esc(CFG.l) + '</code></div><button class="btn" data-s="copy">📋 Скопировать ссылку для BotFather</button>';
-  h += '<div class="meta">Вишлист 💗 сделан с любовью</div>';
+  if (isOwner()) h += '<label class="fl" for="s_name">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" autocomplete="off" placeholder="Имя (он увидит «Вишлист Имя»)" value="' + esc(S.meta.ownerName || "") + '"><div class="hint">Сохраняется само, когда закончишь ввод.</div>';
+  h += '<div class="fl">Синхронизация</div>';
+  if (S.store.mode === "demo") h += '<div class="box sbox"><span class="sdot"></span><div><b>Демо-режим</b><span>Желания хранятся только на этом устройстве.</span></div></div><button class="btn pri" data-s="setup">☁️ Подключить синхронизацию</button>';
+  else h += '<div class="box sbox on"><span class="sdot"></span><div><b>Подключено</b><span>База <code>' + esc(CFG.p) + "</code> · список <code>" + esc(CFG.l) + '</code></span></div></div><button class="btn" data-s="copy">📋 Скопировать ссылку для BotFather</button>';
+  h += '<div class="sfoot"><img src="logo.svg" alt="">Вишлист · сделан с любовью</div>';
   const sh = openSheet(h);
   sh.addEventListener("click", (e) => {
     const r = e.target.closest("[data-r]");
@@ -861,20 +1146,20 @@ function openSettings() {
     if (s.dataset.s === "copy") copy(link);
   });
   const nm = $("#s_name", sh);
-  if (nm) nm.addEventListener("change", () => S.store.saveMeta({ ownerName: nm.value.trim() }).then(() => toast("Имя сохранено")).catch(() => {}));
+  if (nm) nm.addEventListener("change", () => S.store.saveMeta({ ownerName: nm.value.trim() }).then(() => toast("Имя сохранено", "✓")).catch(() => {}));
 }
 
 const RULES = "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /lists/{list}/{col}/{doc} {\n      allow read, write: if list.size() >= 12\n        && col in ['items', 'photos', 'meta'];\n    }\n  }\n}";
 function openSetup() {
   const h = "<h3>Подключить синхронизацию ☁️</h3>" +
-    '<p style="color:var(--ink2);margin:-4px 0 16px">Один раз, ~5 минут. Бесплатно (Firebase от Google). После этого вы оба видите один и тот же список, и он обновляется вживую.</p>' +
+    '<p class="ssub">Один раз, ~5 минут. Бесплатно (Firebase от Google). После этого вы оба видите один и тот же список, и он обновляется вживую.</p>' +
     '<ol class="steps">' +
     '<li>Открой <b>console.firebase.google.com</b> → <b>Создать проект</b> (любое имя, аналитику можно выключить).</li>' +
     '<li>Слева <b>Build → Firestore Database → Create database</b>. Регион — <b>europe-west</b>, режим — <b>production</b>.</li>' +
     '<li>Там же вкладка <b>Rules</b> — замени всё на это и нажми <b>Publish</b>:<pre class="code" id="rules">' + esc(RULES) + '</pre><button class="btn" data-x="rules" style="margin-top:8px">📋 Скопировать правила</button></li>' +
     '<li>Шестерёнка → <b>Project settings</b> → внизу значок <b>&lt;/&gt;</b> (Web app) → любое имя → <b>Register</b>. Скопируй весь блок <code>firebaseConfig</code> и вставь сюда:</li>' +
     "</ol>" +
-    '<textarea class="inp" id="cfg" style="min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:13px" placeholder="const firebaseConfig = {\n  apiKey: &quot;…&quot;,\n  projectId: &quot;…&quot;,\n  …\n};"></textarea>' +
+    '<textarea class="inp" id="cfg" style="min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:16px" placeholder="const firebaseConfig = {\n  apiKey: &quot;…&quot;,\n  projectId: &quot;…&quot;,\n  …\n};"></textarea>' +
     '<button class="btn pri" data-x="make" style="margin-top:14px">Готово — сделать ссылку</button><div id="out"></div>';
   const sh = openSheet(h);
   sh.addEventListener("click", (e) => {
@@ -886,10 +1171,10 @@ function openSetup() {
       const t = $("#cfg", sh).value;
       const get = (k) => { const m = t.match(new RegExp('["\']?' + k + '["\']?\\s*:\\s*["\']([^"\']+)["\']')); return m ? m[1].trim() : ""; };
       const p = get("projectId"), k = get("apiKey");
-      if (!p || !k) { toast("Не нашла apiKey и projectId — вставь весь блок"); haptic("error"); return; }
+      if (!p || !k) { $("#cfg", sh).classList.add("err"); setTimeout(() => $("#cfg", sh).classList.remove("err"), 1500); toast("Не нашла apiKey и projectId — вставь весь блок"); haptic("error"); return; }
       const cfg = { p, k, l: (CFG && CFG.p === p && CFG.l) || uid(18) };
       const link = botLink(cfg);
-      $("#out", sh).innerHTML = '<div class="box" style="margin-top:16px"><div class="k">Ссылка для BotFather</div><div class="v code" style="background:none;padding:0">' + esc(link) + "</div></div>" +
+      $("#out", sh).innerHTML = '<div class="box" style="margin-top:16px;animation:fin .3s"><div class="k">Ссылка для BotFather</div><div class="v code" style="background:none;padding:0">' + esc(link) + "</div></div>" +
         '<button class="btn dark2" data-x="copylink" data-link="' + esc(link) + '">📋 Скопировать ссылку</button>' +
         '<button class="btn" data-x="openlink" data-link="' + esc(link) + '">Открыть вишлист по ней →</button>' +
         '<div class="hint">В @BotFather: <b>/mybots</b> → твой бот → <b>Bot Settings → Configure Mini App</b> (или Menu Button) → вставь эту ссылку.</div>';
