@@ -527,6 +527,21 @@ pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-br
 .arow .inp{margin-top:6px;padding:11px 13px}
 .arow .af{flex:1;min-width:0}
 
+/* ===== звуки, анимации, уведомления ===== */
+.card.flash{animation:flashIn 2.4s var(--ease) both}
+@keyframes flashIn{0%{box-shadow:0 0 0 0 rgba(226,83,122,.0);transform:scale(.92)}12%{transform:scale(1.03)}20%{box-shadow:0 0 0 6px rgba(226,83,122,.35);transform:scale(1)}100%{box-shadow:var(--cardShadow)}}
+.top .brand img{animation:beat 6s ease-in-out 1.2s infinite;transform-origin:50% 60%}
+@keyframes beat{0%,86%,100%{transform:scale(1)}89%{transform:scale(1.14)}92%{transform:scale(.97)}95%{transform:scale(1.09)}}
+.heartfly{position:fixed;z-index:80;pointer-events:none;font-size:22px;animation:hfly 1.1s var(--ease) forwards}
+@keyframes hfly{0%{opacity:0;transform:translate(0,0) scale(.4)}15%{opacity:1}100%{opacity:0;transform:translate(var(--hx),-150px) scale(1.25) rotate(var(--hr))}}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);margin-top:10px;width:100%;text-align:left}
+.tgl b{display:block;font-size:15px}.tgl span.d{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.sw{flex:none;width:50px;height:30px;border-radius:15px;background:var(--line);position:relative;transition:background .25s}
+.sw:after{content:"";position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:transform .3s var(--spring)}
+.tgl.on .sw{background:#35c47a}.tgl.on .sw:after{transform:translateX(20px)}
+.nbox{margin-top:10px}.nbox ol{margin:8px 0 0;padding-left:20px;font-size:13.5px;color:var(--ink2);line-height:1.55}
+@media (prefers-reduced-motion:reduce){.card.flash,.top .brand img,.heartfly{animation:none}}
+
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
 .welcome .hero{margin-bottom:22px;position:relative;animation:float 3.4s ease-in-out infinite}
@@ -910,7 +925,7 @@ function cardHtml(it, i) {
   const price = priceStr(it);
   const foot = (price ? '<span class="cprice">' + price + "</span>" : "") +
     (it.done && it.doneAt ? '<span class="cago">' + ago(it.doneAt) + "</span>" : "");
-  return '<button class="card k' + c.key + (it.done ? " done" : "") + (gifted ? " gifted" : "") + '" data-open="' + esc(it.id) + '" style="--i:' + Math.min(i || 0, 14) + '">' +
+  return '<button class="card k' + c.key + (it.done ? " done" : "") + (gifted ? " gifted" : "") + (S.flash && S.flash.has(it.id) ? " flash" : "") + '" data-open="' + esc(it.id) + '" style="--i:' + Math.min(i || 0, 14) + '">' +
     '<div class="cm k' + c.key + (it.thumb ? "" : " nop") + '">' + media +
       (flag === "new" ? '<span class="badge">Новое</span>' : flag === "upd" ? '<span class="badge upd">Изменено</span>' : "") +
       (gifted ? '<span class="gift">🎁 ты даришь</span>' : "") +
@@ -1130,9 +1145,9 @@ async function openDetail(id) {
         if (!ok) return;
         await S.store.deleteItem(id); haptic("warning"); closeSheet(); toast("Удалено", "🗑");
       }
-      else if (d === "done") { b.classList.add("busy"); await S.store.patchItem(id, { done: true, doneAt: Date.now() }); haptic("ok"); closeSheet(); confetti(); toast("Ура! Желание сбылось 🎉"); }
+      else if (d === "done") { b.classList.add("busy"); await S.store.patchItem(id, { done: true, doneAt: Date.now() }); haptic("ok"); closeSheet(); confetti(); SFX.play("tada"); toast("Ура! Желание сбылось 🎉"); }
       else if (d === "undone") { b.classList.add("busy"); await S.store.patchItem(id, { done: false, doneAt: null }); closeSheet(); toast("Вернули в список", "↩️"); }
-      else if (d === "gift") { b.classList.add("busy"); await S.store.patchItem(id, { gift: true, giftAt: Date.now() }); haptic("ok"); closeSheet(); toast("Отмечено. Она не узнает 🤫"); }
+      else if (d === "gift") { b.classList.add("busy"); heartsFrom(b, 10); SFX.play("heart"); await S.store.patchItem(id, { gift: true, giftAt: Date.now() }); haptic("ok"); closeSheet(); toast("Отмечено. Она не узнает 🤫"); }
       else if (d === "ungift") { b.classList.add("busy"); await S.store.patchItem(id, { gift: false }); closeSheet(); toast("Отметка снята", "✓"); }
     } catch (err) { b.classList.remove("busy"); toast("Ошибка: " + (err.message || err)); }
   });
@@ -1241,7 +1256,7 @@ function openEditor(it, photosIn) {
       if (isNew) { item.done = false; item.gift = false; }
       if (S.store.invalidatePhotos) S.store.invalidatePhotos(item.id);
       await S.store.saveItem(item, st.photos);
-      haptic("ok"); closeSheet(); if (isNew) toast("Добавлено в вишлист 💗"); else toast("Сохранено", "✓");
+      haptic("ok"); closeSheet(); SFX.play("pop"); if (isNew) { toast("Добавлено в вишлист 💗"); NOTIFY.wish(item, st.photos[0]); } else toast("Сохранено", "✓");
       if (isNew && S.tab !== "all" && S.tab !== String(st.cat)) { S.tab = "all"; render(); }
     } catch (err) {
       st.busy = false; btn.classList.remove("busy"); btn.textContent = "Попробовать ещё раз"; b2.style.opacity = ""; haptic("error");
@@ -1273,7 +1288,7 @@ function openMood() {
     }
     if (e.target.closest("#m_save") || e.target.closest("#m_clear")) {
       const v = e.target.closest("#m_clear") ? "" : ta.value.trim();
-      try { await S.store.saveMeta({ mood: v, moodAt: Date.now() }); haptic("ok"); closeSheet(); toast(v ? "Обновлено 💭" : "Очищено", v ? "" : "✓"); }
+      try { await S.store.saveMeta({ mood: v, moodAt: Date.now() }); haptic("ok"); SFX.play("pop"); NOTIFY.mood(v); closeSheet(); toast(v ? "Обновлено 💭" : "Очищено", v ? "" : "✓"); }
       catch (err) { toast("Ошибка: " + (err.message || err)); }
     }
   });
@@ -1283,7 +1298,8 @@ function openSettings() {
   const link = CFG ? botLink(CFG) : "";
   let h = "<h3>Настройки</h3>" +
     '<div class="who"><img src="logo.svg" alt=""><div class="wt"><b>' + (isOwner() ? "Хозяйка вишлиста" : "Смотрю вишлист") + "</b><span>@" + esc(myNick) + '</span></div><span class="wr" aria-hidden="true">' + (isOwner() ? "👑" : "🕵️") + "</span></div>" +
-    '<div class="hint">🔒 Вишлист открывается только у @fllezzka и @xupxy.</div>';
+    '<div class="hint">🔒 Вишлист открывается только у @fllezzka и @xupxy.</div>' +
+    soundToggleHtml() + notifySettingsHtml();
   if (isOwner()) h += '<label class="fl" for="s_name">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" autocomplete="off" placeholder="Арина" value="' + esc(S.meta.ownerName || HER) + '"><div class="hint">Сохраняется само, когда закончишь ввод.</div>';
   h += '<div class="fl">Синхронизация</div>';
   if (S.store.mode === "demo") h += '<div class="box sbox"><span class="sdot"></span><div><b>Демо-режим</b><span>Желания хранятся только на этом устройстве.</span></div></div><button class="btn pri" data-s="setup">☁️ Подключить синхронизацию</button>';
@@ -1299,6 +1315,7 @@ function openSettings() {
   });
   const nm = $("#s_name", sh);
   if (nm) nm.addEventListener("change", () => S.store.saveMeta({ ownerName: nm.value.trim() }).then(() => toast("Имя сохранено", "✓")).catch(() => {}));
+  bindNotifySettings(sh);
 }
 
 const RULES = "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /lists/{list}/{col}/{doc} {\n      allow read, write: if list.size() >= 12\n        && col in ['items', 'photos', 'meta'];\n    }\n  }\n}";
@@ -1591,7 +1608,7 @@ function openBring() {
     if (!t) { inp.classList.add("err"); setTimeout(() => inp.classList.remove("err"), 900); haptic("error"); return; }
     if (allBring().some((x) => normT(x.t) === normT(t))) { toast("Это уже есть в списке 🧺"); haptic("warning"); return; }
     try {
-      if (isOwner()) await S.store.setBring(Date.now().toString(36) + uid(4), { t, at: Date.now(), by: "owner", ok: false });
+      if (isOwner()) { await S.store.setBring(Date.now().toString(36) + uid(4), { t, at: Date.now(), by: "owner", ok: false }); NOTIFY.bring(t); }
       else { SPY.bring = (SPY.bring || []).concat([{ id: uid(8), t, at: Date.now(), ok: false }]); await saveSpyMain(); render(); }
       haptic("ok"); draw("");
     } catch (err) { toast("Ошибка: " + (err.message || err)); }
@@ -1604,7 +1621,7 @@ function openBring() {
       const k = ok.dataset.bok;
       if (k.startsWith("s:")) { const x = (SPY.bring || []).find((y) => y.id === k.slice(2)); if (x) { x.ok = !x.ok; haptic(x.ok ? "ok" : "light"); await saveSpyMain(); } }
       else { const x = (S.meta.bring || {})[k]; if (!x) return; await S.store.setBring(k, Object.assign({}, x, { ok: !x.ok, okBy: S.role })); haptic(x.ok ? "light" : "ok"); }
-      draw(); render(); return;
+      SFX.play("tick"); draw(); render(); return;
     }
     const rm = e.target.closest("[data-brm]");
     if (rm) {
@@ -1639,7 +1656,7 @@ function openAbout() {
     sh.addEventListener("click", async (e) => {
       if (!e.target.closest("#ab_save")) return;
       const o = {}; sh.querySelectorAll("[data-ab]").forEach((i) => { o[i.dataset.ab] = i.value.trim(); });
-      try { await S.store.saveMeta({ about: o, aboutAt: Date.now() }); haptic("ok"); closeSheet(); toast("Сохранено 💁‍♀️"); } catch (err) { toast("Ошибка: " + (err.message || err)); }
+      try { await S.store.saveMeta({ about: o, aboutAt: Date.now() }); haptic("ok"); SFX.play("pop"); NOTIFY.about(); closeSheet(); toast("Сохранено 💁‍♀️"); } catch (err) { toast("Ошибка: " + (err.message || err)); }
     });
   } else {
     const filled = ABOUT.filter((f) => String(ab[f[0]] || "").trim());
@@ -1678,6 +1695,115 @@ function alertsHtml() {
   }).join("");
 }
 
+/* ================= ЗВУКИ ================= */
+const SFX = (() => {
+  let ctx = null;
+  const on = () => LS.get("wl_sound", true);
+  const ac = () => { try { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === "suspended") ctx.resume(); } catch (e) {} return ctx; };
+  ["pointerdown", "touchstart", "keydown"].forEach((ev) => window.addEventListener(ev, () => { if (on()) ac(); }, { passive: true, capture: true }));
+  function tone(f, t0, dur, type, vol, f2) {
+    const c = ac(); if (!c) return; const t = c.currentTime + t0;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type || "sine"; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + dur * .8);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .12, t + .012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + .05);
+  }
+  const bell = (f, t0, v) => { tone(f, t0, .9, "sine", v || .1); tone(f * 2.01, t0, .5, "sine", (v || .1) * .35); tone(f * 3.02, t0, .25, "triangle", (v || .1) * .12); };
+  const P = {
+    pop: () => { tone(520, 0, .14, "sine", .13, 880); tone(1320, .05, .12, "sine", .04); },
+    tick: () => { tone(1500, 0, .05, "triangle", .07); tone(2200, .03, .05, "sine", .04); },
+    chime: () => { bell(1318.5, 0, .09); bell(1975.5, .14, .08); },
+    tada: () => { [523.3, 659.3, 784, 1046.5].forEach((f, i) => bell(f, i * .09, .075)); tone(2093, .42, .6, "sine", .03); },
+    heart: () => { tone(220, 0, .16, "sine", .16, 140); tone(220, .22, .16, "sine", .12, 140); },
+    whoosh: () => { tone(300, 0, .22, "sine", .05, 900); },
+  };
+  return { play(n) { if (!on()) return; try { P[n] && P[n](); } catch (e) {} }, on };
+})();
+function heartsFrom(el, n) {
+  if (reduceMotion() || !el) return; const r = el.getBoundingClientRect(); const em = ["💗", "💖", "💕", "✨", "🎁"];
+  for (let i = 0; i < (n || 9); i++) {
+    const h = document.createElement("div"); h.className = "heartfly"; h.textContent = em[i % em.length];
+    h.style.left = r.left + r.width / 2 - 11 + (Math.random() - .5) * r.width * .6 + "px"; h.style.top = r.top + r.height / 2 - 11 + "px";
+    h.style.setProperty("--hx", (Math.random() - .5) * 160 + "px"); h.style.setProperty("--hr", (Math.random() - .5) * 60 + "deg");
+    h.style.animationDelay = i * 45 + "ms"; document.body.appendChild(h); setTimeout(() => h.remove(), 1400);
+  }
+}
+
+/* ================= УВЕДОМЛЕНИЯ ЧЕРЕЗ БОТА =================
+   Токен бота хранится в общей базе (meta.bot), его chat id — meta.viewerId.
+   Когда Арина что-то добавляет, её приложение само отправляет Саше сообщение от бота. */
+const NOTIFY = (() => {
+  const appUrl = () => location.origin + location.pathname + location.search;
+  const ready = () => S.meta.bot && S.meta.viewerId;
+  const escH = (t) => String(t || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  function dataUrlBlob(u) { const [h, b] = u.split(","); const bin = atob(b); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new Blob([a], { type: (h.match(/:(.*?);/) || [])[1] || "image/jpeg" }); }
+  function form(text, photo, btn) {
+    const fd = new FormData(); fd.append("chat_id", String(S.meta.viewerId)); fd.append("parse_mode", "HTML");
+    if (photo) { fd.append("photo", dataUrlBlob(photo), "wish.jpg"); fd.append("caption", text); } else { fd.append("text", text); fd.append("disable_web_page_preview", "true"); }
+    if (btn && !S.meta.botNoBtn) fd.append("reply_markup", JSON.stringify({ inline_keyboard: [[{ text: "Открыть вишлист 💝", web_app: { url: appUrl() } }]] }));
+    return fd;
+  }
+  async function send(text, photo, opts) {
+    opts = opts || {};
+    if (!ready() && !opts.force) return { ok: false, skip: true };
+    const url = "https://api.telegram.org/bot" + S.meta.bot + "/" + (photo ? "sendPhoto" : "sendMessage");
+    try {
+      const r = await fetch(url, { method: "POST", body: form(text, photo, true), keepalive: !photo });
+      const j = await r.json();
+      if (!j.ok && /button|web_app|BUTTON/i.test(j.description || "")) {
+        const r2 = await fetch(url, { method: "POST", body: form(text, photo, false) }); const j2 = await r2.json();
+        if (j2.ok) { S.store.saveMeta({ botNoBtn: true }).catch(() => {}); }
+        return j2;
+      }
+      return j;
+    } catch (e) {
+      try { await fetch(url, { method: "POST", body: form(text, photo, true), mode: "no-cors", keepalive: !photo }); return { ok: true, opaque: true }; } catch (e2) { return { ok: false, description: String(e2) }; }
+    }
+  }
+  // пачка «привези»: собираем 6 сек, чтобы не спамить
+  let bq = [], bt = null;
+  function flushBring() { clearTimeout(bt); bt = null; if (!bq.length) return; const l = bq; bq = []; send("🧺 <b>" + escH(herName()) + " просит привезти:</b>\n" + l.map((t) => "• " + escH(t)).join("\n")); }
+  document.addEventListener("visibilitychange", () => { if (document.hidden) flushBring(); });
+  return {
+    escH, send,
+    wish(it, photo) { if (!isOwner()) return; const c = CATS[it.cat] || CATS[2]; const pr = priceStr(it).replace(/&[^;]+;/g, "");
+      send("💝 <b>" + escH(herName()) + " добавила желание</b>\n\n<b>" + escH(it.title) + "</b>\n" + c.emo + " " + c.name + (pr ? " · " + escH(pr) : "") + (it.note ? "\n<i>" + escH(it.note).slice(0, 300) + "</i>" : ""), photo); },
+    bring(t) { if (!isOwner() || !ready()) return; bq.push(t); clearTimeout(bt); bt = setTimeout(flushBring, 6000); },
+    mood(v) { if (!isOwner() || !v) return; send("💭 <b>" + escH(herName()) + " сейчас думает:</b>\n<i>«" + escH(v).slice(0, 500) + "»</i>"); },
+    about() { if (!isOwner()) return; send("💁‍♀️ " + escH(herName()) + " обновила «Про меня» — размеры и любимое"); },
+  };
+})();
+function notifySettingsHtml() {
+  const on = !!(S.meta.bot && S.meta.viewerId);
+  if (isOwner()) return '<div class="fl">Уведомления</div><div class="box sbox' + (on ? " on" : "") + '"><span class="sdot"></span><div><b>' + (on ? "Саша получает уведомления" : "Уведомления выключены") + "</b><span>" + (on ? "Когда ты добавляешь желание, просьбу «привези» или мысли — ему приходит сообщение от бота 💌" : "Он может включить их у себя в настройках") + "</span></div></div>";
+  return '<div class="fl">🔔 Уведомления в Telegram</div>' +
+    '<div class="box sbox' + (on ? " on" : "") + '"><span class="sdot"></span><div><b>' + (on ? "Включены" : "Выключены") + "</b><span>" + (on ? "Бот напишет тебе, когда Арина что-то добавит" : "Подключи один раз — займёт минуту") + "</span></div></div>" +
+    '<div class="box nbox"><b>Как включить:</b><ol><li>Открой чат с ботом и нажми <b>Start</b> (если ещё не нажимал).</li><li>В <b>@BotFather</b>: <b>/mybots</b> → твой бот → <b>API Token</b> → скопируй.</li><li>Вставь сюда и нажми «Проверить».</li></ol></div>' +
+    '<input class="inp" id="n_tok" type="password" autocomplete="off" spellcheck="false" placeholder="123456789:AA…" value="' + esc(S.meta.bot || "") + '" style="margin-top:10px;font-family:ui-monospace,Menlo,monospace">' +
+    '<button class="btn pri" id="n_test">🔔 Сохранить и проверить</button>' + (on ? '<button class="btn danger" id="n_off">Выключить уведомления</button>' : "");
+}
+function soundToggleHtml() {
+  return '<button class="tgl' + (SFX.on() ? " on" : "") + '" id="snd"><span><b>🔊 Звуки</b><span class="d">Мягкие звуки при добавлении, новых желаниях и подарках</span></span><span class="sw"></span></button>';
+}
+function bindNotifySettings(sh) {
+  sh.addEventListener("click", async (e) => {
+    const sn = e.target.closest("#snd");
+    if (sn) { const v = !SFX.on(); LS.set("wl_sound", v); sn.classList.toggle("on", v); haptic("light"); if (v) SFX.play("chime"); return; }
+    if (e.target.closest("#n_off")) { await S.store.saveMeta({ bot: "" }); toast("Уведомления выключены", "🔕"); closeSheet(); return; }
+    const t = e.target.closest("#n_test"); if (!t) return;
+    const tok = $("#n_tok", sh).value.trim();
+    if (!/^\d{6,}:[\w-]{20,}$/.test(tok)) { $("#n_tok", sh).classList.add("err"); setTimeout(() => $("#n_tok", sh).classList.remove("err"), 900); toast("Это не похоже на токен бота"); haptic("error"); return; }
+    if (!tgUser || !tgUser.id) { toast("Открой вишлист через Telegram"); return; }
+    t.classList.add("busy"); t.textContent = "Проверяю…";
+    try {
+      await S.store.saveMeta({ bot: tok, viewerId: tgUser.id, botNoBtn: false });
+      const r = await NOTIFY.send("✅ <b>Уведомления включены!</b>\nТеперь я напишу, когда " + NOTIFY.escH(herName()) + " добавит желание 💝", null, { force: true });
+      if (r.ok) { toast(r.opaque ? "Отправил — проверь чат с ботом 💬" : "Готово! Проверь чат с ботом 💬"); haptic("ok"); SFX.play("chime"); closeSheet(); }
+      else { toast("Бот ответил: " + (r.description || "ошибка") + (/chat not found|blocked/i.test(r.description || "") ? " — нажми Start в чате с ботом" : "")); haptic("error"); t.classList.remove("busy"); t.textContent = "🔔 Сохранить и проверить"; }
+    } catch (err) { toast("Ошибка: " + (err.message || err)); t.classList.remove("busy"); t.textContent = "🔔 Сохранить и проверить"; }
+  });
+}
+
 /* ================= новые желания вживую ================= */
 function onData(d) {
   const prevKnown = S.knownIds, prevItems = S.items;
@@ -1685,6 +1811,7 @@ function onData(d) {
   const ids = Object.keys(S.items);
   if (prevKnown && !isOwner()) {
     const fresh = ids.filter((id) => !prevKnown.has(id));
+    if (fresh.length) { S.flash = new Set(fresh); setTimeout(() => { S.flash = null; }, 2600); SFX.play("chime"); }
     if (fresh.length === 1) { toast("✨ Новое желание: " + S.items[fresh[0]].title); haptic("ok"); }
     else if (fresh.length > 1) { toast("✨ Новых желаний: " + fresh.length); haptic("ok"); }
   }
@@ -1696,6 +1823,7 @@ function onData(d) {
     ids.forEach((id) => { const a = prevItems[id], b = S.items[id]; if (a && b && a.gift && !a.done && b.done) { toast("⚠️ Ей подарили «" + b.title + "» — это было в твоём плане"); haptic("warning"); } });
   }
   S.knownIds = new Set(ids);
+  if (!isOwner() && tgUser && tgUser.id && S.meta.bot && S.meta.viewerId !== tgUser.id && S.store) S.store.saveMeta({ viewerId: tgUser.id }).catch(() => {});
   const bIds = Object.keys(S.meta.bring || {});
   if (S.knownBring && !isOwner()) {
     const nb = bIds.filter((id) => !S.knownBring.has(id) && S.meta.bring[id] && S.meta.bring[id].by === "owner");
