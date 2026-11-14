@@ -1267,7 +1267,7 @@ const herGen = () => { const n = herName(); return /а$/i.test(n) ? n.slice(0, -
 const PRIV = (() => {
   const cs = tg && tg.CloudStorage && (!tg.isVersionAtLeast || tg.isVersionAtLeast("6.9")) ? tg.CloudStorage : null;
   const lk = (k) => "wl_priv_" + k;
-  const call = (fn, ...a) => new Promise((res, rej) => { try { cs[fn](...a, (err, v) => err ? rej(err) : res(v)); } catch (e) { rej(e); } });
+  const call = (fn, ...a) => new Promise((res, rej) => { const t = setTimeout(() => rej(new Error("timeout")), 2500); try { cs[fn](...a, (err, v) => { clearTimeout(t); err ? rej(err) : res(v); }); } catch (e) { clearTimeout(t); rej(e); } });
   return {
     async get(keys) {
       let c = {}; if (cs && keys.length) { try { c = (await call("getItems", keys)) || {}; } catch (e) {} }
@@ -1313,7 +1313,6 @@ function numPrice(it) { const n = Number(String(it.price == null ? "" : it.price
 const money = (n, c) => Math.round(n).toLocaleString("ru-RU") + " " + c;
 
 function viewerCardsHtml() {
-  if (!SPY.loaded) return "";
   const ds = datesSorted(); const nx = ds[0];
   let cd;
   if (!nx) cd = '<button class="spyc cd" data-act="dates"><span class="sl">📅 Важные даты</span><span><span class="big" style="font-size:24px">Добавь</span><div class="sd">её день рождения и вашу годовщину</div></span><span class="art">🎂</span></button>';
