@@ -853,6 +853,8 @@ html.dark[data-theme=autumn]{
 .dvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:2}
 .dvid .ext{position:absolute;left:10px;bottom:10px;z-index:3;padding:7px 10px;border-radius:12px;background:rgba(0,0,0,.55);color:#fff;font:800 11.5px/1 var(--font)}
 .dvid .verr{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;padding:12px 14px;border-radius:16px;background:rgba(0,0,0,.72);font:600 13px/1.35 var(--font);text-align:left}
+.dvid .verr .vbtns{display:flex;gap:8px;flex-wrap:wrap}
+.dvid .verr b.g{background:rgba(255,255,255,.18);color:#fff}
 .dvid .verr b{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:12px;background:#fff;color:#111;font-weight:800}
 .dvid .pl .mspin{width:28px;height:28px;border-width:3px;border-color:rgba(255,255,255,.35);border-top-color:#fff}
 .vbadge{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
@@ -1497,6 +1499,19 @@ async function openDetail(id) {
 
   const sh = openSheet(h, null, { cls: "hero" });
   sh.addEventListener("click", async (e) => {
+    const vf = e.target.closest("[data-vfix]");
+    if (vf) {
+      e.stopPropagation(); const vb = vf.closest("[data-vid]"); const v = (it.videos || [])[+vb.dataset.vid];
+      const s2 = openSheet('<h3>Полная ссылка на видео</h3><p class="ssub">Открой видео в TikTok → «Поделиться» → «Ещё» → «Открыть в браузере», скопируй адрес из строки браузера (в нём есть <code>/video/</code> и цифры) и вставь сюда.</p><input class="inp" id="vf_u" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="https://www.tiktok.com/@…/video/…" style="margin-top:14px"><button class="btn pri" id="vf_ok" style="margin-top:12px">Готово</button>', null, { cls: "compact" });
+      s2.addEventListener("click", (ev) => {
+        if (!ev.target.closest("#vf_ok")) return;
+        const id = ttIdFrom($("#vf_u", s2).value);
+        if (!id) { $("#vf_u", s2).classList.add("err"); toast("В ссылке нет номера видео (/video/…)"); return; }
+        v.id = id; S.store.patchItem(it.id, { videos: (it.videos || []).map((x) => (x.url === v.url ? Object.assign({}, x, { id }) : x)) }).catch(() => {});
+        closeSheet(); const vr = vb.querySelector(".verr"); if (vr) vr.remove(); playVideo(vb, v, it);
+      });
+      return;
+    }
     const vx = e.target.closest("[data-vext]"); if (vx) { e.stopPropagation(); const vb = vx.closest("[data-vid]"); openLink((it.videos || [])[+vb.dataset.vid].url); return; }
     const vb = e.target.closest("[data-vid]"); if (vb) { if (!vb.querySelector("iframe")) playVideo(vb, (it.videos || [])[+vb.dataset.vid], it); return; }
     const b = e.target.closest("[data-d]"); if (!b || b.classList.contains("busy")) return;
@@ -2631,23 +2646,34 @@ async function fetchT(url, ms) {
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms || 6000);
   try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error(r.status); return await r.text(); } finally { clearTimeout(t); }
 }
-const PROXIES = [(u) => u, (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u), (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u), (u) => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u)];
+const ttIdFrom = (t) => (String(t || "").match(/\/video\/(\d{8,})/) || String(t || "").match(/data-video-id="(\d{8,})"/) || String(t || "").match(/"embed_product_id"\s*:\s*"(\d{8,})"/) || String(t || "").match(/[?&]item_id=(\d{8,})/) || [])[1] || "";
+// несколько независимых способов узнать номер видео — запускаем все сразу, берём первый ответ
+function ttResolvers(url) {
+  const oe = "https://www.tiktok.com/oembed?url=" + encodeURIComponent(url);
+  const meta = {};
+  const viaOe = async (u) => { const j = JSON.parse(await fetchT(u, 8000)); if (j.thumbnail_url) meta.thumb = j.thumbnail_url; if (j.title) meta.title = j.title; if (j.author_name) meta.author = j.author_name; const id = ttIdFrom(j.html) || (/^\d{8,}$/.test(String(j.embed_product_id || "")) ? String(j.embed_product_id) : ""); if (!id) throw 0; return id; };
+  const need = (id) => { if (!id) throw 0; return id; };
+  return { meta, list: [
+    () => viaOe(oe),
+    () => viaOe("https://api.allorigins.win/raw?url=" + encodeURIComponent(oe)),
+    async () => { const j = JSON.parse(await fetchT("https://api.microlink.io/?url=" + encodeURIComponent(url), 10000)); if (j.data && j.data.image && j.data.image.url && !meta.thumb) meta.thumb = j.data.image.url; if (j.data && j.data.title && !meta.title) meta.title = j.data.title; return need(ttIdFrom(j.data && j.data.url) || ttIdFrom(JSON.stringify(j.data || {}))); },
+    async () => need(ttIdFrom(await fetchT("https://r.jina.ai/" + url, 12000))),
+    async () => { const j = JSON.parse(await fetchT("https://api.allorigins.win/get?url=" + encodeURIComponent(url), 10000)); return need(ttIdFrom(j.status && j.status.url) || ttIdFrom(j.contents)); },
+    async () => need(ttIdFrom(await fetchT("https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url), 10000))),
+    async () => need(ttIdFrom(await fetchT("https://corsproxy.io/?url=" + encodeURIComponent(url), 10000))),
+  ] };
+}
+function firstOk(fns) {
+  return new Promise((res) => { let left = fns.length; if (!left) res(""); fns.forEach((f) => Promise.resolve().then(f).then((v) => { if (v) res(v); else if (!--left) res(""); }, () => { if (!--left) res(""); })); });
+}
 async function ttResolve(v) {
   const out = Object.assign({}, v);
-  const idFrom = (t) => (String(t || "").match(/\/video\/(\d{8,})/) || String(t || "").match(/data-video-id="(\d{8,})"/) || String(t || "").match(/"embed_product_id"\s*:\s*"(\d{8,})"/) || [])[1] || "";
-  out.id = out.id || idFrom(out.url);
-  const oe = "https://www.tiktok.com/oembed?url=" + encodeURIComponent(out.url);
-  for (const px of PROXIES) {
-    try {
-      const j = JSON.parse(await fetchT(px(oe)));
-      out.id = out.id || idFrom(j.html) || (/^\d{8,}$/.test(String(j.embed_product_id || "")) ? String(j.embed_product_id) : "");
-      if (j.thumbnail_url) out.thumb = j.thumbnail_url; if (j.title) out.title = j.title; if (j.author_name) out.author = j.author_name;
-      if (out.id) return out;
-    } catch (e) {}
-  }
-  if (!out.id) { // последний шанс: узнать, куда ведёт короткая ссылка
-    try { const j = JSON.parse(await fetchT("https://api.allorigins.win/get?url=" + encodeURIComponent(out.url), 8000)); out.id = idFrom(j.status && j.status.url) || idFrom(j.contents); } catch (e) {}
-  }
+  out.id = out.id || ttIdFrom(out.url);
+  if (out.id) return out;
+  const r = ttResolvers(out.url);
+  out.id = await firstOk(r.list);
+  await new Promise((z) => setTimeout(z, 150)); // даём oEmbed дописать обложку/название
+  Object.keys(r.meta).forEach((k) => { if (!out[k]) out[k] = r.meta[k]; });
   return out;
 }
 async function enrichVideo(v) { return v.kind === "tt" ? ttResolve(v) : v; }
@@ -2677,7 +2703,7 @@ async function playVideo(btn, v, it) {
       if (it && S.store) { const vs = (it.videos || []).map((x) => (x.url === v.url ? { url: v.url, kind: v.kind, id: r.id, thumb: r.thumb || x.thumb || "", title: r.title || x.title || "", author: r.author || x.author || "" } : x)); S.store.patchItem(it.id, { videos: vs }).catch(() => {}); }
     } else {
       btn.querySelector(".pl").innerHTML = IC_PLAY;
-      btn.insertAdjacentHTML("beforeend", '<span class="verr">Не удалось загрузить видео внутри приложения.<b data-vext="1">Открыть в TikTok ↗</b></span>');
+      btn.insertAdjacentHTML("beforeend", '<span class="verr">Не получилось загрузить видео по короткой ссылке.<span class="vbtns"><b data-vfix="1">Вставить полную ссылку</b><b class="g" data-vext="1">TikTok ↗</b></span></span>');
       return;
     }
   }
