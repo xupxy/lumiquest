@@ -1289,6 +1289,24 @@ html[data-theme]:not([data-theme=classic]) .sa-prep{background:var(--th-deep)}
 .sa-shl{font-weight:800;color:var(--rose)}
 .sa-shtot{display:flex;justify-content:space-between;align-items:center;margin:16px 4px 4px;font-weight:700;color:var(--ink2)}
 .sa-shtot b{font:700 22px/1 var(--serif);color:var(--ink)}
+/* 10. что она изменила */
+.alert.sa-chg{background:var(--c3s);color:var(--ink);box-shadow:inset 0 0 0 1.5px #b9a4f5}
+.dark .alert.sa-chg{box-shadow:inset 0 0 0 1.5px #5a4a92}
+.alert.sa-chg .abtns button.yes{background:linear-gradient(135deg,#8f6bf0,#7552d8)}
+.alert.sa-chg .abtns button:not(.yes){background:rgba(255,255,255,.75);color:#4a3a8a}
+.dark .alert.sa-chg .abtns button:not(.yes){background:rgba(255,255,255,.12);color:#d9ccff}
+.sa-diff{margin-top:9px;border-radius:12px;background:rgba(255,255,255,.6);padding:2px 10px}
+.dark .sa-diff{background:rgba(0,0,0,.2)}
+.sa-dr{display:flex;gap:10px;padding:7px 0;border-bottom:1px dashed rgba(117,82,216,.25);font-size:13px}.sa-dr:last-child{border-bottom:0}
+.sa-dk{flex:none;width:92px;font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#7552d8;padding-top:2px}
+.dark .sa-dk{color:#ad92ff}
+.sa-dv{flex:1;min-width:0;word-break:break-word}.sa-dv s{display:block;color:var(--ink3);text-decoration-thickness:1.5px}.sa-dv b{display:block;font-weight:800}
+.sa-dwarn{margin-top:8px;padding:8px 10px;border-radius:10px;background:#fff1d6;color:#5a3d00;font-size:12.5px;font-weight:700;line-height:1.35}
+.dark .sa-dwarn{background:#43361a;color:#ffe2a8}
+.sa-chgd{margin-top:16px;padding:4px 14px 12px;border-radius:20px;background:var(--c3s);box-shadow:inset 0 0 0 1.5px #b9a4f5}
+.dark .sa-chgd{box-shadow:inset 0 0 0 1.5px #5a4a92}
+.sa-chgd .sa-bh{color:#7552d8}.dark .sa-chgd .sa-bh{color:#ad92ff}
+.sa-chgd .sa-trk{background:rgba(255,255,255,.7);color:#4a3a8a}.dark .sa-chgd .sa-trk{background:rgba(255,255,255,.1);color:#d9ccff}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -4447,6 +4465,51 @@ HOOKS.main.push(() => {
   return '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + " · " + shops + " " + plural(shops, ["магазин", "магазина", "магазинов"]) + (sum ? " · ≈ " + money(sum, saCur()) : "") + "</em></span>" + IC.chev + "</button>";
 });
 SA.occTop.push(() => { const l = saShopList(); return l.length ? '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + " ещё не куплено</em></span>" + IC.chev + "</button>" : ""; });
+
+/* --- 10. ЧТО ОНА ИЗМЕНИЛА: точная разница (было → стало) в желаниях из твоего плана --- */
+const SA_F = [["t", "Название", "title"], ["p", "Цена", null], ["d", "Детали", "details"], ["l", "Ссылка", "link"], ["n", "Комментарий", "note"], ["c", "Важность", null], ["f", "Фото", null]];
+function saSnapOf(it) { return { t: it.title || "", p: numPrice(it) ? numPrice(it) + " " + (it.cur || "€") : "", d: it.details || "", l: it.link || "", n: it.note || "", c: (CATS[it.cat] || CATS[2]).emo + " " + (CATS[it.cat] || CATS[2]).name, f: it.photoCount ? it.photoCount + " " + plural(it.photoCount, ["фото", "фото", "фото"]) : "без фото", at: Date.now() }; }
+const saWatched = (it) => !it.done && (G(it.id) || saBuy(it.id) || saOffers(it.id).length);
+function saDiff(it) {
+  const s = (SA.d.snap || {})[it.id]; if (!s) return [];
+  const n = saSnapOf(it);
+  return SA_F.filter((f) => (s[f[0]] || "") !== (n[f[0]] || "")).map((f) => ({ k: f[0], label: f[1], was: s[f[0]] || "", now: n[f[0]] || "" }));
+}
+let saSnapT = 0;
+function saSnapSync() {
+  if (!saOn() || !SA.st.loaded || !SPY.loaded || !S.loaded) return;
+  SA.d.snap = SA.d.snap || {}; let ch = false;
+  Object.values(S.items).forEach((it) => { if (saWatched(it) && !SA.d.snap[it.id]) { SA.d.snap[it.id] = saSnapOf(it); ch = true; } });
+  Object.keys(SA.d.snap).forEach((id) => { const it = S.items[id]; if (!it || !saWatched(it)) { delete SA.d.snap[id]; ch = true; } });
+  if (ch) { clearTimeout(saSnapT); saSnapT = setTimeout(() => SA.save("snap"), 500); }
+}
+HOOKS.data.push(() => saSnapSync());
+SA.after.push(() => saSnapSync());
+async function saAck(id) { const it = S.items[id]; if (!it) return; SA.d.snap = SA.d.snap || {}; SA.d.snap[id] = saSnapOf(it); await SA.save("snap"); haptic("light"); render(); }
+const saShort = (v, k) => { v = String(v || ""); if (k === "l") v = saHost(v) || v; return v ? (v.length > 60 ? v.slice(0, 58) + "…" : v) : "—"; };
+function saDiffHtml(it, ds) {
+  return '<div class="sa-diff">' + ds.map((x) => '<div class="sa-dr"><span class="sa-dk">' + x.label + '</span><span class="sa-dv"><s>' + esc(saShort(x.was, x.k)) + "</s><b>" + esc(saShort(x.now, x.k)) + "</b></span></div>").join("") + "</div>";
+}
+function saOrderWarn(it, ds) {
+  const b = saBuy(it.id); if (!b || !(b.order || b.paid) || !ds.some((x) => ["d", "t", "l", "c"].includes(x.k))) return "";
+  return '<div class="sa-dwarn">⚠️ У тебя уже ' + (b.order ? "заказ" + (b.shop ? " в " + esc(b.shop) : "") + " № " + esc(b.order) : "покупка") + " — проверь, что купленное ещё подходит.</div>";
+}
+HOOKS.main.unshift(() => {
+  if (!saOn() || !SA.st.loaded) return "";
+  saSnapSync();
+  return Object.values(S.items).filter((it) => saWatched(it) && saDiff(it).length).map((it) => {
+    const ds = saDiff(it);
+    return '<div class="alert sa-chg"><span class="ai">✏️</span><span class="at"><b>' + esc(herName()) + " изменила «" + esc(it.title) + "»</b> — это " + (G(it.id) ? "в твоём плане" : "ты сравнивал цены") + "." + saDiffHtml(it, ds) + saOrderWarn(it, ds) +
+      '<span class="abtns"><button class="yes" data-sa="dopen" data-id="' + esc(it.id) + '">Открыть</button><button data-sa="dack" data-id="' + esc(it.id) + '">Понятно ✓</button></span></span></div>';
+  }).join("");
+});
+HOOKS.detail.unshift((it) => {
+  if (!saOn() || !saWatched(it)) return "";
+  const ds = saDiff(it); if (!ds.length) return "";
+  return '<div class="sa-chgd"><div class="sa-bh"><span>✏️ Она изменила после твоей отметки</span></div>' + saDiffHtml(it, ds) + saOrderWarn(it, ds) + '<button class="sa-trk" data-sa="dack" data-sa-any data-id="' + esc(it.id) + '">Понятно ✓</button></div>';
+});
+SA_ACT.dack = async (b) => { const inSheet = !!b.closest(".sheet"); await saAck(b.dataset.id); toast("Отметил как просмотренное ✓"); if (inSheet) saRefreshDetail(b.dataset.id); };
+SA_ACT.dopen = (b) => openDetail(b.dataset.id);
 /* ================= /МОДУЛИ САШИ ================= */
 
 /* ================= новые желания вживую ================= */
