@@ -1037,6 +1037,38 @@ html.dark[data-theme=autumn]{
 .ar-opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
 .ar-opts .chip{font-size:13px;padding:8px 12px}
 .ar-cnt{font-size:12.5px;color:var(--ink2);margin:10px 4px 0;text-align:center}
+/* --- F8: копилка --- */
+.ar-pbar{position:absolute;left:9px;right:9px;bottom:8px;height:6px;border-radius:3px;background:rgba(255,255,255,.55);overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.ar-pbar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#f0b44a,#f07a5a)}
+.cm .ar-dueb:has(~.ar-pbar){bottom:20px}
+.ar-bank{margin-top:16px;padding:14px 16px;border-radius:20px;background:linear-gradient(135deg,#fff6df,#ffeaf0);box-shadow:inset 0 0 0 1px rgba(240,180,74,.35)}
+.dark .ar-bank{background:linear-gradient(135deg,#3b3220,#40263a);box-shadow:inset 0 0 0 1px rgba(240,180,74,.25)}
+.ar-bkh{display:flex;align-items:center;gap:10px}
+.ar-bkh .ar-pig{font-size:28px;flex:none}
+.ar-bkh b{display:block;font-size:15.5px}
+.ar-bkh span{font-size:12.5px;color:var(--ink2)}
+.ar-bkh .ar-pct{margin-left:auto;font:800 20px/1 var(--font);color:#d07a12;font-variant-numeric:tabular-nums}
+.dark .ar-bkh .ar-pct{color:#ffc25a}
+.ar-track{height:12px;border-radius:6px;background:rgba(240,180,74,.22);margin:12px 0 4px;overflow:hidden}
+.ar-track i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#f0b44a,#f07a5a);transition:width .6s var(--ease)}
+.ar-bkn{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.ar-bkn b{color:var(--ink)}
+.ar-bkadd{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.ar-bkadd+.ar-bkadd{flex-wrap:nowrap;margin-top:8px}
+.ar-bkadd .chip{padding:8px 12px;font-size:13.5px}
+.ar-bkadd .inp{flex:1;min-width:90px;padding:9px 12px;font-size:14.5px;border-radius:999px}
+.ar-bklog{margin-top:10px;font-size:12px;color:var(--ink2);line-height:1.5}
+.ar-bkst{display:flex;align-items:center;gap:10px;width:100%;margin-top:16px;padding:12px 14px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1.5px dashed var(--line);border:1.5px dashed rgba(240,180,74,.6);text-align:left;font-size:13.5px;color:var(--ink2)}
+.ar-bkst b{display:block;color:var(--ink);font-size:14.5px}
+.ar-bkst>span:first-child{font-size:24px}
+.ar-bkm{margin:12px 0 2px;padding:12px 14px;border-radius:22px;background:var(--card);box-shadow:var(--cardShadow)}
+.ar-bkm .ar-dueh{margin:0 0 6px}
+.ar-bkr{display:flex;align-items:center;gap:10px;width:100%;padding:7px 0;text-align:left}
+.ar-bkr .ar-th{width:38px;height:38px;border-radius:11px;font-size:18px}
+.ar-bkr>div{flex:1;min-width:0}
+.ar-bkr b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-bkr .ar-track{height:7px;margin:6px 0 0}
+.ar-bkr em{font-style:normal;font:800 12px/1 var(--font);color:var(--ink2);flex:none;font-variant-numeric:tabular-nums}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -3328,6 +3360,59 @@ function arShareOpen(scope) {
 }
 HOOKS.settings.push(() => !isOwner() ? "" : '<div class="fl">Для родных и подруг</div><button class="ar-shbtn" data-ar-share><span class="ar-shi">📤</span><span><b>Поделиться списком</b><span>Картинкой или текстом — без приватных пометок</span></span>' + IC.chev + "</button>");
 document.addEventListener("click", (e) => { const b = e.target.closest("[data-ar-share]"); if (b) { haptic("light"); arShareOpen(b.dataset.arShare || "all"); } });
+/* --- F8: 🐷 копилка «куплю сама» — откладываю на желание и вижу прогресс --- */
+const arBank = (it) => (it.ar_bank && typeof it.ar_bank === "object" ? it.ar_bank : null);
+const arBankPct = (it) => { const b = arBank(it), p = numPrice(it); return b && p ? Math.min(100, Math.round(((b.s || 0) / p) * 100)) : 0; };
+const arNum = (n) => (Math.round(n * 100) / 100).toLocaleString("ru-RU");
+HOOKS.badge.push((it) => { if (!isOwner() || it.done || !arBank(it) || !numPrice(it)) return ""; return '<span class="ar-pbar" title="Копилка"><i style="width:' + Math.max(4, arBankPct(it)) + '%"></i></span>'; });
+HOOKS.detail.push((it) => {
+  if (!isOwner() || it.done || !numPrice(it)) return "";
+  const b = arBank(it), cur = esc(it.cur || "€");
+  if (!b) return '<button class="ar-bkst" data-ar-bkstart="' + esc(it.id) + '"><span>🐷</span><span><b>Куплю сама — начать копить</b>Откладывай понемногу и смотри, сколько осталось</span></button>';
+  const p = numPrice(it), s = b.s || 0, pct = arBankPct(it), left = Math.max(0, p - s);
+  const log = (b.log || []).slice(-3).reverse();
+  return '<div class="ar-bank" data-ar-bk="' + esc(it.id) + '"><div class="ar-bkh"><span class="ar-pig">🐷</span><div><b>' + (left ? "Коплю сама" : "Накопила! 🎉") + "</b><span>" + (left ? "осталось " + arNum(left) + " " + cur : "Можно покупать") + '</span></div><span class="ar-pct">' + pct + "%</span></div>" +
+    '<div class="ar-track"><i style="width:' + pct + '%"></i></div><div class="ar-bkn"><span>отложено <b>' + arNum(s) + " " + cur + "</b></span><span>цель " + arNum(p) + " " + cur + "</span></div>" +
+    (left ? '<div class="ar-bkadd">' + [5, 10, 20, 50].filter((v) => v <= Math.max(5, left)).map((v) => '<button class="chip" data-ar-bkadd="' + v + '">+' + v + "</button>").join("") + '</div><div class="ar-bkadd"><input class="inp" data-ar-bkin inputmode="decimal" placeholder="своя сумма, ' + cur + '"><button class="chip on" data-ar-bkadd="in">Отложить</button></div>'
+      : '<button class="btn ok" data-ar-bkbought style="margin-top:12px">🛍 Купила — отметить «Сбылось»</button>') +
+    (log.length ? '<div class="ar-bklog">' + log.map((x) => (x.a > 0 ? "+" : "") + arNum(x.a) + " " + cur + " · " + ago(x.at)).join("<br>") + "</div>" : "") +
+    '<div class="row2"><button class="btn ghost" data-ar-bkadd="undo" style="min-height:40px;font-size:13.5px"' + (log.length ? "" : " disabled") + '>↩︎ Отменить</button><button class="btn ghost" data-ar-bkstop style="min-height:40px;font-size:13.5px">Не копить</button></div></div>';
+});
+function arBankMain() {
+  if (!isOwner()) return "";
+  const l = Object.values(S.items).filter((it) => !it.done && arBank(it) && numPrice(it)).sort((a, b) => arBankPct(b) - arBankPct(a));
+  if (!l.length) return "";
+  return '<div class="ar-bkm"><div class="ar-dueh"><b>🐷 Копилка</b><span>' + l.length + " " + plural(l.length, ["цель", "цели", "целей"]) + "</span></div>" + l.slice(0, 3).map((it) => { const c = CATS[it.cat] || CATS[2];
+    return '<button class="ar-bkr" data-open="' + esc(it.id) + '"><span class="ar-th k' + c.key + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + "</span><div><b>" + esc(it.title) + '</b><div class="ar-track"><i style="width:' + Math.max(3, arBankPct(it)) + '%"></i></div></div><em>' + arNum(arBank(it).s || 0) + " / " + arNum(numPrice(it)) + " " + esc(it.cur || "€") + "</em></button>"; }).join("") + "</div>";
+}
+HOOKS.main.splice(Math.max(0, HOOKS.main.indexOf(arFindHtml)), 0, arBankMain);
+async function arBankSave(id, bank, extra) {
+  await S.store.patchItem(id, Object.assign({ ar_bank: bank }, extra || {}));
+  const sh = sheets.length && sheets[sheets.length - 1]; if (sh && sh.sh.querySelector("[data-ar-bk],[data-ar-bkstart]")) { const y = sh.sh.scrollTop; closeSheet(sh, true); setTimeout(async () => { await openDetail(id); const n = sheets[sheets.length - 1]; if (n) n.sh.scrollTop = y; }, 30); }
+}
+document.addEventListener("click", async (e) => {
+  try {
+    const st = e.target.closest("[data-ar-bkstart]");
+    if (st) { haptic("ok"); SFX.play("pop"); await arBankSave(st.dataset.arBkstart, { s: 0, log: [], at: Date.now() }); return; }
+    const box = e.target.closest("[data-ar-bk]"); if (!box) return;
+    const id = box.dataset.arBk, it = S.items[id]; if (!it) return; const b = Object.assign({ s: 0, log: [] }, arBank(it));
+    const ad = e.target.closest("[data-ar-bkadd]");
+    if (ad) {
+      let v = ad.dataset.arBkadd;
+      if (v === "undo") { const last = b.log.pop(); if (!last) return; b.s = Math.max(0, b.s - last.a); haptic("light"); await arBankSave(id, b); return; }
+      if (v === "in") { const i = box.querySelector("[data-ar-bkin]"); v = arPNum(i.value); if (!v) { i.classList.add("err"); haptic("error"); setTimeout(() => i.classList.remove("err"), 600); return; } }
+      v = +v; const p = numPrice(it), before = b.s; b.s = Math.round((b.s + v) * 100) / 100; b.log = b.log.concat({ a: v, at: Date.now() }).slice(-30);
+      haptic("light"); SFX.play(before < p && b.s >= p ? "tada" : "tick");
+      if (before < p && b.s >= p) { confetti(); toast("Накопила на «" + it.title + "» 🐷"); }
+      await arBankSave(id, b); return;
+    }
+    if (e.target.closest("[data-ar-bkstop]")) {
+      const ok = await confirmSheet({ icon: "🐷", title: "Перестать копить?", text: "Прогресс копилки для «" + esc(it.title) + "» сотрётся. Само желание останется.", ok: "Да, не копить", danger: true });
+      if (ok) await arBankSave(id, null); return;
+    }
+    if (e.target.closest("[data-ar-bkbought]")) { await S.store.patchItem(id, { done: true, doneAt: Date.now(), ar_by: "me" }); closeAll(); confetti(); SFX.play("tada"); toast("Ура! Купила сама 🛍"); }
+  } catch (er) { toast("Ошибка: " + (er.message || er)); }
+});
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
 /* ================= МОДУЛИ САШИ ================= */
