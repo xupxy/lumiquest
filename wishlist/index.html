@@ -859,6 +859,22 @@ html.dark[data-theme=autumn]{
 .dvid .pl .mspin{width:28px;height:28px;border-width:3px;border-color:rgba(255,255,255,.35);border-top-color:#fff}
 .vbadge{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
 
+/* ===== валюта, покупка, вставка ===== */
+.capx{display:block;font:700 11px/1.2 var(--font);color:var(--ink3);margin-top:3px}
+.dapx{display:inline-block;margin-left:10px;font:700 14px/1 var(--font);color:var(--ink2);vertical-align:middle}
+.purbox{margin-top:12px;padding:14px 16px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.purh{display:flex;align-items:center;gap:8px;margin-bottom:6px}.purh b{font-size:15px}
+.purh .only{padding:3px 8px;border-radius:8px;background:var(--roseSoft);color:var(--rose);font:800 10.5px/1.3 var(--font)}
+.purh .purE{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;color:var(--ink2)}.purh .purE svg{width:15px;height:15px}
+.purr{display:flex;align-items:baseline;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.purr .pi{width:22px}.purr .pk{color:var(--ink2);width:112px;flex:none}.purr .pv{flex:1;font-weight:700;word-break:break-word}
+.purr .mono{font-family:ui-monospace,Menlo,monospace}.purr em.save{display:inline-block;font-style:normal;margin-left:6px;padding:2px 7px;border-radius:7px;background:var(--c2s);color:var(--c2);font-size:12px}
+.grow .gt span em{font-style:normal;color:var(--c2)}
+.qadd{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 2px;padding:13px 15px;border-radius:20px;background:var(--card);box-shadow:var(--cardShadow);text-align:left}
+.qadd .qi{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:linear-gradient(140deg,#e3efff,#ffe4ec)}
+.dark .qadd .qi{background:linear-gradient(140deg,#1e2c45,#4b2534)}
+.qadd b{display:block;font-size:15px}.qadd span.qs{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.phprog{grid-column:1/-1;font:700 12.5px/1 var(--font);color:var(--ink2);padding:6px 2px}
 /* ===== МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
@@ -1275,7 +1291,7 @@ function cardHtml(it, i) {
   const media = it.thumb ? '<img loading="lazy" src="' + it.thumb + '" alt="">'
     : (ini ? '<span class="ini">' + esc(ini) + '</span><span class="wm">' + c.emo + "</span>" : '<span class="ini" style="font-style:normal">' + c.emo + "</span>");
   const price = priceStr(it);
-  const foot = (price ? '<span class="cprice">' + price + "</span>" : "") +
+  const foot = (price ? '<span class="cprice">' + price + "</span>" + approxHtml(it) : "") +
     (it.done && it.doneAt ? '<span class="cago">' + ago(it.doneAt) + "</span>" : "");
   return '<button class="card k' + c.key + (it.done ? " done" : "") + (gifted ? " gifted" : "") + (S.flash && S.flash.has(it.id) ? " flash" : "") + '" data-open="' + esc(it.id) + '" style="--i:' + Math.min(i || 0, 14) + '">' +
     '<div class="cm k' + c.key + (it.thumb ? "" : " nop") + '">' + media +
@@ -1342,6 +1358,7 @@ function render() {
   const mood = S.meta.mood || "";
   if (isOwner() || mood) h += moodHtml(mood);
 
+  if (isOwner()) h += '<button class="qadd" data-qadd="1"><span class="qi">📋</span><span><b>Добавить по ссылке</b><span class="qs">Скопировала товар или видео — нажми, всё подтянется само</span></span></button>';
   h += duoHtml();
   h += hk("main");
   if (!isOwner()) { syncTitles(); h += alertsHtml() + viewerCardsHtml(); }
@@ -1482,8 +1499,8 @@ async function openDetail(id) {
     '<div class="dbody"><div class="dtags"><span class="dpill k' + c.key + '">' + c.emo + " " + c.name + " <em>· " + c.sub.toLowerCase() + "</em></span>" +
       (it.done ? '<span class="dpill dn">✓ Сбылось</span>' : "") + "</div>" +
     '<div class="dtitle">' + esc(it.title) + "</div>" +
-    (priceStr(it) ? '<div class="dprice"><small>цена</small>' + priceStr(it) + "</div>" : "") +
-    videosDetailHtml(it) + hk("detail", it) +
+    (priceStr(it) ? '<div class="dprice"><small>цена</small>' + priceStr(it) + "</div>" + approxHtml(it, "dapx") : "") +
+    videosDetailHtml(it) + hk("detail", it) + purchaseDetailHtml(it) +
     (rows.length ? '<div class="dinfo">' + rows.join("") + "</div>" : "") +
     (!isOwner() && G(it.id) && !it.done ? '<div class="dsecret"><span class="se">🤫</span><div><b>Ты даришь это</b><span>Отметка хранится только в твоём Telegram — она её не увидит.</span></div></div><button class="gstrow" data-d="status"><span>Статус</span><b>' + GST[gstOf(it.id)][0] + " " + GST[gstOf(it.id)][1] + "</b>" + IC.chev + "</button>" : "") +
     '<div class="dmeta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div></div>";
@@ -1549,14 +1566,14 @@ async function openDetail(id) {
   }
 }
 
-function openEditor(it, photosIn) {
+function openEditor(it, photosIn, pre) {
   const isNew = !it;
   const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false, loading: false };
   const defCur = LS.get("wl_cur", "€");
   const curOpts = CURS.map((c) => '<option' + ((it ? it.cur || defCur : defCur) === c ? " selected" : "") + ">" + c + "</option>").join("");
   const noteV = it ? it.note || "" : "";
   const head = '<button class="lk" data-close>Отмена</button><b>' + (isNew ? "Новое желание" : "Изменить") + '</b><button class="lk go" id="f_save2">Готово</button>';
-  const h = '<label class="fl" style="margin-top:8px">Фото <span class="opt">до 4 штук</span></label><div class="photos" id="phs"></div><div class="hint" id="phhint"></div>' +
+  const h = '<label class="fl" style="margin-top:8px">Фото <span class="opt">до 6 штук · можно выбрать сразу несколько</span></label><div class="photos" id="phs"></div><div class="hint" id="phhint"></div>' +
     '<label class="fl" for="f_title">Что хочешь?</label><input class="inp" id="f_title" maxlength="120" autocomplete="off" placeholder="Например: белые кроссовки New Balance" value="' + esc(it ? it.title : "") + '"><div class="ferr" id="e_title">Напиши, что ты хочешь 🙂</div>' +
     '<div class="fl">Насколько важно</div><div class="cats" id="cats" role="radiogroup">' +
       [1, 2, 3].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '" role="radio" aria-checked="' + (st.cat === k) + '"><span class="ci">' + CATS[k].emo + '</span><span class="ct"><b>' + CATS[k].name + "</b><span>" + CATS[k].sub + '</span></span><span class="rd"></span></button>').join("") +
@@ -1569,7 +1586,8 @@ function openEditor(it, photosIn) {
     '<label class="fl" for="f_note">Почему хочу <span class="opt">комментарий</span></label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Зачем это нужно или что важно при выборе">' + esc(noteV) + '</textarea><div class="fcnt" id="c_note"></div>' +
     '<button class="btn pri" id="f_save" style="margin-top:26px">' + (isNew ? "Добавить в вишлист 💗" : "Сохранить изменения") + "</button>";
   const sh = openSheet(h, null, { head });
-  st.videos = ((it && it.videos) || []).slice();
+  st.videos = ((it && it.videos) || (pre && pre.videos) || []).slice();
+  if (pre && !it) { if (pre.title) $("#f_title", sh).value = pre.title; if (pre.link) $("#f_link", sh).value = pre.link; if (pre.cur) { $("#f_cur", sh).value = pre.cur; st.curTouched = true; } }
   HOOKS.editor.forEach((m) => { try { if (m.bind) m.bind(sh, it); } catch (e) { console.warn(e); } });
   const drawVids = () => {
     $("#vlist", sh).innerHTML = st.videos.map((v, i) => '<div class="vrow"><span class="vt"' + (v.thumb ? ' style="background-image:url(' + esc(v.thumb) + ')"' : "") + ">" + (v.thumb ? "" : "▶") + '</span><span class="vx"><b>' + esc(vidLabel(v)) + "</b><span>" + VKIND[v.kind] + (v.loading ? " · загружаю…" : "") + '</span></span><button class="drm" data-vrm="' + i + '" aria-label="Убрать видео">' + IC_X + "</button></div>").join("");
@@ -1602,7 +1620,7 @@ function openEditor(it, photosIn) {
       $("#phs", sh).innerHTML = '<button class="phzone" id="addph" style="grid-column:1/-1"><span class="pzi">📷</span><b>Добавить фото</b><span>Первое станет обложкой</span></button>';
     } else {
       $("#phs", sh).innerHTML = st.photos.map((p, i) => '<div class="pth' + (i === 0 ? " cov" : "") + '" data-cover="' + i + '"><img src="' + p + '" alt=""><button class="rm" data-rm="' + i + '" aria-label="Убрать фото">' + IC_X.replace(/13/g, "10") + "</button>" + (i === 0 ? '<span class="cv">Обложка</span>' : "") + "</div>").join("") +
-        (st.loading ? '<div class="addph"><span class="mspin ink"></span>Сжимаю…</div>' : n < 4 ? '<button class="addph" id="addph"><span class="pl">＋</span>Ещё</button>' : "");
+        (st.loading ? '<div class="addph"><span class="mspin ink"></span>Сжимаю…</div>' : n < 6 ? '<button class="addph" id="addph"><span class="pl">＋</span>Ещё</button>' : "");
     }
     $("#phhint", sh).textContent = n > 1 ? "Нажми на фото, чтобы сделать его обложкой" : "";
     $("#phhint", sh).style.display = n > 1 ? "" : "none";
@@ -1636,11 +1654,16 @@ function openEditor(it, photosIn) {
     if (e.target.closest("#addph")) {
       fileIn.value = "";
       fileIn.onchange = async () => {
-        const files = Array.from(fileIn.files || []).slice(0, 4 - st.photos.length);
+        const all = Array.from(fileIn.files || []), files = all.slice(0, 6 - st.photos.length);
+        if (all.length > files.length) toast("Влезет ещё " + files.length + " — максимум 6 фото");
         if (!files.length) return;
         st.loading = true; drawPhotos();
-        for (const f of files) { try { st.photos.push(await compress(f)); } catch (err) { toast(err.message); } }
-        st.loading = false; drawPhotos();
+        const res = await Promise.all(files.map((f) => compress(f).catch((err) => { toast(err.message); return null; })));
+        res.forEach((d) => { if (d) st.photos.push(d); });
+        // общий размер документа в базе ограничен — при большом количестве фото ужимаем сильнее
+        let total = st.photos.reduce((a, p) => a + p.length, 0);
+        for (let i = 0; total > 900000 && i < st.photos.length; i++) { const im = await new Promise((r) => { const x = new Image(); x.onload = () => r(x); x.src = st.photos[i]; }); const small = drawTo(im, 900, 0.66); total += small.length - st.photos[i].length; st.photos[i] = small; }
+        st.loading = false; drawPhotos(); haptic("light");
       };
       fileIn.click();
       return;
@@ -1725,7 +1748,7 @@ function openSettings() {
   let h = "<h3>Настройки</h3>" +
     '<div class="who"><img src="logo.svg" alt=""><div class="wt"><b>' + (isOwner() ? "Хозяйка вишлиста" : "Смотрю вишлист") + "</b><span>@" + esc(myNick) + '</span></div><span class="wr" aria-hidden="true">' + (isOwner() ? "👑" : "🕵️") + "</span></div>" +
     '<div class="hint">🔒 Вишлист открывается только у @fllezzka и @xupxy.</div>' +
-    soundToggleHtml() + notifySettingsHtml() + hk("settings");
+    soundToggleHtml() + myCurHtml() + notifySettingsHtml() + hk("settings");
   if (isOwner()) h += '<label class="fl" for="s_name">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" autocomplete="off" placeholder="Арина" value="' + esc(S.meta.ownerName || HER) + '"><div class="hint">Сохраняется само, когда закончишь ввод.</div>';
   h += '<div class="fl">Синхронизация</div>';
   if (S.store.mode === "demo") h += '<div class="box sbox"><span class="sdot"></span><div><b>Демо-режим</b><span>Желания хранятся только на этом устройстве.</span></div></div><button class="btn pri" data-s="setup">☁️ Подключить синхронизацию</button>';
@@ -1829,7 +1852,7 @@ async function loadSpy() {
   } catch (e) { console.error(e); }
   SPY.loaded = true; migrateGifts(); if (S.loaded) render();
 }
-function saveSpyMain() { return PRIV.set("spy_main", JSON.stringify({ budget: SPY.budget, cur: SPY.cur, dates: SPY.dates, st: SPY.st, bring: SPY.bring, tt: SPY.tt, ack: SPY.ack, gift: SPY.gift, given: SPY.given })); }
+function saveSpyMain() { setTimeout(syncRemind, 0); return PRIV.set("spy_main", JSON.stringify({ budget: SPY.budget, cur: SPY.cur, dates: SPY.dates, st: SPY.st, bring: SPY.bring, tt: SPY.tt, ack: SPY.ack, gift: SPY.gift, given: SPY.given })); }
 
 /* даты */
 const MONTHS = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
@@ -1873,9 +1896,8 @@ function viewerCardsHtml() {
 function planHtml() {
   const mine = sortedItems((i) => G(i.id) && !i.done);
   const given = sortedItems((i) => i.done && (SPY.given || {})[i.id]);
-  let sum = 0; const other = {};
-  mine.forEach((i) => { const n = numPrice(i); if (!n) return; const c = i.cur || "€"; if (c === SPY.cur) sum += n; else other[c] = (other[c] || 0) + n; });
-  const otherStr = Object.keys(other).map((c) => "+ " + money(other[c], c)).join(" · ");
+  const sum = sumIn(mine, SPY.cur, realPrice);
+  const otherStr = mine.some((i) => (realPrice(i).c || "€") !== SPY.cur && realPrice(i).n) ? "с пересчётом валют" : "";
   let h = '<div class="sec"><button class="plan" data-act="budget"><span class="pedit">' + IC.pen + '</span><div class="pl1">🎁 Мой план подарков</div>';
   if (SPY.budget) {
     const pct = Math.min(100, sum / SPY.budget * 100), over = sum > SPY.budget;
@@ -1891,12 +1913,12 @@ function planHtml() {
   else h += '<div class="glist">' + mine.map((it) => {
     const c = CATS[it.cat] || CATS[2], s = gstOf(it.id);
     return '<div class="grow"><button class="gimg k' + c.key + '" data-open="' + esc(it.id) + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + "</button>" +
-      '<button class="gt" data-open="' + esc(it.id) + '" style="text-align:left"><b>' + esc(it.title) + "</b><span>" + (priceStr(it) || c.emo + " " + c.name) + "</span></button>" +
+      '<button class="gt" data-open="' + esc(it.id) + '" style="text-align:left"><b>' + esc(it.title) + "</b><span>" + (PUR[it.id] && PUR[it.id].paid ? "<em>заплатил " + money(PUR[it.id].paid, PUR[it.id].cur || "€") + "</em>" + (PUR[it.id].date ? " · " + deliveryStr(PUR[it.id].date) : "") : priceStr(it) || c.emo + " " + c.name) + "</span></button>" +
       '<button class="gst s' + s + '" data-gst="' + esc(it.id) + '">' + GST[s][0] + " " + GST[s][1] + "</button></div>";
   }).join("") + "</div>" + '<div class="hint" style="text-align:center">Нажми на статус, чтобы выбрать: думаю · заказал · едет · спрятал</div>';
   if (given.length) {
-    const gs = {}; given.forEach((i) => { const n = numPrice(i); if (n) gs[i.cur || "€"] = (gs[i.cur || "€"] || 0) + n; });
-    h += '<div class="gsub">🎁 Подарено тобой · ' + given.length + (Object.keys(gs).length ? " · " + Object.keys(gs).map((c) => money(gs[c], c)).join(" + ") : "") + '</div><div class="grid">' + given.map((it, i) => cardHtml(it, i)).join("") + "</div>";
+    const gsum = sumIn(given, SPY.cur, realPrice);
+    h += '<div class="gsub">🎁 Подарено тобой · ' + given.length + (gsum ? " · " + money(gsum, SPY.cur) : "") + '</div><div class="grid">' + given.map((it, i) => cardHtml(it, i)).join("") + "</div>";
   }
   return h + "</div>";
 }
@@ -2728,6 +2750,167 @@ async function playVideo(btn, v, it) {
   btn.style.backgroundImage = "none";
 }
 
+/* ================= КУРСЫ ВАЛЮТ: «≈ в моей валюте» ================= */
+const RATES = (() => {
+  const FALLBACK = { EUR: 1, UAH: 48, RUB: 95, USD: 1.08, PLN: 4.3, GBP: 0.85 }; // запасные примерные курсы к €
+  const SYM = { "€": "EUR", "₴": "UAH", "₽": "RUB", "$": "USD", "zł": "PLN", "£": "GBP" };
+  let rates = LS.get("wl_fx", null);
+  const fresh = () => rates && rates.at && Date.now() - rates.at < 12 * 3600e3;
+  async function load() {
+    if (fresh()) return;
+    const tries = ["https://open.er-api.com/v6/latest/EUR", "https://api.exchangerate.host/latest?base=EUR", "https://latest.currency-api.pages.dev/v1/currencies/eur.json"];
+    for (const u of tries) {
+      try {
+        const j = JSON.parse(await fetchT(u, 7000));
+        const r = j.rates || (j.eur ? Object.fromEntries(Object.entries(j.eur).map(([k, v]) => [k.toUpperCase(), v])) : null);
+        if (r && r.UAH && r.USD) { rates = { at: Date.now(), r: Object.assign({}, FALLBACK, r, { EUR: 1 }) }; LS.set("wl_fx", rates); if (S.loaded) render(); return; }
+      } catch (e) {}
+    }
+  }
+  const R = () => (rates && rates.r) || FALLBACK;
+  return {
+    load,
+    conv(n, from, to) { const r = R(), a = r[SYM[from] || "EUR"], b = r[SYM[to] || "EUR"]; return a && b ? n / a * b : NaN; },
+    mine() { return LS.get("wl_mycur", ""); },
+    setMine(c) { LS.set("wl_mycur", c); },
+    live() { return !!(rates && rates.at); },
+  };
+})();
+function approxHtml(it, cls) {
+  const my = RATES.mine(), n = numPrice(it), c = it.cur || "€";
+  if (!my || !n || c === my) return "";
+  const v = RATES.conv(n, c, my); if (!isFinite(v)) return "";
+  return '<span class="' + (cls || "capx") + '">≈ ' + money(v, my) + "</span>";
+}
+// сумма в одной валюте с пересчётом
+function sumIn(list, cur, priceOf) { let s = 0; list.forEach((i) => { const p = priceOf ? priceOf(i) : { n: numPrice(i), c: i.cur || "€" }; if (!p || !p.n) return; const v = p.c === cur ? p.n : RATES.conv(p.n, p.c, cur); if (isFinite(v)) s += v; }); return s; }
+function myCurHtml() {
+  const my = RATES.mine();
+  return '<div class="fl">💱 Цены в моей валюте</div><div class="chips" id="mycur">' + ['', ...CURS].map((c) => '<button class="chip' + (my === c ? " on" : "") + '" data-mycur="' + c + '">' + (c || "Не пересчитывать") + "</button>").join("") + "</div>" +
+    '<div class="hint">Рядом с ценой появится «≈ сумма» в выбранной валюте. Курс ' + (RATES.live() ? "обновляется автоматически раз в день" : "примерный (обновится, когда будет интернет)") + ".</div>";
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-mycur]"); if (!b) return;
+  RATES.setMine(b.dataset.mycur); b.parentNode.querySelectorAll(".chip").forEach((x) => x.classList.toggle("on", x === b)); haptic("light"); RATES.load(); render();
+});
+
+/* ================= ПОКУПКА (только у него, в личном облаке Telegram) ================= */
+const PUR = {}; // id → { shop, paid, cur, order, date, track, note }
+async function loadPurchases() {
+  try { const keys = (await PRIV.keys()).filter((k) => k.startsWith("p_")); if (!keys.length) return; const got = await PRIV.get(keys); keys.forEach((k) => { try { PUR[k.slice(2)] = JSON.parse(got[k]); } catch (e) {} }); if (S.loaded) render(); } catch (e) {}
+}
+const fmtDate = (iso) => { const p = String(iso || "").split("-").map(Number); return p.length === 3 ? p[2] + " " + MONTHS[p[1] - 1] : ""; };
+function deliveryStr(iso) {
+  const p = String(iso || "").split("-").map(Number); if (p.length !== 3) return "";
+  const n = new Date(), t0 = new Date(n.getFullYear(), n.getMonth(), n.getDate()); const left = Math.round((new Date(p[0], p[1] - 1, p[2]) - t0) / 864e5);
+  return left === 0 ? "приедет сегодня" : left === 1 ? "приедет завтра" : left > 1 ? "приедет через " + left + " " + dayWord(left) : "должна была приехать " + fmtDate(iso);
+}
+function purchaseDetailHtml(it) {
+  if (isOwner() || !G(it.id)) return "";
+  const p = PUR[it.id];
+  if (!p) return '<button class="gstrow pur0" data-pur="' + esc(it.id) + '"><span>🧾 Покупка</span><b>Записать, где купил</b>' + IC.chev + "</button>";
+  const rows = [];
+  if (p.shop) rows.push(["🏬", "Магазин", esc(p.shop)]);
+  if (p.paid) { const diff = numPrice(it) && (p.cur || "€") === (it.cur || "€") ? numPrice(it) - p.paid : 0; rows.push(["💳", "Заплатил", money(p.paid, p.cur || "€") + (diff > 0 ? ' <em class="save">−' + money(diff, p.cur || "€") + " от её цены</em>" : "")]); }
+  if (p.order) rows.push(["#️⃣", "Номер заказа", '<span class="mono">' + esc(p.order) + "</span>"]);
+  if (p.date) rows.push(["🚚", "Доставка", fmtDate(p.date) + " · " + deliveryStr(p.date)]);
+  if (p.note) rows.push(["📝", "Заметка", esc(p.note)]);
+  return '<div class="purbox"><div class="purh"><b>🧾 Покупка</b><span class="only">только тебе</span><button class="purE" data-pur="' + esc(it.id) + '" aria-label="Изменить">' + IC.pen + "</button></div>" +
+    rows.map((r) => '<div class="purr"><span class="pi">' + r[0] + '</span><span class="pk">' + r[1] + '</span><span class="pv">' + r[2] + "</span></div>").join("") +
+    (p.track ? '<button class="btn" data-ptrack="' + esc(it.id) + '" style="margin-top:10px">📍 Отследить посылку ↗</button>' : "") + "</div>";
+}
+function openPurchase(id) {
+  const it = S.items[id] || {}, p = PUR[id] || {};
+  const curOpts = CURS.map((c) => "<option" + ((p.cur || it.cur || RATES.mine() || "€") === c ? " selected" : "") + ">" + c + "</option>").join("");
+  const sh = openSheet("<h3>Покупка 🧾</h3>" + '<p class="ssub">' + esc(it.title || "") + " · видишь только ты</p>" +
+    '<label class="fl">Магазин</label><input class="inp" id="pu_shop" maxlength="60" placeholder="Zalando, Rozetka, ТЦ…" value="' + esc(p.shop || "") + '">' +
+    '<label class="fl">Сколько заплатил</label><div class="dform"><input class="inp" id="pu_paid" inputmode="decimal" placeholder="' + esc(numPrice(it) || "0") + '" value="' + esc(p.paid || "") + '"><select class="inp cur" id="pu_cur">' + curOpts + "</select></div>" +
+    '<label class="fl">Номер заказа</label><input class="inp" id="pu_order" maxlength="60" autocapitalize="off" value="' + esc(p.order || "") + '">' +
+    '<label class="fl">Когда приедет</label><input class="inp" id="pu_date" type="date" value="' + esc(p.date || "") + '">' +
+    '<label class="fl">Ссылка на отслеживание</label><input class="inp" id="pu_track" inputmode="url" autocapitalize="off" placeholder="https://…" value="' + esc(p.track || "") + '">' +
+    '<label class="fl">Заметка</label><input class="inp" id="pu_note" maxlength="140" placeholder="Заберу из пункта выдачи у работы" value="' + esc(p.note || "") + '">' +
+    '<button class="btn pri" id="pu_save" style="margin-top:20px">Сохранить</button>' + (PUR[id] ? '<button class="btn danger" id="pu_del">Удалить запись</button>' : ""));
+  sh.addEventListener("click", async (e) => {
+    if (e.target.closest("#pu_del")) { delete PUR[id]; await PRIV.del("p_" + id); closeSheet(); render(); toast("Запись удалена", "🗑"); return; }
+    if (!e.target.closest("#pu_save")) return;
+    const pm = String($("#pu_paid", sh).value).replace(/\s/g, "").replace(",", ".").match(/\d+(\.\d+)?/);
+    const o = { shop: $("#pu_shop", sh).value.trim(), paid: pm ? Number(pm[0]) : 0, cur: $("#pu_cur", sh).value, order: $("#pu_order", sh).value.trim(), date: $("#pu_date", sh).value, track: extractUrl($("#pu_track", sh).value), note: $("#pu_note", sh).value.trim() };
+    PUR[id] = o; await PRIV.set("p_" + id, JSON.stringify(o));
+    if (gstOf(id) === 0 && (o.order || o.paid)) { SPY.st[id] = o.date ? 2 : 1; saveSpyMain(); }
+    haptic("ok"); SFX.play("pop"); closeSheet(); render(); toast("Покупка записана 🧾");
+  });
+}
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-ptrack]"); if (t) { openLink((PUR[t.dataset.ptrack] || {}).track); return; }
+  const b = e.target.closest("[data-pur]"); if (!b) return;
+  const id = b.dataset.pur; const top = sheets[sheets.length - 1];
+  if (top && top.sh.contains(b)) closeSheet(top, true);
+  setTimeout(() => openPurchase(id), top ? 200 : 0);
+});
+// цена, по которой он реально купил, — для бюджета
+function realPrice(i) { const p = PUR[i.id]; return p && p.paid ? { n: p.paid, c: p.cur || "€" } : { n: numPrice(i), c: i.cur || "€" }; }
+
+/* ================= ВСТАВИТЬ ИЗ БУФЕРА ================= */
+async function readClip() {
+  try { if (navigator.clipboard && navigator.clipboard.readText) return await navigator.clipboard.readText(); } catch (e) {}
+  return null;
+}
+async function fetchMeta(url) {
+  try { const j = JSON.parse(await fetchT("https://api.microlink.io/?url=" + encodeURIComponent(url), 9000)); const d = j.data || {}; return { title: d.title || "", image: (d.image && d.image.url) || "", price: "" }; } catch (e) { return {}; }
+}
+async function photoFromUrl(u) {
+  if (!u) return null;
+  for (const src of [u, "https://wsrv.nl/?url=" + encodeURIComponent(u.replace(/^https?:\/\//, "")) + "&w=1280&output=jpg"]) {
+    try {
+      const im = await new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = src; setTimeout(rej, 9000); });
+      const d = drawTo(im, 1280, 0.8); if (d && d.length > 2000) return d.length > 230000 ? drawTo(im, 960, 0.7) : d;
+    } catch (e) {}
+  }
+  return null;
+}
+async function quickAdd(text) {
+  const raw = String(text || "").trim(); if (!raw) return false;
+  const v = parseVideo(raw), url = extractUrl(raw);
+  if (!url && !v) return false;
+  toast("Смотрю ссылку…", "🔎");
+  const pre = { title: "", link: "", videos: [], photos: [], price: "", cur: "" };
+  const rest = raw.replace(url, "").replace(/\s+/g, " ").trim();
+  if (v) { pre.videos.push(await enrichVideo(v)); pre.title = pre.videos[0].title ? pre.videos[0].title.slice(0, 120) : rest.slice(0, 120); if (pre.videos[0].thumb) { const ph = await photoFromUrl(pre.videos[0].thumb); if (ph) pre.photos.push(ph); } }
+  else {
+    pre.link = url; pre.cur = curFromDomain(url);
+    const m = await fetchMeta(/^https?:/i.test(url) ? url : "https://" + url);
+    pre.title = (m.title || rest || "").replace(/\s*[|–—-]\s*[^|–—-]{2,40}$/, "").slice(0, 120);
+    if (m.image) { const ph = await photoFromUrl(m.image); if (ph) pre.photos.push(ph); }
+  }
+  openEditor(null, pre.photos, pre);
+  return true;
+}
+function openPasteSheet() {
+  const sh = openSheet('<h3>Добавить по ссылке 📋</h3><p class="ssub">Скопируй ссылку на товар или видео (TikTok, Reels, YouTube) и вставь сюда — название и фото подтянутся сами.</p>' +
+    '<input class="inp" id="qa_u" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="Вставь ссылку" style="margin-top:14px"><button class="btn pri" id="qa_go" style="margin-top:12px">Добавить</button>', null, { cls: "compact" });
+  const go = async () => { const t = $("#qa_u", sh).value; if (!extractUrl(t) && !parseVideo(t)) { $("#qa_u", sh).classList.add("err"); toast("Это не похоже на ссылку"); return; } closeSheet(); await quickAdd(t); };
+  sh.addEventListener("click", (e) => { if (e.target.closest("#qa_go")) go(); });
+  $("#qa_u", sh).addEventListener("paste", () => setTimeout(go, 60));
+}
+document.addEventListener("click", async (e) => {
+  if (!e.target.closest("[data-qadd]")) return;
+  haptic("light");
+  const t = await readClip();
+  if (t && (extractUrl(t) || parseVideo(t)) && (await quickAdd(t))) return;
+  openPasteSheet();
+});
+
+/* ================= НАПОМИНАНИЯ ОТ БОТА: даты для ежедневной проверки ================= */
+// Сервер-напоминалка (GitHub Actions раз в день) читает только названия и даты — без подарков и заметок.
+let remT;
+function syncRemind() {
+  if (isOwner() || !S.store || S.store.mode !== "cloud" || !SPY.loaded) return;
+  const dates = (SPY.dates || []).map((d) => ({ t: d.title, d: d.d, m: d.m, e: d.emo || "" }));
+  const sig = JSON.stringify(dates);
+  if (S.meta.sa_remind && JSON.stringify(S.meta.sa_remind.dates || []) === sig && S.meta.sa_remind.on !== false) return;
+  clearTimeout(remT); remT = setTimeout(() => S.store.saveMeta({ sa_remind: { dates, on: true, at: Date.now() } }).catch(() => {}), 1200);
+}
+
 /* ================= МОДУЛИ АРИНЫ ================= */
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
@@ -2873,7 +3056,7 @@ function onData(d) {
     ids.forEach((id) => { const a = prevItems[id], b = S.items[id]; if (a && b && G(id) && !a.done && b.done) { toast("🎉 " + herName() + " отметила «" + b.title + "» подаренным — это от тебя?"); haptic("ok"); } });
   }
   S.knownIds = new Set(ids);
-  migrateGifts();
+  migrateGifts(); syncRemind();
   if (!isOwner() && S.meta.mood && (S.meta.moodSeenAt || 0) < (S.meta.moodAt || 0) && !document.hidden && S.store) S.store.saveMeta({ moodSeenAt: Date.now() }).catch(() => {});
   if (isOwner() && S.knownReply != null && S.meta.moodReply && S.meta.moodReply.at > S.knownReply) { toast(S.meta.moodReply.r + " " + HIM + ": " + S.meta.moodReply.l + (S.meta.moodReply.t ? " — «" + S.meta.moodReply.t + "»" : "")); SFX.play("chime"); haptic("ok"); }
   S.knownReply = S.meta.moodReply ? S.meta.moodReply.at : 0;
@@ -2898,7 +3081,8 @@ function renderLocked() {
 (async function boot() {
   if (!ALLOWED) { try { if (tg) { tg.ready(); tg.expand(); } } catch (e) {} renderLocked(); return; }
   if (!S.seen && S.role === "viewer") { S.seen = {}; saveSeen(); }
-  if (S.role === "viewer") loadSpy();
+  if (S.role === "viewer") { loadSpy(); loadPurchases(); }
+  RATES.load();
   try {
     if (tg) { tg.ready(); try { tg.expand(); } catch (e) {} }
     const dark = tg && tg.colorScheme === "dark";
