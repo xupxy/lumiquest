@@ -1129,6 +1129,25 @@ html.dark[data-theme=autumn]{
 .ar-gi .ar-go{background:var(--bg2);color:var(--ink)}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
+/* 1. подбор подарка */
+.sa-find{display:flex;align-items:center;gap:11px;width:100%;margin:12px 0 2px;padding:10px 10px 10px 14px;border-radius:18px;background:var(--card);box-shadow:var(--cardShadow);text-align:left;transition:transform .2s var(--ease)}
+.sa-find:active{transform:scale(.98)}
+.sa-mg{font-size:18px;flex:none;filter:saturate(.6)}
+.sa-ft{flex:1;min-width:0;font-weight:700;font-size:15px;color:var(--ink)}
+.sa-ft small{display:block;font-weight:600;font-size:12px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sa-fch{flex:none;padding:7px 10px;border-radius:999px;background:var(--roseSoft);color:var(--rose);font:800 12px/1 var(--font);max-width:46%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sa-fch.z{background:var(--bg2);color:var(--ink3);padding:6px;display:grid;place-items:center}.sa-fch svg{width:15px;height:15px}
+.sa-srch{position:relative;margin-top:14px}
+.sa-srch .sa-mg{position:absolute;left:15px;top:50%;transform:translateY(-50%);pointer-events:none}
+.sa-srch .inp{padding-left:46px;padding-right:46px}
+.sa-clr{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;background:var(--bg2);color:var(--ink2);display:grid;place-items:center}
+.sa-seg{margin-top:0}
+.sa-cnt{font:700 12px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin:8px 4px 0}
+.sa-row .gt span{font-weight:600}
+.sa-conv{font-style:normal;color:var(--ink3)}
+.sa-top,.sa-mine{flex:none;font-size:22px;padding-right:4px}
+.sa-empty{text-align:center;padding:26px 10px;color:var(--ink2);font-size:30px}
+.sa-empty b{display:block;font:700 19px/1.2 var(--serif);color:var(--ink);margin-top:6px}.sa-empty span{display:block;font-size:13.5px;margin-top:4px}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -3575,6 +3594,126 @@ document.addEventListener("click", (e) => { if (e.target.closest("[data-ar-revie
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
 /* ================= МОДУЛИ САШИ ================= */
+/* Всё ниже — только для него (viewer). Личные данные — в CloudStorage через PRIV, ключи «sa_…»
+   (длинные значения режутся на куски < 3800 символов). В общую базу (S.meta / items) ничего не пишем. */
+const SA = (() => {
+  const d = { buy: {}, occ: { as: {}, bud: {} }, ideas: [], fx: {}, chk: {}, arch: [], px: {}, snap: {} };
+  const st = { loaded: false, loading: null };
+  const CH = 3800;
+  async function load() {
+    if (st.loading) return st.loading;
+    st.loading = (async () => {
+      try {
+        const keys = (await PRIV.keys()).filter((k) => k.startsWith("sa_"));
+        const got = keys.length ? await PRIV.get(keys) : {};
+        keys.filter((k) => !k.includes("~")).forEach((k) => {
+          let raw = got[k] || "";
+          const m = raw.match(/^@(\d+)$/);
+          if (m) { raw = ""; for (let i = 0; i < +m[1]; i++) raw += got[k + "~" + i] || ""; }
+          try { const v = JSON.parse(raw); if (v != null) d[k.slice(3)] = v; } catch (e) {}
+        });
+      } catch (e) { console.warn(e); }
+      st.loaded = true; if (S.loaded) render(); SA.after.forEach((f) => { try { f(); } catch (e) { console.warn(e); } });
+    })();
+    return st.loading;
+  }
+  const chunksOf = {};
+  async function save(name) {
+    const s = JSON.stringify(d[name]); const k = "sa_" + name;
+    const old = chunksOf[name] || 0;
+    if (s.length <= CH) { await PRIV.set(k, s); chunksOf[name] = 0; }
+    else {
+      const n = Math.ceil(s.length / CH);
+      for (let i = 0; i < n; i++) await PRIV.set(k + "~" + i, s.slice(i * CH, (i + 1) * CH));
+      await PRIV.set(k, "@" + n); chunksOf[name] = n;
+    }
+    for (let i = chunksOf[name]; i < old; i++) PRIV.del(k + "~" + i);
+  }
+  return { d, st, load, save, after: [] };
+})();
+const saOn = () => !isOwner() && S.role === "viewer";
+const saCur = () => SPY.cur || "€";
+// примерные курсы к евро (можно поправить в настройках — см. «Курсы валют»)
+const SA_FX0 = { "€": 1, "$": 0.92, "₴": 0.022, "₽": 0.0105, "zł": 0.23, "£": 1.17 };
+const saRate = (c) => { const v = (SA.d.fx || {})[c]; return v > 0 ? v : SA_FX0[c] || 0; };
+function saConv(n, from, to) { from = from || "€"; to = to || saCur(); if (!n) return 0; if (from === to) return n; const a = saRate(from), b = saRate(to); return a && b ? n * a / b : 0; }
+const saPriceIn = (it, to) => saConv(numPrice(it), it.cur || "€", to);
+const saThumb = (it) => { const c = CATS[it.cat] || CATS[2]; return '<span class="gimg k' + c.key + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + "</span>"; };
+if (S.role === "viewer") SA.load();
+
+/* --- 1. ПОДБОР ПОДАРКА: поиск + потолок цены + умная сортировка «важность × цена» --- */
+const SA_PICK = Object.assign({ q: "", max: 0, cats: [], sort: "smart", hideMine: false }, LS.get("wl_sa_pick", {}));
+const saPickSave = () => LS.set("wl_sa_pick", { max: SA_PICK.max, cats: SA_PICK.cats, sort: SA_PICK.sort, hideMine: SA_PICK.hideMine });
+const SA_CATW = { 1: 3, 2: 2, 3: 1.6 };
+function saPickList() {
+  const q = normT(SA_PICK.q), cur = saCur();
+  let l = Object.values(S.items).filter((i) => !i.done);
+  if (q) l = l.filter((i) => normT([i.title, i.details, i.note].join(" ")).includes(q));
+  if (SA_PICK.cats.length) l = l.filter((i) => SA_PICK.cats.includes(+i.cat));
+  if (SA_PICK.hideMine) l = l.filter((i) => !G(i.id));
+  if (SA_PICK.max) l = l.filter((i) => { const p = saPriceIn(i, cur); return p && p <= SA_PICK.max; });
+  const p = (i) => saPriceIn(i, cur) || 0;
+  const score = (i) => (SA_CATW[i.cat] || 1) * 100 / Math.sqrt(Math.max(p(i), 5)) + (i.link ? 1.5 : 0);
+  const by = { smart: (a, b) => score(b) - score(a), cheap: (a, b) => (p(a) || 1e9) - (p(b) || 1e9), exp: (a, b) => p(b) - p(a), new: (a, b) => (b.createdAt || 0) - (a.createdAt || 0) }[SA_PICK.sort] || (() => 0);
+  return l.sort(by);
+}
+function saPickRows() {
+  const l = saPickList(), cur = saCur();
+  if (!l.length) return '<div class="sa-empty">🤷‍♂️<b>Ничего не подошло</b><span>Попробуй поднять потолок цены или убрать фильтры</span></div>';
+  let sum = 0; l.forEach((i) => { sum += saPriceIn(i, cur); });
+  return '<div class="sa-cnt">' + l.length + " " + plural(l.length, ["вариант", "варианта", "вариантов"]) + (sum ? " · всё вместе ≈ " + money(sum, cur) : "") + "</div>" +
+    l.map((it, k) => {
+      const c = CATS[it.cat] || CATS[2], conv = (it.cur || "€") !== cur && saPriceIn(it, cur);
+      return '<button class="grow sa-row" data-sa-open="' + esc(it.id) + '">' + saThumb(it) +
+        '<span class="gt"><b>' + esc(it.title) + "</b><span>" + c.emo + " " + c.short + (priceStr(it) ? " · " + priceStr(it) + (conv ? ' <em class="sa-conv">≈ ' + money(conv, cur) + "</em>" : "") : " · без цены") + "</span></span>" +
+        (G(it.id) ? '<span class="sa-mine">🎁</span>' : SA_PICK.sort === "smart" && k < 3 ? '<span class="sa-top">' + ["🥇", "🥈", "🥉"][k] + "</span>" : "") + "</button>";
+    }).join("");
+}
+function saPickHtml() {
+  const cur = saCur(), maxes = [30, 50, 100, 200];
+  return '<div class="sa-srch"><span class="sa-mg">🔎</span><input class="inp" id="sa_q" autocomplete="off" placeholder="Название, цвет, размер…" value="' + esc(SA_PICK.q) + '">' + (SA_PICK.q ? '<button class="sa-clr" data-sa-k="clr" aria-label="Очистить">' + IC_X + "</button>" : "") + "</div>" +
+    '<div class="fl">Потолок цены <span class="opt">в ' + esc(cur) + "</span></div>" +
+    '<div class="chips"><button class="chip' + (!SA_PICK.max ? " on" : "") + '" data-sa-max="0">Любая</button>' + maxes.map((m) => '<button class="chip' + (SA_PICK.max === m ? " on" : "") + '" data-sa-max="' + m + '">до ' + money(m, cur) + "</button>").join("") +
+      (SPY.budget && !maxes.includes(SPY.budget) ? '<button class="chip' + (SA_PICK.max === SPY.budget ? " on" : "") + '" data-sa-max="' + SPY.budget + '">💸 мой бюджет</button>' : "") + "</div>" +
+    '<div class="fl">Важность</div><div class="chips">' + [1, 2, 3].map((k) => '<button class="chip' + (SA_PICK.cats.includes(k) ? " on" : "") + '" data-sa-cat="' + k + '">' + CATS[k].emo + " " + CATS[k].short + "</button>").join("") +
+      '<button class="chip' + (SA_PICK.hideMine ? " on" : "") + '" data-sa-k="mine">Скрыть мои 🎁</button></div>' +
+    '<div class="fl">Сортировка</div><div class="seg sa-seg">' + [["smart", "Умно"], ["cheap", "Дешевле"], ["exp", "Дороже"], ["new", "Новые"]].map((s) => '<button class="' + (SA_PICK.sort === s[0] ? "on" : "") + '" data-sa-sort="' + s[0] + '">' + s[1] + "</button>").join("") + "</div>" +
+    (SA_PICK.sort === "smart" ? '<div class="hint">«Умно» — сначала важное для неё и недорогое, потом остальное. Цены в других валютах пересчитаны примерно.</div>' : "") +
+    '<div class="glist" id="sa_res">' + saPickRows() + "</div>";
+}
+function saOpenPick() {
+  const sh = openSheet('<h3>Подбор подарка 🔎</h3><div id="sa_pk">' + saPickHtml() + "</div>");
+  const redraw = (full) => {
+    if (full) { const pos = sh.scrollTop; $("#sa_pk", sh).innerHTML = saPickHtml(); sh.scrollTop = pos; }
+    else $("#sa_res", sh).innerHTML = saPickRows();
+  };
+  sh._redraw = () => redraw(false);
+  sh.addEventListener("input", (e) => { if (e.target.id !== "sa_q") return; SA_PICK.q = e.target.value; redraw(false); });
+  sh.addEventListener("click", (e) => {
+    const o = e.target.closest("[data-sa-open]"); if (o) { openDetail(o.dataset.saOpen); return; }
+    const mx = e.target.closest("[data-sa-max]"); if (mx) { SA_PICK.max = +mx.dataset.saMax; }
+    const ct = e.target.closest("[data-sa-cat]"); if (ct) { const k = +ct.dataset.saCat; SA_PICK.cats = SA_PICK.cats.includes(k) ? SA_PICK.cats.filter((x) => x !== k) : SA_PICK.cats.concat([k]); }
+    const so = e.target.closest("[data-sa-sort]"); if (so) SA_PICK.sort = so.dataset.saSort;
+    const k = e.target.closest("[data-sa-k]");
+    if (k && k.dataset.saK === "mine") SA_PICK.hideMine = !SA_PICK.hideMine;
+    if (k && k.dataset.saK === "clr") { SA_PICK.q = ""; }
+    if (mx || ct || so || k) { haptic("light"); SFX.play("tick"); saPickSave(); redraw(true); if (k && k.dataset.saK === "clr") $("#sa_q", sh).focus(); }
+  });
+}
+HOOKS.main.push(() => {
+  if (!saOn()) return "";
+  const n = Object.values(S.items).filter((i) => !i.done).length; if (!n) return "";
+  const f = [];
+  if (SA_PICK.max) f.push("до " + money(SA_PICK.max, saCur()));
+  if (SA_PICK.cats.length) f.push(SA_PICK.cats.map((k) => CATS[k].emo).join(""));
+  return '<button class="sa-find" data-sa="pick"><span class="sa-mg">🔎</span><span class="sa-ft">Подобрать подарок<small>' + n + " " + plural(n, ["желание", "желания", "желаний"]) + " · поиск, цена, важность</small></span>" +
+    (f.length ? '<span class="sa-fch">' + esc(f.join(" · ")) + "</span>" : '<span class="sa-fch z">' + IC.chev + "</span>") + "</button>";
+});
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-sa]"); if (!b || b.closest(".sheet") && !b.hasAttribute("data-sa-any")) return;
+  const fn = SA_ACT[b.dataset.sa]; if (fn) { haptic("light"); fn(b, e); }
+});
+const SA_ACT = { pick: () => saOpenPick() };
 /* ================= /МОДУЛИ САШИ ================= */
 
 /* ================= новые желания вживую ================= */
