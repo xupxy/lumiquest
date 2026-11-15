@@ -937,6 +937,42 @@ html.dark[data-theme=autumn]{
 .ar-phup{display:flex;gap:8px;margin-top:12px}
 .ar-phup .inp{flex:1;min-width:0;padding:11px 14px;font-size:15px;border-radius:14px}
 .ar-phup .btn{width:auto;min-height:0;margin:0;padding:0 16px;border-radius:14px;font-size:14px;flex:none}
+/* --- F4: подборки --- */
+.ar-bgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.ar-bc{background:var(--card);border-radius:22px;box-shadow:var(--cardShadow);padding:5px;text-align:left;display:flex;flex-direction:column;transition:transform .2s var(--ease);animation:rise .45s var(--ease) both}
+.ar-bc:active{transform:scale(.97)}
+.ar-col{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px;aspect-ratio:1/1;border-radius:17px;overflow:hidden;background:var(--bg2)}
+.ar-col>*{min-width:0;min-height:0;display:grid;place-items:center;font-size:26px;background:var(--bg2)}
+.ar-col img{width:100%;height:100%;object-fit:cover;display:block}
+.ar-col .k1{background:var(--c1s)}.ar-col .k2{background:var(--c2s)}.ar-col .k3{background:var(--c3s)}
+.ar-col.n0{display:grid;place-items:center;grid-template-columns:1fr;grid-template-rows:1fr;font-size:46px;background:linear-gradient(140deg,var(--roseSoft),var(--c3s))}
+.ar-col.n1>*{grid-column:1/-1;grid-row:1/-1}
+.ar-col.n2>*{grid-row:1/-1}
+.ar-col.n3>:first-child{grid-row:1/-1}
+.ar-bb{padding:9px 7px 6px}
+.ar-bb b{display:block;font:700 16px/1.2 var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-bb span{display:block;font-size:12px;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-bnew{border-radius:22px;border:1.5px dashed var(--ink3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:200px;color:var(--ink2);font-weight:700;font-size:14px;transition:transform .2s var(--ease)}
+.ar-bnew:active{transform:scale(.97)}
+.ar-bnew i{font-style:normal;width:46px;height:46px;border-radius:50%;background:var(--roseSoft);color:var(--rose);display:grid;place-items:center;font-size:24px}
+.ar-btop{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.ar-btop .ar-be{width:52px;height:52px;border-radius:17px;background:linear-gradient(140deg,var(--roseSoft),var(--c3s));display:grid;place-items:center;font-size:26px;flex:none}
+.ar-btop h3{margin:0;padding-right:40px}
+.ar-sum{display:flex;align-items:baseline;gap:8px;margin:14px 0 4px;padding:12px 15px;border-radius:16px;background:var(--ink);color:var(--bg);font:800 20px/1 var(--font)}
+.ar-sum small{font:700 10.5px/1 var(--font);letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.ar-sum em{margin-left:auto;font:600 12px/1 var(--font);font-style:normal;opacity:.7}
+.ar-blist{margin-top:12px;padding:4px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.ar-blist .ar-roww{display:flex;align-items:center}
+.ar-blist .ar-roww .ar-row{flex:1;min-width:0}
+.ar-blist .drm{margin-right:6px}
+.ar-pick{display:flex;align-items:center;gap:11px;width:100%;padding:8px;border-radius:16px;text-align:left}
+.ar-pick .bchk{margin-left:auto}
+.ar-pick.on .bchk{background:var(--rose);box-shadow:none}
+.ar-emos{display:flex;flex-wrap:wrap;gap:8px}
+.ar-emos button{width:46px;height:46px;border-radius:15px;background:var(--field);box-shadow:inset 0 0 0 1.5px var(--fline);font-size:22px;transition:transform .15s var(--ease)}
+.ar-emos button.on{background:var(--roseSoft);box-shadow:inset 0 0 0 2px var(--rose2);transform:scale(1.06)}
+.ar-bchips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.ar-bchips .chip{font-size:13px;padding:7px 11px}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -2935,6 +2971,109 @@ document.addEventListener("click", async (e) => {
     toast(old != null && p < old ? "Подешевело на " + Math.round(((old - p) / old) * 100) + "% 📉" : "Цена обновлена ✓");
     const sh = b.closest(".sheet"); if (sh) { closeSheet(sh._entry); setTimeout(() => openDetail(id), 380); }
   } catch (er) { toast("Ошибка: " + (er.message || er)); }
+});
+/* --- F4: 📌 подборки — собрать желания в образы и темы («Зимний образ», «Для дома»…) --- */
+const AR_BEMO = ["🧣", "❄️", "🏠", "✈️", "💄", "🎄", "👗", "📚", "🎧", "🌸", "🍳", "🧘‍♀️"];
+const AR_BIDEAS = [["🧣", "Зимний образ"], ["🏠", "Для дома"], ["✈️", "В отпуск"], ["💄", "Уход и красота"], ["🎄", "К Новому году"], ["🧘‍♀️", "Спорт и релакс"]];
+const arBoards = () => (Array.isArray(S.meta.ar_boards) ? S.meta.ar_boards : []);
+const arInBoard = (it, bid) => Array.isArray(it.ar_b) && it.ar_b.includes(bid);
+const arBoardItems = (bid) => Object.values(S.items).filter((it) => arInBoard(it, bid)).sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0) || (a.cat || 2) - (b.cat || 2));
+function arSum(list) {
+  const by = {}; list.filter((it) => !it.done).forEach((it) => { const n = numPrice(it); if (n) by[it.cur || "€"] = (by[it.cur || "€"] || 0) + n; });
+  const k = Object.keys(by); return k.length ? k.map((c) => money(by[c], c)).join(" + ") : "";
+}
+function arCollage(list, emo) {
+  const l = list.slice(0, 4);
+  if (!l.length) return '<div class="ar-col n0">' + esc(emo || "📌") + "</div>";
+  return '<div class="ar-col n' + Math.min(l.length, 4) + '">' + l.map((it) => { const c = CATS[it.cat] || CATS[2]; return it.thumb ? '<img src="' + it.thumb + '" alt="">' : '<span class="k' + c.key + '">' + c.emo + "</span>"; }).join("") + "</div>";
+}
+HOOKS.tabs.push(() => !isOwner() ? [] : [{
+  key: "ar_boards", label: "📌 Подборки", count: arBoards().length,
+  render: () => '<div class="ar-bgrid">' + arBoards().map((b, i) => { const l = arBoardItems(b.id), s = arSum(l);
+      return '<button class="ar-bc" data-ar-board="' + esc(b.id) + '" style="animation-delay:' + i * 45 + 'ms">' + arCollage(l, b.emo) + '<div class="ar-bb"><b>' + esc(b.emo + " " + b.name) + "</b><span>" + (l.length ? l.length + " " + plural(l.length, ["желание", "желания", "желаний"]) + (s ? " · " + esc(s) : "") : "пока пусто") + "</span></div></button>"; }).join("") +
+    '<button class="ar-bnew" data-ar-bnew><i>＋</i>Новая подборка</button></div>' +
+    (arBoards().length ? "" : '<p class="hint" style="text-align:center;margin-top:16px">Собери желания в образы и темы: «Зимний образ», «Для дома», «В отпуск» — и сразу видно, сколько это стоит вместе.</p>'),
+}]);
+function arBoardEdit(b) {
+  const isNew = !b; let emo = b ? b.emo : "🧣";
+  const sh = openSheet("<h3>" + (isNew ? "Новая подборка" : "Подборка") + '</h3><p class="ssub">Название и значок — подборки видишь только ты.</p>' +
+    '<label class="fl" for="ar_bn">Название</label><input class="inp" id="ar_bn" maxlength="40" autocomplete="off" placeholder="Например: Зимний образ" value="' + esc(b ? b.name : "") + '">' +
+    (isNew ? '<div class="ar-bchips">' + AR_BIDEAS.filter((x) => !arBoards().some((y) => y.name === x[1])).map((x) => '<button class="chip" data-ar-bidea="' + esc(x[0] + "|" + x[1]) + '">' + x[0] + " " + esc(x[1]) + "</button>").join("") + "</div>" : "") +
+    '<div class="fl">Значок</div><div class="ar-emos">' + AR_BEMO.map((e) => '<button class="' + (e === emo ? "on" : "") + '" data-ar-bemo="' + e + '">' + e + "</button>").join("") + "</div>" +
+    '<button class="btn pri" id="ar_bsave" style="margin-top:24px">' + (isNew ? "Создать" : "Сохранить") + "</button>" + (isNew ? "" : '<button class="btn danger" id="ar_bdel">Удалить подборку</button>'));
+  const setEmo = (e) => { emo = e; sh.querySelectorAll("[data-ar-bemo]").forEach((x) => x.classList.toggle("on", x.dataset.arBemo === e)); };
+  sh.addEventListener("click", async (e) => {
+    const em = e.target.closest("[data-ar-bemo]"); if (em) { setEmo(em.dataset.arBemo); haptic("light"); return; }
+    const id = e.target.closest("[data-ar-bidea]"); if (id) { const [ee, nn] = id.dataset.arBidea.split("|"); $("#ar_bn", sh).value = nn; setEmo(ee); haptic("light"); return; }
+    if (e.target.closest("#ar_bdel")) {
+      const ok = await confirmSheet({ icon: esc(b.emo), title: "Удалить подборку?", text: "Желания останутся в вишлисте — исчезнет только сама подборка «" + esc(b.name) + "».", ok: "Удалить", danger: true });
+      if (!ok) return;
+      await S.store.saveMeta({ ar_boards: arBoards().filter((x) => x.id !== b.id) });
+      for (const it of arBoardItems(b.id)) await S.store.patchItem(it.id, { ar_b: it.ar_b.filter((x) => x !== b.id) });
+      closeAll(); toast("Подборка удалена", "🗑"); return;
+    }
+    if (!e.target.closest("#ar_bsave")) return;
+    const name = $("#ar_bn", sh).value.trim(); if (!name) { $("#ar_bn", sh).classList.add("err"); haptic("error"); return; }
+    const l = arBoards().slice(); let nb;
+    if (isNew) { nb = { id: "b" + Date.now().toString(36), name, emo }; l.push(nb); } else { const i = l.findIndex((x) => x.id === b.id); l[i] = nb = Object.assign({}, b, { name, emo }); }
+    try { await S.store.saveMeta({ ar_boards: l }); haptic("ok"); SFX.play("pop"); closeSheet(); if (isNew) { S.tab = "ar_boards"; render(); setTimeout(() => arBoardOpen(nb.id), 380); } else toast("Сохранено", "✓"); }
+    catch (er) { toast("Ошибка: " + (er.message || er)); }
+  });
+}
+function arBoardOpen(bid) {
+  const sh = openSheet('<div id="ar-bbody"></div>');
+  const draw = () => {
+    const b = arBoards().find((x) => x.id === bid); if (!b) { closeSheet(sh._entry); return; }
+    const l = arBoardItems(bid), s = arSum(l), act = l.filter((x) => !x.done);
+    $("#ar-bbody", sh).innerHTML = '<div class="ar-btop"><span class="ar-be">' + esc(b.emo) + "</span><div><h3>" + esc(b.name) + '</h3><p class="ssub">' + l.length + " " + plural(l.length, ["желание", "желания", "желаний"]) + (l.length - act.length ? " · сбылось " + (l.length - act.length) : "") + "</p></div></div>" +
+      (s ? '<div class="ar-sum"><small>вместе</small>' + esc(s) + "<em>" + act.length + " " + plural(act.length, ["вещь", "вещи", "вещей"]) + "</em></div>" : "") +
+      (l.length ? '<div class="ar-blist">' + l.map((it) => '<div class="ar-roww">' + arRowHtml(it, []).replace('data-open="', 'data-ar-open="') + '<button class="drm" data-ar-bout="' + esc(it.id) + '" aria-label="Убрать из подборки">' + IC_X + "</button></div>").join("") + "</div>" : '<div class="empty" style="padding:24px 10px 6px"><div class="eart"><span>' + esc(b.emo) + "</span></div><h3>Пока пусто</h3><p>Добавь желания, которые подходят друг к другу.</p></div>") +
+      '<button class="btn pri" data-ar-bpick style="margin-top:18px">＋ Добавить желания</button><button class="btn ghost" data-ar-bedit>✏️ Название и значок</button>';
+  };
+  draw(); sh._redraw = draw;
+  sh.addEventListener("click", async (e) => {
+    const o = e.target.closest("[data-ar-open]"); if (o) { openDetail(o.dataset.arOpen); return; }
+    const out = e.target.closest("[data-ar-bout]"); if (out) { const it = S.items[out.dataset.arBout]; haptic("light"); await S.store.patchItem(it.id, { ar_b: (it.ar_b || []).filter((x) => x !== bid) }); return; }
+    if (e.target.closest("[data-ar-bedit]")) { arBoardEdit(arBoards().find((x) => x.id === bid)); return; }
+    if (e.target.closest("[data-ar-bpick]")) arBoardPick(bid);
+  });
+}
+function arBoardPick(bid) {
+  const all = Object.values(S.items).filter((it) => !it.done).sort((a, b) => (a.cat || 2) - (b.cat || 2) || (b.createdAt || 0) - (a.createdAt || 0));
+  const sel = new Set(all.filter((it) => arInBoard(it, bid)).map((it) => it.id)), was = new Set(sel);
+  const sh = openSheet('<h3>Что войдёт в подборку?</h3><p class="ssub">Отметь желания — можно из разных категорий.</p><div class="ar-blist" style="margin-top:14px">' +
+    all.map((it) => { const c = CATS[it.cat] || CATS[2]; return '<button class="ar-pick' + (sel.has(it.id) ? " on" : "") + '" data-ar-pk="' + esc(it.id) + '"><span class="ar-th k' + c.key + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + '</span><span class="ar-rt"><b>' + esc(it.title) + "</b><span>" + (priceStr(it) || c.emo + " " + c.short) + '</span></span><span class="bchk">' + IC.check.replace("<svg", '<svg width="15" height="15"') + "</span></button>"; }).join("") +
+    '</div><button class="btn pri" id="ar_pkok" style="margin-top:18px">Готово</button>');
+  sh.addEventListener("click", async (e) => {
+    const p = e.target.closest("[data-ar-pk]");
+    if (p) { const id = p.dataset.arPk; if (sel.has(id)) sel.delete(id); else sel.add(id); p.classList.toggle("on", sel.has(id)); haptic("light"); SFX.play("tick"); return; }
+    if (!e.target.closest("#ar_pkok")) return;
+    try {
+      for (const it of all) { const on = sel.has(it.id); if (on !== was.has(it.id)) await S.store.patchItem(it.id, { ar_b: on ? (it.ar_b || []).concat(bid) : (it.ar_b || []).filter((x) => x !== bid) }); }
+      haptic("ok"); closeSheet();
+    } catch (er) { toast("Ошибка: " + (er.message || er)); }
+  });
+}
+HOOKS.editor.push({
+  html: (it) => {
+    if (!isOwner() || !arBoards().length) return "";
+    const on = (it && it.ar_b) || [];
+    return '<div class="fl">Подборки <span class="opt">необязательно</span></div><div class="chips" id="ar_bsel">' + arBoards().map((b) => '<button type="button" class="chip' + (on.includes(b.id) ? " on" : "") + '" data-ar-bsel="' + esc(b.id) + '">' + esc(b.emo + " " + b.name) + "</button>").join("") + "</div>";
+  },
+  bind: (sh) => { const w = $("#ar_bsel", sh); if (w) w.addEventListener("click", (e) => { const c = e.target.closest("[data-ar-bsel]"); if (c) { c.classList.toggle("on"); haptic("light"); } }); },
+  collect: (sh, it) => {
+    const w = $("#ar_bsel", sh); if (!w) return {};
+    const known = arBoards().map((b) => b.id), keep = ((it && it.ar_b) || []).filter((x) => !known.includes(x));
+    return { ar_b: keep.concat(Array.from(w.querySelectorAll(".chip.on")).map((c) => c.dataset.arBsel)) };
+  },
+});
+HOOKS.detail.push((it) => {
+  if (!isOwner()) return ""; const bs = arBoards().filter((b) => arInBoard(it, b.id)); if (!bs.length) return "";
+  return '<div class="ar-bchips">' + bs.map((b) => '<button class="chip" data-ar-board="' + esc(b.id) + '">📌 ' + esc(b.emo + " " + b.name) + "</button>").join("") + "</div>";
+});
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-ar-board]"); if (b) { haptic("light"); arBoardOpen(b.dataset.arBoard); return; }
+  if (e.target.closest("[data-ar-bnew]")) { haptic("light"); arBoardEdit(null); }
 });
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
