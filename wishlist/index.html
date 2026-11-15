@@ -1263,6 +1263,18 @@ html[data-theme]:not([data-theme=classic]) .sa-prep{background:var(--th-deep)}
 .sa-ai .drm{width:26px;height:26px}
 .sa-similar{display:flex;gap:10px;align-items:center;width:100%;margin-top:12px;padding:11px 14px;border-radius:16px;background:var(--c3s);color:var(--ink);font-size:13.5px;text-align:left;line-height:1.35}
 .sa-similar>span:first-child{font-size:20px}
+/* 8. где дешевле */
+.sa-pxadd{display:block;width:100%;margin-top:12px;padding:12px;border-radius:16px;border:1.5px dashed var(--ink3);font:800 14px/1 var(--font);color:var(--ink2)}
+.sa-px{margin-top:16px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);padding:4px 14px 12px}
+.sa-pxr{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;border-top:1px dashed var(--line);text-align:left}
+.sa-pxr.her{opacity:.75}
+.sa-pxs{flex:1;min-width:0;font-weight:700;font-size:14.5px}.sa-pxs small{display:block;font-weight:600;font-size:12px;color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sa-pxp{flex:none;text-align:right;font:800 15px/1.2 var(--font)}.sa-pxp .sa-save{display:block;margin:4px 0 0}
+.sa-pxr.best{margin:2px -8px;padding:10px 8px;width:calc(100% + 16px);border-radius:14px;border-top-color:transparent;background:var(--c2s)}
+.sa-pxr.best+.sa-pxr{border-top-color:transparent}
+.sa-pxr.out{opacity:.5}.sa-pxr.out .sa-pxp{text-decoration:line-through}
+.sa-pxb{display:flex;gap:8px}.sa-pxb .sa-trk{flex:1}
+.sa-pxin{font-style:normal;color:var(--c2);font-weight:800}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -3766,8 +3778,8 @@ function saPickList() {
   if (q) l = l.filter((i) => normT([i.title, i.details, i.note].join(" ")).includes(q));
   if (SA_PICK.cats.length) l = l.filter((i) => SA_PICK.cats.includes(+i.cat));
   if (SA_PICK.hideMine) l = l.filter((i) => !G(i.id));
-  if (SA_PICK.max) l = l.filter((i) => { const p = saPriceIn(i, cur); return p && p <= SA_PICK.max; });
-  const p = (i) => saPriceIn(i, cur) || 0;
+  const p = (i) => { const o = typeof saBest === "function" && saBest(i); return o ? o.v : saPriceIn(i, cur) || 0; };
+  if (SA_PICK.max) l = l.filter((i) => { const v = p(i); return v && v <= SA_PICK.max; });
   const score = (i) => (SA_CATW[i.cat] || 1) * 100 / Math.sqrt(Math.max(p(i), 5)) + (i.link ? 1.5 : 0);
   const by = { smart: (a, b) => score(b) - score(a), cheap: (a, b) => (p(a) || 1e9) - (p(b) || 1e9), exp: (a, b) => p(b) - p(a), new: (a, b) => (b.createdAt || 0) - (a.createdAt || 0) }[SA_PICK.sort] || (() => 0);
   return l.sort(by);
@@ -3775,12 +3787,12 @@ function saPickList() {
 function saPickRows() {
   const l = saPickList(), cur = saCur();
   if (!l.length) return '<div class="sa-empty">🤷‍♂️<b>Ничего не подошло</b><span>Попробуй поднять потолок цены или убрать фильтры</span></div>';
-  let sum = 0; l.forEach((i) => { sum += saPriceIn(i, cur); });
+  let sum = 0; l.forEach((i) => { const o = typeof saBest === "function" && saBest(i); sum += o ? o.v : saPriceIn(i, cur); });
   return '<div class="sa-cnt">' + l.length + " " + plural(l.length, ["вариант", "варианта", "вариантов"]) + (sum ? " · всё вместе ≈ " + money(sum, cur) : "") + "</div>" +
     l.map((it, k) => {
       const c = CATS[it.cat] || CATS[2], conv = (it.cur || "€") !== cur && saPriceIn(it, cur);
       return '<button class="grow sa-row" data-sa-open="' + esc(it.id) + '">' + saThumb(it) +
-        '<span class="gt"><b>' + esc(it.title) + "</b><span>" + c.emo + " " + c.short + (priceStr(it) ? " · " + priceStr(it) + (conv ? ' <em class="sa-conv">≈ ' + money(conv, cur) + "</em>" : "") : " · без цены") + "</span></span>" +
+        '<span class="gt"><b>' + esc(it.title) + "</b><span>" + c.emo + " " + c.short + (priceStr(it) ? " · " + priceStr(it) + (conv ? ' <em class="sa-conv">≈ ' + money(conv, cur) + "</em>" : "") : " · без цены") + (typeof saBest === "function" && saBest(it) && saBest(it).v < saPriceIn(it, cur) - 0.5 ? ' <em class="sa-pxin">🏷 ' + money(saBest(it).v, cur) + "</em>" : "") + "</span></span>" +
         (G(it.id) ? '<span class="sa-mine">🎁</span>' : SA_PICK.sort === "smart" && k < 3 ? '<span class="sa-top">' + ["🥇", "🥈", "🥉"][k] + "</span>" : "") + "</button>";
     }).join("");
 }
@@ -3843,7 +3855,7 @@ function saEtaTxt(b) {
   return l === 0 ? "приедет сегодня" : l === 1 ? "приедет завтра" : l > 1 ? "приедет " + saDM(b.eta) + " · через " + l + " " + dayWord(l) : "должно было приехать " + saDM(b.eta);
 }
 const saBuy = (id) => (SA.d.buy || {})[id];
-const saPaid = (it) => { const b = saBuy(it.id); return b && b.paid > 0 ? saConv(b.paid, b.cur || "€", saCur()) : saPriceIn(it, saCur()); };
+let saPaid = (it) => { const b = saBuy(it.id); return b && b.paid > 0 ? saConv(b.paid, b.cur || "€", saCur()) : saPriceIn(it, saCur()); };
 function saHost(u) { try { return new URL(fixLink(u)).hostname.replace(/^www\./, ""); } catch (e) { return ""; } }
 HOOKS.detail.push((it) => {
   if (!saOn() || it.done && !saBuy(it.id)) return "";
@@ -3926,7 +3938,7 @@ function saGiftRow(x) {
   if (x.html) return x.html;
   const it = x.it, s = gstOf(it.id), b = saBuy(it.id);
   return '<div class="grow sa-orow"><button class="gimg k' + ((CATS[it.cat] || CATS[2]).key) + '" data-open="' + esc(it.id) + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : (CATS[it.cat] || CATS[2]).emo) + "</button>" +
-    '<button class="gt" data-open="' + esc(it.id) + '" style="text-align:left"><b>' + esc(it.title) + "</b><span>" + (x.cost ? money(x.cost, saCur()) + (b && b.paid > 0 ? " · заплатил" : "") : "без цены") + "</span></button>" +
+    '<button class="gt" data-open="' + esc(it.id) + '" style="text-align:left"><b>' + esc(it.title) + "</b><span>" + (x.cost ? money(x.cost, saCur()) + (b && b.paid > 0 ? " · заплатил" : typeof saBest === "function" && saBest(it) ? " · 🏷 " + esc(saBest(it).shop || "лучшая цена") : "") : "без цены") + "</span></button>" +
     '<button class="gst s' + s + '" data-gst="' + esc(it.id) + '">' + GST[s][0] + " " + GST[s][1] + "</button></div>";
 }
 function saOccCard(dt) {
@@ -4302,6 +4314,60 @@ HOOKS.detail.push((it) => {
   if (!hit) return "";
   return '<button class="sa-similar" data-sa="arch" data-sa-any><span>📚</span><span>Похожее ты уже дарил: <b>«' + esc(hit.t) + "»</b> · " + new Date(hit.at).toLocaleDateString("ru-RU", { month: "long", year: "numeric" }) + (hit.occ ? " · " + esc(hit.occ) : "") + "</span></button>";
 });
+
+/* --- 8. ГДЕ ДЕШЕВЛЕ: сравнение цен в разных магазинах (лучшая цена идёт в бюджет) --- */
+const saOffers = (id) => ((SA.d.px || {})[id] || []);
+function saBest(it) {
+  const l = saOffers(it.id).map((o) => Object.assign({ v: saConv(o.p, o.cur || "€", saCur()) }, o)).filter((o) => o.v > 0 && !o.out);
+  return l.sort((a, b) => a.v - b.v)[0] || null;
+}
+// бюджет: заплачено → лучшая найденная цена → её цена
+const saPaid0 = saPaid;
+saPaid = (it) => { const b = saBuy(it.id); if (b && b.paid > 0) return saPaid0(it); const o = saBest(it); return o ? o.v : saPaid0(it); };
+HOOKS.detail.push((it) => {
+  if (!saOn() || it.done) return "";
+  const l = saOffers(it.id), her = saPriceIn(it, saCur());
+  if (!l.length) return '<button class="sa-pxadd" data-sa="pxnew" data-sa-any data-id="' + esc(it.id) + '">🏷 Сравнить цены в магазинах</button>';
+  const best = saBest(it);
+  const rows = l.map((o) => Object.assign({ v: saConv(o.p, o.cur || "€", saCur()) }, o)).sort((a, b) => (a.out ? 1 : 0) - (b.out ? 1 : 0) || a.v - b.v);
+  return '<div class="sa-px"><div class="sa-bh"><span>🏷 Где дешевле</span><span class="sa-sec">🤫 только тебе</span></div>' +
+    (her ? '<div class="sa-pxr her"><span class="sa-pxs">У неё в списке' + (saHost(it.link) ? "<small>" + esc(saHost(it.link)) + "</small>" : "") + '</span><span class="sa-pxp">' + priceStr(it) + "</span></div>" : "") +
+    rows.map((o) => { const sv = her && o.v && !o.out ? her - o.v : 0;
+      return '<button class="sa-pxr' + (best && o.id === best.id ? " best" : "") + (o.out ? " out" : "") + '" data-sa="pxed" data-sa-any data-id="' + esc(it.id) + '" data-o="' + esc(o.id) + '"><span class="sa-pxs">' + (best && o.id === best.id ? "🏆 " : "") + esc(o.shop || "Магазин") + "<small>" + [o.out ? "нет в наличии" : "", o.note, ago(o.at)].filter(Boolean).map(esc).join(" · ") + '</small></span><span class="sa-pxp">' + money(o.p, o.cur || "€") + (sv > 0.5 ? '<em class="sa-save">−' + money(sv, saCur()) + "</em>" : "") + "</span></button>"; }).join("") +
+    '<div class="sa-pxb"><button class="sa-trk" data-sa="pxnew" data-sa-any data-id="' + esc(it.id) + '">＋ Ещё магазин</button>' + (best && best.link ? '<button class="sa-trk ok" data-sa="pxgo" data-sa-any data-id="' + esc(it.id) + '">Открыть лучшую ↗</button>' : "") + "</div>" +
+    (best && G(it.id) ? '<div class="hint">В бюджет повода идёт лучшая цена: ' + money(best.v, saCur()) + ".</div>" : "") + "</div>";
+});
+function saOfferForm(id, oid) {
+  const it = S.items[id]; if (!it) return;
+  const o = Object.assign({ shop: "", p: "", cur: it.cur || saCur(), link: "", note: "", out: false }, oid ? saOffers(id).find((x) => x.id === oid) : {});
+  const curOpts = CURS.map((c) => "<option" + (o.cur === c ? " selected" : "") + ">" + c + "</option>").join("");
+  const sh = openSheet("<h3>" + (oid ? "Предложение 🏷" : "Цена в магазине 🏷") + '</h3><p class="ssub">' + esc(it.title) + (priceStr(it) ? " · у неё " + priceStr(it) : "") + "</p>" +
+    '<label class="fl" for="sa_ps">Магазин</label><input class="inp" id="sa_ps" maxlength="40" placeholder="Zalando, Footlocker, ТЦ…" value="' + esc(o.shop) + '">' +
+    '<label class="fl" for="sa_pp">Цена</label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="sa_pp" inputmode="decimal" placeholder="0" value="' + esc(o.p || "") + '"></div><select class="inp cur" id="sa_pc">' + curOpts + "</select></div>" +
+    '<input class="inp" id="sa_pl" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="ссылка (необязательно)" value="' + esc(o.link) + '" style="margin-top:10px">' +
+    '<label class="fl" for="sa_pn">Заметка</label><input class="inp" id="sa_pn" maxlength="60" placeholder="промокод, доставка, размер есть…" value="' + esc(o.note) + '">' +
+    '<button class="tgl' + (o.out ? " on" : "") + '" id="sa_po"><span><b>Нет в наличии</b><span class="d">Не учитывать как лучшую цену</span></span><span class="sw"></span></button>' +
+    '<button class="btn pri" id="sa_psave" style="margin-top:20px">Сохранить</button>' + (oid ? '<button class="btn danger" id="sa_pdel">Удалить</button>' : ""));
+  let out = !!o.out;
+  $("#sa_pl", sh).addEventListener("change", () => { const h = saHost($("#sa_pl", sh).value); if (h && !$("#sa_ps", sh).value.trim()) $("#sa_ps", sh).value = h; const c = curFromDomain($("#sa_pl", sh).value); if (c) $("#sa_pc", sh).value = c; });
+  sh.addEventListener("click", async (e) => {
+    if (e.target.closest("#sa_po")) { out = !out; e.target.closest("#sa_po").classList.toggle("on", out); haptic("light"); return; }
+    SA.d.px = SA.d.px || {};
+    if (e.target.closest("#sa_pdel")) { SA.d.px[id] = saOffers(id).filter((x) => x.id !== oid); if (!SA.d.px[id].length) delete SA.d.px[id]; await SA.save("px"); haptic("warning"); closeSheet(); render(); saRefreshDetail(id); return; }
+    if (!e.target.closest("#sa_psave")) return;
+    const p = Number(String($("#sa_pp", sh).value).replace(/\s/g, "").replace(",", "."));
+    if (!(p > 0)) { $("#sa_pp", sh).classList.add("err"); setTimeout(() => $("#sa_pp", sh).classList.remove("err"), 900); haptic("error"); return; }
+    const n = { shop: $("#sa_ps", sh).value.trim() || saHost($("#sa_pl", sh).value), p, cur: $("#sa_pc", sh).value, link: $("#sa_pl", sh).value.trim(), note: $("#sa_pn", sh).value.trim(), out, at: Date.now() };
+    const l = saOffers(id).slice(); const k = l.findIndex((x) => x.id === oid);
+    if (k >= 0) l[k] = Object.assign(l[k], n); else l.push(Object.assign({ id: uid(5) }, n));
+    SA.d.px[id] = l; await SA.save("px"); haptic("ok"); SFX.play("pop"); closeSheet(); render();
+    const b = saBest(it), her = saPriceIn(it, saCur());
+    toast(b && her && b.v < her - 0.5 ? "Дешевле на " + money(her - b.v, saCur()) + " — в " + (b.shop || "магазине") + " 🏷" : "Цена сохранена 🏷"); saRefreshDetail(id);
+  });
+}
+SA_ACT.pxnew = (b) => saOfferForm(b.dataset.id);
+SA_ACT.pxed = (b) => saOfferForm(b.dataset.id, b.dataset.o);
+SA_ACT.pxgo = (b) => { const it = S.items[b.dataset.id]; const o = it && saBest(it); if (o && o.link) openLink(o.link); };
 /* ================= /МОДУЛИ САШИ ================= */
 
 /* ================= новые желания вживую ================= */
