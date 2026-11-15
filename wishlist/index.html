@@ -570,24 +570,14 @@ pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-br
 @keyframes thTw{0%{opacity:.45}100%{opacity:1}}
 @keyframes thPop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
 
-/* --- общий слой: темы переопределяют ключевые поверхности через переменные --- */
-html[data-theme]:not([data-theme=classic]) .mood{background:var(--th-mood);box-shadow:var(--th-moodSh)}
+/* --- общий слой: темы переопределяют ключевые поверхности через переменные (дизайн «Скло») --- */
+html[data-theme]:not([data-theme=classic]){--moodTint:var(--th-mood)}
 html[data-theme]:not([data-theme=classic]) .mood:after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--th-art) right center/auto 100% no-repeat;opacity:var(--th-artO,.8);animation:thTw 3.6s ease-in-out infinite alternate}
-html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.08}
 html[data-theme]:not([data-theme=classic]) .fab{background:var(--th-fab);box-shadow:var(--th-fabSh)}
 html[data-theme]:not([data-theme=classic]) .btn.pri{background:var(--th-fab);box-shadow:var(--th-priSh)}
-html[data-theme]:not([data-theme=classic]) .tabind,html[data-theme]:not([data-theme=classic]) .tabs.noind .tab.on{background:var(--th-ind);box-shadow:var(--th-indSh)}
-html[data-theme]:not([data-theme=classic]) .tab.on,html[data-theme]:not([data-theme=classic]) .tab.on b{color:var(--th-indInk)}
-html[data-theme]:not([data-theme=classic]) .tab.on b{background:rgba(255,255,255,.2)}
-html.dark[data-theme]:not([data-theme=classic]) .tab.on b{background:rgba(0,0,0,.1)}
 html[data-theme]:not([data-theme=classic]) .badge:not(.upd){background:var(--th-badge,var(--rose));box-shadow:0 4px 12px -2px var(--th-badgeSh,rgba(226,83,122,.55))}
 html[data-theme]:not([data-theme=classic]) .brand{box-shadow:var(--th-brandSh),0 0 0 1px rgba(255,255,255,.6) inset}
-html[data-theme]:not([data-theme=classic]) .tabs{background:linear-gradient(var(--bg) 82%,var(--th-bgT))}
-html[data-theme]:not([data-theme=classic]) .fadebot{background:linear-gradient(var(--th-bgT),var(--bg) 80%)}
-html[data-theme]:not([data-theme=classic]) .dbar{background:linear-gradient(to top,var(--bg) 72%,var(--th-bgT))}
 html[data-theme]:not([data-theme=classic]) .spyc.cd:not(.soon):not(.today){background:var(--th-deep)}
-html[data-theme]:not([data-theme=classic]) .plan{background:var(--th-soft)}
-html[data-theme]:not([data-theme=classic]) .phzone,html[data-theme]:not([data-theme=classic]) .dsecret{background:var(--th-soft)}
 
 /* --- ❄️ ЗИМА --- */
 html[data-theme=winter]{
@@ -927,6 +917,264 @@ html.dark[data-theme=autumn]{
 .conf{position:fixed;left:0;top:0;z-index:70;pointer-events:none;line-height:1;will-change:transform,opacity}
 .spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--rose);animation:sp 0.8s linear infinite;margin:60px auto}
 @keyframes sp{to{transform:rotate(360deg)}}
+/* ===== ДИЗАЙН «СКЛО» (Soft Glass) ===== */
+:root{
+  --serif:var(--font);
+  --bg:#f4f0f6;--bg2:rgba(120,100,150,.08);--ink:#1c1722;--ink2:#6a6274;--ink3:#a49cad;--line:rgba(60,40,90,.09);
+  --card:rgba(255,255,255,.62);
+  --gl:rgba(255,255,255,.58);--gl2:rgba(255,255,255,.78);--glb:rgba(255,255,255,.72);--blur:blur(22px) saturate(180%);
+  --hair:rgba(60,40,90,.08);
+  --sh1:0 1px 2px rgba(40,20,70,.04),0 8px 22px -10px rgba(70,40,110,.16);
+  --sh2:0 2px 6px rgba(40,20,70,.05),0 22px 44px -18px rgba(70,40,110,.26);
+  --cardShadow:var(--sh1);--shadow:var(--sh1);
+  --field:rgba(255,255,255,.66);--fline:rgba(60,40,90,.10);
+  --m1:rgba(255,176,204,.62);--m2:rgba(196,182,255,.55);--m3:rgba(255,210,186,.55);--m4:rgba(168,214,255,.40);
+  --moodTint:radial-gradient(120% 140% at 0% 0%,#ffd3e1 0%,rgba(255,211,225,0) 62%),radial-gradient(120% 140% at 100% 100%,#e2d8ff 0%,rgba(226,216,255,0) 62%),linear-gradient(135deg,#fff1ea,#f6efff);
+  --sheetA:86%;
+  --r:24px;
+}
+.dark{
+  --bg:#0f0d14;--bg2:rgba(255,255,255,.07);--ink:#f4f0f8;--ink2:#b3aabd;--ink3:#7a7287;--line:rgba(255,255,255,.08);
+  --card:#221e2b;
+  --gl:color-mix(in srgb,var(--card) 58%,transparent);--gl2:color-mix(in srgb,var(--card) 80%,transparent);--glb:rgba(255,255,255,.09);
+  --hair:rgba(255,255,255,.08);
+  --sh1:0 1px 2px rgba(0,0,0,.25),0 10px 26px -12px rgba(0,0,0,.6);
+  --sh2:0 2px 6px rgba(0,0,0,.3),0 24px 48px -18px rgba(0,0,0,.7);
+  --field:rgba(255,255,255,.06);--fline:rgba(255,255,255,.10);
+  --m1:rgba(226,83,122,.26);--m2:rgba(120,96,255,.22);--m3:rgba(255,140,90,.12);--m4:rgba(70,150,255,.14);
+  --moodTint:radial-gradient(120% 140% at 0% 0%,rgba(226,83,122,.42) 0%,rgba(226,83,122,0) 62%),radial-gradient(120% 140% at 100% 100%,rgba(120,96,255,.38) 0%,rgba(120,96,255,0) 62%);
+  --sheetA:84%;
+}
+html[data-theme=winter]{--m1:rgba(170,198,255,.55);--m2:rgba(214,196,255,.48);--m3:rgba(255,206,224,.45);--m4:rgba(186,230,255,.45)}
+html.dark[data-theme=winter]{--m1:rgba(80,120,255,.24);--m2:rgba(150,90,220,.2);--m3:rgba(242,115,157,.12);--m4:rgba(90,190,255,.12)}
+html[data-theme=spring]{--m1:rgba(255,190,210,.55);--m2:rgba(170,232,204,.5);--m3:rgba(255,236,190,.45);--m4:rgba(200,236,255,.35)}
+html.dark[data-theme=spring]{--m1:rgba(244,128,162,.18);--m2:rgba(80,200,150,.18);--m3:rgba(255,220,120,.08);--m4:rgba(90,180,220,.1)}
+html[data-theme=romance]{--m1:rgba(255,160,190,.6);--m2:rgba(255,206,160,.5);--m3:rgba(240,170,220,.45);--m4:rgba(255,190,200,.4)}
+html.dark[data-theme=romance]{--m1:rgba(255,90,140,.24);--m2:rgba(240,180,90,.12);--m3:rgba(200,60,140,.16);--m4:rgba(255,120,150,.1)}
+html[data-theme=summer]{--m1:rgba(255,196,140,.6);--m2:rgba(255,176,196,.5);--m3:rgba(255,230,160,.5);--m4:rgba(150,220,255,.38)}
+html.dark[data-theme=summer]{--m1:rgba(255,150,90,.2);--m2:rgba(255,100,130,.16);--m3:rgba(255,200,100,.08);--m4:rgba(80,170,255,.1)}
+html[data-theme=autumn]{--m1:rgba(255,190,140,.55);--m2:rgba(240,170,150,.45);--m3:rgba(255,220,160,.5);--m4:rgba(210,190,255,.3)}
+html.dark[data-theme=autumn]{--m1:rgba(240,140,70,.2);--m2:rgba(200,85,60,.16);--m3:rgba(255,200,110,.08);--m4:rgba(140,110,220,.1)}
+
+/* фон: мягкий размытый градиент */
+html{background:var(--bg)}
+html,body{font:500 15px/1.42 var(--font);letter-spacing:-.006em}
+body{background:transparent}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(60% 42% at 8% 4%,var(--m1),transparent 70%),radial-gradient(55% 40% at 100% 30%,var(--m2),transparent 72%),radial-gradient(60% 40% at 0% 78%,var(--m3),transparent 72%),radial-gradient(55% 38% at 100% 100%,var(--m4),transparent 72%),var(--bg)}
+#app{padding:0 16px calc(120px + var(--safeB))}
+
+/* общий «стеклянный» материал */
+.banner,.qadd,.tile,.sa-find,.card,.skcard,.grow,.iconbtn,.sync,.seenall,.spyc.nt,.bringc,.choice,.welcome .lockchip{
+  background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.5),var(--sh1)}
+.dark .banner,.dark .qadd,.dark .tile,.dark .sa-find,.dark .card,.dark .skcard,.dark .grow,.dark .iconbtn,.dark .sync,.dark .seenall,.dark .spyc.nt,.dark .bringc,.dark .choice,.dark .welcome .lockchip{
+  box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.06),var(--sh1)}
+
+/* шапка */
+.top{padding:22px 2px 0;gap:14px}
+.brand{width:52px;height:52px;border-radius:17px;background:#ffe6d6;box-shadow:0 10px 24px -10px rgba(226,83,122,.55),0 0 0 1px rgba(255,255,255,.7) inset,0 0 0 4px rgba(255,255,255,.35)}
+.dark .brand{box-shadow:0 10px 28px -10px rgba(226,83,122,.6),0 0 0 1px rgba(255,255,255,.25) inset,0 0 0 4px rgba(255,255,255,.05)}
+.hello{font:500 13px/1.2 var(--font);color:var(--ink2);letter-spacing:0}
+.top h1{margin:4px 0 0;font:800 27px/1.08 var(--font);letter-spacing:-.035em}
+.iconbtn{width:44px;height:44px;border-radius:50%;color:var(--ink)}
+.iconbtn svg{width:20px;height:20px;stroke-width:1.6}
+.stats{gap:6px;margin:16px 0 0;font-size:13px}
+.stats>span:not(.sep):not(.sync),.stats .sdone{display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border-radius:999px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 0 0 1px var(--glb)}
+.stats .sep{display:none}
+.stats .sdone{text-decoration:none}
+.stats .gifted{color:var(--rose)}
+.sync{padding:6px 11px 6px 9px;font-weight:700}
+.seenall{color:var(--rose);padding:7px 12px}
+
+/* демо-баннер */
+.banner{margin:14px 0 0;padding:12px 14px 12px 12px;border-radius:22px;gap:12px}
+.banner .bi{width:40px;height:40px;border-radius:50%;background:var(--bg2);color:var(--ink)}
+.banner .bi svg{stroke-width:1.6}
+.banner b{font-weight:700;font-size:14.5px;letter-spacing:-.01em}
+.banner .go{font-weight:700;padding:8px 12px;border-radius:999px;background:rgba(226,83,122,.10)}
+
+/* мысль / настроение */
+.mood{margin:14px 0 4px;border-radius:28px;padding:18px 20px 16px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+  box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.6),var(--sh2)}
+.dark .mood,html[data-theme]:not([data-theme=classic]) .mood{box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.08),var(--sh2)}
+.dark .mood{background:var(--gl)}
+.mood:before{content:"";position:absolute;inset:0;top:0;right:0;z-index:-1;font:inherit;background:var(--moodTint);opacity:.62;border-radius:inherit}
+html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
+.mood .lbl{font:700 11px/1 var(--font);letter-spacing:.08em;color:var(--rose);display:inline-flex;align-items:center;gap:7px}
+.mood .lbl:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--rose);box-shadow:0 0 0 4px rgba(226,83,122,.16),0 0 12px var(--rose)}
+.mood .txt{font:700 19px/1.34 var(--font);letter-spacing:-.022em;margin-top:11px}
+.mood .txt.plh{font:500 16px/1.4 var(--font);font-style:normal;letter-spacing:-.01em}
+.mood .when{font:500 12px/1 var(--font)}
+.mood .when:before{display:none}
+.mood .medit{width:36px;height:36px;right:14px;bottom:14px;background:var(--gl2);box-shadow:inset 0 0 0 1px var(--glb),0 4px 12px -4px rgba(70,40,110,.25)}
+.mood .medit svg{stroke-width:1.8}
+.mood .rhint{padding:7px 12px;font-weight:700;box-shadow:0 6px 14px -6px rgba(226,83,122,.7)}
+.mood .seen,.mood .reply,.mood .stq button{background:var(--gl2)}
+
+/* быстрые карточки */
+.qadd{margin:12px 0 2px;padding:12px 16px 12px 12px;border-radius:22px;gap:13px;align-items:center}
+.qadd .qi{width:44px;height:44px;border-radius:50%;flex:none;background:linear-gradient(140deg,rgba(214,230,255,.9),rgba(255,222,234,.9));box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+.dark .qadd .qi{background:linear-gradient(140deg,rgba(80,110,200,.35),rgba(226,83,122,.3));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.qadd b{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.qadd span.qs{font-size:12.5px;line-height:1.35}
+.duo{gap:12px;margin:12px 0 2px}
+.tile{border-radius:24px;padding:14px;min-height:120px;gap:12px}
+.tile .ti2{width:44px;height:44px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+.dark .tile .ti2{box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+.tile b{font:700 16px/1.2 var(--font);letter-spacing:-.02em}
+.tile .bn{right:12px;top:12px;height:24px;min-width:24px;border-radius:12px;font:700 12px/24px var(--font);background:var(--rose);box-shadow:0 4px 10px -3px rgba(226,83,122,.6)}
+.sa-find{border-radius:22px;padding:12px 12px 12px 16px;margin:12px 0 2px}
+.sa-ft{font-weight:700;letter-spacing:-.01em}
+.sa-fch.z{background:var(--bg2)}
+
+/* вкладки: плавающая стеклянная «капсула» */
+.tabs{margin:0 -16px;padding:16px 16px 12px;gap:0;background:none!important;-webkit-backdrop-filter:none;backdrop-filter:none}
+.tabrail{gap:0;padding:4px;border-radius:999px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 0 0 1px var(--glb),var(--sh1)}
+.tab{padding:9px 14px;font-weight:700;font-size:13.5px;letter-spacing:-.01em;color:var(--ink2);min-height:38px}
+.tab b{font-weight:700;font-size:11px;background:var(--bg2);color:var(--ink2)}
+.dark .tab b{background:rgba(255,255,255,.08)}
+.tab.on,html[data-theme] .tab.on{color:var(--ink)}
+.tab.on b,html[data-theme] .tab.on b,html.dark[data-theme] .tab.on b{background:var(--rose);color:#fff}
+.tabind{top:4px;left:0;height:calc(100% - 8px);background:#fff;box-shadow:0 1px 2px rgba(40,20,70,.08),0 6px 16px -6px rgba(70,40,110,.3),inset 0 0 0 .5px rgba(60,40,90,.06)}
+.dark .tabind{background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 6px 16px -8px rgba(0,0,0,.6)}
+.tabs.noind .tab.on{background:#fff}
+.dark .tabs.noind .tab.on{background:rgba(255,255,255,.15)}
+
+/* секции */
+.sec{margin-top:18px}
+.sec + .sec{margin-top:28px}
+.sechead{gap:12px;margin:0 2px 12px}
+.sico{width:40px;height:40px;border-radius:50%;font-size:19px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
+.dark .sico{box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.sechead h2{font:800 20px/1.1 var(--font);letter-spacing:-.03em}
+.sechead p{font-size:12.5px;margin-top:4px}
+.sechead .sn{border:0;padding:6px 10px;color:var(--ink2);font-weight:700;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb)}
+
+/* карточки желаний */
+.grid{gap:12px}
+.card{border-radius:26px;padding:6px}
+.cm{border-radius:20px}
+.cm:after{box-shadow:inset 0 0 0 1px rgba(40,20,70,.05)}
+.cm .ini{font:800 64px/1 var(--font);font-style:normal!important;letter-spacing:-.05em;opacity:.85;transform:none}
+.cbody{padding:10px 8px 6px;gap:9px}
+.ctitle{font-weight:700;font-size:14px;line-height:1.3;letter-spacing:-.015em}
+.cprice{font:700 12px/1 var(--font);padding:6px 10px;letter-spacing:0}
+.badge{top:8px;left:8px;padding:5px 9px 5px 8px;font:700 10.5px/1 var(--font);letter-spacing:.02em;text-transform:none}
+.badge.upd{background:rgba(120,96,240,.92)}
+.gift,.multi{-webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%)}
+.gift{bottom:8px;left:8px;font-weight:700;background:rgba(255,255,255,.78);padding:6px 10px}
+.dark .gift{background:rgba(30,26,40,.7)}
+.multi{bottom:8px;right:8px;padding:5px 8px;background:rgba(20,14,30,.38);font-weight:700}
+.vbadge{background:rgba(20,14,30,.38);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.donechip{bottom:8px;left:8px;font-weight:700;background:rgba(47,176,120,.92)}
+.card.gifted{box-shadow:inset 0 0 0 1.5px var(--rose2),0 0 0 3px rgba(255,143,171,.18),var(--sh1)}
+
+/* пустые состояния */
+.empty h3{font:800 22px/1.2 var(--font);letter-spacing:-.03em}
+.empty .eart:before{border-radius:50%;transform:none;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
+.empty .eart.k1:before,.empty .eart.k2:before,.empty .eart.k3:before{background:var(--gl)}
+.sa-empty b{font:800 19px/1.2 var(--font);letter-spacing:-.02em}
+
+/* FAB + нижнее «прогрессивное» размытие */
+.fadebot,html[data-theme] .fadebot{height:calc(110px + var(--safeB));background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),color-mix(in srgb,var(--bg) 55%,transparent));
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);-webkit-mask-image:linear-gradient(transparent,#000 55%);mask-image:linear-gradient(transparent,#000 55%)}
+.fab{font:700 16px/1 var(--font);letter-spacing:-.01em;padding:7px 26px 7px 7px;gap:12px;bottom:calc(22px + var(--safeB));
+  box-shadow:0 18px 36px -12px rgba(226,83,122,.7),0 4px 10px rgba(226,83,122,.2),inset 0 1px 0 rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.18)}
+.fab .pl{width:42px;height:42px;background:rgba(255,255,255,.24);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.fab .pl svg{stroke-width:2.2}
+
+/* шторки: матовое стекло */
+.veil{background:rgba(30,20,50,.22);-webkit-backdrop-filter:blur(8px) saturate(120%);backdrop-filter:blur(8px) saturate(120%)}
+.dark .veil{background:rgba(0,0,0,.5)}
+.sheet{background:var(--bg);background:color-mix(in srgb,var(--bg) var(--sheetA),transparent);-webkit-backdrop-filter:blur(40px) saturate(180%);backdrop-filter:blur(40px) saturate(180%);
+  border-radius:32px 32px 0 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 -20px 60px -10px rgba(50,30,90,.25)}
+.dark .sheet{box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -20px 60px -10px rgba(0,0,0,.6)}
+.grab{background:transparent}
+.grab.sc,.grab.hd{background:var(--bg);background:color-mix(in srgb,var(--bg) 70%,transparent);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+.grab.sc{box-shadow:0 1px 0 var(--hair)}
+.grab i{width:36px;top:8px;background:var(--ink3);opacity:.5}
+.grab .x{width:32px;height:32px;background:var(--bg2);color:var(--ink2)}
+.grab .x svg{width:11px;height:11px}
+.shead b{font:700 17px/1.2 var(--font);letter-spacing:-.02em}
+.shead .lk{font-weight:500;font-size:16px;color:var(--ink2);min-height:44px;padding:8px 6px}
+.shead .lk.go{font-weight:700}
+.sheet h3{font:800 26px/1.15 var(--font);letter-spacing:-.035em}
+.ssub{font-size:14.5px}
+
+/* кнопки — капсулы */
+.btn{border-radius:999px;min-height:52px;font:700 16px/1.2 var(--font);letter-spacing:-.01em;background:var(--gl2);box-shadow:inset 0 0 0 1px var(--hair),var(--sh1)}
+.btn.pri{background:linear-gradient(135deg,#f2729a,#e2537a 55%,#ee7d62);box-shadow:0 14px 28px -12px rgba(226,83,122,.7),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.ok{box-shadow:0 14px 28px -12px rgba(31,158,108,.6),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn.ghost,.btn.danger{background:transparent;box-shadow:none}
+.btn.sq{width:52px;border-radius:50%}
+.btn.sq svg{stroke-width:1.7}
+
+/* деталь */
+.dbody{background:var(--bg);background:color-mix(in srgb,var(--bg) 92%,transparent);-webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);border-radius:30px 30px 0 0;margin-top:-30px;padding-top:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.dark .dbody{box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.dhero.img:after{background:linear-gradient(rgba(20,8,14,0),rgba(20,8,14,.18))}
+.galdots{bottom:42px;background:rgba(20,14,30,.25);-webkit-backdrop-filter:blur(16px) saturate(160%);backdrop-filter:blur(16px) saturate(160%)}
+.dpill{font:700 12.5px/1 var(--font);padding:8px 12px 8px 10px}
+.dtitle{font:800 27px/1.14 var(--font);letter-spacing:-.035em;margin-top:14px}
+.dprice{background:var(--gl2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--glb),var(--sh1);border-radius:999px;padding:11px 18px 10px;font:800 21px/1 var(--font);letter-spacing:-.02em}
+.dprice small{font:600 11px/1 var(--font);letter-spacing:.06em;color:var(--ink2);opacity:1}
+.dinfo{background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb),var(--sh1);border-radius:22px}
+.drow .di{border-radius:50%;background:var(--bg2)}
+.dinfo .drow{padding:14px 16px;border-bottom:0;gap:13px}
+.dinfo .drow+.drow{border-top:1px solid var(--hair)}
+.drow .k{font:600 11.5px/1 var(--font);letter-spacing:.04em;text-transform:none;color:var(--ink2)}
+.drow.q .v{font:500 16px/1.5 var(--font);font-style:normal;letter-spacing:-.01em}
+.drow.lnk .go{background:var(--ink);color:var(--bg);font-weight:700;padding:9px 14px}
+.dsecret{border:0;background:var(--gl);box-shadow:inset 0 0 0 1px rgba(226,83,122,.3),var(--sh1)}
+.dbar,html[data-theme] .dbar{background:var(--bg);background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);box-shadow:0 -1px 0 var(--hair)}
+
+/* формы */
+.fl{font:600 12.5px/1 var(--font);letter-spacing:.02em;text-transform:none;color:var(--ink2)}
+.inp{border-radius:16px;border:1px solid var(--fline);background:var(--field);box-shadow:inset 0 1px 2px rgba(40,20,70,.03)}
+.inp:focus{border-color:var(--rose2);box-shadow:0 0 0 4px var(--glow)}
+.cat{border-radius:20px;background:var(--field);box-shadow:inset 0 0 0 1px var(--fline)}
+.cat .ci{border-radius:50%}
+.cat b{font-weight:700;letter-spacing:-.01em}
+.cat.on.k1,.cat.on.k2,.cat.on.k3{box-shadow:inset 0 0 0 1.5px currentColor}
+.cat.on.k1{color:var(--c1)}.cat.on.k2{color:var(--c2)}.cat.on.k3{color:var(--c3)}
+.cat.on b{color:var(--ink)}
+.pth{border-radius:18px}
+.addph{border-radius:18px;border:1px dashed var(--ink3);background:var(--field)}
+.phzone{border-radius:24px;border:1px dashed rgba(226,83,122,.4);background:var(--gl)}
+.phzone .pzi{border-radius:50%;background:var(--gl2);box-shadow:inset 0 0 0 1px var(--glb),var(--sh1)}
+.mbox textarea{font:500 17px/1.45 var(--font)}
+.chip{font-weight:600;background:var(--field);box-shadow:inset 0 0 0 1px var(--fline)}
+.chip.on{background:rgba(226,83,122,.12);box-shadow:inset 0 0 0 1px var(--rose2)}
+.seg{border-radius:999px;background:var(--bg2)}
+.seg button{border-radius:999px}
+.who,.box,.tgl,.gstrow,.stopt,.thauto,.thsw,.rbtn,.purbox,.vrow{background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb)}
+.who img{border-radius:50%}
+.who .wr{background:var(--bg2)}
+
+/* для него */
+.spyc{border-radius:24px}
+.spyc .big{font:800 40px/1 var(--font);letter-spacing:-.04em}
+.spyc.nt{background-image:none}
+.spyc.nt .sd{font:500 13px/1.35 var(--font);font-style:normal}
+.spyc.cd{box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 0 0 1px rgba(255,255,255,.12),var(--sh2)}
+.plan{border-radius:26px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
+.plan .pl2{font:800 28px/1.1 var(--font);letter-spacing:-.035em}
+.plan .bar{height:8px;background:var(--bg2)}
+.grow{border-radius:22px}
+.grow .gimg{border-radius:16px}
+.note{font:500 15.5px/1.45 var(--font)}
+.alert{border-radius:20px}
+
+/* тосты */
+.toast{background:rgba(28,22,36,.78);font:600 14.5px/1.3 var(--font);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 18px 40px -12px rgba(30,20,50,.5)}
+.dark .toast{background:rgba(255,255,255,.86);color:#1c1722}
+.welcome h1{font:800 32px/1.1 var(--font);letter-spacing:-.035em}
+.fest b{font:800 21px/1.15 var(--font);letter-spacing:-.025em}
+.bringc .bt b{font:700 17px/1.2 var(--font)}
+.drow .dn{font:800 22px/1 var(--font)}
+.mquote{font:600 17px/1.4 var(--font)}
+/* ===== /ДИЗАЙН «СКЛО» ===== */
 </style>
 </head>
 <body>
