@@ -1148,6 +1148,30 @@ html.dark[data-theme=autumn]{
 .sa-top,.sa-mine{flex:none;font-size:22px;padding-right:4px}
 .sa-empty{text-align:center;padding:26px 10px;color:var(--ink2);font-size:30px}
 .sa-empty b{display:block;font:700 19px/1.2 var(--serif);color:var(--ink);margin-top:6px}.sa-empty span{display:block;font-size:13.5px;margin-top:4px}
+/* 2. покупка */
+.sa-buyadd{display:flex;align-items:center;gap:12px;width:100%;margin-top:16px;padding:13px 14px;border-radius:18px;border:1.5px dashed var(--ink3);text-align:left;color:var(--ink)}
+.sa-buyadd>span{font-size:24px}.sa-buyadd b{flex:1;font-size:15px}.sa-buyadd small{display:block;font-weight:600;font-size:12.5px;color:var(--ink2);margin-top:2px}.sa-buyadd svg{width:16px;height:16px;color:var(--ink3)}
+.sa-buy{margin-top:16px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);padding:6px 14px 12px;position:relative;overflow:hidden}
+.sa-buy:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:repeating-linear-gradient(90deg,var(--rose2) 0 10px,transparent 10px 16px);opacity:.55}
+.sa-bh{display:flex;align-items:center;gap:8px;padding:10px 0 6px;font:800 11.5px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.sa-sec{font:700 11px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--rose);background:var(--roseSoft);padding:4px 8px;border-radius:999px}
+.sa-bed{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--bg2);color:var(--rose);display:grid;place-items:center}.sa-bed svg{width:15px;height:15px}
+.sa-br{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:14.5px}
+.sa-bi{width:22px;flex:none;text-align:center}.sa-bk{flex:none;width:112px;color:var(--ink2);font-size:13px;font-weight:600}.sa-bv{flex:1;min-width:0;font-weight:700;word-break:break-word}
+.sa-mono{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.02em}
+.sa-save{font-style:normal;font-size:12px;color:var(--c2);background:var(--c2s);padding:2px 7px;border-radius:999px;margin-left:4px;white-space:nowrap}
+.sa-late{color:var(--danger)}.sa-soon{color:#c07a00}.dark .sa-soon{color:#f0b44a}
+.sa-trk{display:block;width:100%;margin-top:8px;padding:11px;border-radius:14px;background:var(--bg2);font:800 13.5px/1 var(--font);color:var(--ink)}
+.sa-trk.ok{background:var(--c2s);color:var(--c2)}
+.sa-dlv{position:absolute;right:7px;bottom:7px;padding:5px 8px;border-radius:999px;font:800 10.5px/1 var(--font);background:var(--glass);color:#2f6fd6;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(46,29,39,.15)}
+.dark .sa-dlv{color:#8fb6ff}
+.sa-dlv.soon{background:#fff1d6;color:#c07a00}.sa-dlv.late{background:#ffe1de;color:#d23a30}
+.card.gifted .sa-dlv{bottom:34px;left:7px;right:auto}
+.alert.sa-pk{background:#e3efff;color:#1f3f78;box-shadow:inset 0 0 0 1.5px #a9c6f3}
+.dark .alert.sa-pk{background:#1d2a45;color:#cfe0ff;box-shadow:inset 0 0 0 1.5px #34507f}
+.alert.sa-pk button{color:#1f3f78}.dark .alert.sa-pk button{color:#cfe0ff}
+.alert.sa-pk.late{background:#ffe9e6;color:#7a1f18;box-shadow:inset 0 0 0 1.5px #f3aaa2}
+.dark .alert.sa-pk.late{background:#45201d;color:#ffd0ca;box-shadow:inset 0 0 0 1.5px #7a3a33}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -3714,6 +3738,89 @@ document.addEventListener("click", (e) => {
   const fn = SA_ACT[b.dataset.sa]; if (fn) { haptic("light"); fn(b, e); }
 });
 const SA_ACT = { pick: () => saOpenPick() };
+
+/* --- 2. ПОКУПКА: магазин, № заказа, реально заплатил, дата доставки, трек --- */
+const saDay0 = (t) => { const x = new Date(t == null ? Date.now() : t); return new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(); };
+const saISO = (t) => { const x = new Date(t); return x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0"); };
+const saFromISO = (s) => { const m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? new Date(+m[1], +m[2] - 1, +m[3]).getTime() : 0; };
+const saDM = (t) => { const x = new Date(t); return x.getDate() + " " + MONTHS[x.getMonth()].slice(0, 3); };
+const saLeft = (t) => Math.round((saDay0(t) - saDay0()) / 86400000);
+function saEtaTxt(b) {
+  if (!b || !b.eta) return "";
+  if (b.got) return "получено " + saDM(b.got);
+  const l = saLeft(b.eta);
+  return l === 0 ? "приедет сегодня" : l === 1 ? "приедет завтра" : l > 1 ? "приедет " + saDM(b.eta) + " · через " + l + " " + dayWord(l) : "должно было приехать " + saDM(b.eta);
+}
+const saBuy = (id) => (SA.d.buy || {})[id];
+const saPaid = (it) => { const b = saBuy(it.id); return b && b.paid > 0 ? saConv(b.paid, b.cur || "€", saCur()) : saPriceIn(it, saCur()); };
+function saHost(u) { try { return new URL(fixLink(u)).hostname.replace(/^www\./, ""); } catch (e) { return ""; } }
+HOOKS.detail.push((it) => {
+  if (!saOn() || it.done && !saBuy(it.id)) return "";
+  const b = saBuy(it.id);
+  if (!b) return G(it.id) ? '<button class="sa-buyadd" data-sa="buy" data-sa-any data-id="' + esc(it.id) + '"><span>🧾</span><b>Записать покупку<small>магазин, № заказа, сколько заплатил, когда приедет</small></b>' + IC.chev + "</button>" : "";
+  const l = b.eta && !b.got ? saLeft(b.eta) : null;
+  const diff = b.paid > 0 && numPrice(it) && (b.cur || "€") === (it.cur || "€") ? numPrice(it) - b.paid : 0;
+  const rows = [
+    b.shop && ["🏬", "Магазин", esc(b.shop)],
+    b.order && ["#️⃣", "Номер заказа", '<span class="sa-mono">' + esc(b.order) + "</span>"],
+    b.paid > 0 && ["💳", "Заплатил", money(b.paid, b.cur || "€") + (diff > 0 ? ' <em class="sa-save">−' + money(diff, b.cur || "€") + " от её цены</em>" : "")],
+    b.eta && ["🚚", "Доставка", '<span class="' + (l != null && l < 0 ? "sa-late" : l != null && l <= 1 ? "sa-soon" : "") + '">' + saEtaTxt(b) + "</span>"],
+    b.note && ["📝", "Заметка", esc(b.note)],
+  ].filter(Boolean);
+  return '<div class="sa-buy"><div class="sa-bh"><span>🧾 Покупка</span><span class="sa-sec">🤫 только тебе</span><button class="sa-bed" data-sa="buy" data-sa-any data-id="' + esc(it.id) + '">' + IC.pen + "</button></div>" +
+    rows.map((r) => '<div class="sa-br"><span class="sa-bi">' + r[0] + '</span><span class="sa-bk">' + r[1] + '</span><span class="sa-bv">' + r[2] + "</span></div>").join("") +
+    (b.track ? '<button class="sa-trk" data-sa="trk" data-sa-any data-id="' + esc(it.id) + '">📍 Отследить посылку ↗</button>' : "") +
+    (b.eta && !b.got ? '<button class="sa-trk ok" data-sa="got" data-sa-any data-id="' + esc(it.id) + '">✓ Посылка у меня</button>' : "") + "</div>";
+});
+function saOpenBuy(id) {
+  const it = S.items[id]; if (!it) return;
+  const b = Object.assign({ shop: saHost(it.link), order: "", paid: "", cur: it.cur || saCur(), eta: 0, track: "", note: "" }, saBuy(id) || {});
+  const curOpts = CURS.map((c) => "<option" + (b.cur === c ? " selected" : "") + ">" + c + "</option>").join("");
+  const sh = openSheet("<h3>Покупка 🧾</h3><p class=\"ssub\">" + esc(it.title) + (priceStr(it) ? " · у неё " + priceStr(it) : "") + '</p><div class="secretbar" style="margin-top:14px">🔒 <span>Хранится в твоём облаке Telegram — <b>' + esc(herName()) + " не увидит</b>.</span></div>" +
+    '<label class="fl" for="sa_shop">Магазин</label><input class="inp" id="sa_shop" maxlength="60" placeholder="Zalando, Rozetka, ТЦ…" value="' + esc(b.shop) + '">' +
+    '<label class="fl" for="sa_ord">Номер заказа <span class="opt">необязательно</span></label><input class="inp sa-mono" id="sa_ord" maxlength="60" autocomplete="off" placeholder="например 10582 2213" value="' + esc(b.order) + '">' +
+    '<label class="fl" for="sa_paid">Сколько заплатил <span class="opt">с доставкой и скидкой</span></label><div class="pricerow"><div class="ifield"><span class="ic">💳</span><input class="inp" id="sa_paid" inputmode="decimal" placeholder="' + esc(it.price || "0") + '" value="' + esc(b.paid || "") + '"></div><select class="inp cur" id="sa_cur">' + curOpts + "</select></div>" +
+    '<label class="fl" for="sa_eta">Когда приедет</label><input class="inp" type="date" id="sa_eta" value="' + (b.eta ? saISO(b.eta) : "") + '">' +
+    '<div class="chips" style="margin-top:10px">' + [[1, "завтра"], [3, "через 3 дня"], [7, "через неделю"], [14, "через 2 недели"]].map((x) => '<button class="chip" data-sa-eta="' + x[0] + '">' + x[1] + "</button>").join("") + "</div>" +
+    '<label class="fl" for="sa_trk">Ссылка на отслеживание</label><input class="inp" id="sa_trk" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="https://…" value="' + esc(b.track) + '">' +
+    '<label class="fl" for="sa_bn">Заметка</label><input class="inp" id="sa_bn" maxlength="140" placeholder="забрать на почте, чек в почте…" value="' + esc(b.note) + '">' +
+    '<button class="btn pri" id="sa_bsave" style="margin-top:22px">Сохранить</button>' + (saBuy(id) ? '<button class="btn danger" id="sa_bdel">Удалить запись о покупке</button>' : ""));
+  sh.addEventListener("click", async (e) => {
+    const et = e.target.closest("[data-sa-eta]"); if (et) { $("#sa_eta", sh).value = saISO(Date.now() + et.dataset.saEta * 86400000); haptic("light"); return; }
+    if (e.target.closest("#sa_bdel")) { delete SA.d.buy[id]; await SA.save("buy"); haptic("warning"); closeSheet(); render(); toast("Запись удалена", "🗑"); saRefreshDetail(id); return; }
+    if (!e.target.closest("#sa_bsave")) return;
+    const pv = String($("#sa_paid", sh).value).replace(/\s/g, "").replace(",", "."), paid = pv ? Number(pv) : 0;
+    if (pv && !(paid >= 0)) { $("#sa_paid", sh).classList.add("err"); setTimeout(() => $("#sa_paid", sh).classList.remove("err"), 900); haptic("error"); return; }
+    const nb = { shop: $("#sa_shop", sh).value.trim(), order: $("#sa_ord", sh).value.trim(), paid, cur: $("#sa_cur", sh).value, eta: saFromISO($("#sa_eta", sh).value), track: $("#sa_trk", sh).value.trim(), note: $("#sa_bn", sh).value.trim(), at: (saBuy(id) || {}).at || Date.now() };
+    if ((saBuy(id) || {}).got) nb.got = saBuy(id).got;
+    SA.d.buy[id] = nb; await SA.save("buy");
+    if (G(id) && gstOf(id) < 1 && (nb.order || nb.paid || nb.eta)) { SPY.st[id] = nb.eta && saLeft(nb.eta) >= 0 ? 2 : 1; await saveSpyMain(); }
+    haptic("ok"); SFX.play("pop"); closeSheet(); render(); toast("Покупка записана 🧾"); saRefreshDetail(id);
+  });
+}
+// перерисовать открытую карточку желания после правки
+function saRefreshDetail(id) { const top = sheets[sheets.length - 1]; if (top && top.sh.classList.contains("hero")) { const sy = top.sh.scrollTop; closeSheet(top, true); openDetail(id).then(() => { const t = sheets[sheets.length - 1]; if (t) t.sh.scrollTop = sy; }); } }
+SA_ACT.buy = (b) => saOpenBuy(b.dataset.id);
+SA_ACT.trk = (b) => { const x = saBuy(b.dataset.id); if (x && x.track) openLink(x.track); };
+SA_ACT.got = async (b) => {
+  const id = b.dataset.id, x = saBuy(id); if (!x) return;
+  x.got = Date.now(); await SA.save("buy");
+  if (G(id) && gstOf(id) < 3) { SPY.st[id] = 3; await saveSpyMain(); }
+  SFX.play("tada"); haptic("ok"); render(); toast("Получено — теперь статус «Спрятал» 🤫"); saRefreshDetail(id);
+};
+// значок доставки на карточке и напоминание на главной
+HOOKS.badge.push((it) => {
+  if (!saOn() || it.done) return ""; const b = saBuy(it.id); if (!b || !b.eta || b.got) return "";
+  const l = saLeft(b.eta);
+  return '<span class="sa-dlv' + (l < 0 ? " late" : l <= 1 ? " soon" : "") + '">🚚 ' + (l === 0 ? "сегодня" : l === 1 ? "завтра" : l < 0 ? "опаздывает" : saDM(b.eta)) + "</span>";
+});
+HOOKS.main.push(() => {
+  if (!saOn() || !SA.st.loaded) return "";
+  const due = Object.keys(SA.d.buy || {}).map((id) => [S.items[id], SA.d.buy[id]]).filter(([it, b]) => it && !it.done && b.eta && !b.got && saLeft(b.eta) <= 1);
+  return due.map(([it, b]) => { const l = saLeft(b.eta);
+    return '<div class="alert sa-pk' + (l < 0 ? " late" : "") + '"><span class="ai">' + (l < 0 ? "⏰" : "📦") + '</span><span class="at"><b>«' + esc(it.title) + "»</b> " + saEtaTxt(b) + (b.shop ? " · " + esc(b.shop) : "") + (b.order ? " · №&nbsp;" + esc(b.order) : "") +
+      (l < 0 ? ". Проверь трек или напиши в магазин." : ". Забери так, чтобы " + esc(herName()) + " не увидела 🤫") + '</span><button data-sa="got" data-id="' + esc(it.id) + '">Получил</button></div>'; }).join("");
+});
 /* ================= /МОДУЛИ САШИ ================= */
 
 /* ================= новые желания вживую ================= */
