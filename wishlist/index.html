@@ -854,6 +854,10 @@ html.dark[data-theme=autumn]{
 .dvid .ext{position:absolute;left:10px;bottom:10px;z-index:3;padding:7px 10px;border-radius:12px;background:rgba(0,0,0,.55);color:#fff;font:800 11.5px/1 var(--font)}
 .vbadge{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
 
+/* ===== МОДУЛИ АРИНЫ: CSS ===== */
+/* ===== /МОДУЛИ АРИНЫ: CSS ===== */
+/* ===== МОДУЛИ САШИ: CSS ===== */
+/* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
 .welcome .hero{margin-bottom:22px;position:relative;animation:float 3.4s ease-in-out infinite}
@@ -909,6 +913,16 @@ const CATS = {
   3: { key: 3, emo: "✨", name: "Хочу-хочу", sub: "Не горит, но очень хочется", short: "Хочу" },
 };
 const CURS = ["€", "₴", "₽", "$", "zł", "£"];
+/* ===== РОЗЕТКИ ДЛЯ МОДУЛЕЙ (подключение новых функций без правок ядра) =====
+   main:    () => html          — блок на главной (после плиток «Привези/Про меня»)
+   tabs:    () => [{key,label,count,render:()=>html}] — свои вкладки
+   detail:  (it) => html        — секция в карточке желания
+   editor:  [{html:(it)=>html, collect:(sh,it)=>({поля}), bind?:(sh,it)=>{}}] — поля в редакторе
+   settings:() => html          — секция в настройках
+   badge:   (it) => html        — значок на карточке в сетке
+   data:    (prevItems) => {}   — после каждого обновления данных */
+const HOOKS = { main: [], tabs: [], detail: [], editor: [], settings: [], badge: [], data: [] };
+const hk = (name, ...a) => HOOKS[name].map((f) => { try { return f(...a) || ""; } catch (e) { console.warn("hook", name, e); return ""; } }).join("");
 
 /* ================= параметры ссылки ================= */
 const qs = new URLSearchParams(location.search);
@@ -1244,7 +1258,7 @@ function cardHtml(it, i) {
       (flag === "new" ? '<span class="badge">Новое</span>' : flag === "upd" ? '<span class="badge upd">Изменено</span>' : "") +
       (gifted ? '<span class="gift">🎁 ты даришь</span>' : "") +
       (it.photoCount > 1 ? '<span class="multi">' + IC.stack + it.photoCount + "</span>" : "") +
-      ((it.videos || []).length ? '<span class="vbadge">▶</span>' : "") +
+      ((it.videos || []).length ? '<span class="vbadge">▶</span>' : "") + hk("badge", it) +
       (it.done ? '<span class="donechip">' + IC.check + "Сбылось</span>" : "") +
     "</div>" +
     '<div class="cbody"><div class="ctitle">' + esc(it.title) + "</div>" +
@@ -1305,11 +1319,14 @@ function render() {
   if (isOwner() || mood) h += moodHtml(mood);
 
   h += duoHtml();
+  h += hk("main");
   if (!isOwner()) { syncTitles(); h += alertsHtml() + viewerCardsHtml(); }
 
   // вкладки
   const mineN = active.filter((i) => G(i.id)).length;
+  const extTabs = []; HOOKS.tabs.forEach((f) => { try { (f() || []).forEach((t) => extTabs.push(t)); } catch (e) { console.warn(e); } });
   const tabs = [["all", "Все", active.length]].concat(isOwner() ? [] : [["mine", "🎁 Я дарю", mineN]]).concat([ ["1", "🔥 Срочно", cnt(1)], ["2", "🌿 Нужно", cnt(2)], ["3", "✨ Хочу", cnt(3)], ["done", "🎉 Сбылось", done.length]]);
+  extTabs.forEach((t) => tabs.push([t.key, t.label, t.count || 0]));
   h += '<div class="tabs"><div class="tabrail"><span class="tabind"></span>' + tabs.map((t) => '<button class="tab' + (S.tab === t[0] ? " on" : "") + '" data-tab="' + t[0] + '">' + t[1] + (t[2] || t[0] === "all" ? " <b>" + t[2] + "</b>" : "") + "</button>").join("") + "</div></div>";
 
   let n = 0; const grid = (list) => '<div class="grid">' + list.map((it) => cardHtml(it, n++)).join("") + "</div>";
@@ -1319,6 +1336,8 @@ function render() {
       const list = sortedItems((i) => !i.done && i.cat == k); if (!list.length) return;
       h += sectionHead(k, list.length, n++) + grid(list) + "</div>";
     });
+  } else if (extTabs.some((t) => t.key === S.tab)) {
+    try { h += extTabs.find((t) => t.key === S.tab).render() || ""; } catch (e) { console.warn(e); }
   } else if (S.tab === "mine") {
     h += planHtml();
   } else if (S.tab === "done") {
@@ -1440,7 +1459,7 @@ async function openDetail(id) {
       (it.done ? '<span class="dpill dn">✓ Сбылось</span>' : "") + "</div>" +
     '<div class="dtitle">' + esc(it.title) + "</div>" +
     (priceStr(it) ? '<div class="dprice"><small>цена</small>' + priceStr(it) + "</div>" : "") +
-    videosDetailHtml(it) +
+    videosDetailHtml(it) + hk("detail", it) +
     (rows.length ? '<div class="dinfo">' + rows.join("") + "</div>" : "") +
     (!isOwner() && G(it.id) && !it.done ? '<div class="dsecret"><span class="se">🤫</span><div><b>Ты даришь это</b><span>Отметка хранится только в твоём Telegram — она её не увидит.</span></div></div><button class="gstrow" data-d="status"><span>Статус</span><b>' + GST[gstOf(it.id)][0] + " " + GST[gstOf(it.id)][1] + "</b>" + IC.chev + "</button>" : "") +
     '<div class="dmeta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div></div>";
@@ -1508,11 +1527,13 @@ function openEditor(it, photosIn) {
     '<label class="fl" for="f_price">Цена <span class="opt">примерно</span></label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="f_price" inputmode="decimal" autocomplete="off" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"></div><select class="inp cur" id="f_cur" aria-label="Валюта">' + curOpts + "</select></div>" + '<div class="ferr" id="e_price">Цена — это число, например 49 или 1 200</div>' +
     '<label class="fl" for="f_link">Ссылка на товар</label><div class="ifield"><span class="ic">🔗</span><input class="inp" id="f_link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '"></div><div class="ferr" id="e_link">Похоже, это не ссылка — проверь адрес</div>' +
     '<label class="fl" for="f_vid">Видео <span class="opt">TikTok, Reels, YouTube · до 3</span></label><div class="vlist" id="vlist"></div><div class="vadd" id="vadd"><input class="inp" id="f_vid" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Вставь ссылку на видео"><button class="btn pri" id="v_add" aria-label="Добавить видео">' + IC.plus.replace("<svg", '<svg width="20" height="20"') + '</button></div><div class="ferr" id="e_vid">Не похоже на ссылку TikTok, Reels или YouTube</div>' +
+    HOOKS.editor.map((m) => { try { return m.html(it) || ""; } catch (e) { return ""; } }).join("") +
     '<label class="fl" for="f_details">Детали</label><input class="inp" id="f_details" maxlength="300" placeholder="Размер, цвет, модель, магазин…" value="' + esc(it ? it.details || "" : "") + '">' +
     '<label class="fl" for="f_note">Почему хочу <span class="opt">комментарий</span></label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Зачем это нужно или что важно при выборе">' + esc(noteV) + '</textarea><div class="fcnt" id="c_note"></div>' +
     '<button class="btn pri" id="f_save" style="margin-top:26px">' + (isNew ? "Добавить в вишлист 💗" : "Сохранить изменения") + "</button>";
   const sh = openSheet(h, null, { head });
   st.videos = ((it && it.videos) || []).slice();
+  HOOKS.editor.forEach((m) => { try { if (m.bind) m.bind(sh, it); } catch (e) { console.warn(e); } });
   const drawVids = () => {
     $("#vlist", sh).innerHTML = st.videos.map((v, i) => '<div class="vrow"><span class="vt"' + (v.thumb ? ' style="background-image:url(' + esc(v.thumb) + ')"' : "") + ">" + (v.thumb ? "" : "▶") + '</span><span class="vx"><b>' + esc(vidLabel(v)) + "</b><span>" + VKIND[v.kind] + (v.loading ? " · загружаю…" : "") + '</span></span><button class="drm" data-vrm="' + i + '" aria-label="Убрать видео">' + IC_X + "</button></div>").join("");
     $("#vadd", sh).style.display = st.videos.length >= 3 ? "none" : "";
@@ -1616,6 +1637,7 @@ function openEditor(it, photosIn) {
         id: it ? it.id : now.toString(36) + uid(6),
         title, cat: st.cat, price: rawP ? String(Number(numP)) : "", cur,
         link, details: $("#f_details", sh).value.trim(), note: noteEl.value.trim(),
+        ...HOOKS.editor.reduce((o, m) => { try { return Object.assign(o, m.collect ? m.collect(sh, it) || {} : {}); } catch (e) { return o; } }, {}),
         videos: (st.videos || []).map((v) => { const o = { url: v.url, kind: v.kind, id: v.id || "" }; if (v.thumb) o.thumb = v.thumb; if (v.title) o.title = String(v.title).slice(0, 150); if (v.author) o.author = v.author; if (v.shorts) o.shorts = true; return o; }),
         thumb: st.photos.length ? await thumbFrom(st.photos[0]) : "", photoCount: st.photos.length,
         createdAt: it ? it.createdAt || now : now, editedAt: now,
@@ -1666,7 +1688,7 @@ function openSettings() {
   let h = "<h3>Настройки</h3>" +
     '<div class="who"><img src="logo.svg" alt=""><div class="wt"><b>' + (isOwner() ? "Хозяйка вишлиста" : "Смотрю вишлист") + "</b><span>@" + esc(myNick) + '</span></div><span class="wr" aria-hidden="true">' + (isOwner() ? "👑" : "🕵️") + "</span></div>" +
     '<div class="hint">🔒 Вишлист открывается только у @fllezzka и @xupxy.</div>' +
-    soundToggleHtml() + notifySettingsHtml();
+    soundToggleHtml() + notifySettingsHtml() + hk("settings");
   if (isOwner()) h += '<label class="fl" for="s_name">Как тебя зовут</label><input class="inp" id="s_name" maxlength="40" autocomplete="off" placeholder="Арина" value="' + esc(S.meta.ownerName || HER) + '"><div class="hint">Сохраняется само, когда закончишь ввод.</div>';
   h += '<div class="fl">Синхронизация</div>';
   if (S.store.mode === "demo") h += '<div class="box sbox"><span class="sdot"></span><div><b>Демо-режим</b><span>Желания хранятся только на этом устройстве.</span></div></div><button class="btn pri" data-s="setup">☁️ Подключить синхронизацию</button>';
@@ -2611,6 +2633,12 @@ function playVideo(btn, v) {
   btn.style.backgroundImage = "none";
 }
 
+/* ================= МОДУЛИ АРИНЫ ================= */
+/* ================= /МОДУЛИ АРИНЫ ================= */
+
+/* ================= МОДУЛИ САШИ ================= */
+/* ================= /МОДУЛИ САШИ ================= */
+
 /* ================= новые желания вживую ================= */
 function onData(d) {
   const prevKnown = S.knownIds, prevItems = S.items;
@@ -2643,6 +2671,7 @@ function onData(d) {
   S.knownBring = new Set(bIds);
   render();
   sheets.forEach((e) => { if (e.sh._redraw && !(document.activeElement && document.activeElement.id === "br_txt")) e.sh._redraw(); });
+  HOOKS.data.forEach((f) => { try { f(prevItems); } catch (e) { console.warn(e); } });
 }
 
 /* ================= старт ================= */
