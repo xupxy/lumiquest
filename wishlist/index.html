@@ -1232,6 +1232,22 @@ select.inp.sa-sel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://
 .sa-fxpill b{color:var(--ink)}
 .sa-fxnote{display:block;width:100%;margin-top:10px;text-align:center;font-size:12px;font-weight:600;color:var(--ink3)}
 .sa-fxnote u{color:var(--rose);text-decoration-style:dotted;text-underline-offset:3px}
+/* 6. подготовка к дате */
+.sa-cprog{display:flex;align-items:center;gap:12px;margin:14px 2px 4px}.sa-cprog .sa-obar{flex:1;margin:0}.sa-cprog span{font:800 13px/1 var(--font);color:var(--ink2)}
+.inp.sa-cn{flex:1;font-weight:700}
+.bitem .btx small.sa-late{color:var(--danger)}.bitem .btx small.sa-soon{color:#c07a00}.dark .bitem .btx small.sa-soon{color:#f0b44a}
+.sa-cbar{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:10px 12px;border-radius:18px;background:var(--bg2);text-align:left}
+.sa-cbar>svg{width:16px;height:16px;color:var(--ink3);flex:none}
+.sa-cring{--p:0;width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;background:conic-gradient(#3fae86 calc(var(--p)*1%),var(--line) 0)}
+.sa-cring b{width:34px;height:34px;border-radius:50%;background:var(--card);display:grid;place-items:center;font:800 11px/1 var(--font)}
+.sa-ctx{flex:1;min-width:0}.sa-ctx b{display:block;font-size:14.5px}.sa-ctx span{display:block;font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sa-prep{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 2px;padding:12px 12px 12px 14px;border-radius:20px;text-align:left;color:#fff;background:linear-gradient(135deg,#2e1d27,#5b2c45);box-shadow:0 12px 26px -14px rgba(46,29,39,.7);transition:transform .2s var(--ease)}
+html[data-theme]:not([data-theme=classic]) .sa-prep{background:var(--th-deep)}
+.sa-prep:active{transform:scale(.98)}
+.sa-pe{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-size:23px;flex:none}
+.sa-pt{flex:1;min-width:0}.sa-pt b{display:block;font:700 16.5px/1.2 var(--serif)}.sa-pt span{display:block;font-size:12.5px;opacity:.82;margin-top:3px;line-height:1.35}
+.sa-pt em{font-style:normal;color:#ffb3a8;font-weight:800}
+.sa-pgo{flex:none;padding:8px 11px;border-radius:12px;background:rgba(255,255,255,.92);color:#2e1d27;font:800 12.5px/1 var(--font)}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -4112,6 +4128,78 @@ HOOKS.detail.unshift((it) => {
 SA.occTop.push(() => {
   const used = saUsedCurs(); if (!used.length) return "";
   return '<button class="sa-fxnote" data-sa="fx">💱 Пересчёт в ' + esc(saCur()) + ": " + used.map((c) => "1 " + esc(saCur()) + " = " + saFxStr(saPer(c)) + " " + esc(c)).join(" · ") + (SA.d.fxAt ? "" : " <u>уточнить</u>") + "</button>";
+});
+
+/* --- 6. ПОДГОТОВКА К ДАТЕ: чек-лист дел со сроками «за N дней» + напоминание на главной --- */
+SA.occHook = SA.occHook || [];
+const SA_TPL = [["🎂", "Заказать торт", 3], ["🎀", "Купить упаковку и пакет", 2], ["✍️", "Подписать открытку", 1], ["💐", "Заказать цветы", 1], ["🍽", "Забронировать столик", 7], ["🤫", "Спрятать подарки", 1], ["🕯", "Купить свечи для торта", 2], ["🧾", "Проверить, всё ли доставлено", 3]];
+function saOccDate(dt) { const t = new Date(); t.setHours(0, 0, 0, 0); return t.getTime() + dt.left * 86400000; }
+function saChk(oid) {
+  SA.d.chk = SA.d.chk || {}; const dt = datesSorted().find((x) => x.id === oid); if (!dt) return null;
+  const y = new Date(saOccDate(dt)).getFullYear();
+  let c = SA.d.chk[oid];
+  if (!c) c = SA.d.chk[oid] = { y, l: SA_TPL.slice(0, 4).map((x) => ({ id: uid(5), e: x[0], t: x[1], n: x[2] })) };
+  if (c.y !== y) { c.y = y; c.l.forEach((x) => { delete x.ok; }); }
+  return c;
+}
+// задачи: свои + автоматические «купить/получить» для подарков повода
+function saTasks(oid) {
+  const dt = datesSorted().find((x) => x.id === oid), c = saChk(oid); if (!dt || !c) return [];
+  const at = saOccDate(dt);
+  const own = c.l.map((x) => ({ k: "c", id: x.id, e: x.e || "✔️", t: x.t, due: at - (x.n || 0) * 86400000, n: x.n, ok: !!x.ok }));
+  const auto = saOccAll(oid).map((g) => ({ k: g.kind, id: g.id, e: g.kind === "i" ? "💡" : "🎁", t: (g.bought ? "Получить и спрятать: " : "Купить: ") + g.title, due: at - 3 * 86400000, ok: g.kind === "w" ? gstOf(g.id) >= 3 : ((saIdea(g.id) || {}).st | 0) >= 3, auto: true }));
+  return auto.concat(own).sort((a, b) => (a.ok ? 1 : 0) - (b.ok ? 1 : 0) || a.due - b.due);
+}
+function saDueTxt(t) { const l = saLeft(t); return l < 0 ? "просрочено" : l === 0 ? "сегодня" : l === 1 ? "завтра" : "до " + saDM(t); }
+function saChkSheet(oid) {
+  const sh = openSheet("", null);
+  const draw = () => {
+    const dt = datesSorted().find((x) => x.id === oid); if (!dt) { closeSheet(); return; }
+    const old = sh.querySelector(".dbody"); const keep = old ? $("#sa_ct", sh).value : ""; if (old) old.remove();
+    const ts = saTasks(oid), done = ts.filter((x) => x.ok).length, c = saChk(oid);
+    const miss = SA_TPL.filter((x) => !c.l.some((y) => normT(y.t) === normT(x[1])));
+    const div = document.createElement("div"); div.className = "dbody";
+    div.innerHTML = "<h3>Подготовка " + esc(dt.emo || "🎁") + '</h3><p class="ssub">' + esc(dt.title) + " · " + dt.d + " " + MONTHS[dt.m - 1] + " · " + saWhen(dt) + "</p>" +
+      '<div class="sa-cprog"><div class="sa-obar"><i style="width:' + (ts.length ? done / ts.length * 100 : 0) + '%"></i></div><span>' + done + " из " + ts.length + "</span></div>" +
+      '<div class="box blist" style="padding:2px 12px">' + (ts.length ? ts.map((x) => {
+        const late = !x.ok && saLeft(x.due) < 0, soon = !x.ok && saLeft(x.due) <= 1;
+        return '<div class="bitem' + (x.ok ? " ok" : "") + '"><button class="bchk" data-sa-ck="' + x.k + ":" + esc(x.id) + '" aria-label="Готово">' + IC.check + '</button><span class="btx"><span class="bt1">' + esc(x.e) + " " + esc(x.t) + "</span><small class=\"" + (late ? "sa-late" : soon ? "sa-soon" : "") + '">' + (x.ok ? "готово" : saDueTxt(x.due)) + (x.auto ? " · из плана подарков" : x.n ? " · за " + x.n + " " + dayWord(x.n) : "") + "</small></span>" +
+          (x.auto ? "" : '<button class="drm" data-sa-cdel="' + esc(x.id) + '" aria-label="Удалить">' + IC_X + "</button>") + "</div>";
+      }).join("") : '<div class="hint" style="text-align:center;padding:14px 0">Пока ни одного дела</div>') + "</div>" +
+      (miss.length ? '<div class="fl">Добавить из шаблона</div><div class="chips">' + miss.map((x) => '<button class="chip" data-sa-ctpl="' + esc(x[1]) + '">' + x[0] + " " + esc(x[1]) + "</button>").join("") + "</div>" : "") +
+      '<div class="fl">Своё дело</div><input class="inp" id="sa_ct" maxlength="70" placeholder="например: зарядить фотоаппарат" value="' + esc(keep) + '"><div class="badd" style="margin-top:8px"><select class="inp sa-sel sa-cn" id="sa_cn">' + [0, 1, 2, 3, 7].map((n) => '<option value="' + n + '"' + (n === 1 ? " selected" : "") + ">" + (n ? "за " + n + " " + dayWord(n) : "в тот день") + "</option>").join("") + '</select><button class="btn pri" id="sa_cadd" aria-label="Добавить">' + IC.plus.replace("<svg", '<svg width="20" height="20"') + "</button></div>" +
+      '<div class="hint">🎁 и 💡 — подарки этого повода: отмечаются сами, когда ставишь статус «Спрятал».</div>';
+    sh.appendChild(div);
+  };
+  draw(); sh._redraw = draw;
+  const add = async (t, n, e) => { t = (t || "").trim(); if (!t) { $("#sa_ct", sh).classList.add("err"); setTimeout(() => $("#sa_ct", sh).classList.remove("err"), 900); haptic("error"); return; } saChk(oid).l.push({ id: uid(5), e: e || "✔️", t, n }); await SA.save("chk"); haptic("ok"); SFX.play("pop"); $("#sa_ct", sh).value = ""; draw(); render(); };
+  sh.addEventListener("click", async (e) => {
+    const tp = e.target.closest("[data-sa-ctpl]"); if (tp) { const x = SA_TPL.find((y) => y[1] === tp.dataset.saCtpl); add(x[1], x[2], x[0]); return; }
+    if (e.target.closest("#sa_cadd")) { add($("#sa_ct", sh).value, +$("#sa_cn", sh).value); return; }
+    const dl = e.target.closest("[data-sa-cdel]"); if (dl) { const c = saChk(oid); c.l = c.l.filter((x) => x.id !== dl.dataset.saCdel); await SA.save("chk"); haptic("warning"); draw(); render(); return; }
+    const ck = e.target.closest("[data-sa-ck]"); if (!ck) return;
+    const [k, id] = ck.dataset.saCk.split(":");
+    if (k === "c") { const x = saChk(oid).l.find((y) => y.id === id); x.ok = !x.ok; await SA.save("chk"); haptic(x.ok ? "ok" : "light"); SFX.play("tick"); }
+    else if (k === "w") { openStatus(id, () => draw()); return; }
+    else if (k === "i") { saIdeaStatus(id); return; }
+    draw(); render();
+    const ts = saTasks(oid); if (ts.length && ts.every((x) => x.ok)) { toast("Всё готово к празднику ✅"); SFX.play("tada"); }
+  });
+  sh.addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.id === "sa_ct") { e.preventDefault(); add(e.target.value, +$("#sa_cn", sh).value); } });
+}
+SA_ACT.chk = (b) => saChkSheet(b.dataset.id);
+SA.occHook.push((dt) => {
+  if (dt.left > 60) return "";
+  const ts = saTasks(dt.id), done = ts.filter((x) => x.ok).length, next = ts.find((x) => !x.ok);
+  return '<button class="sa-cbar" data-sa="chk" data-id="' + esc(dt.id) + '"><span class="sa-cring" style="--p:' + (ts.length ? done / ts.length * 100 : 0) + '"><b>' + done + "/" + ts.length + '</b></span><span class="sa-ctx"><b>Подготовка</b><span>' + (next ? esc(next.e + " " + next.t) + " · " + saDueTxt(next.due) : "всё готово ✅") + "</span></span>" + IC.chev + "</button>";
+});
+HOOKS.main.unshift(() => {
+  if (!saOn() || !SA.st.loaded) return "";
+  return datesSorted().filter((dt) => dt.left <= 7).map((dt) => {
+    const ts = saTasks(dt.id), open = ts.filter((x) => !x.ok); if (!open.length) return "";
+    const late = open.filter((x) => saLeft(x.due) < 0).length;
+    return '<button class="sa-prep" data-sa="chk" data-id="' + esc(dt.id) + '"><span class="sa-pe">' + esc(dt.emo || "🎁") + '</span><span class="sa-pt"><b>' + esc(dt.title) + " " + saWhen(dt) + "</b><span>Осталось " + open.length + " " + plural(open.length, ["дело", "дела", "дел"]) + (late ? ' · <em>' + late + " просрочено</em>" : "") + "<br>Дальше: " + esc(open[0].e + " " + open[0].t) + '</span></span><span class="sa-pgo">Чек-лист</span></button>';
+  }).join("");
 });
 /* ================= /МОДУЛИ САШИ ================= */
 
