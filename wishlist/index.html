@@ -1024,6 +1024,19 @@ html.dark[data-theme=autumn]{
 .ar-drow>div{flex:1;min-width:0}
 .ar-drow b{display:block;font-size:15px}
 .ar-drow span{font-size:12.5px;color:var(--ink2)}
+/* --- F7: поделиться списком --- */
+.ar-shbtn{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:13px 14px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);text-align:left;transition:transform .15s var(--ease)}
+.ar-shbtn:active{transform:scale(.98)}
+.ar-shbtn .ar-shi{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:linear-gradient(140deg,#dff1ff,#e9e0ff);flex:none}
+.dark .ar-shbtn .ar-shi{background:linear-gradient(140deg,#22344a,#33284d)}
+.ar-shbtn b{display:block;font-size:15px}
+.ar-shbtn span span{font-size:12.5px;color:var(--ink2)}
+.ar-shbtn svg{width:18px;height:18px;margin-left:auto;color:var(--ink3);flex:none}
+.ar-prev{margin-top:14px;border-radius:20px;overflow:hidden;background:var(--bg2);box-shadow:var(--cardShadow);min-height:120px;display:grid;place-items:center}
+.ar-prev img{width:100%;display:block}
+.ar-opts{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.ar-opts .chip{font-size:13px;padding:8px 12px}
+.ar-cnt{font-size:12.5px;color:var(--ink2);margin:10px 4px 0;text-align:center}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -3079,7 +3092,7 @@ function arBoardOpen(bid) {
     $("#ar-bbody", sh).innerHTML = '<div class="ar-btop"><span class="ar-be">' + esc(b.emo) + "</span><div><h3>" + esc(b.name) + '</h3><p class="ssub">' + l.length + " " + plural(l.length, ["желание", "желания", "желаний"]) + (l.length - act.length ? " · сбылось " + (l.length - act.length) : "") + "</p></div></div>" +
       (s ? '<div class="ar-sum"><small>вместе</small>' + esc(s) + "<em>" + act.length + " " + plural(act.length, ["вещь", "вещи", "вещей"]) + "</em></div>" : "") +
       (l.length ? '<div class="ar-blist">' + l.map((it) => '<div class="ar-roww">' + arRowHtml(it, []).replace('data-open="', 'data-ar-open="') + '<button class="drm" data-ar-bout="' + esc(it.id) + '" aria-label="Убрать из подборки">' + IC_X + "</button></div>").join("") + "</div>" : '<div class="empty" style="padding:24px 10px 6px"><div class="eart"><span>' + esc(b.emo) + "</span></div><h3>Пока пусто</h3><p>Добавь желания, которые подходят друг к другу.</p></div>") +
-      '<button class="btn pri" data-ar-bpick style="margin-top:18px">＋ Добавить желания</button><button class="btn ghost" data-ar-bedit>✏️ Название и значок</button>';
+      '<button class="btn pri" data-ar-bpick style="margin-top:18px">＋ Добавить желания</button><div class="row2"><button class="btn ghost" data-ar-bedit>✏️ Название</button>' + (l.length ? '<button class="btn ghost" data-ar-share="' + esc(bid) + '">📤 Поделиться</button>' : "") + "</div>";
   };
   draw(); sh._redraw = draw;
   sh.addEventListener("click", async (e) => {
@@ -3220,6 +3233,101 @@ HOOKS.detail.push((it) => {
   if (!isOwner() || it.done) return ""; const d = arParseISO(it.ar_due); if (!d) return ""; const n = arDueLeft(it);
   return '<div class="ar-drow"><span class="ar-cd ' + (n < 0 ? "late" : n <= 3 ? "hot" : n <= 10 ? "soon" : "") + '">' + (n < 0 ? "!" : n) + "<small>" + (n < 0 ? "прошло" : n === 0 ? "сегодня" : dayWord(n)) + "</small></span><div><b>Нужно к " + esc(arDueTxt(d)) + "</b><span>" + esc((it.ar_dueL ? it.ar_dueL + " · " : "") + arLeftTxt(n)) + "</span></div></div>";
 });
+/* --- F7: 📤 поделиться списком с мамой/подругами — картинкой или текстом --- */
+const AR_SH = { scope: "all", prices: true, links: true };
+function arShareList() {
+  const all = Object.values(S.items).filter((it) => !it.done);
+  let l = AR_SH.scope === "all" ? all : AR_SH.scope === "top" ? arTop().filter(Boolean).map((id) => S.items[id]) : all.filter((it) => arInBoard(it, AR_SH.scope));
+  const t = arTop();
+  return l.slice().sort((a, b) => { const ia = t.indexOf(a.id), ib = t.indexOf(b.id); return (ia < 0 ? 9 : ia) - (ib < 0 ? 9 : ib) || (a.cat || 2) - (b.cat || 2) || (b.createdAt || 0) - (a.createdAt || 0); });
+}
+function arShareTitle() {
+  const b = arBoards().find((x) => x.id === AR_SH.scope);
+  return b ? b.emo + " " + b.name : AR_SH.scope === "top" ? "🏆 Мой топ-3" : "Вишлист " + herGen();
+}
+function arShareText() {
+  const l = arShareList(), b = arBoards().find((x) => x.id === AR_SH.scope);
+  const lines = [arShareTitle() + (b ? " — " + herName() : "") + " 🎁", ""];
+  l.forEach((it, i) => {
+    const m = arTop().indexOf(it.id);
+    lines.push((m >= 0 ? AR_MED[m] : i + 1 + ".") + " " + it.title + (AR_SH.prices && priceStr(it) ? " — " + priceStr(it).replace(/&[^;]+;/g, "") : ""));
+    if (it.details) lines.push("   " + it.details);
+    if (AR_SH.links && it.link) lines.push("   " + fixLink(it.link));
+  });
+  return lines.join("\n");
+}
+function arRR(x, X, Y, W, H, r) { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + W, Y, X + W, Y + H, r); x.arcTo(X + W, Y + H, X, Y + H, r); x.arcTo(X, Y + H, X, Y, r); x.arcTo(X, Y, X + W, Y, r); x.closePath(); }
+function arFit(x, s, w) { if (x.measureText(s).width <= w) return s; while (s.length > 1 && x.measureText(s + "…").width > w) s = s.slice(0, -1); return s.trim() + "…"; }
+async function arShareImage() {
+  const l = arShareList().slice(0, 12), cs = getComputedStyle(document.documentElement);
+  const v = (n, d) => (cs.getPropertyValue(n) || d).trim() || d;
+  const bg = v("--bg", "#fbf4ef"), card = v("--card", "#fff"), ink = v("--ink", "#2e1d27"), ink2 = v("--ink2", "#7a6470"), rose = v("--rose", "#e2537a"), line = v("--line", "#efe2db");
+  const soft = { 1: v("--c1s", "#ffe7e2"), 2: v("--c2s", "#ddf4ea"), 3: v("--c3s", "#ece6ff") }, kc = { 1: v("--c1", "#ff5f4a"), 2: v("--c2", "#3fae86"), 3: v("--c3", "#8f6bf0") };
+  const W = 1080, P = 64, RH = 168, top = 250, H = top + Math.max(1, l.length) * (RH + 20) + 120;
+  const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  try { await document.fonts.load("700 30px WInter"); await document.fonts.load("800 30px WInter"); } catch (e) {}
+  const F = 'WInter,-apple-system,"Segoe UI",Roboto,sans-serif', SF = '"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif';
+  x.fillStyle = bg; x.fillRect(0, 0, W, H);
+  const g = x.createRadialGradient(W, 0, 10, W, 0, 700); g.addColorStop(0, rose + "33"); g.addColorStop(1, rose + "00"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  x.fillStyle = rose; x.font = "800 30px " + F; x.fillText("ВИШЛИСТ · " + new Date().toLocaleDateString("ru-RU", { day: "numeric", month: "long" }).toUpperCase(), P, 104);
+  x.fillStyle = ink; x.font = "700 72px " + SF; x.fillText(arFit(x, arShareTitle(), W - 2 * P), P, 190);
+  const imgs = await Promise.all(l.map((it) => it.thumb ? new Promise((r) => { const im = new Image(); im.onload = () => r(im); im.onerror = () => r(null); im.src = it.thumb; }) : null));
+  l.forEach((it, i) => {
+    const Y = top + i * (RH + 20), k = (CATS[it.cat] || CATS[2]).key;
+    x.save(); x.shadowColor = "rgba(120,60,80,.12)"; x.shadowBlur = 24; x.shadowOffsetY = 8; arRR(x, P, Y, W - 2 * P, RH, 40); x.fillStyle = card; x.fill(); x.restore();
+    const S0 = RH - 28, ix = P + 14, iy = Y + 14;
+    x.save(); arRR(x, ix, iy, S0, S0, 30); x.clip(); x.fillStyle = soft[k]; x.fillRect(ix, iy, S0, S0);
+    if (imgs[i]) x.drawImage(imgs[i], ix, iy, S0, S0); else { x.font = "64px sans-serif"; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText((CATS[k] || CATS[2]).emo, ix + S0 / 2, iy + S0 / 2 + 4); x.textAlign = "left"; x.textBaseline = "alphabetic"; }
+    x.restore();
+    const m = arTop().indexOf(it.id), tx = ix + S0 + 30;
+    const pr = AR_SH.prices ? priceStr(it).replace(/&[^;]+;/g, "") : "";
+    x.font = "800 34px " + F; const pw = pr ? x.measureText(pr).width + 44 : 0;
+    if (pr) { arRR(x, W - P - 26 - pw, Y + RH / 2 - 30, pw, 60, 30); x.fillStyle = soft[k]; x.fill(); x.fillStyle = kc[k]; x.fillText(pr, W - P - 26 - pw + 22, Y + RH / 2 + 12); }
+    const tw = W - P - 40 - pw - tx;
+    x.fillStyle = ink; x.font = "700 40px " + F; x.fillText(arFit(x, (m >= 0 ? AR_MED[m] + " " : "") + it.title, tw), tx, Y + 74);
+    const sub = [it.details, AR_SH.links ? arHost(it.link) : ""].filter(Boolean).join(" · ") || (CATS[k] || CATS[2]).emo + " " + (CATS[k] || CATS[2]).name;
+    x.fillStyle = ink2; x.font = "500 30px " + F; x.fillText(arFit(x, sub, tw), tx, Y + 122);
+  });
+  if (!l.length) { x.fillStyle = ink2; x.font = "500 34px " + F; x.fillText("Здесь пока пусто", P, top + 80); }
+  x.strokeStyle = line; x.lineWidth = 2; x.beginPath(); x.moveTo(P, H - 92); x.lineTo(W - P, H - 92); x.stroke();
+  x.fillStyle = ink2; x.font = "600 28px " + F; x.fillText(arFit(x, l.length + " " + plural(l.length, ["желание", "желания", "желаний"]) + " · купишь что-то — напиши мне, чтобы не повторяться", W - 2 * P), P, H - 46);
+  return c;
+}
+function arShareOpen(scope) {
+  if (scope) AR_SH.scope = scope;
+  if (AR_SH.scope !== "all" && AR_SH.scope !== "top" && !arBoards().some((b) => b.id === AR_SH.scope)) AR_SH.scope = "all";
+  const sh = openSheet('<h3>Поделиться списком 📤</h3><p class="ssub">Для мамы, подруг и всех, кто спрашивает «что тебе подарить?». Приватные пометки не попадут.</p>' +
+    '<div class="fl">Что отправить</div><div class="chips" id="ar_shs"></div><div class="ar-opts" id="ar_sho"></div><div class="ar-prev" id="ar_shp"><span class="mspin ink"></span></div><div class="ar-cnt" id="ar_shc"></div>' +
+    '<div class="row2"><button class="btn pri" data-ar-shimg>🖼 Картинкой</button><button class="btn" data-ar-shtxt>📋 Текстом</button></div>');
+  let url = "", canvas = null, tok = 0;
+  const draw = async () => {
+    const my = ++tok;
+    $("#ar_shs", sh).innerHTML = [["all", "Все желания"]].concat(arTop().some(Boolean) ? [["top", "🏆 Топ-3"]] : []).concat(arBoards().map((b) => [b.id, b.emo + " " + b.name])).map((o) => '<button class="chip' + (AR_SH.scope === o[0] ? " on" : "") + '" data-ar-shscope="' + esc(o[0]) + '">' + esc(o[1]) + "</button>").join("");
+    $("#ar_sho", sh).innerHTML = '<button class="chip' + (AR_SH.prices ? " on" : "") + '" data-ar-shopt="prices">' + (AR_SH.prices ? "✓ " : "") + 'Цены</button><button class="chip' + (AR_SH.links ? " on" : "") + '" data-ar-shopt="links">' + (AR_SH.links ? "✓ " : "") + "Ссылки</button>";
+    const n = arShareList().length; $("#ar_shc", sh).textContent = n > 12 ? "На картинке первые 12 из " + n + " — текстом уйдут все" : n + " " + plural(n, ["желание", "желания", "желаний"]);
+    const cv = await arShareImage(); if (my !== tok) return; canvas = cv;
+    if (url) URL.revokeObjectURL(url);
+    cv.toBlob((b) => { if (my !== tok || !b) return; url = URL.createObjectURL(b); $("#ar_shp", sh).innerHTML = '<img src="' + url + '" alt="Превью">'; }, "image/png");
+  };
+  draw();
+  sh._entry.onClose = () => { if (url) setTimeout(() => URL.revokeObjectURL(url), 1000); };
+  sh.addEventListener("click", async (e) => {
+    const s = e.target.closest("[data-ar-shscope]"); if (s) { AR_SH.scope = s.dataset.arShscope; haptic("light"); draw(); return; }
+    const o = e.target.closest("[data-ar-shopt]"); if (o) { AR_SH[o.dataset.arShopt] = !AR_SH[o.dataset.arShopt]; haptic("light"); draw(); return; }
+    if (e.target.closest("[data-ar-shtxt]")) { copy(arShareText()); return; }
+    if (e.target.closest("[data-ar-shimg]")) {
+      if (!canvas) return;
+      canvas.toBlob(async (b) => {
+        const name = "wishlist-" + arISO(Date.now()) + ".png";
+        try { const f = new File([b], name, { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: arShareTitle() }); return; } } catch (er) { if (er && er.name === "AbortError") return; }
+        const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        haptic("ok"); toast("Картинка сохранена 🖼");
+      }, "image/png");
+    }
+  });
+}
+HOOKS.settings.push(() => !isOwner() ? "" : '<div class="fl">Для родных и подруг</div><button class="ar-shbtn" data-ar-share><span class="ar-shi">📤</span><span><b>Поделиться списком</b><span>Картинкой или текстом — без приватных пометок</span></span>' + IC.chev + "</button>");
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-ar-share]"); if (b) { haptic("light"); arShareOpen(b.dataset.arShare || "all"); } });
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
 /* ================= МОДУЛИ САШИ ================= */
