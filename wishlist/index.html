@@ -4464,7 +4464,7 @@ HOOKS.main.push(() => {
   const shops = new Set(l.map((x) => x.shop || "—")).size, sum = l.reduce((a, x) => a + (x.v || 0), 0);
   return '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + " · " + shops + " " + plural(shops, ["магазин", "магазина", "магазинов"]) + (sum ? " · ≈ " + money(sum, saCur()) : "") + "</em></span>" + IC.chev + "</button>";
 });
-SA.occTop.push(() => { const l = saShopList(); return l.length ? '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + " ещё не куплено</em></span>" + IC.chev + "</button>" : ""; });
+SA.occTop.push(() => { const l = saShopList(); return l.length ? '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + "ещё не куплено: " + l.length + " " + plural(l.length, ["вещь", "вещи", "вещей"]) + "</em></span>" + IC.chev + "</button>" : ""; });
 
 /* --- 10. ЧТО ОНА ИЗМЕНИЛА: точная разница (было → стало) в желаниях из твоего плана --- */
 const SA_F = [["t", "Название", "title"], ["p", "Цена", null], ["d", "Детали", "details"], ["l", "Ссылка", "link"], ["n", "Комментарий", "note"], ["c", "Важность", null], ["f", "Фото", null]];
@@ -4508,7 +4508,7 @@ HOOKS.detail.unshift((it) => {
   const ds = saDiff(it); if (!ds.length) return "";
   return '<div class="sa-chgd"><div class="sa-bh"><span>✏️ Она изменила после твоей отметки</span></div>' + saDiffHtml(it, ds) + saOrderWarn(it, ds) + '<button class="sa-trk" data-sa="dack" data-sa-any data-id="' + esc(it.id) + '">Понятно ✓</button></div>';
 });
-SA_ACT.dack = async (b) => { const inSheet = !!b.closest(".sheet"); await saAck(b.dataset.id); toast("Отметил как просмотренное ✓"); if (inSheet) saRefreshDetail(b.dataset.id); };
+SA_ACT.dack = async (b) => { const inSheet = !!b.closest(".sheet"); await saAck(b.dataset.id); toast("Отметил как просмотренное", "✓"); if (inSheet) saRefreshDetail(b.dataset.id); };
 SA_ACT.dopen = (b) => openDetail(b.dataset.id);
 /* ================= /МОДУЛИ САШИ ================= */
 
