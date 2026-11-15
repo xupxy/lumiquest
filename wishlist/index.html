@@ -1213,6 +1213,70 @@ html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
 .tgl,.box,.who{border-radius:22px}
 .who .wr{border-radius:50%}
 .thsw,.thauto{border-radius:22px}
+/* --- итерация 3: микро-взаимодействия, пустые состояния, полировка --- */
+/* фон медленно «дышит» */
+body:before{inset:-8%;animation:meshDrift 38s ease-in-out infinite alternate}
+@keyframes meshDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-2.5%,1.5%,0) scale(1.04)}100%{transform:translate3d(2%,-1.5%,0) scale(1.02)}}
+/* нажатия: стекло чуть светлеет и пружинит */
+.card,.tile,.qadd,.banner,.sa-find,.grow,.spyc,.plan,.iconbtn,.mood,.bringc,.choice,.cat,.chip,.rbtn,.thsw,.thauto,.stopt,.tgl,.gstrow,.btn{transition:transform .38s var(--spring),box-shadow .3s var(--ease),background-color .25s,filter .25s}
+.card:active,.tile:active,.qadd:active,.banner:active,.sa-find:active,.grow:active,.spyc:active,.plan:active,.bringc:active,.choice:active{transform:scale(.97);filter:brightness(1.04) saturate(1.05);transition-duration:.12s}
+.iconbtn:active{transform:scale(.9);transition-duration:.12s}
+.btn:active{transform:scale(.97);filter:brightness(1.05);transition-duration:.1s}
+.card:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 48%,transparent 62%);opacity:0;transform:translateX(-30%);transition:opacity .4s,transform .6s var(--ease)}
+.card:active:after{opacity:1;transform:translateX(20%);transition-duration:.25s}
+.dark .card:after{background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.08) 48%,transparent 62%)}
+/* индикатор вкладок — пружина */
+.tabind.anim{transition:transform .5s var(--spring),width .5s var(--spring)}
+.tab{transition:color .3s var(--ease),transform .3s var(--spring)}
+.tab:active{transform:scale(.94)}
+/* FAB: мягкое свечение */
+.fab:after{content:"";position:absolute;inset:-6px;border-radius:inherit;z-index:-1;background:radial-gradient(closest-side,rgba(226,83,122,.38),rgba(226,83,122,0));animation:fabGlow 3.6s ease-in-out infinite;pointer-events:none}
+html[data-theme]:not([data-theme=classic]) .fab:after{background:radial-gradient(closest-side,var(--th-badgeSh,rgba(226,83,122,.35)),transparent)}
+@keyframes fabGlow{0%,100%{opacity:.35;transform:scale(.96)}50%{opacity:.9;transform:scale(1.06)}}
+.fab .pl{transition:transform .45s var(--spring)}
+.fab:active .pl{transform:rotate(90deg)}
+/* содержимое шторки появляется лесенкой */
+.sheet.on>:not(.grab):not(.dbar){animation:sheetIn .5s var(--ease) both}
+.sheet.on>:nth-child(2){animation-delay:.06s}.sheet.on>:nth-child(3){animation-delay:.1s}.sheet.on>:nth-child(4){animation-delay:.14s}.sheet.on>:nth-child(5){animation-delay:.18s}.sheet.on>:nth-child(n+6){animation-delay:.22s}
+@keyframes sheetIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.sheet.hero.on>.dhero{animation:none}
+.sheet.hero .gal img{animation:heroIn .7s var(--ease) both}
+@keyframes heroIn{from{transform:scale(1.06);filter:blur(6px)}to{transform:none;filter:none}}
+/* тост: капсула «острова» с пружиной */
+.toast{transition:transform .6s var(--spring),opacity .3s;padding:6px 18px 6px 6px;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%)}
+.toast .ti{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.dark .toast .ti{background:rgba(226,83,122,.14);box-shadow:none}
+/* пустые состояния */
+.empty{padding:34px 24px 40px}
+.empty .eart{width:128px;height:128px;margin-bottom:22px}
+.empty .eart:before{animation:eglow 4s ease-in-out infinite}
+.empty .eart:after{content:"";position:absolute;inset:-14px;border-radius:50%;border:1px solid var(--glb);opacity:.8;pointer-events:none}
+@keyframes eglow{0%,100%{box-shadow:inset 0 0 0 1px var(--glb),var(--sh2),0 0 0 0 rgba(226,83,122,0)}50%{box-shadow:inset 0 0 0 1px var(--glb),var(--sh2),0 0 40px 4px rgba(226,83,122,.18)}}
+.empty .eart img{width:88px;height:88px;border-radius:50%;animation:float 3.6s ease-in-out infinite}
+.empty p{color:var(--ink2);font-size:14.5px;line-height:1.5}
+.empty .hintdown{margin-top:22px;display:inline-flex;flex-direction:row;gap:6px;padding:9px 14px;border-radius:999px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb),var(--sh1);font-weight:700}
+.empty .hintdown svg{width:16px;height:16px}
+/* скелетон — стеклянный */
+.sk{background:var(--bg2)}
+.skcard{border-radius:26px;padding:6px}
+.skcard .sk:first-child{border-radius:20px}
+/* фокус с клавиатуры */
+:focus-visible{outline:2px solid var(--rose2);outline-offset:2px}
+.inp:focus-visible{outline:none}
+/* выбор: пружинящая галочка и иконка */
+.cat.on .rd{animation:thPop .45s var(--spring)}
+.cat.on .ci{transform:scale(1.08) rotate(-6deg)}
+.chip.on{animation:thPop .4s var(--spring)}
+/* бейдж «новое» мягко светится */
+.badge:not(.upd){animation:badgeGlow 2.8s ease-in-out infinite}
+@keyframes badgeGlow{50%{box-shadow:0 0 0 4px rgba(226,83,122,.18),0 4px 14px -2px rgba(226,83,122,.6)}}
+/* прогресс бюджета — плавное заполнение */
+.plan .bar i{box-shadow:0 0 12px rgba(63,174,134,.5)}
+.galdots i.on{box-shadow:0 0 8px rgba(255,255,255,.6)}
+@media (prefers-reduced-motion:reduce){
+  body:before,.fab:after,.empty .eart:before,.empty .eart img,.badge:not(.upd),.sheet.on>*,.sheet.hero .gal img,.cat.on .rd,.chip.on{animation:none!important}
+  .card:after{display:none}
+}
 /* ===== /ДИЗАЙН «СКЛО» ===== */
 </style>
 </head>
