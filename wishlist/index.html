@@ -875,6 +875,8 @@ html.dark[data-theme=autumn]{
 .dark .qadd .qi{background:linear-gradient(140deg,#1e2c45,#4b2534)}
 .qadd b{display:block;font-size:15px}.qadd span.qs{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px}
 .phprog{grid-column:1/-1;font:700 12.5px/1 var(--font);color:var(--ink2);padding:6px 2px}
+.szhint{margin:-2px 2px 4px;padding:9px 12px;border-radius:12px;background:var(--c2s);color:var(--ink);font-size:13px;line-height:1.35}
+.szhint button{margin-left:6px;font:800 12.5px/1 var(--font);color:var(--rose);text-decoration:underline}
 /* ===== МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
@@ -2910,6 +2912,38 @@ function syncRemind() {
   if (S.meta.sa_remind && JSON.stringify(S.meta.sa_remind.dates || []) === sig && S.meta.sa_remind.on !== false) return;
   clearTimeout(remT); remT = setTimeout(() => S.store.saveMeta({ sa_remind: { dates, on: true, at: Date.now() } }).catch(() => {}), 1200);
 }
+
+/* ================= РАЗМЕР ИЗ «ПРО МЕНЯ» ================= */
+const SIZE_RULES = [
+  ["shoes", "обуви", /кросс|кед|ботин|туфл|сапог|сандал|босонож|лофер|мокас|угг|ugg|тапоч|шлёп|шлеп|сникер|обув|nike air|new balance|converse|vans|dr\.? ?martens|мартинс/i],
+  ["ring", "кольца", /кольц|колечк|перстен/i],
+  ["size", "одежды", /свитер|футбол|плать|джинс|куртк|пальто|худи|кофт|брюк|юбк|рубаш|блуз|топ\b|пижам|шорт|костюм|пухов|жилет|кардиган|водолаз|лонгслив|легинс|лосин|комбинез|халат|бель|бра\b|купальн|свитшот|толстовк|пиджак|жакет|тренч|парк[аи]|шуб|носк|колгот|перчат/i],
+];
+function sizeFor(title) {
+  const ab = S.meta.about || {};
+  for (const r of SIZE_RULES) if (r[2].test(title || "") && String(ab[r[0]] || "").trim()) return { key: r[0], label: r[1], val: String(ab[r[0]]).trim() };
+  return null;
+}
+HOOKS.editor.push({
+  html: () => '<div class="szhint hidden" id="szh"></div>',
+  bind(sh, it) {
+    if (!isOwner()) return;
+    const t = $("#f_title", sh), d = $("#f_details", sh), hint = $("#szh", sh); let added = "", dismissed = false, tm;
+    const check = () => {
+      if (dismissed) return;
+      const sz = sizeFor(t.value);
+      if (added && (!sz || !d.value.includes(added) || "Размер " + sz.val !== added)) { if (d.value.includes(added)) d.value = d.value.replace(added, "").replace(/^\s*·\s*|\s*·\s*$/g, "").trim(); added = ""; hint.classList.add("hidden"); }
+      if (!sz || added || /размер|р-р|\b\d{2}(?:[.,]5)?\b/i.test(d.value)) return;
+      added = "Размер " + sz.val; d.value = d.value.trim() ? d.value.trim() + " · " + added : added;
+      hint.innerHTML = '📏 Подставила размер ' + sz.label + ' из «Про меня»: <b>' + esc(sz.val) + '</b> <button type="button" data-szx="1">убрать</button>';
+      hint.classList.remove("hidden");
+    };
+    t.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(check, 400); });
+    hint.addEventListener("click", (e) => { if (!e.target.closest("[data-szx]")) return; d.value = d.value.replace(added, "").replace(/^\s*·\s*|\s*·\s*$/g, "").trim(); added = ""; dismissed = true; hint.classList.add("hidden"); });
+    if (!it) setTimeout(check, 50);
+  },
+  collect: () => ({}),
+});
 
 /* ================= МОДУЛИ АРИНЫ ================= */
 /* ================= /МОДУЛИ АРИНЫ ================= */
