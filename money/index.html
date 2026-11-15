@@ -819,7 +819,9 @@ const txMain = (t) => toMain(t.amt, t.cur);
 
 /* ================= сховище ================= */
 function makeLocalStore() {
-  const KEY = "mn_demo_db";
+  const KEY = "mn_local_v2";
+  // старые примерные данные первой версии — стираем, чтобы не путались с настоящими
+  try { localStorage.removeItem("mn_demo_db"); } catch (e) {}
   const read = () => LS.get(KEY, null) || { items: {}, meta: {} };
   let subs = [], t = 0;
   const emit = () => { clearTimeout(t); t = setTimeout(() => { const d = read(); subs.forEach((f) => f(d)); }, 0); };
