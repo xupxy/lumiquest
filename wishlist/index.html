@@ -1069,6 +1069,34 @@ html.dark[data-theme=autumn]{
 .ar-bkr b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ar-bkr .ar-track{height:7px;margin:6px 0 0}
 .ar-bkr em{font-style:normal;font:800 12px/1 var(--font);color:var(--ink2);flex:none;font-variant-numeric:tabular-nums}
+/* --- F9: кто подарил, оценка, «спасибо» --- */
+.ar-gv{margin-top:16px;padding:14px 16px;border-radius:20px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.ar-gv .k{font:700 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:2px 0 10px}
+.ar-gv .k+.chips{margin-bottom:4px}
+.ar-gv .chips .chip{font-size:13.5px;padding:8px 12px}
+.ar-stars{display:flex;gap:4px}
+.ar-stars button{font-size:28px;line-height:1;filter:grayscale(1);opacity:.35;transition:transform .15s var(--ease),opacity .2s,filter .2s}
+.ar-stars button.on{filter:none;opacity:1}
+.ar-stars button:active{transform:scale(.85)}
+.ar-gv .ar-sep{height:1px;background:var(--line);margin:14px 0}
+.ar-gvrow{display:flex;gap:8px}
+.ar-gvrow .inp{flex:1;min-width:0;padding:11px 14px;font-size:15px;border-radius:14px}
+.ar-thx{display:flex;align-items:center;gap:10px;width:100%;margin-top:12px;padding:11px 12px;border-radius:14px;background:var(--bg2);text-align:left;font-weight:700;font-size:14px}
+.ar-thx .bchk{width:26px;height:26px}
+.ar-thx.on{background:#dcf5e9;color:#1f8a5c}.dark .ar-thx.on{background:#1d3a30;color:#6fdcaa}
+.ar-thx.on .bchk{background:#2fb078;box-shadow:none}
+.ar-gvb{position:absolute;top:7px;left:7px;max-width:calc(100% - 14px);padding:5px 8px;border-radius:999px;font:800 10.5px/1 var(--font);background:var(--glass);color:var(--ink);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(46,29,39,.15);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-ty{margin:12px 0 2px;padding:12px 14px 6px;border-radius:22px;background:linear-gradient(135deg,#e6f8ef,#fff4e0);box-shadow:var(--cardShadow)}
+.dark .ar-ty{background:linear-gradient(135deg,#1d3a30,#3f3520)}
+.ar-ty .ar-dueh{margin:0 0 4px}
+.ar-tyr{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid rgba(0,0,0,.06)}
+.dark .ar-tyr{border-color:rgba(255,255,255,.07)}
+.ar-tyr:first-of-type{border-top:0}
+.ar-tyr>button:first-child{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left}
+.ar-tyr .ar-th{width:38px;height:38px;border-radius:11px;font-size:18px}
+.ar-tyr b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-tyr span.s{font-size:12px;color:var(--ink2)}
+.ar-tyr .ar-go{background:#2fb078;color:#fff}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -3411,6 +3439,50 @@ document.addEventListener("click", async (e) => {
       if (ok) await arBankSave(id, null); return;
     }
     if (e.target.closest("[data-ar-bkbought]")) { await S.store.patchItem(id, { done: true, doneAt: Date.now(), ar_by: "me" }); closeAll(); confetti(); SFX.play("tada"); toast("Ура! Купила сама 🛍"); }
+  } catch (er) { toast("Ошибка: " + (er.message || er)); }
+});
+/* --- F9: 🎁 сбывшееся — от кого, как зашло и «поблагодарила ✓» --- */
+const AR_WHO = ["Саша", "Мама", "Папа", "Подруга", "Коллеги", "Сама"];
+const arWho = (it) => (it.ar_by === "me" ? "Сама" : it.ar_by || "");
+const arFrom = (w) => { const g = { Мама: "мамы", Папа: "папы", Подруга: "подруги", Коллеги: "коллег", Саша: "Саши" }[w]; return w === "Сама" ? "сама купила" : g ? "от " + g : "🎁 " + w; };
+HOOKS.detail.push((it) => {
+  if (!isOwner() || !it.done) return "";
+  const w = arWho(it), r = it.ar_rate | 0, custom = w && !AR_WHO.includes(w);
+  return '<div class="ar-gv" data-ar-gv="' + esc(it.id) + '"><div class="k">🎁 Кто подарил</div><div class="chips">' + AR_WHO.map((x) => '<button class="chip' + (w === x ? " on" : "") + '" data-ar-who="' + esc(x) + '">' + esc(x) + "</button>").join("") + (custom ? '<button class="chip on" data-ar-who="' + esc(w) + '">' + esc(w) + "</button>" : "") + "</div>" +
+    '<div class="ar-gvrow" style="margin-top:8px"><input class="inp" data-ar-whoin maxlength="30" placeholder="Другое имя…"><button class="btn dark2" data-ar-whook style="width:auto;min-height:0;margin:0;padding:0 16px;border-radius:14px;font-size:14px">OK</button></div>' +
+    (w && w !== "Сама" ? '<button class="ar-thx' + (it.ar_thx ? " on" : "") + '" data-ar-thx><span class="bchk">' + IC.check.replace("<svg", '<svg width="14" height="14"') + "</span>" + (it.ar_thx ? "Поблагодарила" : "Поблагодарить — отметить, когда скажешь спасибо") + "</button>" : "") +
+    '<div class="ar-sep"></div><div class="k">Как зашло</div><div class="ar-stars">' + [1, 2, 3, 4, 5].map((n) => '<button class="' + (n <= r ? "on" : "") + '" data-ar-rate="' + n + '" aria-label="' + n + '">⭐</button>').join("") + "</div>" +
+    '<div class="ar-gvrow" style="margin-top:12px"><input class="inp" data-ar-revin maxlength="140" placeholder="Пара слов: пользуюсь каждый день…" value="' + esc(it.ar_rev || "") + '"><button class="btn dark2" data-ar-revok style="width:auto;min-height:0;margin:0;padding:0 16px;border-radius:14px;font-size:14px">✓</button></div></div>';
+});
+HOOKS.badge.push((it) => { if (!isOwner() || !it.done) return ""; const w = arWho(it), r = it.ar_rate | 0; if (!w && !r) return ""; return '<span class="ar-gvb">' + esc([w ? (w === "Сама" ? "🛍 сама" : "🎁 " + w) : "", r ? "★" + r : ""].filter(Boolean).join(" · ")) + "</span>"; });
+function arThanksHtml() {
+  if (!isOwner()) return "";
+  const l = Object.values(S.items).filter((it) => it.done && arWho(it) && arWho(it) !== "Сама" && !it.ar_thx && Date.now() - (it.doneAt || 0) < 45 * 86400000).sort((a, b) => (b.doneAt || 0) - (a.doneAt || 0));
+  const nowho = Object.values(S.items).filter((it) => it.done && !arWho(it) && Date.now() - (it.doneAt || 0) < 45 * 86400000);
+  if (!l.length && !nowho.length) return "";
+  return '<div class="ar-ty"><div class="ar-dueh"><b>💌 Сказать спасибо</b><span>' + (l.length ? l.length + " " + plural(l.length, ["подарок", "подарка", "подарков"]) : "") + "</span></div>" +
+    l.slice(0, 4).map((it) => { const c = CATS[it.cat] || CATS[2]; return '<div class="ar-tyr"><button data-open="' + esc(it.id) + '"><span class="ar-th k' + c.key + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + "</span><span style=\"min-width:0\"><b>" + esc(it.title) + '</b><span class="s">' + esc(arFrom(arWho(it))) + " · " + ago(it.doneAt) + '</span></span></button><button class="ar-go" data-ar-thxq="' + esc(it.id) + '">✓ Спасибо</button></div>'; }).join("") +
+    (nowho.length ? '<div class="ar-tyr"><button data-open="' + esc(nowho[0].id) + '"><span class="ar-th">❔</span><span style="min-width:0"><b>' + (nowho.length === 1 ? "«" + esc(nowho[0].title) + "» — от кого?" : nowho.length + " " + plural(nowho.length, ["подарок", "подарка", "подарков"]) + " без отметки «от кого»") + '</b><span class="s">Открой и отметь, чтобы не забыть</span></span></button></div>' : "") + "</div>";
+}
+HOOKS.main.splice(Math.max(0, HOOKS.main.indexOf(arTopHtml)), 0, arThanksHtml);
+async function arGvPatch(id, patch, msg) {
+  await S.store.patchItem(id, patch);
+  const sh = sheets.length && sheets[sheets.length - 1];
+  if (sh && sh.sh.querySelector("[data-ar-gv]")) { const y = sh.sh.scrollTop; closeSheet(sh, true); setTimeout(async () => { await openDetail(id); const n = sheets[sheets.length - 1]; if (n) n.sh.scrollTop = y; }, 30); }
+  if (msg) toast(msg);
+}
+document.addEventListener("click", async (e) => {
+  try {
+    const q = e.target.closest("[data-ar-thxq]");
+    if (q) { haptic("ok"); SFX.play("pop"); await S.store.patchItem(q.dataset.arThxq, { ar_thx: Date.now() }); toast("Отмечено: поблагодарила 💌"); return; }
+    const box = e.target.closest("[data-ar-gv]"); if (!box) return; const id = box.dataset.arGv, it = S.items[id]; if (!it) return;
+    const w = e.target.closest("[data-ar-who]");
+    if (w) { haptic("light"); const v = w.dataset.arWho; await arGvPatch(id, { ar_by: arWho(it) === v ? "" : v === "Сама" ? "me" : v }); return; }
+    if (e.target.closest("[data-ar-whook]")) { const v = box.querySelector("[data-ar-whoin]").value.trim(); if (!v) { haptic("error"); return; } haptic("ok"); await arGvPatch(id, { ar_by: v.slice(0, 30) }); return; }
+    if (e.target.closest("[data-ar-thx]")) { haptic("ok"); SFX.play(it.ar_thx ? "tick" : "pop"); await arGvPatch(id, { ar_thx: it.ar_thx ? 0 : Date.now() }); return; }
+    const r = e.target.closest("[data-ar-rate]");
+    if (r) { const n = +r.dataset.arRate; haptic("light"); SFX.play("tick"); await arGvPatch(id, { ar_rate: (it.ar_rate | 0) === n ? 0 : n }); return; }
+    if (e.target.closest("[data-ar-revok]")) { haptic("ok"); await arGvPatch(id, { ar_rev: box.querySelector("[data-ar-revin]").value.trim().slice(0, 140) }, "Сохранено ✓"); }
   } catch (er) { toast("Ошибка: " + (er.message || er)); }
 });
 /* ================= /МОДУЛИ АРИНЫ ================= */
