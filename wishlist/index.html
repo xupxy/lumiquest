@@ -1275,6 +1275,20 @@ html[data-theme]:not([data-theme=classic]) .sa-prep{background:var(--th-deep)}
 .sa-pxr.out{opacity:.5}.sa-pxr.out .sa-pxp{text-decoration:line-through}
 .sa-pxb{display:flex;gap:8px}.sa-pxb .sa-trk{flex:1}
 .sa-pxin{font-style:normal;color:var(--c2);font-weight:800}
+/* 9. список покупок */
+.sa-shrow{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 2px;padding:11px 14px 11px 11px;border-radius:20px;background:var(--card);box-shadow:var(--cardShadow);text-align:left}
+.sa-occ~.sa-shrow,.sec>.sa-shrow{margin-top:10px}
+.sa-shi{width:44px;height:44px;border-radius:14px;flex:none;display:grid;place-items:center;font-size:22px;background:linear-gradient(140deg,#dff4ea,#e3efff)}
+.dark .sa-shi{background:linear-gradient(140deg,#1d3a30,#1d2a45)}
+.sa-shrow b{display:block;font:700 16.5px/1.2 var(--serif)}.sa-shrow em{display:block;font-style:normal;font-size:12.5px;font-weight:600;color:var(--ink2);margin-top:2px}
+.sa-shrow>svg{width:16px;height:16px;color:var(--ink3);flex:none}
+.sa-shg{display:flex;justify-content:space-between;align-items:baseline;margin:20px 4px 8px;font:800 12.5px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.sa-shg b{letter-spacing:0;color:var(--ink)}
+.sa-shp{flex:none;font:800 14px/1 var(--font);white-space:nowrap}
+.bitem .btx small.sa-shd{color:var(--ink2)}
+.sa-shl{font-weight:800;color:var(--rose)}
+.sa-shtot{display:flex;justify-content:space-between;align-items:center;margin:16px 4px 4px;font-weight:700;color:var(--ink2)}
+.sa-shtot b{font:700 22px/1 var(--serif);color:var(--ink)}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -4368,6 +4382,71 @@ function saOfferForm(id, oid) {
 SA_ACT.pxnew = (b) => saOfferForm(b.dataset.id);
 SA_ACT.pxed = (b) => saOfferForm(b.dataset.id, b.dataset.o);
 SA_ACT.pxgo = (b) => { const it = S.items[b.dataset.id]; const o = it && saBest(it); if (o && o.link) openLink(o.link); };
+
+/* --- 9. СПИСОК ПОКУПОК: всё, что ещё не куплено, сгруппировано по магазинам (с размерами) + экспорт текстом --- */
+function saShopList() {
+  const out = [];
+  Object.values(S.items).filter((i) => !i.done && G(i.id) && gstOf(i.id) < 1).forEach((it) => {
+    const o = saBest(it), b = saBuy(it.id) || {};
+    out.push({ k: "w", id: it.id, t: it.title, det: it.details || "", shop: (o && o.shop) || b.shop || saHost(it.link) || "", v: saPaid(it), raw: o ? money(o.p, o.cur || "€") : priceStr(it).replace(/&[^;]+;/g, ""), link: (o && o.link) || it.link || "", note: o && o.note || "", occ: saOccOf(it.id) });
+  });
+  saIdeas().filter((x) => !x.given && (x.st | 0) < 1).forEach((x) => out.push({ k: "i", id: x.id, t: x.t, det: x.note || "", shop: x.shop || saHost(x.link) || "", v: saIdeaCost(x), raw: Number(x.price) ? money(Number(x.price), x.cur || "€") : "", link: x.link || "", occ: saIdeaOcc(x) }));
+  // дела из чек-листов, которые тоже про «купить»
+  datesSorted().filter((dt) => dt.left <= 30).forEach((dt) => (saChk(dt.id) || { l: [] }).l.filter((c) => !c.ok && /^(купить|заказать)/i.test(c.t)).forEach((c) => out.push({ k: "c", id: dt.id + ":" + c.id, t: c.t.replace(/^(купить|заказать)\s*/i, (m) => m[0].toUpperCase() + m.slice(1)), det: "", shop: "", v: 0, raw: "", occ: dt.id })));
+  return out;
+}
+function saShopText(groups, total) {
+  const cur = saCur(); let s = "🛒 Список покупок\n";
+  Object.keys(groups).forEach((g) => { s += "\n📍 " + g + "\n"; groups[g].forEach((x) => { s += "☐ " + x.t + (x.det ? " — " + x.det : "") + (x.raw ? " · " + x.raw : "") + (x.note ? " (" + x.note + ")" : "") + (x.link ? "\n   " + fixLink(x.link) : "") + "\n"; }); });
+  return s + (total ? "\nИтого ≈ " + money(total, cur) : "");
+}
+function saShopSheet() {
+  const sh = openSheet("", null);
+  let flt = "all";
+  const draw = () => {
+    const old = sh.querySelector(".dbody"); if (old) old.remove();
+    let l = saShopList(); const occs = datesSorted().filter((dt) => l.some((x) => x.occ === dt.id));
+    if (flt !== "all") l = l.filter((x) => x.occ === flt);
+    const groups = {}; l.sort((a, b) => (a.shop ? 0 : 1) - (b.shop ? 0 : 1)).forEach((x) => { const g = x.shop || "Где угодно"; (groups[g] = groups[g] || []).push(x); });
+    const total = l.reduce((a, x) => a + (x.v || 0), 0);
+    sh._txt = saShopText(groups, total);
+    const div = document.createElement("div"); div.className = "dbody";
+    div.innerHTML = '<h3>Список покупок 🛒</h3><p class="ssub">Всё, что ещё не куплено, — по магазинам, с размерами и ценами. Отмечай прямо в магазине.</p>' +
+      (occs.length > 1 ? '<div class="chips" style="margin-top:14px"><button class="chip' + (flt === "all" ? " on" : "") + '" data-sa-sf="all">Все</button>' + occs.map((dt) => '<button class="chip' + (flt === dt.id ? " on" : "") + '" data-sa-sf="' + esc(dt.id) + '">' + esc((dt.emo || "🎁") + " " + dt.title) + "</button>").join("") + "</div>" : "") +
+      (l.length ? Object.keys(groups).map((g) => { const sum = groups[g].reduce((a, x) => a + (x.v || 0), 0);
+        return '<div class="sa-shg"><span>📍 ' + esc(g) + "</span>" + (sum ? "<b>≈ " + money(sum, saCur()) + "</b>" : "") + '</div><div class="box blist" style="padding:2px 12px;margin-top:0">' + groups[g].map((x) =>
+          '<div class="bitem"><button class="bchk" data-sa-sb="' + x.k + ":" + esc(x.id) + '" aria-label="Купил">' + IC.check + '</button><span class="btx"><span class="bt1">' + (x.k === "i" ? "💡 " : x.k === "c" ? "✔️ " : "") + esc(x.t) + "</span>" +
+          (x.det ? '<small class="sa-shd">📐 ' + esc(x.det) + "</small>" : "") + (x.note ? "<small>" + esc(x.note) + "</small>" : "") + "</span>" +
+          '<span class="sa-shp">' + esc(x.raw || "") + "</span>" + (x.link ? '<button class="drm sa-shl" data-sa-sl="' + esc(x.link) + '" aria-label="Открыть">↗</button>' : "") + "</div>").join("") + "</div>"; }).join("") +
+        '<div class="sa-shtot"><span>Итого ' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + "</span><b>≈ " + money(total, saCur()) + "</b></div>" +
+        '<div class="row2"><button class="btn" id="sa_shc">📋 Скопировать</button><button class="btn pri" id="sa_shs">📤 Отправить</button></div><div class="hint" style="text-align:center">Например, себе в «Избранное» или другу, который поможет с покупками</div>'
+        : '<div class="sa-empty">✅<b>Всё куплено</b><span>Новые подарки со статусом «Думаю» появятся здесь</span></div>');
+    sh.appendChild(div);
+  };
+  draw(); sh._redraw = draw;
+  sh.addEventListener("click", async (e) => {
+    const f = e.target.closest("[data-sa-sf]"); if (f) { flt = f.dataset.saSf; haptic("light"); draw(); return; }
+    const ln = e.target.closest("[data-sa-sl]"); if (ln) { openLink(ln.dataset.saSl); return; }
+    if (e.target.closest("#sa_shc")) { copy(sh._txt); return; }
+    if (e.target.closest("#sa_shs")) { const u = "https://t.me/share/url?url=" + encodeURIComponent(" ") + "&text=" + encodeURIComponent(sh._txt); try { if (tg && tg.openTelegramLink) { tg.openTelegramLink(u); return; } } catch (er) {} openLink(u); return; }
+    const b = e.target.closest("[data-sa-sb]"); if (!b) return;
+    const [k, id, cid] = b.dataset.saSb.split(":");
+    b.closest(".bitem").classList.add("ok"); haptic("ok"); SFX.play("tick");
+    if (k === "w") { SPY.st[id] = 1; await saveSpyMain(); }
+    else if (k === "i") { const x = saIdea(id); if (x) { x.st = 1; await SA.save("ideas"); } }
+    else if (k === "c") { const c = (saChk(id) || { l: [] }).l.find((y) => y.id === cid); if (c) { c.ok = true; await SA.save("chk"); } }
+    setTimeout(() => { draw(); render(); }, 450);
+  });
+}
+SA_ACT.shop = () => saShopSheet();
+HOOKS.main.push(() => {
+  if (!saOn() || !SA.st.loaded) return "";
+  const nx = datesSorted()[0]; if (!nx || nx.left > 30) return "";
+  const l = saShopList(); if (!l.length) return "";
+  const shops = new Set(l.map((x) => x.shop || "—")).size, sum = l.reduce((a, x) => a + (x.v || 0), 0);
+  return '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + " · " + shops + " " + plural(shops, ["магазин", "магазина", "магазинов"]) + (sum ? " · ≈ " + money(sum, saCur()) : "") + "</em></span>" + IC.chev + "</button>";
+});
+SA.occTop.push(() => { const l = saShopList(); return l.length ? '<button class="sa-shrow" data-sa="shop"><span class="sa-shi">🛒</span><span class="sa-art"><b>Список покупок</b><em>' + l.length + " " + plural(l.length, ["покупка", "покупки", "покупок"]) + " ещё не куплено</em></span>" + IC.chev + "</button>" : ""; });
 /* ================= /МОДУЛИ САШИ ================= */
 
 /* ================= новые желания вживую ================= */
