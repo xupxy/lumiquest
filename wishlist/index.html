@@ -998,6 +998,32 @@ html.dark[data-theme=autumn]{
 .ar-tset button.on{background:linear-gradient(140deg,#fff0c2,#ffd98a);box-shadow:0 0 0 2px #f0b44a;transform:scale(1.06)}
 .dark .ar-tset button.on{background:linear-gradient(140deg,#5a4720,#6b4f18)}
 .ar-tset button:active{transform:scale(.9)}
+/* --- F6: нужно к дате --- */
+.ar-due{margin:12px 0 2px;padding:12px 12px 6px;border-radius:22px;background:var(--card);box-shadow:var(--cardShadow)}
+.ar-dueh{display:flex;align-items:center;gap:8px;margin:0 3px 4px}
+.ar-dueh b{font:700 16px/1.1 var(--serif)}
+.ar-dueh span{margin-left:auto;font-size:12px;color:var(--ink2)}
+.ar-dl{display:flex;align-items:center;gap:11px;width:100%;padding:8px 2px;text-align:left;border-top:1px solid var(--line)}
+.ar-dl:first-of-type{border-top:0}
+.ar-cd{flex:none;width:52px;height:52px;border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--c2s);color:var(--c2);font:800 19px/1 var(--font)}
+.ar-cd small{font:700 9.5px/1 var(--font);letter-spacing:.05em;text-transform:uppercase;margin-top:3px;opacity:.85}
+.ar-cd.soon{background:#fff0d4;color:#c77a00}
+.dark .ar-cd.soon{background:#43361a;color:#ffc25a}
+.ar-cd.hot,.ar-cd.late{background:var(--c1s);color:var(--c1)}
+.ar-cd.late{font-size:15px}
+.ar-dueb{position:absolute;bottom:7px;left:7px;padding:5px 8px;border-radius:999px;font:800 10.5px/1 var(--font);background:var(--glass);color:var(--ink);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(46,29,39,.15)}
+.ar-dueb.hot{background:var(--c1);color:#fff}
+.ar-duef{display:flex;gap:8px}
+.ar-duef .inp{flex:1;min-width:0}
+.ar-duef input[type=date]{flex:none;width:156px;min-height:52px}
+.dark .ar-duef input[type=date]{color-scheme:dark}
+.ar-duef .drm{align-self:center}
+.ar-duec{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.ar-duec .chip{font-size:13px;padding:7px 11px}
+.ar-drow{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.ar-drow>div{flex:1;min-width:0}
+.ar-drow b{display:block;font-size:15px}
+.ar-drow span{font-size:12.5px;color:var(--ink2)}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -3146,6 +3172,53 @@ document.addEventListener("click", async (e) => {
     haptic(on ? "light" : "ok"); SFX.play(on ? "tick" : "pop");
     if (!on) toast((k + 1) + "-е место в топе" + (was && was !== id && S.items[was] ? " вместо «" + S.items[was].title + "»" : "") + " " + AR_MED[k]);
   } catch (er) { toast("Ошибка: " + (er.message || er)); }
+});
+/* --- F6: ⏳ «нужно к…» — дата, к которой желание актуально, и обратный отсчёт --- */
+const arDay = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+const arISO = (d) => { const x = new Date(d); return x.getFullYear() + "-" + String(x.getMonth() + 1).padStart(2, "0") + "-" + String(x.getDate()).padStart(2, "0"); };
+const arParseISO = (s) => { const m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
+const arDueLeft = (it) => { const d = arParseISO(it.ar_due); return d ? Math.round((arDay(d) - arDay(Date.now())) / 86400000) : null; };
+const arDueTxt = (d) => d.getDate() + " " + MONTHS[d.getMonth()] + (d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : "");
+const arLeftTxt = (n) => (n < 0 ? "прошло " + -n + " " + dayWord(-n) : n === 0 ? "сегодня" : n === 1 ? "завтра" : "через " + n + " " + dayWord(n));
+function arDuePresets() {
+  const now = new Date(), y = now.getFullYear(), out = [];
+  const ny = new Date(y, 11, 31); if (arDay(ny) >= arDay(now)) out.push(["🎄 К Новому году", arISO(ny), "к Новому году"]);
+  const bd = parseDM((S.meta.about || {}).bday);
+  if (bd) { let d = new Date(y, bd.m - 1, bd.d); if (arDay(d) < arDay(now)) d = new Date(y + 1, bd.m - 1, bd.d); out.push(["🎂 К моему ДР", arISO(d), "к моему дню рождения"]); }
+  out.push(["Через 2 недели", arISO(Date.now() + 14 * 86400000), ""], ["Через месяц", arISO(new Date(y, now.getMonth() + 1, now.getDate())), ""]);
+  return out;
+}
+HOOKS.editor.push({
+  html: (it) => {
+    if (!isOwner()) return "";
+    return '<label class="fl" for="ar_due">Нужно к дате <span class="opt">необязательно</span></label><div class="ar-duef"><input class="inp" id="ar_dueL" maxlength="40" autocomplete="off" placeholder="к поездке в горы" value="' + esc((it && it.ar_dueL) || "") + '"><input class="inp" type="date" id="ar_due" value="' + esc((it && it.ar_due) || "") + '"></div>' +
+      '<div class="ar-duec">' + arDuePresets().map((p) => '<button type="button" class="chip' + (it && it.ar_due === p[1] ? " on" : "") + '" data-ar-dp="' + p[1] + "|" + esc(p[2]) + '">' + esc(p[0]) + "</button>").join("") + (it && it.ar_due ? '<button type="button" class="chip" data-ar-dclr>✕ Без даты</button>' : "") + "</div>";
+  },
+  bind: (sh) => {
+    const box = $(".ar-duec", sh); if (!box) return;
+    box.addEventListener("click", (e) => {
+      const c = e.target.closest("[data-ar-dp]"), clr = e.target.closest("[data-ar-dclr]");
+      if (clr) { $("#ar_due", sh).value = ""; $("#ar_dueL", sh).value = ""; box.querySelectorAll(".chip").forEach((x) => x.classList.remove("on")); haptic("light"); return; }
+      if (!c) return; const [d, l] = c.dataset.arDp.split("|");
+      $("#ar_due", sh).value = d; if (l || !$("#ar_dueL", sh).value) $("#ar_dueL", sh).value = l;
+      box.querySelectorAll(".chip").forEach((x) => x.classList.toggle("on", x === c)); haptic("light");
+    });
+  },
+  collect: (sh) => { const d = $("#ar_due", sh); if (!d) return {}; const v = arParseISO(d.value) ? d.value : ""; return { ar_due: v, ar_dueL: v ? $("#ar_dueL", sh).value.trim().slice(0, 40) : "" }; },
+});
+function arDueHtml() {
+  if (!isOwner()) return "";
+  const l = Object.values(S.items).filter((it) => !it.done && arDueLeft(it) != null && arDueLeft(it) <= 45).sort((a, b) => arDueLeft(a) - arDueLeft(b));
+  if (!l.length) return "";
+  return '<div class="ar-due"><div class="ar-dueh"><b>⏳ Скоро нужно</b><span>' + l.length + " " + plural(l.length, ["желание", "желания", "желаний"]) + " с датой</span></div>" +
+    l.slice(0, 4).map((it) => { const n = arDueLeft(it), d = arParseISO(it.ar_due), cls = n < 0 ? "late" : n <= 3 ? "hot" : n <= 10 ? "soon" : "";
+      return '<button class="ar-dl" data-open="' + esc(it.id) + '"><span class="ar-cd ' + cls + '">' + (n < 0 ? "!" : n) + "<small>" + (n < 0 ? "прошло" : n === 0 ? "сегодня" : dayWord(n)) + '</small></span><span class="ar-rt"><b>' + esc(it.title) + "</b><span>" + esc("к " + arDueTxt(d) + (it.ar_dueL ? " · " + it.ar_dueL : "")) + "</span></span>" + (priceStr(it) ? '<span class="ar-rp">' + priceStr(it) + "</span>" : "") + "</button>"; }).join("") + "</div>";
+}
+HOOKS.main.splice(Math.max(0, HOOKS.main.indexOf(arFindHtml)), 0, arDueHtml);
+HOOKS.badge.push((it) => { if (!isOwner() || it.done) return ""; const n = arDueLeft(it); if (n == null || n > 30) return ""; return '<span class="ar-dueb' + (n <= 3 ? " hot" : "") + '">⏳ ' + (n < 0 ? "прошло" : n === 0 ? "сегодня" : n + " " + plural(n, ["день", "дня", "дн"])) + "</span>"; });
+HOOKS.detail.push((it) => {
+  if (!isOwner() || it.done) return ""; const d = arParseISO(it.ar_due); if (!d) return ""; const n = arDueLeft(it);
+  return '<div class="ar-drow"><span class="ar-cd ' + (n < 0 ? "late" : n <= 3 ? "hot" : n <= 10 ? "soon" : "") + '">' + (n < 0 ? "!" : n) + "<small>" + (n < 0 ? "прошло" : n === 0 ? "сегодня" : dayWord(n)) + "</small></span><div><b>Нужно к " + esc(arDueTxt(d)) + "</b><span>" + esc((it.ar_dueL ? it.ar_dueL + " · " : "") + arLeftTxt(n)) + "</span></div></div>";
 });
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
