@@ -852,6 +852,9 @@ html.dark[data-theme=autumn]{
 .dvid.tt{background-image:linear-gradient(135deg,#25f4ee22,#fe2c5522),linear-gradient(#111,#111)}
 .dvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:2}
 .dvid .ext{position:absolute;left:10px;bottom:10px;z-index:3;padding:7px 10px;border-radius:12px;background:rgba(0,0,0,.55);color:#fff;font:800 11.5px/1 var(--font)}
+.dvid .verr{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;padding:12px 14px;border-radius:16px;background:rgba(0,0,0,.72);font:600 13px/1.35 var(--font);text-align:left}
+.dvid .verr b{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:12px;background:#fff;color:#111;font-weight:800}
+.dvid .pl .mspin{width:28px;height:28px;border-width:3px;border-color:rgba(255,255,255,.35);border-top-color:#fff}
 .vbadge{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
 
 /* ===== МОДУЛИ АРИНЫ: CSS ===== */
@@ -1495,7 +1498,7 @@ async function openDetail(id) {
   const sh = openSheet(h, null, { cls: "hero" });
   sh.addEventListener("click", async (e) => {
     const vx = e.target.closest("[data-vext]"); if (vx) { e.stopPropagation(); const vb = vx.closest("[data-vid]"); openLink((it.videos || [])[+vb.dataset.vid].url); return; }
-    const vb = e.target.closest("[data-vid]"); if (vb) { if (!vb.querySelector("iframe")) playVideo(vb, (it.videos || [])[+vb.dataset.vid]); return; }
+    const vb = e.target.closest("[data-vid]"); if (vb) { if (!vb.querySelector("iframe")) playVideo(vb, (it.videos || [])[+vb.dataset.vid], it); return; }
     const b = e.target.closest("[data-d]"); if (!b || b.classList.contains("busy")) return;
     const d = b.dataset.d;
     try {
@@ -2622,16 +2625,32 @@ function parseVideo(u) {
   if ((m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/|live\/))([\w-]{11})/i))) return { url: u, kind: "yt", id: m[1], shorts: /shorts/i.test(u), thumb: "https://i.ytimg.com/vi/" + m[1] + "/hqdefault.jpg" };
   return null;
 }
-async function enrichVideo(v) {
-  if (v.kind !== "tt") return v;
-  try {
-    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 5000);
-    const r = await fetch("https://www.tiktok.com/oembed?url=" + encodeURIComponent(v.url), { signal: ctl.signal });
-    const j = await r.json();
-    const id = (String(j.html || "").match(/data-video-id="(\d+)"/) || [])[1] || (String(j.embed_product_id || ""));
-    return Object.assign({}, v, { id: v.id || id || "", thumb: j.thumbnail_url || "", title: j.title || "", author: j.author_name || "" });
-  } catch (e) { return v; }
+// TikTok: короткие ссылки (vm./vt.tiktok.com) не содержат номер видео — находим его сами,
+// сначала напрямую через oEmbed, потом через публичные CORS-прокси.
+async function fetchT(url, ms) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms || 6000);
+  try { const r = await fetch(url, { signal: ctl.signal }); if (!r.ok) throw new Error(r.status); return await r.text(); } finally { clearTimeout(t); }
 }
+const PROXIES = [(u) => u, (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u), (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u), (u) => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u)];
+async function ttResolve(v) {
+  const out = Object.assign({}, v);
+  const idFrom = (t) => (String(t || "").match(/\/video\/(\d{8,})/) || String(t || "").match(/data-video-id="(\d{8,})"/) || String(t || "").match(/"embed_product_id"\s*:\s*"(\d{8,})"/) || [])[1] || "";
+  out.id = out.id || idFrom(out.url);
+  const oe = "https://www.tiktok.com/oembed?url=" + encodeURIComponent(out.url);
+  for (const px of PROXIES) {
+    try {
+      const j = JSON.parse(await fetchT(px(oe)));
+      out.id = out.id || idFrom(j.html) || (/^\d{8,}$/.test(String(j.embed_product_id || "")) ? String(j.embed_product_id) : "");
+      if (j.thumbnail_url) out.thumb = j.thumbnail_url; if (j.title) out.title = j.title; if (j.author_name) out.author = j.author_name;
+      if (out.id) return out;
+    } catch (e) {}
+  }
+  if (!out.id) { // последний шанс: узнать, куда ведёт короткая ссылка
+    try { const j = JSON.parse(await fetchT("https://api.allorigins.win/get?url=" + encodeURIComponent(out.url), 8000)); out.id = idFrom(j.status && j.status.url) || idFrom(j.contents); } catch (e) {}
+  }
+  return out;
+}
+async function enrichVideo(v) { return v.kind === "tt" ? ttResolve(v) : v; }
 function embedUrl(v) {
   if (v.kind === "tt" && v.id) return "https://www.tiktok.com/player/v1/" + v.id + "?autoplay=1&music_info=1&description=1&rel=0";
   if (v.kind === "ig" && v.id) return "https://www.instagram.com/reel/" + v.id + "/embed/";
@@ -2644,11 +2663,27 @@ function videosDetailHtml(it) {
   return '<div class="dvids">' + vs.map((v, i) => '<button class="dvid ' + v.kind + (v.kind === "yt" && !v.shorts ? " yt" : "") + '" data-vid="' + i + '"' + (v.thumb ? ' style="background-image:url(' + esc(v.thumb) + ')"' : "") + '>' +
     '<span class="pl">' + IC_PLAY + '</span><span class="cap"><b>' + (v.kind === "tt" ? "♪" : v.kind === "ig" ? "◎" : "▶") + " " + VKIND[v.kind] + (v.author ? " · @" + esc(v.author) : "") + "</b>" + (v.title ? "<span>" + esc(v.title) + "</span>" : "") + "</span></button>").join("") + "</div>";
 }
-function playVideo(btn, v) {
-  const src = embedUrl(v);
-  if (!src) { openLink(v.url); return; }
+async function playVideo(btn, v, it) {
+  if (btn.dataset.busy) return;
   haptic("light");
-  btn.innerHTML = '<iframe src="' + esc(src) + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><span class="ext" data-vext="1">Открыть в ' + VKIND[v.kind] + " ↗</span>";
+  if (v.kind === "tt" && !v.id) {
+    btn.dataset.busy = 1;
+    btn.querySelector(".pl").innerHTML = '<span class="mspin"></span>';
+    const r = await ttResolve(v);
+    delete btn.dataset.busy;
+    if (r.id) {
+      Object.assign(v, r);
+      // запоминаем номер видео в желании, чтобы в следующий раз грузилось сразу
+      if (it && S.store) { const vs = (it.videos || []).map((x) => (x.url === v.url ? { url: v.url, kind: v.kind, id: r.id, thumb: r.thumb || x.thumb || "", title: r.title || x.title || "", author: r.author || x.author || "" } : x)); S.store.patchItem(it.id, { videos: vs }).catch(() => {}); }
+    } else {
+      btn.querySelector(".pl").innerHTML = IC_PLAY;
+      btn.insertAdjacentHTML("beforeend", '<span class="verr">Не удалось загрузить видео внутри приложения.<b data-vext="1">Открыть в TikTok ↗</b></span>');
+      return;
+    }
+  }
+  const src = embedUrl(v);
+  if (!src) return;
+  btn.innerHTML = '<iframe src="' + esc(src) + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture; clipboard-write" allowfullscreen playsinline referrerpolicy="strict-origin-when-cross-origin"></iframe><span class="ext" data-vext="1">' + VKIND[v.kind] + " ↗</span>";
   btn.style.backgroundImage = "none";
 }
 
