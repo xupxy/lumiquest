@@ -1172,6 +1172,33 @@ html.dark[data-theme=autumn]{
 .alert.sa-pk button{color:#1f3f78}.dark .alert.sa-pk button{color:#cfe0ff}
 .alert.sa-pk.late{background:#ffe9e6;color:#7a1f18;box-shadow:inset 0 0 0 1.5px #f3aaa2}
 .dark .alert.sa-pk.late{background:#45201d;color:#ffd0ca;box-shadow:inset 0 0 0 1.5px #7a3a33}
+/* 3. поводы */
+.sa-occ{margin-top:14px;border-radius:24px;padding:14px;background:var(--card);box-shadow:var(--cardShadow);position:relative;overflow:hidden}
+.sa-occ:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--ink3);opacity:.35}
+.sa-occ.soon:before{background:#f0a32a;opacity:1}.sa-occ.hot:before{background:linear-gradient(#e2537a,#f07a5a);opacity:1}
+.sa-oh{display:flex;align-items:center;gap:12px}
+.sa-oe{width:46px;height:46px;border-radius:15px;background:var(--roseSoft);display:grid;place-items:center;font-size:24px;flex:none}
+.sa-ot{flex:1;min-width:0}.sa-ot b{display:block;font:700 18px/1.15 var(--serif)}.sa-ot span{font-size:12.5px;color:var(--ink2);font-weight:600}
+.sa-occ.hot .sa-ot span{color:var(--rose);font-weight:800}
+.sa-obud{flex:none;text-align:right;font:700 17px/1.1 var(--serif);padding:6px 10px;border-radius:14px;background:var(--bg2)}
+.sa-obud small{display:block;font:700 10.5px/1.2 var(--font);color:var(--ink3)}
+.sa-obar{height:8px;border-radius:5px;background:var(--bg2);margin-top:12px;overflow:hidden}
+.sa-obar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#3fae86,#7bd3a8);transition:width .6s var(--ease)}
+.sa-obar.over i{background:linear-gradient(90deg,#f07a5a,#e0413a)}
+.sa-onote{font-size:12.5px;font-weight:600;color:var(--ink2);margin:7px 2px 0}
+.sa-occ .glist{margin-top:10px;gap:8px}
+.sa-occ .grow{box-shadow:inset 0 0 0 1px var(--line);border-radius:18px}
+.sa-occ .grow .gimg{width:50px;height:50px;border-radius:13px;font-size:22px}
+.sa-onone{margin-top:10px;padding:14px;border-radius:16px;background:var(--bg2);text-align:center;font-size:13px;color:var(--ink2)}
+.sa-oadd{display:block;width:100%;margin-top:10px;padding:12px;border-radius:16px;border:1.5px dashed var(--ink3);font:800 14px/1 var(--font);color:var(--ink2)}
+.sa-oadd:active,.sa-to:active{transform:scale(.97)}
+.sa-lrow{display:grid;gap:6px}
+.sa-to{justify-self:end;margin-top:-2px;padding:7px 12px;border-radius:999px;background:var(--roseSoft);color:var(--rose);font:800 12px/1 var(--font)}
+.sa-oss{display:block;font:600 12px/1.3 var(--font);color:var(--ink2);margin-top:2px}
+.stopt b .sa-oss{font-weight:600}
+.sa-ocrow>span{flex:none;white-space:nowrap}.sa-ocrow b{min-width:0;text-align:right;line-height:1.25}.sa-ocrow b .sa-oss{color:var(--ink3);margin-top:3px}
+.sa-plus{flex:none;width:32px;height:32px;border-radius:50%;background:var(--roseSoft);color:var(--rose);display:grid;place-items:center;font-weight:800;font-size:18px;margin-right:4px}
+.sa-curb{flex:none;width:64px;display:grid;place-items:center;border-radius:16px;background:var(--bg2);font-weight:800}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -3820,6 +3847,102 @@ HOOKS.main.push(() => {
   return due.map(([it, b]) => { const l = saLeft(b.eta);
     return '<div class="alert sa-pk' + (l < 0 ? " late" : "") + '"><span class="ai">' + (l < 0 ? "⏰" : "📦") + '</span><span class="at"><b>«' + esc(it.title) + "»</b> " + saEtaTxt(b) + (b.shop ? " · " + esc(b.shop) : "") + (b.order ? " · №&nbsp;" + esc(b.order) : "") +
       (l < 0 ? ". Проверь трек или напиши в магазин." : ". Забери так, чтобы " + esc(herName()) + " не увидела 🤫") + '</span><button data-sa="got" data-id="' + esc(it.id) + '">Получил</button></div>'; }).join("");
+});
+
+/* --- 3. ПОВОДЫ: подарки по датам + свой бюджет на каждый повод --- */
+const saOcc = () => { SA.d.occ = SA.d.occ || {}; SA.d.occ.as = SA.d.occ.as || {}; SA.d.occ.bud = SA.d.occ.bud || {}; return SA.d.occ; };
+const saDateOf = (id) => SPY.dates.find((x) => x.id === id) || null;
+const saOccOf = (id) => { const o = saOcc().as[id]; return o && saDateOf(o) ? o : ""; };
+const saWhen = (dt) => dt.left === 0 ? "сегодня 🎉" : dt.left === 1 ? "завтра" : "через " + dt.left + " " + dayWord(dt.left);
+// всё, что относится к поводу: её желания (ты даришь) + (позже) свои идеи
+SA.occItems = (oid) => Object.values(S.items).filter((i) => !i.done && G(i.id) && saOccOf(i.id) === oid).map((it) => ({ kind: "w", id: it.id, it, title: it.title, cost: saPaid(it), bought: gstOf(it.id) >= 1 }));
+SA.occExtra = []; // сюда добавляют другие модули: (oid) => [{kind,id,title,cost,bought,html}]
+function saOccAll(oid) { let l = SA.occItems(oid); SA.occExtra.forEach((f) => { try { l = l.concat(f(oid) || []); } catch (e) { console.warn(e); } }); return l; }
+function saGiftRow(x) {
+  if (x.html) return x.html;
+  const it = x.it, s = gstOf(it.id), b = saBuy(it.id);
+  return '<div class="grow sa-orow"><button class="gimg k' + ((CATS[it.cat] || CATS[2]).key) + '" data-open="' + esc(it.id) + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : (CATS[it.cat] || CATS[2]).emo) + "</button>" +
+    '<button class="gt" data-open="' + esc(it.id) + '" style="text-align:left"><b>' + esc(it.title) + "</b><span>" + (x.cost ? money(x.cost, saCur()) + (b && b.paid > 0 ? " · заплатил" : "") : "без цены") + "</span></button>" +
+    '<button class="gst s' + s + '" data-gst="' + esc(it.id) + '">' + GST[s][0] + " " + GST[s][1] + "</button></div>";
+}
+function saOccCard(dt) {
+  const l = saOccAll(dt.id), bud = saOcc().bud[dt.id] || 0, cur = saCur();
+  const sum = l.reduce((a, x) => a + (x.cost || 0), 0), bought = l.filter((x) => x.bought).length;
+  const pct = bud ? Math.min(100, sum / bud * 100) : 0, over = bud && sum > bud;
+  const cls = dt.left <= 7 ? " hot" : dt.left <= 30 ? " soon" : "";
+  return '<div class="sa-occ' + cls + '"><div class="sa-oh"><span class="sa-oe">' + esc(dt.emo || "🎁") + '</span><span class="sa-ot"><b>' + esc(dt.title) + "</b><span>" + dt.d + " " + MONTHS[dt.m - 1] + " · " + saWhen(dt) + "</span></span>" +
+    '<button class="sa-obud" data-sa="obud" data-id="' + esc(dt.id) + '">' + (bud ? money(sum, cur) + "<small>из " + money(bud, cur) + "</small>" : "💸<small>бюджет</small>") + "</button></div>" +
+    (bud ? '<div class="sa-obar' + (over ? " over" : "") + '"><i style="width:' + pct + '%"></i></div><div class="sa-onote">' + (over ? "Перебор на " + money(sum - bud, cur) + " 😅" : "Осталось " + money(bud - sum, cur)) + (l.length ? " · куплено " + bought + " из " + l.length : "") + "</div>" : l.length ? '<div class="sa-onote">' + l.length + " " + plural(l.length, ["подарок", "подарка", "подарков"]) + " · ≈ " + money(sum, cur) + " · куплено " + bought + "</div>" : "") +
+    (SA.occHook ? SA.occHook.map((f) => { try { return f(dt) || ""; } catch (e) { return ""; } }).join("") : "") +
+    (l.length ? '<div class="glist">' + l.map(saGiftRow).join("") + "</div>" : '<div class="sa-onone">Пока ничего не выбрано к этому поводу</div>') +
+    '<button class="sa-oadd" data-sa="oadd" data-id="' + esc(dt.id) + '">＋ Добавить подарок</button></div>';
+}
+function saOccTab() {
+  const ds = datesSorted();
+  if (!ds.length) return emptyBlock("<span>🗓</span><i>✦</i><i>✦</i>", "", "Добавь важные даты", "День рождения, Новый год, годовщина — и раскладывай подарки по поводам, у каждого свой бюджет.", '<button class="btn pri" data-act="dates" style="max-width:260px;margin:18px auto 0">📅 Добавить даты</button>');
+  const loose = Object.values(S.items).filter((i) => !i.done && G(i.id) && !saOccOf(i.id));
+  let h = '<div class="sec">' + (SA.occTop ? SA.occTop.map((f) => { try { return f() || ""; } catch (e) { return ""; } }).join("") : "") + ds.map(saOccCard).join("");
+  const looseX = (SA.looseExtra || []).reduce((a, f) => { try { return a.concat(f() || []); } catch (e) { return a; } }, []);
+  if (loose.length || looseX.length) h += '<div class="gsub">🎁 Без повода · ' + (loose.length + looseX.length) + '</div><div class="glist">' + loose.map((it) => '<div class="sa-lrow">' + saGiftRow({ it, cost: saPaid(it) }) + '<button class="sa-to" data-sa="oset" data-id="' + esc(it.id) + '">к поводу →</button></div>').join("") + looseX.join("") + "</div>";
+  h += '<button class="btn ghost" data-act="dates" style="margin-top:14px">📅 Изменить даты</button>';
+  return h + "</div>";
+}
+HOOKS.tabs.push(() => saOn() && SA.st.loaded ? [{ key: "sa_occ", label: "🗓 Поводы", count: SPY.dates.length, render: saOccTab }] : []);
+async function saAssign(id, oid) {
+  if (oid) saOcc().as[id] = oid; else delete saOcc().as[id];
+  await SA.save("occ");
+}
+function saPickOcc(id, after) {
+  const it = S.items[id] || {}; const cur = saOccOf(id);
+  const sh = openSheet("<h3>К какому поводу?</h3>" + (it.title ? '<p class="ssub">' + esc(it.title) + "</p>" : "") + '<div class="stlist">' +
+    datesSorted().map((dt) => '<button class="stopt' + (dt.id === cur ? " on" : "") + '" data-sa-oc="' + esc(dt.id) + '"><span class="se2">' + esc(dt.emo || "🎁") + "</span><b>" + esc(dt.title) + '<small class="sa-oss">' + dt.d + " " + MONTHS[dt.m - 1] + " · " + saWhen(dt) + "</small></b>" + (dt.id === cur ? '<span class="ck">' + IC.check + "</span>" : "") + "</button>").join("") +
+    '<button class="stopt' + (!cur ? " on" : "") + '" data-sa-oc=""><span class="se2">🎁</span><b>Без повода</b></button></div>', null, { cls: "compact" });
+  sh.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-sa-oc]"); if (!b) return;
+    await saAssign(id, b.dataset.saOc); haptic("light"); SFX.play("tick"); closeSheet(); render(); if (after) after();
+  });
+}
+function saOccAdd(oid) {
+  const dt = saDateOf(oid); if (!dt) return;
+  const act = Object.values(S.items).filter((i) => !i.done);
+  const mine = act.filter((i) => G(i.id) && saOccOf(i.id) !== oid), other = act.filter((i) => !G(i.id)).sort((a, b) => a.cat - b.cat);
+  const row = (it, tag) => '<button class="grow sa-row" data-sa-pk="' + esc(it.id) + '">' + saThumb(it) + '<span class="gt"><b>' + esc(it.title) + "</b><span>" + (priceStr(it) || "без цены") + (tag ? " · " + tag : "") + '</span></span><span class="sa-plus">＋</span></button>';
+  const sh = openSheet("<h3>" + esc(dt.emo || "🎁") + " " + esc(dt.title) + '</h3><p class="ssub">Что подаришь к этому поводу?</p>' +
+    (mine.length ? '<div class="fl">Уже выбрано тобой</div><div class="glist">' + mine.map((it) => row(it, saOccOf(it.id) ? "сейчас: " + esc(saDateOf(saOccOf(it.id)).title) : "без повода")).join("") + "</div>" : "") +
+    (other.length ? '<div class="fl">Из её желаний <span class="opt">отметится «Я подарю» 🤫</span></div><div class="glist">' + other.map((it) => row(it, (CATS[it.cat] || CATS[2]).emo)).join("") + "</div>" : "") +
+    (SA.occAddExtra ? SA.occAddExtra.map((f) => { try { return f(oid) || ""; } catch (e) { return ""; } }).join("") : ""));
+  sh.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-sa-pk]"); if (!b) return;
+    const id = b.dataset.saPk;
+    if (!G(id)) { SPY.gift[id] = Date.now(); await saveSpyMain(); }
+    await saAssign(id, oid); haptic("ok"); SFX.play("pop"); closeSheet(); render(); toast("Добавлено к «" + dt.title + "» 🎁");
+  });
+  return sh;
+}
+function saOccBudget(oid) {
+  const dt = saDateOf(oid); if (!dt) return; const cur = saCur(), v = saOcc().bud[oid] || "";
+  const sh = openSheet("<h3>Бюджет · " + esc(dt.title) + '</h3><p class="ssub">Сколько готов потратить именно на этот повод. Валюта — как в общем бюджете (' + esc(cur) + ").</p>" +
+    '<div class="dform" style="margin-top:18px"><input class="inp" id="sa_ob" inputmode="decimal" placeholder="Например, 150" value="' + v + '"><span class="sa-curb">' + esc(cur) + "</span></div>" +
+    '<div class="chips" style="margin-top:12px">' + [50, 100, 150, 200, 300].map((x) => '<button class="chip" data-sa-ob="' + x + '">' + x + "</button>").join("") + "</div>" +
+    '<button class="btn pri" id="sa_obs" style="margin-top:22px">Сохранить</button>' + (v ? '<button class="btn danger" id="sa_obc">Убрать бюджет</button>' : ""));
+  sh.addEventListener("click", async (e) => {
+    const c = e.target.closest("[data-sa-ob]"); if (c) { $("#sa_ob", sh).value = c.dataset.saOb; haptic("light"); return; }
+    const clr = e.target.closest("#sa_obc"); if (!clr && !e.target.closest("#sa_obs")) return;
+    const n = Number(String($("#sa_ob", sh).value).replace(/\s/g, "").replace(",", "."));
+    if (!clr && !(n > 0)) { $("#sa_ob", sh).classList.add("err"); setTimeout(() => $("#sa_ob", sh).classList.remove("err"), 900); haptic("error"); return; }
+    if (clr) delete saOcc().bud[oid]; else saOcc().bud[oid] = n;
+    await SA.save("occ"); haptic("ok"); closeSheet(); render(); toast(clr ? "Бюджет убран" : "Бюджет на «" + dt.title + "» сохранён 💸");
+  });
+}
+SA_ACT.oadd = (b) => saOccAdd(b.dataset.id);
+SA_ACT.obud = (b) => saOccBudget(b.dataset.id);
+SA_ACT.oset = (b) => saPickOcc(b.dataset.id);
+SA_ACT.ofrom = (b) => saPickOcc(b.dataset.id, () => saRefreshDetail(b.dataset.id));
+// в карточке желания — к какому поводу подарок
+HOOKS.detail.push((it) => {
+  if (!saOn() || it.done || !G(it.id) || !SPY.dates.length) return "";
+  const dt = saDateOf(saOccOf(it.id)), left = dt ? datesSorted().find((x) => x.id === dt.id) : null;
+  return '<button class="gstrow sa-ocrow" data-sa="ofrom" data-sa-any data-id="' + esc(it.id) + '"><span>🗓 Повод</span><b>' + (dt ? esc(dt.emo || "🎁") + " " + esc(dt.title) + ' <small class="sa-oss">' + saWhen(left) + "</small>" : "Выбрать") + "</b>" + IC.chev + "</button>";
 });
 /* ================= /МОДУЛИ САШИ ================= */
 
