@@ -855,6 +855,40 @@ html.dark[data-theme=autumn]{
 .vbadge{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
 
 /* ===== МОДУЛИ АРИНЫ: CSS ===== */
+/* --- F1: поиск и сортировка --- */
+.ar-find{display:flex;gap:8px;margin:12px 0 2px}
+.ar-sbar{flex:1;min-width:0;display:flex;align-items:center;gap:9px;height:46px;padding:0 6px 0 14px;border-radius:16px;background:var(--card);box-shadow:var(--cardShadow);color:var(--ink3);transition:box-shadow .2s}
+.ar-sbar:focus-within{box-shadow:0 0 0 2px var(--rose2),var(--cardShadow)}
+.ar-sbar svg{width:18px;height:18px;flex:none}
+.ar-sbar input{flex:1;min-width:0;border:0;outline:0;background:none;font:600 15px/1.2 var(--font);color:var(--ink);padding:0;-webkit-appearance:none;appearance:none}
+.ar-sbar input::placeholder{color:var(--ink3);font-weight:500}
+.ar-sbar input::-webkit-search-cancel-button{display:none}
+.ar-sx{width:30px;height:30px;border-radius:50%;background:var(--bg2);color:var(--ink2);display:grid;place-items:center;flex:none}
+.ar-sortb{flex:none;width:46px;height:46px;border-radius:16px;background:var(--card);box-shadow:var(--cardShadow);color:var(--ink2);display:grid;place-items:center;position:relative;transition:transform .16s var(--ease)}
+.ar-sortb svg{width:20px;height:20px}
+.ar-sortb:active{transform:scale(.92)}
+.ar-sortb.on{background:var(--ink);color:var(--bg)}
+.ar-sortb.on:after{content:"";position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--rose2)}
+.ar-sorts{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:10px -16px 0;padding:2px 16px 4px;animation:fin .3s var(--ease)}
+.ar-sorts::-webkit-scrollbar{display:none}
+.ar-sorts .chip{flex:none;padding:8px 12px;font-size:13px}
+.ar-res{margin-top:10px;padding:6px;border-radius:22px;background:var(--card);box-shadow:var(--cardShadow);animation:fin .3s var(--ease)}
+.ar-rh{display:flex;align-items:center;gap:8px;padding:8px 8px 6px;font:800 11px/1 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.ar-rh button{margin-left:auto;font:700 12.5px/1 var(--font);letter-spacing:0;text-transform:none;color:var(--rose);padding:4px 2px}
+.ar-row{display:flex;align-items:center;gap:11px;width:100%;padding:7px;border-radius:16px;text-align:left;transition:background .15s}
+.ar-row:active{background:var(--bg2)}
+.ar-th{width:46px;height:46px;border-radius:13px;flex:none;overflow:hidden;display:grid;place-items:center;font-size:21px;background:var(--bg2)}
+.ar-th img{width:100%;height:100%;object-fit:cover;display:block}
+.ar-th.k1{background:var(--c1s)}.ar-th.k2{background:var(--c2s)}.ar-th.k3{background:var(--c3s)}
+.ar-rt{flex:1;min-width:0}
+.ar-rt b{display:block;font-size:14.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-rt span{display:block;font-size:12px;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-rt mark{background:var(--roseSoft);color:var(--rose);border-radius:4px;padding:0 1px}
+.ar-rp{flex:none;font:800 12.5px/1 var(--font);color:var(--ink);padding:6px 9px;border-radius:999px;background:var(--bg2);font-variant-numeric:tabular-nums}
+.ar-row.dn .ar-rp{background:#dcf5e9;color:#1f8a5c}.dark .ar-row.dn .ar-rp{background:#1d3a30;color:#6fdcaa}
+.ar-row.dn b{color:var(--ink2)}
+.ar-none{padding:18px 10px 16px;text-align:center;font-size:13.5px;color:var(--ink2)}
+.ar-none i{display:block;font-style:normal;font-size:28px;margin-bottom:6px}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -2634,6 +2668,78 @@ function playVideo(btn, v) {
 }
 
 /* ================= МОДУЛИ АРИНЫ ================= */
+/* --- F1: 🔍 поиск и сортировка по вишлисту (только у неё) --- */
+const AR = { q: "", sort: "", sortOpen: false, focus: false };
+const arNorm = (t) => String(t == null ? "" : t).toLowerCase().replace(/ё/g, "е");
+const AR_SORTS = [["new", "🕐 Новые"], ["old", "🗓 Старые"], ["cheap", "⬇️ Дешевле"], ["exp", "⬆️ Дороже"], ["az", "🔤 А–Я"], ["cat", "🔥 По важности"]];
+const AR_IC_SEARCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
+const AR_IC_SORT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M3.5 16.5 7 20l3.5-3.5M17 20V4M13.5 7.5 17 4l3.5 3.5"/></svg>';
+function arHost(u) { try { return new URL(fixLink(u)).hostname.replace(/^www\./, ""); } catch (e) { return ""; } }
+function arHay(it) { const c = CATS[it.cat] || CATS[2]; return arNorm([it.title, it.details, it.note, arHost(it.link), c.name, c.short, it.price ? it.price + " " + (it.cur || "") : "", it.done ? "сбылось подарили" : ""].join(" · ")); }
+function arMark(text, toks) {
+  let s = esc(text); if (!toks.length) return s;
+  const n = arNorm(text), hits = [];
+  toks.forEach((t) => { let i = n.indexOf(t); while (t && i >= 0) { hits.push([i, i + t.length]); i = n.indexOf(t, i + t.length); } });
+  if (!hits.length) return s;
+  hits.sort((a, b) => a[0] - b[0]); const m = []; hits.forEach((h) => { const l = m[m.length - 1]; if (l && h[0] <= l[1]) l[1] = Math.max(l[1], h[1]); else m.push(h.slice()); });
+  let out = "", p = 0; m.forEach(([a, b]) => { out += esc(text.slice(p, a)) + "<mark>" + esc(text.slice(a, b)) + "</mark>"; p = b; });
+  return out + esc(text.slice(p));
+}
+function arSortFn(k) {
+  const pr = (it) => (String(it.price || "").trim() ? numPrice(it) : null);
+  return {
+    new: (a, b) => (b.createdAt || 0) - (a.createdAt || 0), old: (a, b) => (a.createdAt || 0) - (b.createdAt || 0),
+    cheap: (a, b) => (pr(a) == null) - (pr(b) == null) || pr(a) - pr(b), exp: (a, b) => (pr(a) == null) - (pr(b) == null) || pr(b) - pr(a),
+    az: (a, b) => String(a.title || "").localeCompare(String(b.title || ""), "ru"), cat: (a, b) => (a.cat || 2) - (b.cat || 2) || (b.createdAt || 0) - (a.createdAt || 0),
+  }[k] || ((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+function arRowHtml(it, toks, sub) {
+  const c = CATS[it.cat] || CATS[2];
+  const host = arHost(it.link);
+  const sub0 = sub != null ? sub : [c.emo + " " + c.short, it.details, host].filter(Boolean).join(" · ");
+  return '<button class="ar-row' + (it.done ? " dn" : "") + '" data-open="' + esc(it.id) + '"><span class="ar-th k' + c.key + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + "</span>" +
+    '<span class="ar-rt"><b>' + arMark(it.title || "", toks) + "</b><span>" + (it.done ? "✓ сбылось · " : "") + arMark(sub0, toks) + "</span></span>" +
+    (priceStr(it) ? '<span class="ar-rp">' + priceStr(it) + "</span>" : "") + "</button>";
+}
+function arResultsHtml() {
+  const q = AR.q.trim(); if (!q && !AR.sort) return "";
+  const toks = arNorm(q).split(/\s+/).filter(Boolean);
+  let list = Object.values(S.items).filter((it) => q ? toks.every((t) => arHay(it).includes(t)) : !it.done);
+  list.sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0) || arSortFn(AR.sort || "new")(a, b));
+  const sl = AR.sort ? AR_SORTS.find((s) => s[0] === AR.sort)[1].replace(/^\S+\s/, "").toLowerCase() : "";
+  const head = q ? (list.length ? "Нашлось " + list.length : "Ничего") : "Все желания";
+  return '<div class="ar-res"><div class="ar-rh">' + head + (sl ? " · " + esc(sl) : "") + '<button data-ar-reset>Сбросить</button></div>' +
+    (list.length ? list.slice(0, 40).map((it) => arRowHtml(it, toks)).join("")
+      : '<div class="ar-none"><i>🙈</i>Не нашла «' + esc(q) + "». Попробуй часть слова, размер или магазин</div>") + "</div>";
+}
+function arFindHtml() {
+  if (!isOwner() || !Object.keys(S.items).length) return "";
+  return '<div class="ar-find"><label class="ar-sbar">' + AR_IC_SEARCH + '<input id="ar-q" type="search" enterkeyhint="search" autocomplete="off" placeholder="Найти: кроссовки, 38, cos.com…" value="' + esc(AR.q) + '">' +
+    (AR.q ? '<button class="ar-sx" data-ar-clear aria-label="Очистить">' + IC_X + "</button>" : "") + "</label>" +
+    '<button class="ar-sortb' + (AR.sort ? " on" : "") + '" data-ar-sortmenu aria-label="Сортировка">' + AR_IC_SORT + "</button></div>" +
+    (AR.sortOpen ? '<div class="ar-sorts">' + AR_SORTS.map((s) => '<button class="chip' + (AR.sort === s[0] ? " on" : "") + '" data-ar-sort="' + s[0] + '">' + s[1] + "</button>").join("") + "</div>" : "") +
+    '<div id="ar-sres">' + arResultsHtml() + "</div>";
+}
+HOOKS.main.push(arFindHtml);
+document.addEventListener("input", (e) => {
+  if (e.target.id !== "ar-q") return;
+  AR.q = e.target.value; const r = $("#ar-sres"); if (r) r.innerHTML = arResultsHtml();
+  const bar = e.target.closest(".ar-sbar"), x = bar.querySelector(".ar-sx");
+  if (AR.q && !x) bar.insertAdjacentHTML("beforeend", '<button class="ar-sx" data-ar-clear aria-label="Очистить">' + IC_X + "</button>");
+  if (!AR.q && x) x.remove();
+});
+document.addEventListener("focusin", (e) => { if (e.target.id === "ar-q") AR.focus = true; });
+document.addEventListener("focusout", (e) => { if (e.target.id === "ar-q") AR.focus = false; });
+document.addEventListener("keydown", (e) => { if (e.target.id === "ar-q" && e.key === "Enter") e.target.blur(); });
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".sheet")) return;
+  if (e.target.closest("[data-ar-clear]")) { e.preventDefault(); AR.q = ""; render(); const i = $("#ar-q"); if (i) i.focus(); return; }
+  if (e.target.closest("[data-ar-reset]")) { AR.q = ""; AR.sort = ""; AR.sortOpen = false; haptic("light"); render(); return; }
+  if (e.target.closest("[data-ar-sortmenu]")) { AR.sortOpen = !AR.sortOpen; haptic("light"); render(); return; }
+  const s = e.target.closest("[data-ar-sort]");
+  if (s) { AR.sort = AR.sort === s.dataset.arSort ? "" : s.dataset.arSort; haptic("light"); SFX.play("tick"); render(); }
+});
+HOOKS.data.push(() => { if (AR.focus) { const i = $("#ar-q"); if (i && document.activeElement !== i) { i.focus({ preventScroll: true }); try { i.setSelectionRange(i.value.length, i.value.length); } catch (e) {} } } });
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
 /* ================= МОДУЛИ САШИ ================= */
