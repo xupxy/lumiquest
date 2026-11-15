@@ -867,6 +867,20 @@ html.dark[data-theme=autumn]{
 .phprog{grid-column:1/-1;font:700 12.5px/1 var(--font);color:var(--ink2);padding:6px 2px}
 .szhint{margin:-2px 2px 4px;padding:9px 12px;border-radius:12px;background:var(--c2s);color:var(--ink);font-size:13px;line-height:1.35}
 .szhint button{margin-left:6px;font:800 12.5px/1 var(--font);color:var(--rose);text-decoration:underline}
+/* ===== мини-модели ===== */
+.icrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.iccur{width:64px;height:64px;border-radius:20px;font-size:38px;display:grid;place-items:center;background:var(--card);box-shadow:inset 0 0 0 2px var(--rose2),0 6px 16px -8px rgba(226,83,122,.45)}
+.iccur.none{font-size:26px;color:var(--ink3);box-shadow:inset 0 0 0 2px var(--line);border:0}
+.icb{width:48px;height:48px;border-radius:15px;font-size:28px;display:grid;place-items:center;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);transition:transform .15s var(--ease)}
+.icb:active{transform:scale(.88)}
+.icb.on{box-shadow:inset 0 0 0 2.5px var(--rose)}
+.icb.sm{width:44px;height:44px;font-size:24px}
+.icmore{padding:12px 14px;border-radius:14px;font:800 13px/1 var(--font);color:var(--rose)}
+.icgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px}
+.icgrid .icb{width:auto;height:54px;font-size:30px}
+.cm .icn{font-size:64px;line-height:1;filter:drop-shadow(0 10px 16px rgba(120,40,70,.25));transition:transform .3s var(--ease)}
+.card:active .cm .icn{transform:scale(1.08) rotate(-4deg)}
+.dph .icn{font-size:130px}
 /* ===== МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
@@ -1642,6 +1656,7 @@ function cardHtml(it, i) {
   const gifted = !isOwner() && G(it.id) && !it.done;
   const ini = initial(it.title);
   const media = it.thumb ? '<img loading="lazy" src="' + it.thumb + '" alt="">'
+    : (it.icon || (it.icon !== "" && iconSuggest(it.title)[0])) ? '<span class="icn">' + esc(it.icon || iconSuggest(it.title)[0]) + "</span>"
     : (ini ? '<span class="ini">' + esc(ini) + '</span><span class="wm">' + c.emo + "</span>" : '<span class="ini" style="font-style:normal">' + c.emo + "</span>");
   const price = priceStr(it);
   const foot = (price ? '<span class="cprice">' + price + "</span>" + approxHtml(it) : "") +
@@ -1840,7 +1855,7 @@ async function openDetail(id) {
   haptic("light");
   // отметить как просмотренное
   if (!isOwner() && S.seen) { S.seen[id] = Date.now(); saveSeen(); setTimeout(render, 350); }
-  const ph0 = it.thumb ? '<img src="' + it.thumb + '" alt="">' : '<div class="dph k' + c.key + '"><span>' + c.emo + "</span></div>";
+  const ph0 = it.thumb ? '<img src="' + it.thumb + '" alt="">' : (() => { const ic = it.icon || (it.icon !== "" ? iconSuggest(it.title)[0] : ""); return '<div class="dph k' + c.key + '"><span' + (ic ? ' class="icn"' : "") + ">" + esc(ic || c.emo) + "</span></div>"; })();
   let host = "";
   if (it.link) { try { host = new URL(fixLink(it.link)).hostname.replace(/^www\./, ""); } catch (e) { host = it.link; } }
   const rows = [];
@@ -3263,6 +3278,72 @@ function syncRemind() {
   if (S.meta.sa_remind && JSON.stringify(S.meta.sa_remind.dates || []) === sig && S.meta.sa_remind.on !== false) return;
   clearTimeout(remT); remT = setTimeout(() => S.store.saveMeta({ sa_remind: { dates, on: true, at: Date.now() } }).catch(() => {}), 1200);
 }
+
+/* ================= МИНИ-МОДЕЛИ: картинка вместо фото ================= */
+const ICONS = [
+  ["Обувь", "👟 👠 👡 👢 🥾 👞 🩴 🩰 🧦"],
+  ["Одежда", "👗 👚 👕 👖 🧥 👔 🥼 🩱 👙 🩳 🩲 👘 🥻 🎽 🧣 🧤 🦺"],
+  ["Сумки и аксессуары", "👜 👛 👝 🎒 💼 🧳 🕶️ 👓 🧢 👒 🎩 🎀 ☂️ 🌂 ⌚"],
+  ["Украшения", "💍 💎 📿 👑 🪬 ✨"],
+  ["Косметика", "💄 💋 💅 🎨 🖌️ 🪞 🧴 🧼 🫧 🪮 🌸 🪷"],
+  ["Уход и spa", "🛁 🧖‍♀️ 💆‍♀️ 💇‍♀️ 🕯️ 🌿 🧽 🪥 💊"],
+  ["Техника", "📱 💻 🖥️ ⌨️ 🖱️ 🎧 🎮 🕹️ 📷 📸 📹 🎥 📺 🔊 📻 🔋 💡 🖨️"],
+  ["Дом и уют", "🛋️ 🛏️ 🪑 🪴 🖼️ 🧸 🧺 🪟 🧹 🧶 🕰️ 🛒 🏠"],
+  ["Кухня", "☕ 🍵 🫖 🍳 🥘 🍽️ 🥄 🔪 🫙 🧁 🍰 🎂 🍫 🍬 🍭 🍷 🥂 🧃 🍓"],
+  ["Спорт", "🧘‍♀️ 🏋️‍♀️ 🚴‍♀️ 🏊‍♀️ ⛸️ 🎿 🏂 🏄‍♀️ 🎾 🏀 ⚽ 🏐 🥊 🛼 🛹 🚲 🏸"],
+  ["Хобби", "🎨 🧵 🪡 🧶 🎸 🎹 🎻 🎤 🎧 🧩 🎲 ♟️ 🪁 📷 🌱"],
+  ["Книги и учёба", "📚 📖 📓 📔 ✏️ 🖊️ 🗒️ 🎓 🌍 🔭"],
+  ["Впечатления", "🎟️ 🎫 🎬 🍿 🎭 🎤 🎡 🎢 🏖️ 🏔️ ✈️ 🚂 🏨 🗺️ 🎆 🛶"],
+  ["Цветы", "💐 🌹 🌷 🌸 🌻 🌼 🪷 🌺 🌵 🪴"],
+  ["Игрушки и питомцы", "🧸 🦄 🐶 🐱 🐰 🐻 🐾 🪀 🎈"],
+  ["Транспорт", "🚗 🛴 🛵 🚲 🛹"],
+  ["Другое", "🎁 💌 🎀 💫 ⭐ 🌙 🧧 💳 💰 🍀 🫶"],
+].map(([n, s]) => [n, s.split(" ").filter(Boolean)]);
+const ICON_RULES = [
+  [/кросс|кед|сникер|new balance|nike|adidas|asics|converse|vans/i, "👟"], [/туфл|лодоч|каблук|шпильк/i, "👠"], [/босонож|сандал/i, "👡"], [/сапог|ботфорт|угг|ugg/i, "👢"], [/ботин|мартинс|martens|тимберленд/i, "🥾"], [/тапк|тапоч|шл[её]п/i, "🩴"], [/балетк|пуант/i, "🩰"], [/носк|гольф|колгот/i, "🧦"],
+  [/плать|сарафан/i, "👗"], [/блуз|топ\b|майк|боди/i, "👚"], [/футбол|лонгслив/i, "👕"], [/джинс|брюк|штан|легинс|лосин|юбк/i, "👖"], [/пальто|куртк|пухов|шуб|тренч|парк[аи]|жакет|пиджак/i, "🧥"], [/свитер|кофт|худи|свитшот|кардиган|толстовк|водолаз/i, "👚"], [/купальн|бикини/i, "👙"], [/пижам|шорт/i, "🩳"], [/халат|кимоно/i, "👘"], [/шарф|палантин/i, "🧣"], [/перчат|варежк/i, "🧤"], [/шапк|бини|кепк|бейсболк/i, "🧢"], [/шляп|панам/i, "👒"],
+  [/сумк|шоппер|клатч|тоут/i, "👜"], [/кошел[её]к|картхолдер/i, "👛"], [/рюкзак/i, "🎒"], [/чемодан/i, "🧳"], [/очки/i, "🕶️"], [/часы|watch/i, "⌚"], [/зонт/i, "☂️"], [/бант|заколк|резинк для волос|ободок/i, "🎀"],
+  [/кольц|колечк/i, "💍"], [/серьг|сер[её]жк|кулон|колье|подвес|браслет|цепоч|украшен|бижутер/i, "💎"],
+  [/помад|блеск для губ|тинт|бальзам для губ/i, "💄"], [/лак|маникюр|ногт|гель-лак/i, "💅"], [/палетк|тени\b|теней|cheeryep|хайлайтер|румян/i, "🎨"], [/тушь|кист|спонж|карандаш для/i, "🖌️"], [/крем|сыворот|лосьон|тонер|маск|уход|spf|скраб|гель для/i, "🧴"], [/мыло|пенк/i, "🧼"], [/духи|парфюм|аромат|туалетн.. вод/i, "🌸"], [/зеркал/i, "🪞"], [/расч[её]ск/i, "🪮"], [/фен|dyson|стайлер|плойк|утюжок|выпрямит/i, "💇‍♀️"], [/свеч/i, "🕯️"], [/ванн|бомбочк|соль для/i, "🛁"], [/спа|массаж/i, "💆‍♀️"],
+  [/телефон|iphone|айфон|смартфон|ipad|планшет/i, "📱"], [/ноутбук|macbook|ноут\b/i, "💻"], [/наушник|airpods|beats/i, "🎧"], [/playstation|ps5|nintendo|switch|xbox|приставк|игр/i, "🎮"], [/камер|фотоаппарат|полароид|instax/i, "📷"], [/колонк|jbl|marshall/i, "🔊"], [/телевизор/i, "📺"], [/ламп|ночник|гирлянд/i, "💡"], [/клавиатур/i, "⌨️"],
+  [/плед|подушк|одеял|постел|простын/i, "🛏️"], [/диван|кресл/i, "🛋️"], [/стул/i, "🪑"], [/растени|цветок в горшк|суккулент/i, "🪴"], [/картин|постер|рамк/i, "🖼️"], [/игрушк|плюш|мишк|капибар/i, "🧸"], [/корзин/i, "🧺"], [/пряж|вязан/i, "🧶"],
+  [/кружк|чашк|термокружк|термос|кофе|stanley|кофемашин/i, "☕"], [/чай|чайник/i, "🫖"], [/посуд|тарел|бокал/i, "🍽️"], [/сковород|кастрюл|блендер|мультиварк/i, "🍳"], [/торт/i, "🎂"], [/шоколад|конфет|сладост/i, "🍫"], [/вино/i, "🍷"],
+  [/книг|роман/i, "📚"], [/блокнот|ежедневник|планер/i, "📓"], [/ручк|маркер/i, "🖊️"], [/курс|обучени/i, "🎓"],
+  [/билет|концерт/i, "🎟️"], [/кино|фильм/i, "🎬"], [/театр|балет|опер/i, "🎭"], [/поездк|путешеств|отпуск|море|пляж/i, "🏖️"], [/гор[ыа]|лыж/i, "🏔️"], [/самол[её]т|перел[её]т|авиа/i, "✈️"], [/отел|гостиниц/i, "🏨"],
+  [/букет|пион|роз[ыа]|тюльпан|цвет[ыо]/i, "💐"], [/йог|коврик/i, "🧘‍♀️"], [/велосипед/i, "🚲"], [/коньк/i, "⛸️"], [/ролик/i, "🛼"], [/гантел|спортзал|абонемент|фитнес/i, "🏋️‍♀️"], [/бассейн/i, "🏊‍♀️"], [/сертификат|подарочн/i, "🎁"],
+];
+function iconSuggest(title) { const out = []; ICON_RULES.forEach(([re, e]) => { if (re.test(title || "") && !out.includes(e)) out.push(e); }); return out.slice(0, 6); }
+function openIconPicker(cur, onPick) {
+  const sh = openSheet('<h3>Картинка вместо фото</h3><p class="ssub">Покажется в списке и в карточке, если нет фото.</p>' +
+    '<input class="inp" id="ic_q" placeholder="Поиск: обувь, косметика, кухня…" style="margin-top:12px">' +
+    '<div class="icgroups">' + ICONS.map(([n, list]) => '<div class="icg" data-icg="' + esc(n.toLowerCase()) + '"><div class="fl">' + esc(n) + '</div><div class="icgrid">' +
+      list.map((e) => '<button class="icb' + (e === cur ? " on" : "") + '" data-ic="' + e + '">' + e + "</button>").join("") + "</div></div>").join("") + "</div>" +
+    (cur ? '<button class="btn ghost" data-ic="">Убрать картинку</button>' : ""));
+  sh.addEventListener("click", (e) => { const b = e.target.closest("[data-ic]"); if (!b) return; haptic("light"); SFX.play("tick"); onPick(b.dataset.ic); closeSheet(); });
+  $("#ic_q", sh).addEventListener("input", (e) => { const q = e.target.value.trim().toLowerCase(); sh.querySelectorAll(".icg").forEach((g) => { g.style.display = !q || g.dataset.icg.includes(q) ? "" : "none"; }); });
+}
+HOOKS.editor.push({
+  html: (it) => '<label class="fl">Картинка, если нет фото <span class="opt">мини-модель</span></label><div class="icrow" id="icrow"></div>',
+  bind(sh, it) {
+    const st = { icon: (it && it.icon) || "", auto: !(it && it.icon) };
+    const row = $("#icrow", sh), t = $("#f_title", sh);
+    const draw = () => {
+      const sug = iconSuggest(t.value).filter((e) => e !== st.icon);
+      row.innerHTML = '<button class="iccur' + (st.icon ? "" : " none") + '" data-icpick="1">' + (st.icon || "＋") + "</button>" +
+        sug.map((e) => '<button class="icb sm" data-icset="' + e + '">' + e + "</button>").join("") +
+        '<button class="icmore" data-icpick="1">Все картинки ›</button>';
+    };
+    sh._icon = () => st.icon;
+    let tm; t.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(() => { if (st.auto) { const s = iconSuggest(t.value); st.icon = s[0] || ""; } draw(); }, 350); });
+    row.addEventListener("click", (e) => {
+      const s = e.target.closest("[data-icset]"); if (s) { st.icon = s.dataset.icset; st.auto = false; haptic("light"); draw(); return; }
+      if (e.target.closest("[data-icpick]")) openIconPicker(st.icon, (ic) => { st.icon = ic; st.auto = false; draw(); });
+    });
+    if (st.auto && t.value) { const s = iconSuggest(t.value); st.icon = s[0] || ""; }
+    draw();
+  },
+  collect: (sh) => ({ icon: sh._icon ? sh._icon() : "" }),
+});
 
 /* ================= РАЗМЕР ИЗ «ПРО МЕНЯ» ================= */
 const SIZE_RULES = [
