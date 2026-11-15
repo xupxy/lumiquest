@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx=".42" cy=".36" r=".8">
+      <stop offset="0" stop-color="#f4fffa"/>
+      <stop offset=".55" stop-color="#c9f5e3"/>
+      <stop offset="1" stop-color="#9fe6d6"/>
+    </radialGradient>
+    <linearGradient id="body" x1=".15" y1="0" x2=".85" y2="1">
+      <stop offset="0" stop-color="#3fe0b0"/>
+      <stop offset=".5" stop-color="#14b894"/>
+      <stop offset="1" stop-color="#0c8a78"/>
+    </linearGradient>
+    <linearGradient id="flap" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0f9e86"/>
+      <stop offset="1" stop-color="#0a7565"/>
+    </linearGradient>
+    <linearGradient id="bill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff6c9"/>
+      <stop offset="1" stop-color="#ffd86b"/>
+    </linearGradient>
+    <radialGradient id="coin" cx=".36" cy=".3" r=".8">
+      <stop offset="0" stop-color="#fff3b0"/>
+      <stop offset=".45" stop-color="#ffcd3c"/>
+      <stop offset="1" stop-color="#f29a12"/>
+    </radialGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#0b6b5c" flood-opacity=".28"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="420" cy="96" r="120" fill="#fff" opacity=".35"/>
+  <g filter="url(#sh)">
+    <!-- купюра -->
+    <rect x="132" y="118" width="214" height="128" rx="26" fill="url(#bill)" transform="rotate(-9 239 182)"/>
+    <circle cx="232" cy="176" r="24" fill="none" stroke="#f0b62e" stroke-width="9" transform="rotate(-9 239 182)" opacity=".75"/>
+    <!-- тіло гаманця -->
+    <rect x="88" y="176" width="336" height="236" rx="64" fill="url(#body)"/>
+    <path d="M88 240c0-35 29-64 64-64h208c35 0 64 29 64 64v4H88z" fill="#ffffff" opacity=".16"/>
+    <!-- застібка -->
+    <rect x="312" y="246" width="140" height="96" rx="48" fill="url(#flap)"/>
+    <circle cx="362" cy="294" r="17" fill="#e9fff7"/>
+    <circle cx="357" cy="289" r="6" fill="#ffffff"/>
+    <!-- мордочка -->
+    <circle cx="170" cy="290" r="15" fill="#073d35"/>
+    <circle cx="244" cy="290" r="15" fill="#073d35"/>
+    <circle cx="175" cy="284" r="5" fill="#fff"/>
+    <circle cx="249" cy="284" r="5" fill="#fff"/>
+    <path d="M190 320q17 18 34 0" fill="none" stroke="#073d35" stroke-width="10" stroke-linecap="round"/>
+    <ellipse cx="140" cy="322" rx="17" ry="10" fill="#ffa3c2" opacity=".85"/>
+    <ellipse cx="274" cy="322" rx="17" ry="10" fill="#ffa3c2" opacity=".85"/>
+  </g>
+  <!-- монетка -->
+  <g transform="translate(116 388)">
+    <circle r="58" fill="url(#coin)" stroke="#e08a0c" stroke-width="5"/>
+    <circle r="38" fill="none" stroke="#fff" stroke-width="6" opacity=".55"/>
+    <path d="M0 -22l6 14 15 1-12 10 4 15-13-8-13 8 4-15-12-10 15-1z" fill="#fff8d6" opacity=".9"/>
+  </g>
+  <!-- іскорки -->
+  <path d="M410 120q0 34 34 34q-34 0-34 34q0-34-34-34q34 0 34-34z" fill="#ffffff"/>
+  <path d="M458 210q0 16 16 16q-16 0-16 16q0-16-16-16q16 0 16-16z" fill="#ffe27a"/>
+  <path d="M74 120q0 14 14 14q-14 0-14 14q0-14-14-14q14 0 14-14z" fill="#ffffff" opacity=".9"/>
+</svg>
