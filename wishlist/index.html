@@ -834,6 +834,26 @@ html.dark[data-theme=autumn]{
 .fest i{position:absolute;right:10px;top:50%;transform:translateY(-50%) rotate(-10deg);font-size:64px;font-style:normal;opacity:.35;animation:float 3s ease-in-out infinite}
 .fest:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 0,rgba(255,255,255,.35),transparent 50%)}
 
+/* ===== ВИДЕО (TikTok / Reels / YouTube) ===== */
+.vlist{display:grid;gap:8px;grid-template-columns:minmax(0,1fr)}
+.vrow{min-width:0;display:flex;align-items:center;gap:11px;padding:8px 10px 8px 8px;border-radius:16px;background:var(--field);box-shadow:inset 0 0 0 1.5px var(--fline)}
+.vrow .vt{width:44px;height:58px;border-radius:10px;flex:none;background:#111 center/cover;display:grid;place-items:center;color:#fff;font-size:18px}
+.vrow .vx{flex:1;min-width:0}.vrow .vx b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.vrow .vx span{font-size:12px;color:var(--ink2)}
+.vadd{display:flex;gap:8px;margin-top:8px}.vadd .inp{flex:1;min-width:0}.vadd .btn{width:auto;margin:0;min-height:0;padding:0 16px;flex:none}
+.dvids{margin-top:14px;display:grid;gap:12px}
+.dvid{position:relative;width:100%;border-radius:22px;overflow:hidden;background:#111 center/cover;aspect-ratio:9/14;max-height:72vh;display:block;color:#fff;box-shadow:0 14px 30px -14px rgba(0,0,0,.5)}
+.dvid.yt{aspect-ratio:16/9}
+.dvid:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05) 40%,rgba(0,0,0,.65))}
+.dvid .pl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;place-items:center;box-shadow:0 0 0 2px rgba(255,255,255,.5)}
+.dvid .pl svg{width:28px;height:28px;margin-left:4px}
+.dvid .cap{position:absolute;left:14px;right:14px;bottom:12px;text-align:left;font-size:13px;line-height:1.3}
+.dvid .cap b{display:flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.9}
+.dvid .cap span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px}
+.dvid.tt{background-image:linear-gradient(135deg,#25f4ee22,#fe2c5522),linear-gradient(#111,#111)}
+.dvid iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:2}
+.dvid .ext{position:absolute;left:10px;bottom:10px;z-index:3;padding:7px 10px;border-radius:12px;background:rgba(0,0,0,.55);color:#fff;font:800 11.5px/1 var(--font)}
+.vbadge{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
+
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
 .welcome .hero{margin-bottom:22px;position:relative;animation:float 3.4s ease-in-out infinite}
@@ -1224,6 +1244,7 @@ function cardHtml(it, i) {
       (flag === "new" ? '<span class="badge">Новое</span>' : flag === "upd" ? '<span class="badge upd">Изменено</span>' : "") +
       (gifted ? '<span class="gift">🎁 ты даришь</span>' : "") +
       (it.photoCount > 1 ? '<span class="multi">' + IC.stack + it.photoCount + "</span>" : "") +
+      ((it.videos || []).length ? '<span class="vbadge">▶</span>' : "") +
       (it.done ? '<span class="donechip">' + IC.check + "Сбылось</span>" : "") +
     "</div>" +
     '<div class="cbody"><div class="ctitle">' + esc(it.title) + "</div>" +
@@ -1419,6 +1440,7 @@ async function openDetail(id) {
       (it.done ? '<span class="dpill dn">✓ Сбылось</span>' : "") + "</div>" +
     '<div class="dtitle">' + esc(it.title) + "</div>" +
     (priceStr(it) ? '<div class="dprice"><small>цена</small>' + priceStr(it) + "</div>" : "") +
+    videosDetailHtml(it) +
     (rows.length ? '<div class="dinfo">' + rows.join("") + "</div>" : "") +
     (!isOwner() && G(it.id) && !it.done ? '<div class="dsecret"><span class="se">🤫</span><div><b>Ты даришь это</b><span>Отметка хранится только в твоём Telegram — она её не увидит.</span></div></div><button class="gstrow" data-d="status"><span>Статус</span><b>' + GST[gstOf(it.id)][0] + " " + GST[gstOf(it.id)][1] + "</b>" + IC.chev + "</button>" : "") +
     '<div class="dmeta">добавлено ' + ago(it.createdAt) + (it.editedAt && it.editedAt - it.createdAt > 60000 ? " · изменено " + ago(it.editedAt) : "") + (it.done && it.doneAt ? " · сбылось " + ago(it.doneAt) : "") + "</div></div>";
@@ -1434,6 +1456,8 @@ async function openDetail(id) {
 
   const sh = openSheet(h, null, { cls: "hero" });
   sh.addEventListener("click", async (e) => {
+    const vx = e.target.closest("[data-vext]"); if (vx) { e.stopPropagation(); const vb = vx.closest("[data-vid]"); openLink((it.videos || [])[+vb.dataset.vid].url); return; }
+    const vb = e.target.closest("[data-vid]"); if (vb) { if (!vb.querySelector("iframe")) playVideo(vb, (it.videos || [])[+vb.dataset.vid]); return; }
     const b = e.target.closest("[data-d]"); if (!b || b.classList.contains("busy")) return;
     const d = b.dataset.d;
     try {
@@ -1483,10 +1507,37 @@ function openEditor(it, photosIn) {
     "</div>" +
     '<label class="fl" for="f_price">Цена <span class="opt">примерно</span></label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="f_price" inputmode="decimal" autocomplete="off" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"></div><select class="inp cur" id="f_cur" aria-label="Валюта">' + curOpts + "</select></div>" + '<div class="ferr" id="e_price">Цена — это число, например 49 или 1 200</div>' +
     '<label class="fl" for="f_link">Ссылка на товар</label><div class="ifield"><span class="ic">🔗</span><input class="inp" id="f_link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '"></div><div class="ferr" id="e_link">Похоже, это не ссылка — проверь адрес</div>' +
+    '<label class="fl" for="f_vid">Видео <span class="opt">TikTok, Reels, YouTube · до 3</span></label><div class="vlist" id="vlist"></div><div class="vadd" id="vadd"><input class="inp" id="f_vid" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Вставь ссылку на видео"><button class="btn pri" id="v_add" aria-label="Добавить видео">' + IC.plus.replace("<svg", '<svg width="20" height="20"') + '</button></div><div class="ferr" id="e_vid">Не похоже на ссылку TikTok, Reels или YouTube</div>' +
     '<label class="fl" for="f_details">Детали</label><input class="inp" id="f_details" maxlength="300" placeholder="Размер, цвет, модель, магазин…" value="' + esc(it ? it.details || "" : "") + '">' +
     '<label class="fl" for="f_note">Почему хочу <span class="opt">комментарий</span></label><textarea class="inp" id="f_note" maxlength="1000" placeholder="Зачем это нужно или что важно при выборе">' + esc(noteV) + '</textarea><div class="fcnt" id="c_note"></div>' +
     '<button class="btn pri" id="f_save" style="margin-top:26px">' + (isNew ? "Добавить в вишлист 💗" : "Сохранить изменения") + "</button>";
   const sh = openSheet(h, null, { head });
+  st.videos = ((it && it.videos) || []).slice();
+  const drawVids = () => {
+    $("#vlist", sh).innerHTML = st.videos.map((v, i) => '<div class="vrow"><span class="vt"' + (v.thumb ? ' style="background-image:url(' + esc(v.thumb) + ')"' : "") + ">" + (v.thumb ? "" : "▶") + '</span><span class="vx"><b>' + esc(vidLabel(v)) + "</b><span>" + VKIND[v.kind] + (v.loading ? " · загружаю…" : "") + '</span></span><button class="drm" data-vrm="' + i + '" aria-label="Убрать видео">' + IC_X + "</button></div>").join("");
+    $("#vadd", sh).style.display = st.videos.length >= 3 ? "none" : "";
+  };
+  drawVids();
+  const addVid = async (raw) => {
+    const v = parseVideo(raw);
+    const ev = $("#e_vid", sh), inp = $("#f_vid", sh);
+    if (!v) { inp.classList.add("err"); ev.classList.add("on"); haptic("error"); return false; }
+    if (st.videos.some((x) => x.url === v.url || (x.id && x.id === v.id))) { toast("Это видео уже добавлено"); return true; }
+    if (st.videos.length >= 3) return true;
+    inp.classList.remove("err"); ev.classList.remove("on"); inp.value = "";
+    v.loading = v.kind === "tt"; st.videos.push(v); drawVids(); haptic("light"); SFX.play("pop");
+    if (v.kind === "tt") { const e2 = await enrichVideo(v); delete e2.loading; const k = st.videos.indexOf(v); if (k >= 0) st.videos[k] = e2; drawVids(); }
+    return true;
+  };
+  sh.addEventListener("click", (e) => {
+    if (e.target.closest("#v_add")) { addVid($("#f_vid", sh).value); return; }
+    const vr = e.target.closest("[data-vrm]"); if (vr) { st.videos.splice(+vr.dataset.vrm, 1); drawVids(); haptic("light"); }
+  });
+  $("#f_vid", sh).addEventListener("input", () => { $("#f_vid", sh).classList.remove("err"); $("#e_vid", sh).classList.remove("on"); });
+  $("#f_vid", sh).addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addVid(e.target.value); } });
+  $("#f_vid", sh).addEventListener("paste", () => setTimeout(() => { const v = $("#f_vid", sh).value; if (parseVideo(v)) addVid(v); }, 50));
+  // ссылку на видео вставили в поле «ссылка на товар» — переносим в видео
+  $("#f_link", sh).addEventListener("change", () => { const l = $("#f_link", sh); const v = parseVideo(l.value); if (v && /tiktok|instagram\.com\/(reel|p)|youtu/i.test(l.value)) { addVid(l.value); l.value = ""; toast("Это видео — добавила в «Видео» 🎬"); } });
   const drawPhotos = () => {
     const n = st.photos.length;
     if (!n && !st.loading) {
@@ -1509,7 +1560,7 @@ function openEditor(it, photosIn) {
   $("#f_cur", sh).addEventListener("change", () => { st.curTouched = true; });
   $("#f_link", sh).addEventListener("input", () => { if (st.curTouched) return; const c = curFromDomain(extractUrl($("#f_link", sh).value)); if (c) $("#f_cur", sh).value = c; });
   // черновик: не теряем недописанное
-  const snap = () => [$("#f_title", sh).value, $("#f_price", sh).value, $("#f_link", sh).value, $("#f_details", sh).value, noteEl.value, st.cat, st.photos.length].join("\u0001");
+  const snap = () => [$("#f_title", sh).value, $("#f_price", sh).value, $("#f_link", sh).value, $("#f_details", sh).value, noteEl.value, st.cat, st.photos.length, (st.videos || []).length].join("\u0001");
   const snap0 = snap();
   sh._entry.beforeClose = (entry) => {
     if (st.saved || snap() === snap0) return true;
@@ -1541,6 +1592,7 @@ function openEditor(it, photosIn) {
   async function save() {
     if (st.busy || st.loading) return;
     const tEl = $("#f_title", sh), title = tEl.value.trim();
+    const pendV = $("#f_vid", sh).value.trim(); if (pendV && parseVideo(pendV) && st.videos.length < 3) { const v = parseVideo(pendV); if (!st.videos.some((x) => x.url === v.url)) st.videos.push(v); $("#f_vid", sh).value = ""; }
     const rawLink = $("#f_link", sh).value.trim();
     const link = extractUrl(rawLink);
     const extra = (link ? rawLink.replace(link, "") : rawLink).replace(/\s+/g, " ").trim();
@@ -1564,6 +1616,7 @@ function openEditor(it, photosIn) {
         id: it ? it.id : now.toString(36) + uid(6),
         title, cat: st.cat, price: rawP ? String(Number(numP)) : "", cur,
         link, details: $("#f_details", sh).value.trim(), note: noteEl.value.trim(),
+        videos: (st.videos || []).map((v) => { const o = { url: v.url, kind: v.kind, id: v.id || "" }; if (v.thumb) o.thumb = v.thumb; if (v.title) o.title = String(v.title).slice(0, 150); if (v.author) o.author = v.author; if (v.shorts) o.shorts = true; return o; }),
         thumb: st.photos.length ? await thumbFrom(st.photos[0]) : "", photoCount: st.photos.length,
         createdAt: it ? it.createdAt || now : now, editedAt: now,
       };
@@ -2145,7 +2198,7 @@ const NOTIFY = (() => {
     toOwner(text) { if (isOwner()) return; send(text, null, { to: "owner" }); },
     bought(t) { if (isOwner() || !S.meta.bot || !S.meta.ownerId) return; bb.push(t); clearTimeout(btT); btT = setTimeout(flushBought, 6000); },
     wish(it, photo) { if (!isOwner()) return; const c = CATS[it.cat] || CATS[2]; const pr = priceStr(it).replace(/&[^;]+;/g, "");
-      send("💝 <b>" + escH(herName()) + " добавила желание</b>\n\n<b>" + escH(it.title) + "</b>\n" + c.emo + " " + c.name + (pr ? " · " + escH(pr) : "") + (it.note ? "\n<i>" + escH(it.note).slice(0, 300) + "</i>" : ""), photo); },
+      send("💝 <b>" + escH(herName()) + " добавила желание</b>\n\n<b>" + escH(it.title) + "</b>\n" + c.emo + " " + c.name + (pr ? " · " + escH(pr) : "") + (it.note ? "\n<i>" + escH(it.note).slice(0, 300) + "</i>" : "") + ((it.videos || []).length ? "\n🎬 " + it.videos.map((v) => '<a href="' + escH(v.url) + '">' + VKIND[v.kind] + "</a>").join(" · ") : ""), photo); },
     bring(t) { if (!isOwner() || !ready()) return; bq.push(t); clearTimeout(bt); bt = setTimeout(flushBring, 6000); },
     mood(v) { if (!isOwner() || !v) return; send("💭 <b>" + escH(herName()) + " сейчас думает:</b>\n<i>«" + escH(v).slice(0, 500) + "»</i>"); },
     about() { if (!isOwner()) return; send("💁‍♀️ " + escH(herName()) + " обновила «Про меня» — размеры и любимое"); },
@@ -2515,6 +2568,47 @@ function festHtml() {
   const key = "wl_fest_" + f.k + "_" + new Date().toDateString();
   if (!LS.get(key, false)) { LS.set(key, true); setTimeout(() => { confetti(); SFX.play("tada"); haptic("ok"); }, 700); }
   return '<div class="fest ' + f.cls + '"><b>' + esc(f.b) + "</b><span>" + esc(f.t) + "</span><i>" + f.e + "</i></div>";
+}
+
+/* ================= ВИДЕО: TikTok / Reels / YouTube ================= */
+const IC_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>';
+const VKIND = { tt: "TikTok", ig: "Reels", yt: "YouTube" };
+function parseVideo(u) {
+  u = extractUrl(u) || ""; if (!u) return null; if (!/^https?:/i.test(u)) u = "https://" + u;
+  let m;
+  if (/tiktok\.com/i.test(u)) { m = u.match(/\/video\/(\d{8,})/) || u.match(/\/v\/(\d{8,})/); return { url: u, kind: "tt", id: m ? m[1] : "" }; }
+  if ((m = u.match(/instagram\.com\/(?:reel|reels|p|tv)\/([\w-]+)/i))) return { url: u, kind: "ig", id: m[1] };
+  if ((m = u.match(/(?:youtu\.be\/|youtube\.com\/(?:shorts\/|watch\?v=|embed\/|live\/))([\w-]{11})/i))) return { url: u, kind: "yt", id: m[1], shorts: /shorts/i.test(u), thumb: "https://i.ytimg.com/vi/" + m[1] + "/hqdefault.jpg" };
+  return null;
+}
+async function enrichVideo(v) {
+  if (v.kind !== "tt") return v;
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 5000);
+    const r = await fetch("https://www.tiktok.com/oembed?url=" + encodeURIComponent(v.url), { signal: ctl.signal });
+    const j = await r.json();
+    const id = (String(j.html || "").match(/data-video-id="(\d+)"/) || [])[1] || (String(j.embed_product_id || ""));
+    return Object.assign({}, v, { id: v.id || id || "", thumb: j.thumbnail_url || "", title: j.title || "", author: j.author_name || "" });
+  } catch (e) { return v; }
+}
+function embedUrl(v) {
+  if (v.kind === "tt" && v.id) return "https://www.tiktok.com/player/v1/" + v.id + "?autoplay=1&music_info=1&description=1&rel=0";
+  if (v.kind === "ig" && v.id) return "https://www.instagram.com/reel/" + v.id + "/embed/";
+  if (v.kind === "yt" && v.id) return "https://www.youtube.com/embed/" + v.id + "?autoplay=1&playsinline=1&rel=0";
+  return "";
+}
+function vidLabel(v) { return v.title || (v.author ? "@" + v.author : v.kind === "yt" ? (v.shorts ? "Shorts-видео" : "Видео") : v.kind === "ig" ? "Reels-видео" : "Видео из TikTok"); }
+function videosDetailHtml(it) {
+  const vs = it.videos || []; if (!vs.length) return "";
+  return '<div class="dvids">' + vs.map((v, i) => '<button class="dvid ' + v.kind + (v.kind === "yt" && !v.shorts ? " yt" : "") + '" data-vid="' + i + '"' + (v.thumb ? ' style="background-image:url(' + esc(v.thumb) + ')"' : "") + '>' +
+    '<span class="pl">' + IC_PLAY + '</span><span class="cap"><b>' + (v.kind === "tt" ? "♪" : v.kind === "ig" ? "◎" : "▶") + " " + VKIND[v.kind] + (v.author ? " · @" + esc(v.author) : "") + "</b>" + (v.title ? "<span>" + esc(v.title) + "</span>" : "") + "</span></button>").join("") + "</div>";
+}
+function playVideo(btn, v) {
+  const src = embedUrl(v);
+  if (!src) { openLink(v.url); return; }
+  haptic("light");
+  btn.innerHTML = '<iframe src="' + esc(src) + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><span class="ext" data-vext="1">Открыть в ' + VKIND[v.kind] + " ↗</span>";
+  btn.style.backgroundImage = "none";
 }
 
 /* ================= новые желания вживую ================= */
