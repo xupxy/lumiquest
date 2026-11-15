@@ -1097,6 +1097,36 @@ html.dark[data-theme=autumn]{
 .ar-tyr b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ar-tyr span.s{font-size:12px;color:var(--ink2)}
 .ar-tyr .ar-go{background:#2fb078;color:#fff}
+/* --- F10: ревизия и «Передумала» --- */
+.ar-rvn{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 2px;padding:12px 14px;border-radius:20px;background:var(--card);box-shadow:var(--cardShadow);text-align:left;transition:transform .2s var(--ease)}
+.ar-rvn:active{transform:scale(.98)}
+.ar-rvn .ar-ie{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:linear-gradient(140deg,#e2f4ff,#e8e2ff);flex:none}
+.dark .ar-rvn .ar-ie{background:linear-gradient(140deg,#22344a,#33284d)}
+.ar-rvn b{display:block;font-size:14.5px}
+.ar-rvn span span{font-size:12.5px;color:var(--ink2)}
+.ar-rvn .ar-go{margin-left:auto}
+.ar-rvp{display:flex;align-items:center;gap:8px;margin:2px 0 14px;font:700 12px/1 var(--font);color:var(--ink3)}
+.ar-rvp i{flex:1;height:5px;border-radius:3px;background:var(--bg2);overflow:hidden;display:block}
+.ar-rvp i b{display:block;height:100%;background:var(--rose);border-radius:3px;transition:width .4s var(--ease)}
+.ar-rvc{background:var(--card);border-radius:26px;box-shadow:var(--cardShadow);padding:6px;animation:fin .35s var(--ease)}
+.ar-rvc.out-l{animation:arOutL .32s var(--ease) forwards}.ar-rvc.out-r{animation:arOutR .32s var(--ease) forwards}
+@keyframes arOutL{to{opacity:0;transform:translateX(-60px) rotate(-6deg)}}
+@keyframes arOutR{to{opacity:0;transform:translateX(60px) rotate(6deg)}}
+.ar-rvc .ar-rvm{aspect-ratio:4/3;border-radius:21px;overflow:hidden;display:grid;place-items:center;font-size:80px;background:var(--bg2)}
+.ar-rvc .ar-rvm img{width:100%;height:100%;object-fit:cover;display:block}
+.ar-rvc .ar-rvm.k1{background:var(--c1s)}.ar-rvc .ar-rvm.k2{background:var(--c2s)}.ar-rvc .ar-rvm.k3{background:var(--c3s)}
+.ar-rvb{padding:14px 12px 10px}
+.ar-rvb b{display:block;font:700 22px/1.2 var(--serif)}
+.ar-rvb span{display:block;margin-top:6px;font-size:13px;color:var(--ink2)}
+.ar-rva{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.ar-rva .btn{margin:0}
+.ar-gone{margin-top:6px;padding:2px 12px;border-radius:18px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line)}
+.ar-gi{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.ar-gi:first-child{border-top:0}
+.ar-gi>div{flex:1;min-width:0}
+.ar-gi b{display:block;font-size:14px;color:var(--ink2);text-decoration:line-through;text-decoration-color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ar-gi span{font-size:12px;color:var(--ink3)}
+.ar-gi .ar-go{background:var(--bg2);color:var(--ink)}
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
 /* ===== /МОДУЛИ САШИ: CSS ===== */
@@ -3485,6 +3515,63 @@ document.addEventListener("click", async (e) => {
     if (e.target.closest("[data-ar-revok]")) { haptic("ok"); await arGvPatch(id, { ar_rev: box.querySelector("[data-ar-revin]").value.trim().slice(0, 140) }, "Сохранено ✓"); }
   } catch (er) { toast("Ошибка: " + (er.message || er)); }
 });
+/* --- F10: 🧹 ревизия «всё ещё хочу?» и архив «Передумала» --- */
+const AR_RV_DAYS = 30;
+const arGone = () => (Array.isArray(S.meta.ar_gone) ? S.meta.ar_gone : []);
+const arStale = () => { const lim = Date.now() - AR_RV_DAYS * 86400000; return Object.values(S.items).filter((it) => !it.done && Math.max(it.createdAt || 0, it.editedAt || 0, it.ar_chk || 0) < lim && arTop().indexOf(it.id) < 0 && arDueLeft(it) == null).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)); };
+const arAgeTxt = (ts) => { const d = Math.floor((Date.now() - ts) / 86400000); return d < 60 ? d + " " + dayWord(d) : Math.floor(d / 30) + " " + plural(Math.floor(d / 30), ["месяц", "месяца", "месяцев"]); };
+function arRvNudge() {
+  if (!isOwner()) return ""; const n = arStale().length; if (n < 3) return "";
+  return '<button class="ar-rvn" data-ar-review><span class="ar-ie">🧹</span><span><b>Всё ещё хочешь?</b><span>' + n + " " + plural(n, ["желание", "желания", "желаний"]) + " ждут больше месяца — быстрая ревизия</span></span><span class=\"ar-go\">Начать</span></button>";
+}
+HOOKS.main.push(arRvNudge);
+HOOKS.settings.push(() => !isOwner() ? "" : '<button class="ar-shbtn" data-ar-review><span class="ar-shi">🧹</span><span><b>Ревизия и «Передумала»</b><span>' + (arGone().length ? "В архиве: " + arGone().length : "Пройтись по старым желаниям") + "</span></span>" + IC.chev + "</button>");
+function arReview() {
+  const queue = arStale().map((it) => it.id); let i = 0, kept = 0, gone = 0;
+  const sh = openSheet('<h3>Всё ещё хочу? 🧹</h3><p class="ssub">Старые желания по одному. «Передумала» не удаляет насовсем — желание уйдёт в архив, его можно вернуть.</p><div id="ar-rv" style="margin-top:16px"></div>');
+  const box = $("#ar-rv", sh);
+  const goneList = () => arGone().length ? '<div class="fl">Передумала <span class="opt">' + arGone().length + '</span></div><div class="ar-gone">' + arGone().slice().reverse().map((g) => '<div class="ar-gi"><div><b>' + esc(g.title) + "</b><span>" + [g.price ? arNum(+g.price) + " " + g.cur : "", "убрала " + ago(g.at)].filter(Boolean).map(esc).join(" · ") + '</span></div><button class="ar-go" data-ar-back="' + esc(g.id) + '">↩︎ Вернуть</button><button class="drm" data-ar-forget="' + esc(g.id) + '" aria-label="Забыть">' + IC_X + "</button></div>").join("") + "</div>" : "";
+  const draw = () => {
+    while (i < queue.length && (!S.items[queue[i]] || S.items[queue[i]].done)) i++;
+    if (i >= queue.length) {
+      box.innerHTML = (queue.length ? '<div class="empty" style="padding:14px 10px 6px"><div class="eart"><span>✨</span></div><h3>Готово!</h3><p>Оставила ' + kept + ", убрала " + gone + ". Список снова свежий.</p></div>" : '<div class="empty" style="padding:14px 10px 6px"><div class="eart"><span>🌿</span></div><h3>Всё свежее</h3><p>Нет желаний старше месяца, которые давно не трогала.</p></div>') + goneList();
+      return;
+    }
+    const it = S.items[queue[i]], c = CATS[it.cat] || CATS[2];
+    box.innerHTML = '<div class="ar-rvp">' + (i + 1) + " из " + queue.length + '<i><b style="width:' + Math.round((i / queue.length) * 100) + '%"></b></i></div>' +
+      '<div class="ar-rvc"><div class="ar-rvm k' + c.key + '">' + (it.thumb ? '<img src="' + it.thumb + '" alt="">' : c.emo) + '</div><div class="ar-rvb"><b>' + esc(it.title) + "</b><span>" + esc([c.emo + " " + c.name, priceStr(it).replace(/&[^;]+;/g, ""), "добавлено " + arAgeTxt(it.createdAt || Date.now()) + " назад"].filter(Boolean).join(" · ")) + "</span></div></div>" +
+      '<div class="ar-rva"><button class="btn" data-ar-rv="no">🙅‍♀️ Передумала</button><button class="btn ok" data-ar-rv="yes">💚 Да, хочу</button></div><button class="btn ghost" data-ar-rv="skip">Пропустить</button>' + goneList();
+  };
+  draw(); sh._redraw = () => { if (!box.querySelector(".out-l,.out-r")) draw(); };
+  sh.addEventListener("click", async (e) => {
+    try {
+      const b = e.target.closest("[data-ar-back]");
+      if (b) {
+        const g = arGone().find((x) => x.id === b.dataset.arBack); if (!g) return;
+        const now = Date.now(), item = { id: g.id, title: g.title, cat: g.cat || 2, price: g.price || "", cur: g.cur || "€", link: g.link || "", details: g.details || "", note: g.note || "", videos: [], thumb: "", photoCount: 0, createdAt: g.createdAt || now, editedAt: now, done: false, gift: false, ar_chk: now };
+        await S.store.saveItem(item, []); await S.store.saveMeta({ ar_gone: arGone().filter((x) => x.id !== g.id) });
+        haptic("ok"); SFX.play("pop"); toast("Вернула в вишлист ↩️"); draw(); return;
+      }
+      const f = e.target.closest("[data-ar-forget]");
+      if (f) { await S.store.saveMeta({ ar_gone: arGone().filter((x) => x.id !== f.dataset.arForget) }); haptic("light"); draw(); return; }
+      const a = e.target.closest("[data-ar-rv]"); if (!a || i >= queue.length) return;
+      const it = S.items[queue[i]], v = a.dataset.arRv, card = box.querySelector(".ar-rvc");
+      if (card) card.classList.add(v === "no" ? "out-l" : "out-r");
+      haptic(v === "no" ? "medium" : "light"); SFX.play(v === "yes" ? "pop" : "tick");
+      await new Promise((r) => setTimeout(r, 300));
+      if (v === "yes") { kept++; await S.store.patchItem(it.id, { ar_chk: Date.now() }); }
+      if (v === "no") {
+        gone++;
+        const g = { id: it.id, title: it.title, cat: it.cat, price: it.price || "", cur: it.cur || "€", link: it.link || "", details: it.details || "", note: (it.note || "").slice(0, 300), createdAt: it.createdAt || 0, at: Date.now() };
+        await S.store.saveMeta({ ar_gone: arGone().concat(g).slice(-40) });
+        await S.store.deleteItem(it.id);
+        if (S.meta.ar_top && S.meta.ar_top.includes(it.id)) await S.store.saveMeta({ ar_top: arTop().map((x) => (x === it.id ? "" : x)) });
+      }
+      i++; draw();
+    } catch (er) { toast("Ошибка: " + (er.message || er)); }
+  });
+}
+document.addEventListener("click", (e) => { if (e.target.closest("[data-ar-review]")) { haptic("light"); arReview(); } });
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
 /* ================= МОДУЛИ САШИ ================= */
