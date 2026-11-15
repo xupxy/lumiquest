@@ -117,15 +117,6 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .ce{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:20px;background:color-mix(in srgb,var(--c,#94a3b8) 17%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c,#94a3b8) 22%,transparent)}
 .dark .ce{background:color-mix(in srgb,var(--c,#94a3b8) 22%,transparent)}
 
-/* звіт-тизер */
-.rteaser{margin-top:12px;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border-radius:22px;padding:12px 14px 12px 12px}
-.rteaser .ri{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:20px;background:linear-gradient(140deg,rgba(255,236,160,.9),rgba(167,243,208,.9));box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}
-.dark .rteaser .ri{background:linear-gradient(140deg,rgba(250,204,21,.25),rgba(16,185,129,.3));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-.rteaser .rt{flex:1;min-width:0}
-.rteaser b{display:block;font:700 15px/1.2 var(--font);letter-spacing:-.01em}
-.rteaser span{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chev{width:18px;height:18px;color:var(--ink3);flex:none}
-
 /* донат */
 .donut{display:flex;flex-direction:column;align-items:center}
 .dwrap{position:relative;width:180px;height:180px;margin:4px auto 6px}
@@ -295,7 +286,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .view.enter>:nth-child(2){animation-delay:.04s}.view.enter>:nth-child(3){animation-delay:.08s}.view.enter>:nth-child(4){animation-delay:.12s}.view.enter>:nth-child(5){animation-delay:.16s}.view.enter>:nth-child(6){animation-delay:.2s}.view.enter>:nth-child(n+7){animation-delay:.24s}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .glass,.btn,.chip,.cc,.kpk{transition:transform .38s var(--spring),box-shadow .3s var(--ease),background-color .25s,filter .25s}
-.lim:active,.rteaser:active,.addrow:active,.limempty:active{transform:scale(.98);filter:brightness(1.03)}
+.lim:active,.addrow:active,.limempty:active{transform:scale(.98);filter:brightness(1.03)}
 .iconbtn:active{transform:scale(.9)}
 
 /* шторки */
@@ -409,33 +400,6 @@ input[type=date].inp{min-height:50px}
 .fe .btns{margin-top:12px}
 .fe .btn.sq{flex:none;width:54px;padding:0;color:var(--exp)}
 
-/* звіт */
-.rbig{display:flex;align-items:flex-end;gap:10px;margin-top:6px;flex-wrap:wrap}
-.rbig b{font:800 36px/1 var(--font);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
-.delta{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:999px;font:800 13px/1 var(--font);margin-bottom:4px;font-variant-numeric:tabular-nums}
-.delta.up{background:var(--expSoft);color:var(--exp)}
-.delta.down{background:var(--accSoft);color:var(--inc)}
-.delta.eq{background:var(--bg2);color:var(--ink2)}
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.tile{border-radius:22px;padding:13px 14px;min-width:0}
-.tile span{display:block;font:600 12px/1.2 var(--font);color:var(--ink2)}
-.tile b{display:block;font:800 19px/1.15 var(--font);letter-spacing:-.03em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
-.tile small{display:block;font:500 12px/1.3 var(--font);color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tips{display:grid;gap:8px;margin-top:6px}
-.tipc{display:flex;gap:11px;align-items:flex-start;border-radius:20px;padding:12px 14px 12px 12px}
-.tipc .te{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:17px;background:var(--bg2)}
-.tipc p{margin:0;font:600 14px/1.4 var(--font);padding-top:6px}
-.tipc p b{font-weight:800}
-.share{margin-top:4px;border-radius:22px;padding:14px}
-.share .st{display:flex;justify-content:space-between;font:700 14px/1.2 var(--font)}
-.share .st span{color:var(--ink2);font-variant-numeric:tabular-nums}
-.share .bar{height:10px;border-radius:6px;background:var(--bg2);margin-top:10px;overflow:hidden;display:flex}
-.share .bar i{display:block;height:100%;background:linear-gradient(90deg,#818cf8,#6366f1)}
-.bars{border-radius:24px;padding:14px 12px 10px}
-.bars svg{display:block;width:100%;height:auto;overflow:visible}
-.bars text{font-family:var(--font)}
-.bars rect.bb{transition:height .8s var(--ease),y .8s var(--ease)}
-
 /* налаштування */
 .thpick{display:grid;gap:10px}
 .thauto{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:11px 14px 11px 11px;border-radius:22px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb);transition:box-shadow .25s,background .25s,transform .3s var(--spring)}
@@ -522,6 +486,163 @@ input[type=date].inp{min-height:50px}
 :focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
 .inp:focus-visible{outline:none}
 
+
+/* ===== РАХУНКИ, МІСЯЦЬ, БОРГИ, МАЙСТЕР ===== */
+.hchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.hchip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);font:700 12px/1.1 var(--font)}
+.accs{display:flex;gap:8px;overflow-x:auto;margin:16px -20px -4px;padding:2px 20px 6px;scrollbar-width:none}
+.accs::-webkit-scrollbar{display:none}
+.acard{flex:none;min-width:128px;max-width:170px;text-align:left;padding:11px 13px 12px;border-radius:20px;background:rgba(255,255,255,.15);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2),inset 0 1px 0 rgba(255,255,255,.25);color:#fff;display:flex;flex-direction:column;gap:2px;transition:transform .35s var(--spring),background .2s}
+.acard:active{transform:scale(.95);background:rgba(255,255,255,.24)}
+.acard .ae{font-size:20px;line-height:1;margin-bottom:6px}
+.acard .an{font:600 12px/1.2 var(--font);opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acard b{font:800 17px/1.15 var(--font);letter-spacing:-.025em;white-space:nowrap;font-variant-numeric:tabular-nums}
+.acard b.neg{color:#ffd1d1}
+.acard small{font:600 11px/1.1 var(--font);opacity:.72;font-variant-numeric:tabular-nums}
+.acard.add{min-width:92px;align-items:center;justify-content:center;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+.acard.add .ae{font-size:22px;margin:0;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.2)}
+.acard.add .an{opacity:1;margin-top:6px}
+.mcard{margin-top:12px;border-radius:26px;padding:16px}
+.mc3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.mc3 span{display:block;font:600 12px/1 var(--font);color:var(--ink2)}
+.mc3 b{display:block;font:800 17px/1.15 var(--font);letter-spacing:-.03em;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.mc3 b.inc{color:var(--inc)}.mc3 b.neg{color:var(--exp)}
+.mc3 small{display:block;font:600 10.5px/1.2 var(--font);color:var(--ink3);margin-top:3px;white-space:nowrap}
+.mbar{height:8px;border-radius:5px;background:var(--bg2);margin-top:14px;overflow:hidden}
+.mbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--acc2),var(--acc));transition:width .9s var(--ease)}
+.mbar i.warn{background:linear-gradient(90deg,#fcd34d,#f59e0b)}.mbar i.over{background:linear-gradient(90deg,#fb7185,#e5484d)}
+.mfoot{font:500 13px/1.4 var(--font);color:var(--ink2);margin-top:9px}
+.mfoot b{color:var(--ink);font-weight:800}
+.when.late{background:var(--expSoft);color:var(--exp)}
+.tx .ta.tr{color:var(--ink2)}
+.facc{margin-top:16px;border-radius:26px;padding:14px 14px 12px}
+.fat{display:flex;align-items:center;gap:11px}
+.fat .ae{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:21px;background:var(--accSoft);flex:none}
+.fat .fm{flex:1;min-width:0}
+.fat small{display:block;font:600 12px/1 var(--font);color:var(--ink2)}
+.fat b{display:block;font:800 17px/1.2 var(--font);margin-top:3px}
+.fab2{font:800 32px/1.1 var(--font);letter-spacing:-.04em;margin:12px 2px 0;font-variant-numeric:tabular-nums}
+.fab2.neg{color:var(--exp)}
+.fbtns{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+.pill{padding:9px 12px;border-radius:999px;background:var(--accSoft);color:var(--accInk);font:700 12.5px/1 var(--font)}
+.dark .pill{color:var(--acc)}
+.xb{width:34px;height:34px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;color:var(--ink2);flex:none}
+.xb svg{width:11px;height:11px}
+.achips{display:flex;gap:6px;overflow-x:auto;margin:10px -18px 0;padding:2px 18px 4px;scrollbar-width:none}
+.achips::-webkit-scrollbar{display:none}
+.ach{flex:none;display:inline-flex;align-items:center;gap:8px;padding:6px 13px 6px 7px;border-radius:16px;background:var(--field);box-shadow:inset 0 0 0 1px var(--fline);text-align:left;transition:transform .3s var(--spring)}
+.ach>span:first-child{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:16px;background:var(--bg2)}
+.ach b{display:block;font:700 13.5px/1.15 var(--font);white-space:nowrap}
+.ach small{display:block;font:600 11px/1.1 var(--font);color:var(--ink2);margin-top:2px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ach.on{background:var(--accSoft);box-shadow:inset 0 0 0 1.5px var(--acc2)}
+.ach:active{transform:scale(.95)}
+.alab{font:700 12px/1 var(--font);color:var(--ink2);margin:12px 4px -2px}
+.fes .alab{margin-top:10px}
+.negb.on{background:var(--expSoft);box-shadow:inset 0 0 0 1.5px var(--exp);color:var(--exp)}
+.balbtn{display:flex;align-items:center;justify-content:space-between;width:100%;padding:14px 16px;border-radius:18px;text-align:left}
+.balbtn span{font:800 20px/1 var(--font);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.balbtn small{font:700 13px/1 var(--font);color:var(--accInk)}
+.dark .balbtn small{color:var(--acc)}
+.dtot{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.dt{border-radius:24px;padding:15px 14px;text-align:left;position:relative;overflow:hidden}
+.dt:active{transform:scale(.97)}
+.dt span{display:block;font:700 13px/1 var(--font);color:var(--ink2)}
+.dt b{display:block;font:800 25px/1.1 var(--font);letter-spacing:-.04em;margin-top:9px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dt.owe b{color:var(--exp)}.dt.lent b{color:var(--inc)}
+.dt small{display:block;font:600 11.5px/1.2 var(--font);color:var(--ink3);margin-top:6px}
+.dt:after{content:"";position:absolute;right:-24px;top:-24px;width:80px;height:80px;border-radius:50%;opacity:.5}
+.dt.owe:after{background:radial-gradient(closest-side,var(--expSoft),transparent)}.dt.lent:after{background:radial-gradient(closest-side,var(--accSoft),transparent)}
+.sav.av{border-radius:50%;color:#fff;font:800 18px/1 var(--font)}
+.sav.av.big{width:76px;height:76px;font-size:32px;margin:4px auto 0}
+.sub .sr b.neg{color:var(--exp)}.sub .sr b.pos{color:var(--inc)}
+.dkind{display:inline-block;margin-top:6px;padding:5px 10px;border-radius:999px;font:700 12px/1 var(--font)}
+.dkind.owe{background:var(--expSoft);color:var(--exp)}.dkind.lent{background:var(--accSoft);color:var(--inc)}
+.dprog{height:8px;border-radius:5px;background:var(--bg2);margin:14px 10px 0;overflow:hidden}
+.dprog i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--acc2),var(--acc))}
+.box .xb{margin-left:auto}
+/* майстер */
+.wiz{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:14px 0 calc(110px + var(--safeB))}
+.wtop{display:flex;align-items:center;justify-content:space-between;min-height:40px}
+.wdots{display:flex;gap:6px}
+.wdots i{width:8px;height:8px;border-radius:5px;background:var(--fline);transition:width .4s var(--spring),background .3s}
+.wdots i.done{background:var(--acc2)}
+.wdots i.on{width:26px;background:var(--acc)}
+.wskip{font:700 14px/1 var(--font);color:var(--ink2);padding:10px 4px}
+.wbody.in>*{animation:rise .5s var(--ease) both}
+.wbody.in>:nth-child(2){animation-delay:.05s}.wbody.in>:nth-child(3){animation-delay:.09s}.wbody.in>:nth-child(n+4){animation-delay:.13s}
+.wnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safeB));z-index:20;width:min(calc(100% - 24px),440px);display:flex;gap:8px;padding:7px;border-radius:999px;background:var(--gl2);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
+.wnav .btn{min-height:52px}
+.wnav .wback{flex:0 0 auto;width:auto;padding:0 20px}
+.whead{text-align:center;margin:18px 0 18px}
+.wemo{display:inline-grid;place-items:center;width:72px;height:72px;border-radius:50%;font-size:34px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2);animation:float 4s ease-in-out infinite}
+.wemo.big{width:96px;height:96px;font-size:46px}
+.whead h2{margin:14px 0 0;font:800 25px/1.15 var(--font);letter-spacing:-.035em}
+.whead p{margin:8px auto 0;color:var(--ink2);font-size:14.5px;line-height:1.45;max-width:330px}
+.wwel{text-align:center;padding-top:24px}
+.wlogo{width:104px;height:104px;border-radius:34px;box-shadow:0 22px 44px -16px rgba(13,148,136,.6);animation:float 4s ease-in-out infinite}
+.wwel h1{font:800 31px/1.1 var(--font);letter-spacing:-.04em;margin:22px 0 0}
+.wwel>p{color:var(--ink2);font-size:15.5px;line-height:1.45;margin:10px auto 0;max-width:300px}
+.wlist{margin:24px 0 0;border-radius:26px;padding:6px;text-align:left}
+.wli{display:flex;align-items:center;gap:12px;padding:10px 10px}
+.wli+.wli{box-shadow:0 -1px 0 var(--hair)}
+.wli span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:19px;background:var(--bg2)}
+.wli b{font:700 15px/1.2 var(--font)}
+.wnote{color:var(--ink3);font:600 12.5px/1.45 var(--font);margin:16px auto 0;text-align:center;max-width:300px}
+.wcur{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.wc{border-radius:22px;padding:18px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .35s var(--spring),box-shadow .25s}
+.wc b{font:800 30px/1 var(--font)}
+.wc span{font:600 12.5px/1 var(--font);color:var(--ink2)}
+.wc.on{box-shadow:inset 0 0 0 2px var(--acc),0 10px 24px -12px var(--acc);background:var(--accSoft)}
+.wc:active{transform:scale(.95)}
+.arow{display:flex;align-items:center;gap:10px;padding:10px;border-radius:22px;margin-top:10px}
+.aemo{width:46px;height:46px;border-radius:50%;flex:none;font-size:22px;background:var(--bg2);transition:transform .3s var(--spring)}
+.aemo:active{transform:scale(.88) rotate(-10deg)}
+.am{flex:1;min-width:0}
+.ain{width:100%;border:0;background:transparent;font:700 15.5px/1.2 var(--font);color:var(--ink);padding:2px 0;outline:none}
+.ain:focus{box-shadow:0 2px 0 var(--acc2)}
+.acur{font:600 12px/1 var(--font);color:var(--ink2);padding:5px 0 0}
+.acur:disabled{opacity:.6}
+.abal{text-align:right;padding:8px 10px;border-radius:14px;background:var(--accSoft);flex:none}
+.abal b{display:block;font:800 15.5px/1.1 var(--font);letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--accInk)}
+.dark .abal b{color:var(--acc)}
+.abal b.neg{color:var(--exp)}
+.abal small{display:block;font:600 10.5px/1 var(--font);color:var(--ink2);margin-top:3px}
+.ax{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;color:var(--ink3);background:var(--bg2)}
+.ax svg{width:10px;height:10px}
+.wpre{margin-top:12px}
+.wtotal{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:14px 16px;border-radius:20px}
+.wtotal span{font:600 13.5px/1 var(--font);color:var(--ink2)}
+.wtotal b{font:800 20px/1 var(--font);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.prow{border-radius:24px;padding:14px;margin-top:10px}
+.prow+.prow{margin-top:12px}
+.ph{display:flex;align-items:center;gap:8px}
+.ph .ain{font-size:16.5px}
+.pamt{display:flex;align-items:baseline;justify-content:space-between;width:100%;margin-top:10px;padding:13px 14px;border-radius:16px;background:var(--accSoft);text-align:left}
+.pamt span{font:800 22px/1 var(--font);letter-spacing:-.03em;color:var(--accInk);font-variant-numeric:tabular-nums}
+.dark .pamt span{color:var(--acc)}
+.pamt small{font:600 11.5px/1 var(--font);color:var(--ink2)}
+.pday{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.pday>span{font:700 13px/1 var(--font);color:var(--ink2)}
+.stepper{display:flex;align-items:center;gap:4px;padding:3px;border-radius:999px;background:var(--bg2)}
+.stepper button{width:36px;height:36px;border-radius:50%;font:700 20px/1 var(--font);background:var(--gl2);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.stepper button:active{transform:scale(.9)}
+.stepper b{min-width:80px;text-align:center;font:800 15px/1 var(--font);font-variant-numeric:tabular-nums}
+.prow .achips{margin:8px -14px 0;padding:2px 14px 4px}
+.addrow2{display:block;width:100%;margin-top:12px;padding:14px;border-radius:20px;border:1.5px dashed var(--fline);font:700 14px/1 var(--font);color:var(--accInk)}
+.dark .addrow2{color:var(--acc)}
+.wiz .seg{margin-bottom:12px}
+.dform{border-radius:24px;padding:12px;display:grid;gap:8px}
+.dfr{display:flex;gap:8px;align-items:center}
+.dfr .inp{flex:1;min-width:0}
+.dfr .chip{flex:none;min-width:52px;min-height:50px;border-radius:16px;font-size:16px}
+.dfr .btn{flex:none;width:auto;padding:0 20px;min-height:50px}
+.wsum{margin-top:22px;border-radius:26px;padding:6px;text-align:left}
+.wsr{display:flex;align-items:center;gap:12px;padding:12px 10px}
+.wsr+.wsr{box-shadow:0 -1px 0 var(--hair)}
+.wsr span{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:18px;background:var(--bg2);flex:none}
+.wsr b{flex:1;font:700 14.5px/1.2 var(--font)}
+.wsr em{font:800 14.5px/1.2 var(--font);font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+html[data-theme=winter] .wiz{padding-top:40px}
 /* ===== ТЕМИ ===== */
 #thfx{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;opacity:0;transition:opacity .9s ease}
 #thfx.on{opacity:1}
@@ -563,7 +684,7 @@ html.dark[data-theme=autumn]{--bg:#15110c;--m1:rgba(240,140,70,.18);--m2:rgba(16
   <button class="tb" data-tab="ops"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M8 9h8M8 12.5h8M8 16h5"/></svg><span>Операції</span></button>
   <button class="tbadd" id="fab" aria-label="Додати операцію"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
   <button class="tb" data-tab="subs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l3.5 3.5L17 10"/><path d="M3.5 12V10a3.5 3.5 0 0 1 3.5-3.5h13.5"/><path d="M7 21l-3.5-3.5L7 14"/><path d="M20.5 12v2a3.5 3.5 0 0 1-3.5 3.5H3.5"/></svg><span>Підписки</span></button>
-  <button class="tb" data-tab="goals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg><span>Цілі</span></button>
+  <button class="tb" data-tab="debts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.6"/><path d="M2.8 20c.6-3.4 3.2-5.6 6.2-5.6 1.4 0 2.7.5 3.8 1.3"/><circle cx="17.5" cy="16.5" r="4"/><path d="M17.5 14.6v3.8M15.9 16.5h3.2"/></svg><span>Борги</span></button>
 </nav>
 <div id="toast" class="toast"></div>
 
@@ -697,54 +818,6 @@ const toMain = (amt, cur) => RATES.conv(+amt || 0, cur || "€", mainCur());
 const txMain = (t) => toMain(t.amt, t.cur);
 
 /* ================= сховище ================= */
-function seedDemo() {
-  const t = today(), ym = ymNow(), items = {};
-  let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
-  const pick = (a) => a[Math.floor(rnd() * a.length)];
-  const add = (o) => { const id = o.id || "t_" + uid(10); items[id] = Object.assign({ id, type: "tx", cur: "€", note: "", createdAt: Date.now() - Math.floor(rnd() * 1e6) }, o); };
-  const P = {
-    food: [["Сільпо", 38, 92], ["Ринок", 14, 36], ["Лідл", 22, 64], ["АТБ", 12, 40]],
-    cafe: [["Капучино", 3.5, 5.5], ["Обід з колегами", 11, 19], ["Круасан і кава", 5, 8], ["Піца", 14, 24]],
-    transport: [["Метро", 2, 4], ["Таксі", 7, 16], ["Проїзний", 49, 49]],
-    shop: [["Кросівки", 79, 120], ["Футболка", 18, 29], ["Чохол для телефону", 12, 19]],
-    fun: [["Кіно", 9, 14], ["Боулінг", 16, 22], ["Концерт", 35, 55]],
-    health: [["Аптека", 8, 26], ["Стоматолог", 60, 90]],
-    gifts: [["Квіти", 18, 35], ["Подарунок мамі", 30, 60]],
-    edu: [["Книга", 12, 22], ["Курс англійської", 39, 39]],
-  };
-  for (let k = 2; k >= 0; k--) {
-    const m = ymAdd(ym, -k), dim = daysIn(m), lastDay = k === 0 ? +t.slice(8) : dim;
-    const day = (d) => m + "-" + pad(Math.min(d, lastDay));
-    add({ kind: "inc", amt: 2400, cat: "salary", note: "Зарплата", date: day(1) });
-    if (k !== 1) add({ kind: "inc", amt: k === 2 ? 320 : 450, cat: "side", note: "Фриланс-проєкт", date: day(Math.min(12, lastDay)) });
-    add({ kind: "exp", amt: 650, cat: "home", note: "Оренда", date: day(2) });
-    add({ kind: "exp", amt: 64 + Math.round(rnd() * 20), cat: "home", note: "Комуналка", date: day(Math.min(9, lastDay)) });
-    const plan = { food: 6, cafe: k === 0 ? 9 : 6, transport: 4, shop: k === 1 ? 3 : 1, fun: 2, health: 1, gifts: k === 1 ? 1 : 0, edu: k === 2 ? 1 : 0 };
-    Object.keys(plan).forEach((c) => { for (let i = 0; i < plan[c]; i++) { const p = pick(P[c]); add({ kind: "exp", amt: Math.round((p[1] + rnd() * (p[2] - p[1])) * 100) / 100, cat: c, note: p[0], date: day(1 + Math.floor(rnd() * lastDay)) }); } });
-    if (k === 1) add({ kind: "exp", amt: 380, cat: "travel", note: "Квитки до Львова", date: day(18) });
-    if (k === 0) { add({ kind: "exp", amt: 95, cur: "₴", cat: "cafe", note: "Кава у Львові", date: day(Math.max(1, lastDay - 1)) }); add({ kind: "exp", amt: 24.9, cur: "$", cat: "shop", note: "Кабель з AliExpress", date: day(Math.max(1, lastDay - 3)) }); }
-  }
-  // підписки
-  const subs = [
-    ["Netflix", "🎬", "#e50914", 12.99, "€", "m", 3], ["Spotify", "🎧", "#1db954", 10.99, "€", "m", 9], ["iCloud+", "☁️", "#3b82f6", 2.99, "$", "m", 21],
-    ["ChatGPT Plus", "🤖", "#10a37f", 20, "$", "m", 1], ["Київстар", "📱", "#0ea5e9", 250, "₴", "m", 14], ["Telegram Premium", "⭐", "#8b5cf6", 35.99, "€", "y", 40],
-  ];
-  const start = ymAdd(ym, -2) + "-01";
-  subs.forEach((s, i) => {
-    const id = "s_demo" + i; let next = addDays(t, s[6]); const anchor = pd(next).getDate();
-    const sub = { id, type: "sub", name: s[0], emo: s[1], color: s[2], amt: s[3], cur: s[4], cycle: s[5], next, anchor, createdAt: Date.now() - 9e9 + i };
-    if (s[5] === "m") { let d = next; for (let g = 0; g < 4; g++) { d = pd(d); d.setMonth(d.getMonth() - 1); d.setDate(Math.min(anchor, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); d = ds(d); if (d < start) break; items["auto_" + id + "_" + d] = { id: "auto_" + id + "_" + d, type: "tx", kind: "exp", amt: s[3], cur: s[4], cat: "subs", note: s[0], date: d, sub: id, auto: 1, createdAt: Date.now() - 1e8 }; } }
-    items[id] = sub;
-  });
-  items["s_demo_p"] = { id: "s_demo_p", type: "sub", name: "Спортзал", emo: "🏋️", color: "#f97316", amt: 35, cur: "€", cycle: "m", next: addDays(t, 6), anchor: pd(addDays(t, 6)).getDate(), paused: true, createdAt: Date.now() - 8e9 };
-  // цілі
-  const dl = (k) => ds(new Date(new Date().getFullYear(), new Date().getMonth() + k, 1));
-  const hist = (arr) => arr.map(([d, a]) => ({ d: addDays(t, -d), a }));
-  items["g_demo1"] = { id: "g_demo1", type: "goal", name: "Відпустка в Італії", emo: "🏖️", target: 1500, cur: "€", deadline: dl(4), saved: 620, hist: hist([[70, 200], [40, 200], [12, 220]]), createdAt: Date.now() - 7e9 };
-  items["g_demo2"] = { id: "g_demo2", type: "goal", name: "Новий ноутбук", emo: "💻", target: 1200, cur: "€", deadline: "", saved: 350, hist: hist([[50, 150], [20, 100], [5, 100]]), createdAt: Date.now() - 6e9 };
-  items["g_demo3"] = { id: "g_demo3", type: "goal", name: "Подушка безпеки", emo: "🛟", target: 3000, cur: "€", deadline: dl(8), saved: 2100, hist: hist([[90, 1500], [60, 300], [30, 300]]), createdAt: Date.now() - 5e9 };
-  return { items, meta: { cur: "€", limits: { cafe: 120, food: 400, fun: 100, shop: 150, transport: 130 }, plan: 2400 } };
-}
 function makeLocalStore() {
   const KEY = "mn_demo_db";
   const read = () => LS.get(KEY, null) || { items: {}, meta: {} };
@@ -754,12 +827,11 @@ function makeLocalStore() {
   window.addEventListener("storage", (e) => { if (e.key === KEY) emit(); });
   return {
     mode: "demo",
-    start(onData, onStatus) { if (!LS.get(KEY, null)) LS.set(KEY, seedDemo()); subs.push(onData); onStatus("demo"); emit(); },
+    start(onData, onStatus) { if (!LS.get(KEY, null)) LS.set(KEY, { items: {}, meta: {} }); subs.push(onData); onStatus("demo"); emit(); },
     async put(it) { write((d) => { d.items[it.id] = clean(it); }); },
     async putMany(arr) { write((d) => arr.forEach((it) => { d.items[it.id] = clean(it); })); },
     async del(id) { write((d) => { delete d.items[id]; }); },
     async saveMeta(p) { write((d) => { d.meta = Object.assign(d.meta || {}, clean(p)); }); },
-    reset() { LS.set(KEY, seedDemo()); emit(); },
   };
 }
 async function makeCloudStore(cfg) {
@@ -791,52 +863,108 @@ async function makeCloudStore(cfg) {
 }
 
 /* ================= стан ================= */
-const S = { store: null, items: {}, meta: {}, loaded: false, status: "wait", tab: "home", month: ymNow(), filter: { kind: "all", cat: null }, showArch: false };
+const S = { store: null, items: {}, meta: {}, loaded: false, status: "wait", tab: "home", month: ymNow(), filter: { kind: "all", cat: null, acc: null }, showArch: false, showClosed: false };
 const UI = { enter: true, scroll: {}, bal: {} };
 const all = (type) => Object.values(S.items).filter((i) => i.type === type);
 const txs = () => all("tx");
 const subsList = () => all("sub").sort((a, b) => (a.next || "").localeCompare(b.next || ""));
 const goalsList = () => all("goal").sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
-let MS = null;
-function monthStats(ym, upto) {
+const debtsList = () => all("debt").sort((a, b) => (a.due || "9999").localeCompare(b.due || "9999") || (a.createdAt || 0) - (b.createdAt || 0));
+const accsAll = () => all("acc").sort((a, b) => (a.order || 0) - (b.order || 0) || (a.createdAt || 0) - (b.createdAt || 0));
+const accs = () => accsAll().filter((a) => !a.archived);
+const accOf = (id) => (id && S.items[id] && S.items[id].type === "acc" ? S.items[id] : null);
+function defAcc() { const L = accs(); return (S.meta.defAcc && L.find((a) => a.id === S.meta.defAcc)) || L[0] || null; }
+const txAccId = (t) => (accOf(t.acc) ? t.acc : defAcc() ? defAcc().id : null);
+let MS = null, AB = null;
+// баланс рахунку = стартовий баланс + усі операції (у валюті рахунку)
+function balances() {
+  if (AB) return AB; AB = {};
+  accsAll().forEach((a) => { AB[a.id] = +a.start || 0; });
+  const add = (id, sign, amt, cur) => { const a = accOf(id); if (!a || AB[id] == null) return; AB[id] += sign * RATES.conv(+amt || 0, cur || "€", a.cur || "€"); };
+  txs().forEach((t) => {
+    if (t.kind === "tr") {
+      add(t.acc, -1, t.amt, t.cur);
+      const ta = accOf(t.to);
+      if (ta && AB[t.to] != null) { if (t.amtTo != null && t.curTo === ta.cur) AB[t.to] += +t.amtTo; else add(t.to, 1, t.amt, t.cur); }
+      return;
+    }
+    const id = txAccId(t); if (!id) return;
+    add(id, t.kind === "inc" ? 1 : t.kind === "debt" ? (t.sign > 0 ? 1 : -1) : -1, t.amt, t.cur);
+  });
+  return AB;
+}
+const accBal = (a) => balances()[a.id] || 0;
+const totalMoney = () => accs().reduce((s, a) => s + RATES.conv(accBal(a), a.cur || "€", mainCur()), 0);
+function accLabel(a) { return a ? (a.emo || "💳") + " " + a.name : "—"; }
+function monthStats(ym) {
   if (!MS) MS = {};
-  const key = ym + (upto ? "@" + upto : "");
-  if (MS[key]) return MS[key];
+  if (MS[ym]) return MS[ym];
   const r = { ym, inc: 0, exp: 0, byCat: {}, incCat: {}, txs: [] };
   txs().forEach((t) => {
     if (!t.date || t.date.slice(0, 7) !== ym) return;
-    if (upto && +t.date.slice(8) > upto) return;
-    const v = txMain(t); r.txs.push(t);
-    if (t.kind === "inc") { r.inc += v; r.incCat[t.cat] = (r.incCat[t.cat] || 0) + v; }
-    else { r.exp += v; r.byCat[t.cat] = (r.byCat[t.cat] || 0) + v; }
+    r.txs.push(t);
+    if (t.kind === "inc") { const v = txMain(t); r.inc += v; r.incCat[t.cat] = (r.incCat[t.cat] || 0) + v; }
+    else if (t.kind === "exp" || !t.kind) { const v = txMain(t); r.exp += v; r.byCat[t.cat] = (r.byCat[t.cat] || 0) + v; }
   });
-  return (MS[key] = r);
+  return (MS[ym] = r);
 }
 const subMonthly = (s) => { const v = toMain(s.amt, s.cur); return s.cycle === "y" ? v / 12 : s.cycle === "w" ? (v * 52) / 12 : v; };
 const limitOf = (k) => +((S.meta.limits || {})[k] || 0);
+// борги
+const debtLeft = (d) => Math.max(0, Math.round(((+d.amt || 0) - (+d.paid || 0)) * 100) / 100);
+function debtTotals() { let owe = 0, lent = 0; debtsList().forEach((d) => { if (d.closed) return; const v = RATES.conv(debtLeft(d), d.cur || "€", mainCur()); if (d.dir === "owe") owe += v; else lent += v; }); return { owe, lent }; }
+// зарплата
+function salItems() { const s = S.meta.salary; return s && Array.isArray(s.items) ? s.items.filter((x) => +x.amt > 0 && +x.day > 0) : []; }
+const payDate = (ym, day) => ym + "-" + pad(Math.min(+day, daysIn(ym)));
+const salMonthly = () => salItems().reduce((s, x) => s + toMain(x.amt, x.cur), 0);
+function nextPay() {
+  const t = today(); let best = null;
+  salItems().forEach((x) => { for (let k = 0; k < 3; k++) { const d = payDate(ymAdd(ymNow(), k), x.day); if (d >= t) { if (!best || d < best.d) best = { d, x }; break; } } });
+  return best;
+}
+function payDaysText(items) { const L = (items || salItems()).map((x) => +x.day).sort((a, b) => a - b); return L.length ? L.join(" і ") + " числа" : ""; }
 
-/* ================= автосписання підписок (ідемпотентно) ================= */
+/* ================= автосписання підписок і зарплата (ідемпотентно) ================= */
 let charging = false; const chargedIds = new Set();
-async function processSubs() {
-  if (charging || !S.store || !S.loaded) return; charging = true;
+async function processAuto() {
+  if (charging || !S.store || !S.loaded || !S.meta.setupDone) return; charging = true;
   try {
-    const t = today(), newTx = [], subUpd = [];
+    const t = today(), out = [], newTx = [], da = defAcc();
     for (const s of subsList()) {
       if (s.paused || s.archived || !s.next || !(+s.amt > 0)) continue;
       let n = s.next, guard = 0;
       while (n <= t && guard++ < 120) {
         const id = "auto_" + s.id + "_" + n; // детермінований id — дубль неможливий
-        if (!S.items[id] && !chargedIds.has(id)) newTx.push({ id, type: "tx", kind: "exp", amt: +s.amt, cur: s.cur || "€", cat: "subs", note: s.name, date: n, sub: s.id, auto: 1, createdAt: Date.now() });
+        if (!S.items[id] && !chargedIds.has(id)) newTx.push({ id, type: "tx", kind: "exp", amt: +s.amt, cur: s.cur || "€", cat: "subs", note: s.name, date: n, acc: accOf(s.acc) ? s.acc : da ? da.id : "", sub: s.id, auto: 1, createdAt: Date.now() });
         chargedIds.add(id);
         n = addCycle(n, s.cycle, s.anchor);
       }
-      if (n !== s.next) subUpd.push(Object.assign({}, s, { next: n }));
+      if (n !== s.next) out.push(Object.assign({}, s, { next: n }));
     }
-    if (newTx.length || subUpd.length) {
-      await S.store.putMany(newTx.concat(subUpd));
-      if (newTx.length === 1) { const x = newTx[0]; toast("Списано: " + x.note + " — " + money(x.amt, x.cur), "🔁"); }
-      else if (newTx.length > 1) toast("Автосписання підписок: " + newTx.length, "🔁");
+    const sal = S.meta.salary; let thru = null, payTx = [];
+    if (sal && sal.since) {
+      thru = Object.assign({}, sal.thru || {}); const was = JSON.stringify(thru);
+      salItems().forEach((x) => {
+        let ym = sal.since.slice(0, 7), g = 0;
+        while (ym <= t.slice(0, 7) && g++ < 36) {
+          const d = payDate(ym, x.day);
+          if (d >= sal.since && d <= t && d > (thru[x.id] || "")) {
+            const id = "pay_" + x.id + "_" + d;
+            if (!S.items[id] && !chargedIds.has(id)) payTx.push({ id, type: "tx", kind: "inc", amt: +x.amt, cur: x.cur || mainCur(), cat: "salary", note: x.name || "Зарплата", date: d, acc: accOf(x.acc) ? x.acc : da ? da.id : "", pay: x.id, auto: 1, createdAt: Date.now() });
+            chargedIds.add(id); thru[x.id] = d;
+          }
+          ym = ymAdd(ym, 1);
+        }
+      });
+      if (JSON.stringify(thru) === was) thru = null;
     }
+    const all2 = newTx.concat(payTx, out);
+    if (all2.length) await S.store.putMany(all2);
+    if (thru) await S.store.saveMeta({ salary: Object.assign({}, sal, { thru }) });
+    if (newTx.length === 1) { const x = newTx[0]; toast("Списано: " + x.note + " — " + money(x.amt, x.cur), "🔁"); }
+    else if (newTx.length > 1) toast("Автосписання підписок: " + newTx.length, "🔁");
+    payTx.forEach((x) => { toast(x.note + ": +" + money(x.amt, x.cur) + " на " + (accOf(x.acc) ? accOf(x.acc).name : "рахунок"), "💼"); });
+    if (payTx.length) { SFX.play("chime"); haptic("ok"); }
   } catch (e) { console.warn(e); }
   finally { charging = false; }
 }
@@ -1034,9 +1162,9 @@ function kpBind(root, get, set) {
 /* ================= рендер: спільне ================= */
 function greet() { const h = new Date().getHours(); return h < 5 ? "Доброї ночі" : h < 12 ? "Доброго ранку" : h < 18 ? "Добрий день" : "Добрий вечір"; }
 function topHtml() {
-  const titles = { home: "Привіт, " + ME + " 👋", ops: "Операції", subs: "Підписки", goals: "Цілі" };
+  const titles = { home: "Привіт, " + ME + " 👋", ops: "Операції", subs: "Підписки", debts: "Борги" };
   const st = S.status;
-  const badge = st === "demo" ? '<span class="demo">ДЕМО</span>' : '<span class="dot ' + (st === "on" ? "on" : st === "err" ? "err" : "") + '" title="Синхронізація"></span>';
+  const badge = st === "demo" ? '<span class="demo">ЛОКАЛЬНО</span>' : '<span class="dot ' + (st === "on" ? "on" : st === "err" ? "err" : "") + '" title="Синхронізація"></span>';
   return '<header class="top"><div class="brand"><img src="logo.svg" alt=""></div><div class="ttl"><div class="hello">' + (S.tab === "home" ? greet() : "Гаманець") + " " + badge + "</div><h1>" + esc(titles[S.tab]) + '</h1></div><button class="iconbtn glass" data-act="settings" aria-label="Налаштування">' + IC.gear + "</button></header>";
 }
 function mswHtml() {
@@ -1044,8 +1172,19 @@ function mswHtml() {
   return '<div class="msw glass"><button data-m="-1" aria-label="Попередній місяць">' + IC.l + '</button><button class="mt" data-act="mnow">' + ymName(S.month) + (cur ? "" : "<small>до поточного</small>") + '</button><button data-m="1" aria-label="Наступний місяць"' + (cur ? " disabled" : "") + ">" + IC.r + "</button></div>";
 }
 function txRow(t) {
-  const c = cat(t.cat), mc = mainCur(), inc = t.kind === "inc";
-  const title = t.note || c.name, sub = (t.note ? c.name : inc ? "Дохід" : "Витрата") + (t.auto ? '<span class="tag">🔁 авто</span>' : "");
+  const mc = mainCur(), multi = accs().length > 1;
+  if (t.kind === "tr") {
+    const fa = accOf(t.acc), ta = accOf(t.to), f = S.filter.acc;
+    const sign = f && f === t.to ? "+" : f && f === t.acc ? "−" : "";
+    const show = f && f === t.to && t.amtTo != null ? money(t.amtTo, t.curTo) : money(t.amt, t.cur);
+    return '<button class="tx" data-tx="' + esc(t.id) + '"><span class="ce" style="--c:#64748b">↔️</span><span class="tm"><b>' + esc(t.note || "Переказ") + "</b><small>" + esc(fa ? fa.name : "?") + " → " + esc(ta ? ta.name : "?") + '</small></span><span class="ta tr">' + sign + show + "</span></button>";
+  }
+  if (t.kind === "debt") {
+    const a = accOf(txAccId(t)), plus = t.sign > 0;
+    return '<button class="tx" data-tx="' + esc(t.id) + '"><span class="ce" style="--c:#f59e0b">🤝</span><span class="tm"><b>' + esc(t.note || "Борг") + "</b><small>Борг" + (multi && a ? " · " + esc(accLabel(a)) : "") + '</small></span><span class="ta' + (plus ? " inc" : "") + '">' + (plus ? "+" : "−") + money(t.amt, t.cur) + "</span></button>";
+  }
+  const c = cat(t.cat), inc = t.kind === "inc", a = accOf(txAccId(t));
+  const title = t.note || c.name, sub = (t.note ? c.name : inc ? "Дохід" : "Витрата") + (multi && a ? " · " + esc(accLabel(a)) : "") + (t.auto ? '<span class="tag">' + (t.pay ? "💼" : "🔁") + " авто</span>" : "");
   const amt = (inc ? "+" : "−") + nf(t.amt) + NB + (t.cur || "€");
   const approx = (t.cur || "€") !== mc ? "<small>≈ " + money(txMain(t)) + "</small>" : "";
   return '<button class="tx" data-tx="' + esc(t.id) + '"><span class="ce" style="--c:' + c.color + '">' + c.emo + '</span><span class="tm"><b>' + esc(title) + "</b><small>" + sub + '</small></span><span class="ta' + (inc ? " inc" : "") + '">' + amt + approx + "</span></button>";
@@ -1063,24 +1202,31 @@ function limitState(k, spent, ym) {
   else { const dl = daysIn(ym) - new Date().getDate() + 1; msg = "На " + c.acc + " лишилось " + money(left) + " до кінця місяця" + (dl > 1 && pct >= 50 ? " · ~" + money(left / dl) + "/день" : ""); }
   return { k, c, lim, spent, left, pct, cls, msg };
 }
-function heroHtml(st) {
-  const ym = st.ym, isCur = ym === ymNow(), plan = +S.meta.plan || 0;
+function heroHtml() {
+  const total = totalMoney(), L = accs(), np = nextPay(), T = debtTotals();
+  let chips = "";
+  if (np) { const n = dayDiff(today(), np.d); chips += '<span class="hchip">💼 ' + (n === 0 ? esc(np.x.name || "Зарплата") + " сьогодні" : "Наступна зарплата " + inDays(n)) + " · +" + money(np.x.amt, np.x.cur, { r: 1 }) + "</span>"; }
+  if (T.owe > 0.004) chips += '<span class="hchip">🤝 Я винен ' + money(T.owe, { r: 1 }) + "</span>";
+  if (T.lent > 0.004) chips += '<span class="hchip">🫴 Мені винні ' + money(T.lent, { r: 1 }) + "</span>";
+  const strip = '<div class="accs">' + L.map((a) => { const b = accBal(a), c = a.cur || "€"; return '<button class="acard" data-acc="' + esc(a.id) + '"><span class="ae">' + esc(a.emo || "💳") + '</span><span class="an">' + esc(a.name) + '</span><b class="' + (b < 0 ? "neg" : "") + '">' + money(b, c) + "</b>" + (c !== mainCur() ? "<small>≈ " + money(RATES.conv(b, c, mainCur()), { r: 1 }) + "</small>" : "") + "</button>"; }).join("") +
+    '<button class="acard add" data-act="accadd" aria-label="Додати рахунок"><span class="ae">＋</span><span class="an">Рахунок</span></button></div>';
+  return '<div class="hero"><span class="coin" aria-hidden="true">' + esc(mainCur()) + '</span><div class="hlbl">Усього грошей · ' + L.length + " " + plural(L.length, ["рахунок", "рахунки", "рахунків"]) + '</div><div class="hbig' + (total < 0 ? " neg" : "") + '" data-count="' + total.toFixed(2) + '">' + money(total) + "</div>" + (chips ? '<div class="hchips">' + chips + "</div>" : "") + strip + "</div>";
+}
+function monthCardHtml(st) {
+  const ym = st.ym, isCur = ym === ymNow(), plan = salMonthly();
   const base = Math.max(st.inc, isCur ? plan : 0), bal = st.inc - st.exp;
   const pct = base ? (st.exp / base) * 100 : st.exp ? 100 : 0;
   let foot;
   if (isCur) {
     const left = base - st.exp, dl = daysIn(ym) - new Date().getDate() + 1;
-    foot = !base ? "Додай дохід — і я порахую денний бюджет ✨" : left > 0 ? "Можна витрачати ~<b>" + money(left / dl) + "</b> на день до кінця місяця" : "Витрати перевищили дохід на <b>" + money(-left) + "</b>";
+    foot = !base ? "Додай зарплату в налаштуваннях — і я порахую денний бюджет ✨" : left > 0 ? "Можна витрачати ~<b>" + money(left / dl) + "</b> на день до кінця місяця" : "Витрати перевищили дохід на <b>" + money(-left) + "</b>";
   } else foot = bal >= 0 ? "Заощаджено <b>" + money(bal) + "</b>" + (st.inc ? " — " + Math.round((bal / st.inc) * 100) + "% доходу" : "") : "Перевитрата <b>" + money(-bal) + "</b>";
-  const incNote = isCur && plan && st.inc < plan ? '<small style="display:block;font:600 10.5px/1 var(--font);opacity:.75;margin-top:3px">план ' + money(plan, { r: 1 }) + "</small>" : "";
-  return '<div class="hero"><span class="coin" aria-hidden="true">' + esc(mainCur()) + '</span><div class="hlbl">Залишок · ' + ymName(ym).toLowerCase() + '</div><div class="hbig' + (bal < 0 ? " neg" : "") + '" data-count="' + bal.toFixed(2) + '">' + money(bal) + "</div>" +
-    '<div class="hrow"><div class="hp"><i>' + IC.in + "</i><div style=\"min-width:0\"><span>Дохід</span><b>" + money(st.inc, { r: 1 }) + "</b>" + incNote + '</div></div><div class="hp"><i>' + IC.out + '</i><div style="min-width:0"><span>Витрати</span><b>' + money(st.exp, { r: 1 }) + "</b></div></div></div>" +
-    '<div class="hbar" role="progressbar" aria-valuenow="' + Math.round(pct) + '" aria-label="Витрачено від доходу"><i class="' + (pct > 100 ? "over" : "") + '" style="width:' + Math.min(100, pct).toFixed(1) + '%"></i></div>' +
-    '<div class="hfoot">' + (base ? "Витрачено " + Math.round(pct) + "% доходу · " : "") + foot + "</div></div>";
+  return '<div class="mcard glass"><div class="mc3"><div><span>Дохід</span><b class="inc">' + (st.inc ? "+" : "") + money(st.inc, { r: 1 }) + "</b>" + (isCur && plan && st.inc < plan ? "<small>очікую " + money(plan, { r: 1 }) + "</small>" : "") + "</div><div><span>Витрати</span><b>" + (st.exp ? "−" : "") + money(st.exp, { r: 1 }) + '</b></div><div><span>Різниця</span><b class="' + (bal < 0 ? "neg" : "") + '">' + money(bal, { r: 1 }) + "</b></div></div>" +
+    '<div class="mbar" role="progressbar" aria-valuenow="' + Math.round(pct) + '"><i class="' + (pct > 100 ? "over" : pct > 85 ? "warn" : "") + '" style="width:' + Math.min(100, pct).toFixed(1) + '%"></i></div><div class="mfoot">' + (base ? "Витрачено " + Math.round(pct) + "% доходу · " : "") + foot + "</div></div>";
 }
 function donutHtml(st) {
   const entries = Object.entries(st.byCat).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
-  const tot = st.exp, R = 70, C = 2 * Math.PI * R, gap = entries.length > 1 ? 3 : 0;
+  const tot = st.exp, R = 70, C = 2 * Math.PI * R, gap = entries.length > 1 ? 3 : 0, nExp = st.txs.filter((t) => t.kind === "exp").length;
   let off = 0, segs = "";
   entries.forEach(([k, v]) => {
     const len = Math.max(0.5, (v / tot) * C - gap), c = cat(k);
@@ -1091,13 +1237,27 @@ function donutHtml(st) {
   const show = S.legendAll ? entries : entries.slice(0, 6);
   let leg = show.map(([k, v]) => { const c = cat(k), p = (v / tot) * 100; return '<button class="lg" data-go="' + k + '" style="--c:' + c.color + '"><span class="ce">' + c.emo + '</span><span class="lm"><span class="lt"><b>' + esc(c.name) + "</b><em>" + (p < 1 ? "<1" : Math.round(p)) + "%</em><span>" + money(v, { r: 1 }) + '</span></span><span class="lb"><i style="width:' + Math.max(2, (v / entries[0][1]) * 100).toFixed(1) + '%"></i></span></span></button>'; }).join("");
   if (entries.length > 6) leg += '<button class="lgmore" data-act="legall">' + (S.legendAll ? "Згорнути" : "Ще " + (entries.length - 6) + " " + plural(entries.length - 6, ["категорія", "категорії", "категорій"])) + "</button>";
-  return '<div class="card glass donut"><div class="dwrap">' + svg + '<div class="dc"><span>Витрати</span><b>' + money(tot, { r: 1 }) + "</b><small>" + st.txs.filter((t) => t.kind !== "inc").length + " " + plural(st.txs.filter((t) => t.kind !== "inc").length, ["операція", "операції", "операцій"]) + '</small></div></div><div class="legend">' + leg + "</div></div>";
+  return '<div class="card glass donut"><div class="dwrap">' + svg + '<div class="dc"><span>Витрати</span><b>' + money(tot, { r: 1 }) + "</b><small>" + nExp + " " + plural(nExp, ["операція", "операції", "операцій"]) + '</small></div></div><div class="legend">' + leg + "</div></div>";
+}
+function goalCard(g) {
+  const p = g.target ? g.saved / g.target : 0, done = p >= 1;
+  return '<div class="gcard glass' + (done ? " done" : "") + '" role="button" tabindex="0" data-goal="' + esc(g.id) + '"><div class="ring" style="width:64px;height:64px">' + ringSvg(p, 64, 7, done ? "url(#rgd)" : null) + '<span class="re">' + esc(g.emo || "🎯") + '</span><span class="rpct">' + Math.min(999, Math.floor(p * 100)) + '%</span></div><div class="gm"><b>' + esc(g.name) + '</b><div class="gn"><b>' + money(+g.saved || 0, g.cur) + "</b> з " + money(+g.target, g.cur, { r: 1 }) + '</div><div class="gh">' + esc(goalHint(g)) + "</div></div>" + (done ? "" : '<button class="gplus" data-gdep="' + esc(g.id) + '" aria-label="Покласти гроші">' + IC.plus + "</button>") + "</div>";
+}
+function eventRow(ico, color, title, sub, amt, when, n, attr) {
+  return '<button class="sub" ' + attr + '><span class="sav" style="--c:' + color + '">' + ico + '</span><span class="sm"><b>' + esc(title) + "</b><small>" + sub + '</small></span><span class="sr"><b>' + amt + '</b><span class="when' + (n < 0 ? " late" : n === 0 ? " today" : n <= 3 ? " soon" : "") + '">' + (n < 0 ? "Прострочено" : n <= 7 ? cap(inDays(n)) : dShort(when)) + "</span></span></button>";
 }
 function homeHtml() {
   const ym = S.month, st = monthStats(ym), isCur = ym === ymNow();
-  let h = mswHtml() + heroHtml(st);
-  const rep = report(ym);
-  if (st.txs.length) h += '<button class="rteaser glass" data-act="report"><span class="ri">✨</span><span class="rt"><b>Звіт місяця</b><span>' + esc(rep.tips[0] ? rep.tips[0].plain : "Підсумки, прогноз і поради") + "</span></span>" + '<span class="chev">' + IC.r + "</span></button>";
+  let h = heroHtml() + mswHtml() + monthCardHtml(st);
+  // найближчі події: зарплата, підписки, борги
+  if (isCur) {
+    const t = today(), ev = [];
+    const np = nextPay(); if (np && dayDiff(t, np.d) <= 31) ev.push([np.d, eventRow("💼", "#10b981", np.x.name || "Зарплата", "на " + esc(accLabel(accOf(np.x.acc) || defAcc())), "+" + money(np.x.amt, np.x.cur, { r: 1 }), np.d, dayDiff(t, np.d), 'data-act="salary"')]);
+    subsList().filter((s) => !s.paused && !s.archived && s.next && dayDiff(t, s.next) <= 14).forEach((s) => ev.push([s.next, subRow(s)]));
+    debtsList().filter((d) => !d.closed && d.due && dayDiff(t, d.due) <= 14).forEach((d) => ev.push([d.due, eventRow(avatar(d.who), debtColor(d.who), d.who, d.dir === "owe" ? "Я винен" : "Мені винні", money(debtLeft(d), d.cur), d.due, dayDiff(t, d.due), 'data-debt="' + esc(d.id) + '"')]));
+    ev.sort((a, b) => a[0].localeCompare(b[0]));
+    if (ev.length) h += '<section class="sec"><div class="sh"><h2>Найближчі події</h2><small>14 днів</small></div><div class="dlist glass">' + ev.slice(0, 6).map((x) => x[1]).join("") + "</div></section>";
+  }
   // донат
   h += '<section class="sec"><div class="sh"><h2>Куди пішли гроші</h2>' + (st.exp ? '<button class="lnk" data-go="">Усі операції</button>' : "") + "</div>";
   h += st.exp ? donutHtml(st) : '<div class="card glass">' + emptyHtml("🌱", "Поки без витрат", isCur ? "Натисни «＋» внизу, щоб додати першу витрату цього місяця." : "У " + MON_L[+ym.slice(5) - 1] + " витрат не записано.") + "</div>";
@@ -1108,30 +1268,39 @@ function homeHtml() {
   if (lims.length) h += '<div class="lims">' + lims.map((l) => '<button class="lim glass ' + l.cls + '" data-lim="' + l.k + '"><span class="ce" style="--c:' + l.c.color + '">' + l.c.emo + '</span><span class="lm"><span class="lt"><b>' + esc(l.c.name) + "</b><span><b>" + nf(l.spent, { r: 1 }) + "</b> / " + money(l.lim, { r: 1 }) + '</span></span><span class="lb"><i style="width:' + Math.min(100, l.pct).toFixed(1) + '%"></i></span><span class="ls">' + l.msg + "</span></span></button>").join("") + "</div>";
   else h += '<button class="limempty glass" data-act="limadd"><span class="ri">🎯</span><span><b>Постав ліміти на категорії</b><span>І я попереджу, коли наближаєшся до межі</span></span></button>';
   h += "</section>";
-  // найближчі списання
-  if (isCur) {
-    const t = today(), up = subsList().filter((s) => !s.paused && !s.archived && s.next && dayDiff(t, s.next) <= 14).slice(0, 4);
-    if (up.length) h += '<section class="sec"><div class="sh"><h2>Найближчі списання</h2><button class="lnk" data-tab-go="subs">Усі</button></div><div class="dlist glass">' + up.map(subRow).join("") + "</div></section>";
-  }
-  return h;
+  // цілі
+  const G = goalsList();
+  h += RING_DEFS + '<section class="sec"><div class="sh"><h2>Цілі</h2>' + (G.length ? '<button class="lnk" data-act="goaladd">＋ Нова</button>' : "") + "</div>";
+  h += G.length ? '<div class="goals">' + G.map(goalCard).join("") + "</div>" : '<button class="limempty glass" data-act="goaladd"><span class="ri">🐷</span><span><b>Постав ціль</b><span>Відпустка, техніка, подушка — порахую, скільки відкладати щодня</span></span></button>';
+  return h + "</section>";
 }
 
 /* ---- Операції ---- */
 function opsHtml() {
-  const ym = S.month, st = monthStats(ym), f = S.filter;
-  let h = mswHtml();
-  h += '<div class="fseg glass">' + [["all", "Усі", st.txs.length + " " + plural(st.txs.length, ["запис", "записи", "записів"])], ["exp", "Витрати", "−" + money(st.exp, { r: 1 })], ["inc", "Доходи", "+" + money(st.inc, { r: 1 })]].map(([k, l, s]) => '<button data-fk="' + k + '" class="' + (f.kind === k ? "on" : "") + '">' + l + "<small>" + s + "</small></button>").join("") + "</div>";
+  const ym = S.month, st = monthStats(ym), f = S.filter, fa = accOf(f.acc);
+  if (f.acc && !fa) f.acc = null;
+  let h = "";
+  if (fa) {
+    const b = accBal(fa);
+    h += '<div class="facc glass"><div class="fat"><span class="ae">' + esc(fa.emo || "💳") + '</span><div class="fm"><small>Рахунок</small><b>' + esc(fa.name) + '</b></div><button class="xb" data-act="clracc" aria-label="Усі рахунки">' + IC.x + '</button></div><div class="fab2' + (b < 0 ? " neg" : "") + '">' + money(b, fa.cur) + '</div><div class="fbtns"><button class="pill" data-act="trfrom">↔️ Переказ</button><button class="pill" data-act="acccorr">✏️ Баланс</button><button class="pill" data-act="accedit">⚙️ Рахунок</button></div></div>';
+  }
+  h += mswHtml();
+  const inAcc = (t) => !fa || (t.kind === "tr" ? t.acc === fa.id || t.to === fa.id : txAccId(t) === fa.id);
+  const base = st.txs.filter(inAcc);
+  let e = 0, i = 0; base.forEach((t) => { if (t.kind === "inc") i += txMain(t); else if (t.kind === "exp") e += txMain(t); });
+  h += '<div class="fseg glass">' + [["all", "Усі", base.length + " " + plural(base.length, ["запис", "записи", "записів"])], ["exp", "Витрати", (e ? "−" : "") + money(e, { r: 1 })], ["inc", "Доходи", (i ? "+" : "") + money(i, { r: 1 })]].map(([k, l, s]) => '<button data-fk="' + k + '" class="' + (f.kind === k ? "on" : "") + '">' + l + "<small>" + s + "</small></button>").join("") + "</div>";
   if (f.cat) {
     const c = cat(f.cat), spent = c.kind === "inc" ? st.incCat[f.cat] || 0 : st.byCat[f.cat] || 0, lim = limitOf(f.cat);
     h += '<div class="fcat glass"><span class="ce" style="--c:' + c.color + '">' + c.emo + '</span><div class="fm"><b>' + esc(c.name) + "</b><small>" + money(spent) + (lim ? " з ліміту " + money(lim, { r: 1 }) : "") + "</small></div>" + (c.kind === "exp" ? '<button class="pill" data-lim="' + c.key + '">' + (lim ? "Ліміт" : "＋ Ліміт") + "</button>" : "") + '<button class="xb" data-act="clrcat" aria-label="Прибрати фільтр">' + IC.x + "</button></div>";
   }
-  const list = st.txs.filter((t) => (f.kind === "all" || t.kind === f.kind || (f.kind === "exp" && t.kind !== "inc")) && (!f.cat || t.cat === f.cat))
+  const list = base.filter((t) => (f.kind === "all" || t.kind === f.kind) && (!f.cat || t.cat === f.cat))
     .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
-  if (!list.length) return h + emptyHtml(f.cat ? cat(f.cat).emo : "🧾", f.cat || f.kind !== "all" ? "Тут порожньо" : "Ще немає операцій", f.cat || f.kind !== "all" ? "За цим фільтром у " + MON_L[+ym.slice(5) - 1] + " нічого немає." : "Записуй витрати й доходи — і я покажу, куди йдуть гроші.", '<button class="btn pri" data-act="add">' + IC.plus + "Додати операцію</button>");
+  const filt = f.cat || f.kind !== "all" || fa;
+  if (!list.length) return h + emptyHtml(f.cat ? cat(f.cat).emo : fa ? esc(fa.emo || "💳") : "🧾", filt ? "Тут порожньо" : "Ще немає операцій", filt ? "За цим фільтром у " + MON_L[+ym.slice(5) - 1] + " нічого немає." : "Записуй витрати й доходи — і я покажу, куди йдуть гроші.", '<button class="btn pri" data-act="add">' + IC.plus + "Додати операцію</button>");
   const groups = {}; list.forEach((t) => (groups[t.date] = groups[t.date] || []).push(t));
   Object.keys(groups).forEach((d) => {
-    const g = groups[d]; let e = 0, i = 0; g.forEach((t) => { if (t.kind === "inc") i += txMain(t); else e += txMain(t); });
-    const tot = [e ? "−" + money(e) : "", i ? '<span style="color:var(--inc)">+' + money(i) + "</span>" : ""].filter(Boolean).join(" · ");
+    const g = groups[d]; let e2 = 0, i2 = 0; g.forEach((t) => { if (t.kind === "inc") i2 += txMain(t); else if (t.kind === "exp") e2 += txMain(t); });
+    const tot = [e2 ? "−" + money(e2) : "", i2 ? '<span style="color:var(--inc)">+' + money(i2) + "</span>" : ""].filter(Boolean).join(" · ");
     h += '<div class="day"><div class="dh"><b>' + dayLabel(d) + "</b><span>" + tot + '</span></div><div class="dlist glass">' + g.map(txRow).join("") + "</div></div>";
   });
   return h;
@@ -1141,7 +1310,7 @@ function opsHtml() {
 const CYCLE = { m: "щомісяця", y: "щороку", w: "щотижня" };
 function subRow(s) {
   const n = s.next ? dayDiff(today(), s.next) : 99;
-  const w = s.archived ? '<span class="when">в архіві</span>' : s.paused ? '<span class="when">на паузі</span>' : '<span class="when' + (n <= 0 ? " today" : n <= 3 ? " soon" : "") + '">' + (n <= 7 ? cap(inDays(n)) : dShort(s.next)) + "</span>";
+  const w = s.archived ? '<span class="when">в архіві</span>' : s.paused ? '<span class="when">на паузі</span>' : '<span class="when' + (n <= 0 ? " today" : n <= 3 ? " soon" : "") + '">' + (n < 0 ? "Спишу автоматично" : n <= 7 ? cap(inDays(n)) : dShort(s.next)) + "</span>";
   const approx = (s.cur || "€") !== mainCur() ? " · ≈ " + money(toMain(s.amt, s.cur)) : "";
   return '<button class="sub' + (s.paused || s.archived ? " paused" : "") + '" data-sub="' + esc(s.id) + '"><span class="sav" style="--c:' + (s.color || "#14b8a6") + '">' + esc(s.emo || "🔁") + '</span><span class="sm"><b>' + esc(s.name) + "</b><small>" + CYCLE[s.cycle || "m"] + approx + '</small></span><span class="sr"><b>' + money(+s.amt, s.cur) + "</b>" + w + "</span></button>";
 }
@@ -1162,7 +1331,31 @@ function subsHtml() {
   return h;
 }
 
-/* ---- Цілі ---- */
+/* ---- Борги ---- */
+const DCOL = ["#f97316", "#8b5cf6", "#0ea5e9", "#ec4899", "#14b8a6", "#eab308", "#6366f1", "#ef4444"];
+function debtColor(s) { let h = 0; String(s || "").split("").forEach((c) => { h = (h * 31 + c.charCodeAt(0)) >>> 0; }); return DCOL[h % DCOL.length]; }
+function avatar(s) { const m = String(s || "").match(/[\p{L}\p{N}]/u); return m ? esc(m[0].toUpperCase()) : "🤝"; }
+function debtRow(d) {
+  const left = debtLeft(d), n = d.due ? dayDiff(today(), d.due) : null, pct = d.amt ? Math.round(((+d.paid || 0) / d.amt) * 100) : 0;
+  const sub = [d.closed ? "погашено ✓" : d.due ? "до " + dShort(d.due) : "без терміну", pct && !d.closed ? "повернено " + pct + "%" : "", d.note ? esc(d.note) : ""].filter(Boolean).join(" · ");
+  const w = d.closed ? "" : n == null ? "" : '<span class="when' + (n < 0 ? " late" : n === 0 ? " today" : n <= 3 ? " soon" : "") + '">' + (n < 0 ? "Прострочено" : n <= 7 ? cap(inDays(n)) : dShort(d.due)) + "</span>";
+  return '<button class="sub debt' + (d.closed ? " paused" : "") + '" data-debt="' + esc(d.id) + '"><span class="sav av" style="--c:' + debtColor(d.who) + '">' + avatar(d.who) + '</span><span class="sm"><b>' + esc(d.who) + "</b><small>" + sub + '</small></span><span class="sr"><b class="' + (d.closed ? "" : d.dir === "owe" ? "neg" : "pos") + '">' + money(d.closed ? +d.amt : left, d.cur) + "</b>" + w + "</span></button>";
+}
+function debtsHtml() {
+  const T = debtTotals(), L = debtsList(), open = L.filter((d) => !d.closed), closed = L.filter((d) => d.closed);
+  const owe = open.filter((d) => d.dir === "owe"), lent = open.filter((d) => d.dir !== "owe");
+  let h = '<div class="dtot"><button class="dt glass owe" data-act="debtadd" data-dir="owe"><span>Я винен</span><b>' + money(T.owe, { r: 1 }) + "</b><small>" + owe.length + " " + plural(owe.length, ["борг", "борги", "боргів"]) + ' · ＋ додати</small></button><button class="dt glass lent" data-act="debtadd" data-dir="lent"><span>Мені винні</span><b>' + money(T.lent, { r: 1 }) + "</b><small>" + lent.length + " " + plural(lent.length, ["борг", "борги", "боргів"]) + " · ＋ додати</small></button></div>";
+  if (!L.length) return h + emptyHtml("🤝", "Боргів немає", "Запиши, хто кому винен, — я нагадаю про термін і порахую, скільки вже повернули.", '<button class="btn pri" data-act="debtadd" data-dir="owe">' + IC.plus + "Додати борг</button>");
+  if (owe.length) h += '<section class="sec"><div class="sh"><h2>Я винен</h2><small>за терміном</small></div><div class="dlist glass">' + owe.map(debtRow).join("") + "</div></section>";
+  if (lent.length) h += '<section class="sec"><div class="sh"><h2>Мені винні</h2><small>за терміном</small></div><div class="dlist glass">' + lent.map(debtRow).join("") + "</div></section>";
+  if (closed.length) {
+    h += '<button class="toggle' + (S.showClosed ? " open" : "") + '" data-act="closedtoggle">' + IC.r + "Погашені · " + closed.length + "</button>";
+    if (S.showClosed) h += '<div class="dlist glass" style="margin-top:8px">' + closed.map(debtRow).join("") + "</div>";
+  }
+  return h;
+}
+
+/* ---- Цілі (тепер секція на огляді) ---- */
 function ringSvg(p, size, sw, color) {
   const r = (size - sw) / 2, C = 2 * Math.PI * r, off = C * (1 - Math.min(1, Math.max(0, p)));
   return '<svg viewBox="0 0 ' + size + " " + size + '"><circle cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="var(--bg2)" stroke-width="' + sw + '"/><circle class="rp" cx="' + size / 2 + '" cy="' + size / 2 + '" r="' + r + '" fill="none" stroke="' + (color || "url(#rg)") + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-dasharray="' + C.toFixed(2) + '" stroke-dashoffset="' + off.toFixed(2) + '" data-c="' + C.toFixed(2) + '"/></svg>';
@@ -1174,8 +1367,7 @@ function goalHint(g) {
   if (g.deadline) {
     const days = dayDiff(today(), g.deadline);
     if (days <= 0) return "Дедлайн минув — лишилось " + money(left, cur);
-    const far = days > 330;
-    const pdv = left / days, pw = left / Math.max(1, days / 7);
+    const far = days > 330, pdv = left / days, pw = left / Math.max(1, days / 7);
     return "Щоб встигнути до " + dShort(g.deadline, far) + " — відкладай " + money(pdv, cur) + " на день / " + money(pw, cur, { r: pw >= 10 }) + " на тиждень";
   }
   const h = (g.hist || []).filter((x) => x.a > 0 && dayDiff(x.d, today()) <= 90);
@@ -1185,44 +1377,37 @@ function goalHint(g) {
   }
   return "Додай дедлайн — і я підкажу, скільки відкладати щодня";
 }
-function goalsHtml() {
-  const G = goalsList(), mc = mainCur();
-  const saved = G.reduce((a, g) => a + RATES.conv(+g.saved || 0, g.cur || "€", mc), 0), target = G.reduce((a, g) => a + RATES.conv(+g.target || 0, g.cur || "€", mc), 0);
-  let h = RING_DEFS;
-  if (G.length) h += '<div class="gsum glass"><div class="ring" style="width:76px;height:76px">' + ringSvg(target ? saved / target : 0, 76, 9) + '<span class="re">🐷</span></div><div class="gt"><div class="lbl">Відкладено на цілі</div><div class="big">' + money(saved, { r: 1 }) + '</div><div class="sub2">з ' + money(target, { r: 1 }) + " · " + G.length + " " + plural(G.length, ["ціль", "цілі", "цілей"]) + "</div></div></div>";
-  h += '<button class="addrow glass" data-act="goaladd"><span class="pi">' + IC.plus + "</span><span><b>Нова ціль</b><span>Відпустка, техніка, подушка безпеки…</span></span></button>";
-  if (!G.length) return h + emptyHtml("🎯", "Ще немає цілей", "Постав ціль — і я порахую, скільки відкладати щодня, щоб встигнути до дедлайну.");
-  h += '<section class="sec"><div class="goals">' + G.map((g) => {
-    const p = g.target ? g.saved / g.target : 0, done = p >= 1;
-    return '<div class="gcard glass' + (done ? " done" : "") + '" role="button" tabindex="0" data-goal="' + esc(g.id) + '"><div class="ring" style="width:64px;height:64px">' + ringSvg(p, 64, 7, done ? "url(#rgd)" : null) + '<span class="re">' + esc(g.emo || "🎯") + '</span><span class="rpct">' + Math.min(999, Math.floor(p * 100)) + '%</span></div><div class="gm"><b>' + esc(g.name) + '</b><div class="gn"><b>' + money(+g.saved || 0, g.cur) + "</b> з " + money(+g.target, g.cur, { r: 1 }) + '</div><div class="gh">' + esc(goalHint(g)) + "</div></div>" + (done ? "" : '<button class="gplus" data-gdep="' + esc(g.id) + '" aria-label="Покласти гроші">' + IC.plus + "</button>") + "</div>";
-  }).join("") + "</div></section>";
-  return h;
-}
 
 /* ---- головний рендер ---- */
-function skeleton() { return topHtml() + '<div class="sk" style="height:50px;margin-top:18px;border-radius:999px"></div><div class="sk" style="height:200px;margin-top:14px;border-radius:30px"></div><div class="sk" style="height:66px;margin-top:12px"></div><div class="sk" style="height:300px;margin-top:24px;border-radius:26px"></div>'; }
-function render() {
-  MS = null;
+function skeleton() { return topHtml() + '<div class="sk" style="height:230px;margin-top:18px;border-radius:30px"></div><div class="sk" style="height:50px;margin-top:14px;border-radius:999px"></div><div class="sk" style="height:110px;margin-top:12px"></div><div class="sk" style="height:300px;margin-top:24px;border-radius:26px"></div>'; }
+const wizActive = () => S.loaded && !S.meta.setupDone;
+function render(force) {
+  MS = null; AB = null;
   const app = $("#app");
   if (!S.loaded) { app.innerHTML = skeleton(); return; }
+  const wz = wizActive();
+  $("#tabbar").classList.toggle("hidden", wz); $("#fadebot").classList.toggle("hidden", wz);
+  if (wz) {
+    // не перемальовуємо, поки користувач щось вводить
+    if (!force && document.activeElement && app.contains(document.activeElement) && document.activeElement.matches("input")) return;
+    return renderWiz();
+  }
   const enter = UI.enter; UI.enter = false;
-  const body = S.tab === "home" ? homeHtml() : S.tab === "ops" ? opsHtml() : S.tab === "subs" ? subsHtml() : goalsHtml();
+  const body = S.tab === "home" ? homeHtml() : S.tab === "ops" ? opsHtml() : S.tab === "subs" ? subsHtml() : debtsHtml();
   app.innerHTML = '<div class="view' + (enter && !reduceMotion() ? " enter" : "") + '">' + topHtml() + body + "</div>";
   syncTabbar(false);
   afterRender(enter);
 }
 function afterRender(enter) {
-  // донат і кільця — плавне заповнення при появі
   if (enter && !reduceMotion()) {
-    $$(".dwrap circle.seg").forEach((c) => { const len = c.getAttribute("data-len"), da = c.getAttribute("stroke-dasharray"); c.setAttribute("stroke-dasharray", "0 999"); requestAnimationFrame(() => requestAnimationFrame(() => c.setAttribute("stroke-dasharray", da))); void len; });
+    $$(".dwrap circle.seg").forEach((c) => { const da = c.getAttribute("stroke-dasharray"); c.setAttribute("stroke-dasharray", "0 999"); requestAnimationFrame(() => requestAnimationFrame(() => c.setAttribute("stroke-dasharray", da))); });
     $$(".ring .rp").forEach((c) => { const o = c.getAttribute("stroke-dashoffset"); c.setAttribute("stroke-dashoffset", c.dataset.c); requestAnimationFrame(() => requestAnimationFrame(() => c.setAttribute("stroke-dashoffset", o))); });
-    $$(".hbar i,.lim .lb i").forEach((i) => { const w = i.style.width; i.style.width = "0%"; requestAnimationFrame(() => requestAnimationFrame(() => (i.style.width = w))); });
+    $$(".mbar i,.lim .lb i").forEach((i) => { const w = i.style.width; i.style.width = "0%"; requestAnimationFrame(() => requestAnimationFrame(() => (i.style.width = w))); });
   }
-  // лічильник балансу
   const hb = $(".hbig[data-count]");
   if (hb) {
-    const to = +hb.dataset.count, key = S.month, from = UI.bal[key];
-    UI.bal[key] = to;
+    const to = +hb.dataset.count, from = UI.bal.total;
+    UI.bal.total = to;
     if (from != null && from !== to && !reduceMotion()) {
       const t0 = performance.now(), D = 650;
       const step = (now) => { const p = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - p, 3), v = from + (to - from) * e; if (!hb.isConnected) return; hb.textContent = money(p < 1 ? v : to); if (p < 1) requestAnimationFrame(step); };
@@ -1245,138 +1430,99 @@ function setTab(t) {
 }
 function setMonth(ym) { if (ym > ymNow()) return; S.month = ym; UI.enter = true; haptic("sel"); render(); }
 
-/* ================= звіт місяця ================= */
-function report(ym) {
-  const st = monthStats(ym), isCur = ym === ymNow(), dim = daysIn(ym);
-  const passed = isCur ? new Date().getDate() : dim, avg = st.exp / passed;
-  const pvFull = monthStats(ymAdd(ym, -1)), pv = isCur ? monthStats(ymAdd(ym, -1), passed) : pvFull; // поточний місяць — порівнюємо з тим самим періодом
-  const fixedNow = (st.byCat.subs || 0) + (st.byCat.home || 0); // регулярні — не множимо на темп
-  const forecast = isCur ? fixedNow + ((st.exp - fixedNow) / passed) * dim : st.exp;
-  const diff = pv.exp ? ((st.exp - pv.exp) / pv.exp) * 100 : null;
-  const top = Object.entries(st.byCat).sort((a, b) => b[1] - a[1])[0];
-  const big = st.txs.filter((t) => t.kind !== "inc").sort((a, b) => txMain(b) - txMain(a))[0];
-  const subsShare = st.exp ? (st.byCat.subs || 0) / st.exp : 0;
-  const pg = (isCur ? "1–" + Math.min(passed, daysIn(ymAdd(ym, -1))) + " " : "") + ymGen(ymAdd(ym, -1)), tips = [];
-  const tip = (e, html) => tips.push({ e, html, plain: html.replace(/<[^>]+>/g, "") });
-  // зміни категорій проти минулого місяця
-  const ch = Object.keys(Object.assign({}, st.byCat, pv.byCat)).filter((k) => k !== "home" && k !== "subs").map((k) => { const a = st.byCat[k] || 0, b = pv.byCat[k] || 0; return { k, a, b, p: b ? ((a - b) / b) * 100 : null }; });
-  const upc = ch.filter((x) => x.p != null && x.a >= 20 && x.p >= 15 && x.a - x.b >= 10).sort((a, b) => b.a - b.b - (a.a - a.b))[0];
-  const dnc = ch.filter((x) => x.p != null && x.b >= 30 && x.a > 0 && x.p <= -20).sort((a, b) => a.p - b.p)[0];
-  if (upc) tip(cat(upc.k).emo, "<b>" + esc(cat(upc.k).name) + ": +" + Math.round(upc.p) + "%</b> проти " + pg);
-  const overL = Object.keys(S.meta.limits || {}).filter((k) => limitOf(k) && (st.byCat[k] || 0) > limitOf(k)).sort((a, b) => (st.byCat[b] - limitOf(b)) - (st.byCat[a] - limitOf(a)));
-  if (overL.length) tip("⚠️", "Ліміт на " + esc(cat(overL[0]).acc) + " перевищено на <b>" + money(st.byCat[overL[0]] - limitOf(overL[0])) + "</b>");
-  if (subsShare >= 0.05) tip("🔁", "Підписки з'їдають <b>" + Math.round(subsShare * 100) + "%</b> витрат" + (subsShare >= 0.15 ? " — може, щось скасувати?" : ""));
-  const incBase = Math.max(st.inc, isCur ? +S.meta.plan || 0 : 0);
-  if (isCur && incBase && forecast > incBase) tip("📈", "У такому темпі витратиш ~<b>" + money(forecast, { r: 1 }) + "</b> — більше, ніж дохід");
-  else if (st.inc && (st.inc - (isCur ? forecast : st.exp)) / st.inc >= 0.15) tip("💚", (isCur ? "Якщо так триматимеш — відкладеш" : "Ти відклав") + " <b>" + Math.round(((st.inc - (isCur ? forecast : st.exp)) / st.inc) * 100) + "%</b> доходу. Чудовий результат!");
-  if (dnc && tips.length < 4) tip(cat(dnc.k).emo, "<b>" + esc(cat(dnc.k).name) + ": −" + Math.abs(Math.round(dnc.p)) + "%</b> проти " + pg + " — так тримати 👏");
-  if (tips.length < 2 && st.txs.length) {
-    const cafe = st.byCat.cafe || 0;
-    if (cafe > 0 && tips.length < 4) tip("☕", "Кава й кафе — <b>" + money(cafe) + "</b>, це ~" + money(cafe / passed) + " на день");
-    else if (st.exp) tip("🧮", "Середньо <b>" + money(avg) + "</b> на день");
-  }
-  return { st, pv, pvFull, pg, isCur, avg, forecast, diff, top, big, subsShare, tips: tips.slice(0, 4), passed };
-}
-function barsSvg(ym) {
-  const months = []; for (let i = 5; i >= 0; i--) months.push(ymAdd(ym, -i));
-  const vals = months.map((m) => monthStats(m)), max = Math.max(1, ...vals.map((v) => Math.max(v.exp, v.inc)));
-  const W = 330, H = 150, top = 22, base = 122, bw = 30, step = W / 6;
-  let s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="Витрати за 6 місяців"><defs><linearGradient id="bgA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34d399"/><stop offset="1" stop-color="#0d9488"/></linearGradient></defs>';
-  s += '<line x1="0" x2="' + W + '" y1="' + base + '" y2="' + base + '" stroke="var(--hair)" stroke-width="1"/>';
-  vals.forEach((v, i) => {
-    const x = i * step + (step - bw) / 2, h = Math.max(v.exp ? 4 : 0, (v.exp / max) * (base - top)), on = months[i] === ym;
-    const ih = (v.inc / max) * (base - top);
-    s += '<rect class="bb" x="' + x + '" y="' + (base - h) + '" width="' + bw + '" height="' + h + '" rx="9" fill="' + (on ? "url(#bgA)" : "var(--bg2)") + '"' + (on ? "" : ' stroke="var(--hair)"') + "/>";
-    if (v.inc) s += '<line x1="' + (x - 3) + '" x2="' + (x + bw + 3) + '" y1="' + (base - ih) + '" y2="' + (base - ih) + '" stroke="var(--inc)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 4" opacity=".75"/>';
-    if (v.exp) s += '<text x="' + (x + bw / 2) + '" y="' + (base - h - 7) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="' + (on ? "var(--ink)" : "var(--ink2)") + '">' + compact(v.exp) + "</text>";
-    s += '<text x="' + (x + bw / 2) + '" y="' + (base + 18) + '" text-anchor="middle" font-size="11.5" font-weight="' + (on ? 800 : 600) + '" fill="' + (on ? "var(--ink)" : "var(--ink3)") + '">' + MON_S[+months[i].slice(5) - 1] + "</text>";
-  });
-  return s + "</svg>";
-}
-function openReport(ym) {
-  ym = ym || S.month;
-  const r = report(ym), st = r.st, pg = r.pg;
-  const delta = r.diff == null ? "" : '<span class="delta ' + (Math.abs(r.diff) < 1 ? "eq" : r.diff > 0 ? "up" : "down") + '">' + (r.diff > 0 ? "▲ +" : r.diff < 0 ? "▼ −" : "") + Math.abs(Math.round(r.diff)) + "% проти " + pg + "</span>";
-  const tc = r.top ? cat(r.top[0]) : null;
-  let h = "<h3>Звіт · " + ymName(ym).toLowerCase() + "</h3>";
-  h += '<p class="ssub">' + (r.isCur ? "Пройшло " + r.passed + " з " + daysIn(ym) + " днів місяця" : "Місяць завершено") + "</p>";
-  h += '<div class="rbig"><b>' + money(st.exp, { r: 1 }) + "</b>" + delta + '</div><div class="hint" style="margin:6px 0 0">витрачено' + (r.pvFull.exp ? " · за весь " + MON[+ymAdd(ym, -1).slice(5) - 1].toLowerCase() + " — " + money(r.pvFull.exp, { r: 1 }) : "") + "</div>";
-  h += '<div class="tiles">' +
-    '<div class="tile glass"><span>Середньо на день</span><b>' + money(r.avg) + "</b><small>" + r.passed + " " + plural(r.passed, ["день", "дні", "днів"]) + "</small></div>" +
-    (r.isCur ? '<div class="tile glass"><span>Прогноз на місяць</span><b>' + money(r.forecast, { r: 1 }) + "</b><small>у поточному темпі</small></div>" : '<div class="tile glass"><span>' + (st.inc - st.exp >= 0 ? "Заощаджено" : "Перевитрата") + "</span><b>" + money(Math.abs(st.inc - st.exp), { r: 1 }) + "</b><small>дохід " + money(st.inc, { r: 1 }) + "</small></div>") +
-    '<div class="tile glass"><span>Топ-категорія</span><b>' + (tc ? tc.emo + " " + esc(tc.name) : "—") + "</b><small>" + (tc ? money(r.top[1], { r: 1 }) + " · " + Math.round((r.top[1] / st.exp) * 100) + "%" : "немає витрат") + "</small></div>" +
-    '<div class="tile glass"><span>Найбільша витрата</span><b>' + (r.big ? money(txMain(r.big), { r: 1 }) : "—") + "</b><small>" + (r.big ? esc(r.big.note || cat(r.big.cat).name) + " · " + dShort(r.big.date) : "") + "</small></div></div>";
-  h += '<div class="fl">Підписки у витратах</div><div class="share glass"><div class="st"><b>🔁 ' + money(st.byCat.subs || 0) + "</b><span>" + Math.round(r.subsShare * 100) + '% витрат</span></div><div class="bar"><i style="width:' + Math.max(r.subsShare ? 2 : 0, r.subsShare * 100).toFixed(1) + '%"></i></div></div>';
-  if (r.tips.length) h += '<div class="fl">Що я помітив</div><div class="tips">' + r.tips.map((t) => '<div class="tipc glass"><span class="te">' + t.e + "</span><p>" + t.html + "</p></div>").join("") + "</div>";
-  h += '<div class="fl">Останні 6 місяців <span class="opt">· пунктир — дохід</span></div><div class="bars glass">' + barsSvg(ym) + "</div>";
-  h += '<button class="btn" style="margin-top:16px" data-close>Чудово 👌</button>';
-  openSheet(h, (sh) => {
-    if (!reduceMotion()) $$("rect.bb", sh).forEach((b, i) => { const y = b.getAttribute("y"), hh = b.getAttribute("height"); b.setAttribute("y", 122); b.setAttribute("height", 0); setTimeout(() => { b.setAttribute("y", y); b.setAttribute("height", hh); }, 120 + i * 60); });
-  });
-  haptic("light"); SFX.play("pop");
-}
-
 /* ================= швидке введення операції ================= */
-function openTx(t) {
-  const edit = !!t;
-  const st = { kind: t ? (t.kind === "inc" ? "inc" : "exp") : "exp", v: t ? kpFrom(t.amt) : "", cur: t ? t.cur || "€" : mainCur(), cat: t ? t.cat : null, date: t ? t.date : today(), note: t ? t.note || "" : "", showCur: false };
-  if (!CURS.includes(st.cur)) st.cur = mainCur();
-  const html = '<div class="fe">' + segHtml("kind", [["exp", "Витрата"], ["inc", "Дохід"]], st.kind) +
+function achipsHtml(attr, sel, exclude, opt) {
+  return '<div class="achips">' + (opt ? '<button class="ach' + (!sel ? " on" : "") + '" ' + attr + '="">' + esc(opt) + "</button>" : "") + accs().filter((a) => a.id !== exclude).map((a) => '<button class="ach' + (a.id === sel ? " on" : "") + '" ' + attr + '="' + esc(a.id) + '"><span>' + esc(a.emo || "💳") + "</span><span><b>" + esc(a.name) + "</b><small>" + money(accBal(a), a.cur, { r: 1 }) + "</small></span></button>").join("") + "</div>";
+}
+function openTx(t, preset) {
+  preset = preset || {};
+  const edit = !!t, da = defAcc();
+  const st = { kind: t ? t.kind || "exp" : preset.kind || "exp", v: t ? kpFrom(t.amt) : "", cur: t ? t.cur || "€" : null, cat: t ? t.cat : null, date: t ? t.date : today(), note: t ? t.note || "" : "", showCur: false,
+    acc: t ? (t.kind === "tr" ? t.acc : txAccId(t)) : preset.acc || S.filter.acc || (da && da.id) || "", to: t ? t.to || "" : "" };
+  if (st.kind === "debt") return toast("Це повернення боргу — змінюй його у розділі «Борги»", "🤝");
+  const A = () => accOf(st.acc);
+  if (!st.cur) st.cur = (A() && A().cur) || mainCur();
+  if (st.kind === "tr" && !st.to) { const o = accs().find((a) => a.id !== st.acc); st.to = o ? o.id : ""; }
+  const multi = accs().length > 1;
+  const html = '<div class="fe">' + segHtml("kind", [["exp", "Витрата"], ["inc", "Дохід"], ["tr", "Переказ"]], st.kind) +
     '<div class="amt"><div class="amtv"><span class="amtn z">0</span><button class="amtc" data-curbtn aria-label="Валюта"><span></span>' + IC.down + '</button></div><div class="amtx"></div></div>' +
     '<div class="curs hidden">' + CURS.map((c) => '<button class="chip" data-cur="' + c + '">' + c + "</button>").join("") + "</div>" +
-    '<div class="cats"></div>' +
+    '<div class="accwrap"></div><div class="cats"></div>' +
     '<div class="ferow"><button class="chip" data-d="0">Сьогодні</button><button class="chip" data-d="1">Вчора</button><label class="chip dpick"><span class="dl">📅 Дата</span><input type="date" aria-label="Обрати дату"></label></div>' +
     '<input class="inp note" maxlength="80" placeholder="Нотатка (необовʼязково)" value="' + esc(st.note) + '">' +
     kpHtml() +
     '<div class="btns">' + (edit ? '<button class="btn sq" data-del aria-label="Видалити">' + IC.trash + "</button>" : "") + '<button class="btn pri" data-save></button></div></div>';
   let off = null;
   const sh = openSheet(html, null, { cls: "fes", onClose: () => off && off() });
-  const amtn = $(".amtn", sh), amtx = $(".amtx", sh), catsEl = $(".cats", sh), dInp = $("input[type=date]", sh);
+  const amtn = $(".amtn", sh), amtx = $(".amtx", sh), catsEl = $(".cats", sh), accEl = $(".accwrap", sh), dInp = $("input[type=date]", sh);
   dInp.max = today();
   function paintCats() {
-    const L = cats(st.kind);
-    catsEl.classList.toggle("one", L.length <= 5);
-    catsEl.innerHTML = L.map((c) => '<button class="cc' + (st.cat === c.key ? " on" : "") + '" data-c="' + c.key + '" style="--c:' + c.color + '"><span>' + c.emo + "</span>" + esc(c.name) + "</button>").join("");
+    const tr = st.kind === "tr";
+    catsEl.classList.toggle("hidden", tr);
+    if (!tr) { const L = cats(st.kind); catsEl.classList.toggle("one", L.length <= 5); catsEl.innerHTML = L.map((c) => '<button class="cc' + (st.cat === c.key ? " on" : "") + '" data-c="' + c.key + '" style="--c:' + c.color + '"><span>' + c.emo + "</span>" + esc(c.name) + "</button>").join(""); }
+    if (tr) accEl.innerHTML = '<div class="alab">З рахунку</div>' + achipsHtml("data-a", st.acc) + '<div class="alab">На рахунок</div>' + achipsHtml("data-to", st.to, st.acc);
+    else accEl.innerHTML = multi ? achipsHtml("data-a", st.acc) : "";
   }
   function paint() {
-    const n = kpNum(st.v);
+    const n = kpNum(st.v), tr = st.kind === "tr";
+    if (tr && A()) st.cur = A().cur || "€";
     amtn.textContent = (st.kind === "inc" && n ? "+" : "") + kpShow(st.v);
-    amtn.className = "amtn " + (n ? st.kind : "z");
-    $(".amtc span", sh).textContent = st.cur;
-    amtx.textContent = st.cur !== mainCur() && n ? "≈ " + money(toMain(n, st.cur)) + " · курс " + nf(RATES.conv(1, mainCur(), st.cur)) + " " + st.cur + " за 1 " + mainCur() : "";
-    $(".curs", sh).classList.toggle("hidden", !st.showCur);
+    amtn.className = "amtn " + (n ? (tr ? "exp" : st.kind) : "z");
+    $(".amtc span", sh).textContent = st.cur; $(".amtc", sh).disabled = tr;
+    const ta = accOf(st.to);
+    if (tr) amtx.textContent = n && ta && ta.cur !== st.cur ? "≈ " + money(RATES.conv(n, st.cur, ta.cur), ta.cur) + " надійде на «" + ta.name + "»" : "";
+    else amtx.textContent = st.cur !== mainCur() && n ? "≈ " + money(toMain(n, st.cur)) + " · курс " + nf(RATES.conv(1, mainCur(), st.cur)) + " " + st.cur + " за 1 " + mainCur() : "";
+    $(".curs", sh).classList.toggle("hidden", !st.showCur || tr);
     $$(".curs .chip", sh).forEach((b) => b.classList.toggle("on", b.dataset.cur === st.cur));
     const k = dayDiff(st.date, today());
     $$("[data-d]", sh).forEach((b) => b.classList.toggle("on", +b.dataset.d === k));
-    const dp = $(".dpick", sh); dp.classList.toggle("on", k > 1); $(".dl", sh).textContent = k > 1 ? "📅 " + dShort(st.date) : "📅 Дата";
+    $(".dpick", sh).classList.toggle("on", k > 1); $(".dl", sh).textContent = k > 1 ? "📅 " + dShort(st.date) : "📅 Дата";
     dInp.value = st.date;
-    $("[data-save]", sh).textContent = edit ? "Зберегти" : st.kind === "inc" ? "Додати дохід" : "Додати витрату";
+    $("[data-save]", sh).textContent = edit ? "Зберегти" : st.kind === "inc" ? "Додати дохід" : tr ? "Переказати" : "Додати витрату";
   }
   paintCats(); paint();
-  segBind($(".seg", sh), (v) => { st.kind = v; if (st.cat && cat(st.cat).kind !== v) st.cat = null; paintCats(); paint(); });
+  const seg = $(".seg", sh);
+  segBind(seg, (v) => {
+    if (v === "tr" && accs().length < 2) { toast("Для переказу потрібен другий рахунок — додай його на огляді", "💳"); $$("button", seg).forEach((x) => x.classList.toggle("on", x.dataset.v === st.kind)); segSync(seg); return; }
+    st.kind = v; if (st.cat && cat(st.cat).kind !== v) st.cat = null;
+    if (v === "tr" && (!st.to || st.to === st.acc)) { const o = accs().find((a) => a.id !== st.acc); st.to = o ? o.id : ""; }
+    if (v !== "tr" && A()) st.cur = A().cur || st.cur;
+    paintCats(); paint();
+  });
   off = kpBind(sh, () => st.v, (v) => { st.v = v; paint(); });
   sh.addEventListener("click", async (e) => {
     let b;
     if ((b = e.target.closest("[data-curbtn]"))) { st.showCur = !st.showCur; paint(); haptic("light"); return; }
     if ((b = e.target.closest("[data-cur]"))) { st.cur = b.dataset.cur; st.showCur = false; paint(); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-a]"))) { st.acc = b.dataset.a; if (st.to === st.acc) { const o = accs().find((a) => a.id !== st.acc); st.to = o ? o.id : ""; } if (A()) st.cur = A().cur || st.cur; paintCats(); paint(); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-to]"))) { st.to = b.dataset.to; paintCats(); paint(); haptic("sel"); return; }
     if ((b = e.target.closest(".cc"))) { st.cat = b.dataset.c; $$(".cc", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); SFX.play("tick"); return; }
     if ((b = e.target.closest("[data-d]"))) { st.date = addDays(today(), -b.dataset.d); paint(); haptic("sel"); return; }
     if (e.target.closest("[data-save]")) return save();
     if (e.target.closest("[data-del]")) {
-      const ok = await confirmSheet({ icon: cat(t.cat).emo, title: "Видалити операцію?", text: esc(t.note || cat(t.cat).name) + " · " + money(t.amt, t.cur) + "<br>Цю дію не можна скасувати.", ok: "Видалити", danger: true });
+      const c = t.kind === "tr" ? { emo: "↔️", name: "Переказ" } : cat(t.cat);
+      const ok = await confirmSheet({ icon: c.emo, title: "Видалити операцію?", text: esc(t.note || c.name) + " · " + money(t.amt, t.cur) + "<br>Баланс рахунку перерахується.", ok: "Видалити", danger: true });
       if (!ok) return;
       try { await S.store.del(t.id); closeSheet(sh._entry); haptic("ok"); SFX.play("whoosh"); toast("Операцію видалено", "🗑️"); } catch (er) { toast("Помилка: " + (er.message || er)); }
     }
   });
   dInp.addEventListener("change", () => { if (dInp.value) { st.date = dInp.value > today() ? today() : dInp.value; paint(); } });
   $(".note", sh).addEventListener("input", (e) => { st.note = e.target.value; });
+  const shake = (el) => { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); haptic("error"); };
   async function save() {
     const amt = kpNum(st.v);
-    if (!amt) { const a = $(".amt", sh); a.classList.remove("shake"); void a.offsetWidth; a.classList.add("shake"); haptic("error"); toast("Введи суму", "✍️"); return; }
-    if (!st.cat) { catsEl.classList.remove("shake"); void catsEl.offsetWidth; catsEl.classList.add("shake"); haptic("error"); toast("Обери категорію", "👆"); return; }
-    const item = Object.assign({}, t || {}, { id: t ? t.id : "t_" + uid(), type: "tx", kind: st.kind, amt, cur: st.cur, cat: st.cat, date: st.date, note: st.note.trim(), createdAt: t ? t.createdAt || Date.now() : Date.now(), editedAt: Date.now() });
-    // ліміт: рахуємо до запису
-    const ym = st.date.slice(0, 7), prevSpent = monthStats(ym).byCat[st.cat] || 0, oldPart = t && t.kind !== "inc" && t.cat === st.cat && t.date.slice(0, 7) === ym ? txMain(t) : 0;
+    if (!amt) { shake($(".amt", sh)); toast("Введи суму", "✍️"); return; }
+    if (st.kind === "tr") {
+      const fa = accOf(st.acc), ta = accOf(st.to);
+      if (!fa || !ta || fa.id === ta.id) { shake(accEl); toast("Обери два різні рахунки", "↔️"); return; }
+      const item = Object.assign({}, t || {}, { id: t ? t.id : "t_" + uid(), type: "tx", kind: "tr", amt, cur: fa.cur || "€", acc: fa.id, to: ta.id, curTo: ta.cur || "€", amtTo: Math.round(RATES.conv(amt, fa.cur || "€", ta.cur || "€") * 100) / 100, cat: "transfer", date: st.date, note: st.note.trim(), createdAt: t ? t.createdAt || Date.now() : Date.now(), editedAt: Date.now() });
+      try { await S.store.put(item); closeSheet(sh._entry); haptic("ok"); SFX.play("whoosh"); toast("Переказ " + money(amt, fa.cur) + ": " + fa.name + " → " + ta.name, "↔️"); if (st.date.slice(0, 7) !== S.month) { S.month = st.date.slice(0, 7); UI.enter = true; } } catch (er) { toast("Помилка: " + (er.message || er)); }
+      return;
+    }
+    if (!st.cat) { shake(catsEl); toast("Обери категорію", "👆"); return; }
+    const item = Object.assign({}, t || {}, { id: t ? t.id : "t_" + uid(), type: "tx", kind: st.kind, amt, cur: st.cur, cat: st.cat, acc: st.acc || "", date: st.date, note: st.note.trim(), createdAt: t ? t.createdAt || Date.now() : Date.now(), editedAt: Date.now() });
+    delete item.to; delete item.amtTo; delete item.curTo;
+    const ym = st.date.slice(0, 7), prevSpent = monthStats(ym).byCat[st.cat] || 0, oldPart = t && t.kind === "exp" && t.cat === st.cat && t.date.slice(0, 7) === ym ? txMain(t) : 0;
     const spent = prevSpent - oldPart + toMain(amt, st.cur), lim = st.kind === "exp" ? limitOf(st.cat) : 0;
     try {
       await S.store.put(item);
@@ -1393,26 +1539,41 @@ function openTx(t) {
   }
 }
 
-/* ================= сума з клавіатурою (ліміти, план, внески) ================= */
+/* ================= сума з клавіатурою ================= */
+// o: title, sub, value, cur, curPick, accPick (рядок «без рахунку»), acc, chips, clear, ok, note, max, allowZero, neg, onSave(n, cur, acc)
 function askAmount(o) {
-  const st = { v: kpFrom(o.value || 0), cur: o.cur || mainCur() };
+  const st = { v: kpFrom(Math.abs(o.value || 0)), cur: o.cur || mainCur(), acc: o.acc != null ? o.acc : (defAcc() || {}).id || "", neg: (o.value || 0) < 0 };
   const html = "<h3>" + esc(o.title) + "</h3>" + (o.sub ? '<p class="ssub">' + o.sub + "</p>" : "") +
     '<div class="amt"><div class="amtv"><span class="amtn z">0</span><span class="amtc">' + esc(st.cur) + "</span></div>" + '<div class="amtx"></div></div>' +
+    (o.curPick ? '<div class="curs">' + CURS.map((c) => '<button class="chip" data-cur="' + c + '">' + c + "</button>").join("") + "</div>" : "") +
     (o.chips ? '<div class="chips" style="justify-content:center;margin-top:8px">' + o.chips.map((c) => '<button class="chip" data-q="' + c + '">' + (o.chipFmt ? o.chipFmt(c) : money(c, st.cur)) + "</button>").join("") + "</div>" : "") +
-    kpHtml() + '<div class="btns">' + (o.clear ? '<button class="btn" data-clear>' + esc(o.clear) + "</button>" : "") + '<button class="btn pri" data-ok>' + esc(o.ok || "Зберегти") + "</button></div>";
+    (o.accPick && accs().length ? '<div class="alab">' + esc(o.accPick) + '</div><div class="accwrap"></div>' : "") +
+    kpHtml() + (o.neg ? '<button class="chip negb" data-neg style="margin-top:8px">± Мінус (кредитка, борг)</button>' : "") +
+    '<div class="btns">' + (o.clear ? '<button class="btn" data-clear>' + esc(o.clear) + "</button>" : "") + '<button class="btn pri" data-ok>' + esc(o.ok || "Зберегти") + "</button></div>";
   let off = null;
   const sh = openSheet(html, null, { cls: "fes", onClose: () => off && off() });
-  const paint = () => { const n = kpNum(st.v); $(".amtn", sh).textContent = kpShow(st.v); $(".amtn", sh).className = "amtn " + (n ? "exp" : "z"); $(".amtx", sh).textContent = o.note ? o.note(n) : ""; };
+  const paint = () => {
+    const n = kpNum(st.v);
+    $(".amtn", sh).textContent = (st.neg && n ? "−" : "") + kpShow(st.v); $(".amtn", sh).className = "amtn " + (n ? "exp" : "z");
+    $(".amtc", sh).textContent = st.cur; $$("[data-cur]", sh).forEach((b) => b.classList.toggle("on", b.dataset.cur === st.cur));
+    $(".amtx", sh).textContent = o.note ? o.note(n, st.cur) : "";
+    const aw = $(".accwrap", sh); if (aw) aw.innerHTML = achipsHtml("data-pa", st.acc, null, "Без рахунку");
+    const nb = $("[data-neg]", sh); if (nb) nb.classList.toggle("on", st.neg);
+  };
   paint();
   off = kpBind(sh, () => st.v, (v) => { st.v = v; paint(); });
   sh.addEventListener("click", async (e) => {
-    const q = e.target.closest("[data-q]"); if (q) { st.v = kpFrom(+q.dataset.q); paint(); haptic("sel"); return; }
-    if (e.target.closest("[data-clear]")) { closeSheet(sh._entry); o.onSave(0); return; }
+    let b;
+    if ((b = e.target.closest("[data-q]"))) { st.v = kpFrom(+b.dataset.q); paint(); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-cur]"))) { st.cur = b.dataset.cur; paint(); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-pa]"))) { st.acc = b.dataset.pa; paint(); haptic("sel"); return; }
+    if (e.target.closest("[data-neg]")) { st.neg = !st.neg; paint(); haptic("sel"); return; }
+    if (e.target.closest("[data-clear]")) { closeSheet(sh._entry); o.onSave(0, st.cur, st.acc); return; }
     if (e.target.closest("[data-ok]")) {
       const n = kpNum(st.v);
       if (!n && !o.allowZero) { const a = $(".amt", sh); a.classList.remove("shake"); void a.offsetWidth; a.classList.add("shake"); haptic("error"); return; }
       if (o.max != null && n > o.max + 1e-9) { toast("Максимум — " + money(o.max, st.cur), "🙃"); haptic("error"); return; }
-      closeSheet(sh._entry); o.onSave(n);
+      closeSheet(sh._entry); o.onSave(st.neg ? -n : n, st.cur, st.acc);
     }
   });
   return sh;
@@ -1458,7 +1619,7 @@ function openSubPick() {
 }
 function openSub(s, preset) {
   const edit = !!s; preset = preset || {};
-  const st = { name: s ? s.name : preset.name || "", emo: s ? s.emo : preset.emo || "🔁", color: s ? s.color : preset.color || SUB_COL[0], amt: s ? kpFrom(s.amt) : "", cur: s ? s.cur : mainCur(), cycle: s ? s.cycle || "m" : "m", next: s ? s.next : today() };
+  const st = { name: s ? s.name : preset.name || "", emo: s ? s.emo : preset.emo || "🔁", color: s ? s.color : preset.color || SUB_COL[0], amt: s ? kpFrom(s.amt) : "", cur: s ? s.cur : mainCur(), cycle: s ? s.cycle || "m" : "m", next: s ? s.next : today(), acc: s && accOf(s.acc) ? s.acc : (defAcc() || {}).id || "" };
   const emos = SUB_EMO.includes(st.emo) ? SUB_EMO : [st.emo].concat(SUB_EMO.slice(0, -1));
   const cols = SUB_COL.includes(st.color) ? SUB_COL : [st.color].concat(SUB_COL.slice(0, -1));
   let h = '<div class="subprev"><span class="sav" style="--c:' + esc(st.color) + '">' + esc(st.emo) + '</span><div><h3 style="margin:0;padding:0">' + (edit ? "Підписка" : "Нова підписка") + '</h3><p class="ssub" data-prev>' + esc(st.name || "Назва сервісу") + "</p></div></div>";
@@ -1467,6 +1628,7 @@ function openSub(s, preset) {
   h += '<div class="chips" style="margin-top:8px" data-curs>' + CURS.map((c) => '<button class="chip' + (c === st.cur ? " on" : "") + '" data-cur="' + c + '">' + c + "</button>").join("") + "</div>";
   h += '<div class="fl">Як часто</div>' + segHtml("cyc", [["w", "Щотижня"], ["m", "Щомісяця"], ["y", "Щороку"]], st.cycle);
   h += '<div class="fl">Наступне списання</div><input class="inp" type="date" id="s_next" value="' + st.next + '"><div class="hint">Якщо дата вже минула — додам витрату автоматично й перенесу на наступний період.</div>';
+  if (accs().length > 1) h += '<div class="fl">Списувати з рахунку</div><div class="saccs">' + achipsHtml("data-sacc", st.acc) + "</div>";
   h += '<div class="fl">Значок</div><div class="emos" data-emos>' + emos.map((x) => '<button class="' + (x === st.emo ? "on" : "") + '" data-e="' + x + '">' + x + "</button>").join("") + "</div>";
   h += '<div class="cols" style="margin-top:12px" data-cols>' + cols.map((c) => '<button class="' + (c === st.color ? "on" : "") + '" data-col="' + c + '" style="--c:' + c + '" aria-label="Колір"></button>').join("") + "</div>";
   h += '<button class="btn pri" style="margin-top:20px" data-save>' + (edit ? "Зберегти" : "Додати підписку") + "</button>";
@@ -1483,12 +1645,13 @@ function openSub(s, preset) {
     let b;
     if ((b = e.target.closest("[data-cur]"))) { st.cur = b.dataset.cur; $$("[data-cur]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); return; }
     if ((b = e.target.closest("[data-e]"))) { st.emo = b.dataset.e; $$("[data-e]", sh).forEach((x) => x.classList.toggle("on", x === b)); prev(); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-sacc]"))) { st.acc = b.dataset.sacc; $(".saccs", sh).innerHTML = achipsHtml("data-sacc", st.acc); haptic("sel"); return; }
     if ((b = e.target.closest("[data-col]"))) { st.color = b.dataset.col; $$("[data-col]", sh).forEach((x) => x.classList.toggle("on", x === b)); prev(); haptic("sel"); return; }
     if (e.target.closest("[data-save]")) {
       st.name = $("#s_name", sh).value.trim(); const amt = kpNum($("#s_amt", sh).value.replace(/\s/g, "")); st.next = $("#s_next", sh).value || today();
       if (!st.name) { toast("Вкажи назву", "✍️"); haptic("error"); $("#s_name", sh).focus(); return; }
       if (!(amt > 0)) { toast("Вкажи ціну", "💶"); haptic("error"); $("#s_amt", sh).focus(); return; }
-      const item = Object.assign({}, s || {}, { id: s ? s.id : "s_" + uid(), type: "sub", name: st.name, emo: st.emo, color: st.color, amt: Math.round(amt * 100) / 100, cur: st.cur, cycle: st.cycle, next: st.next, anchor: pd(st.next).getDate(), createdAt: s ? s.createdAt || Date.now() : Date.now() });
+      const item = Object.assign({}, s || {}, { id: s ? s.id : "s_" + uid(), type: "sub", name: st.name, emo: st.emo, color: st.color, amt: Math.round(amt * 100) / 100, cur: st.cur, cycle: st.cycle, next: st.next, anchor: pd(st.next).getDate(), acc: st.acc || "", createdAt: s ? s.createdAt || Date.now() : Date.now() });
       try { await S.store.put(item); closeSheet(sh._entry); haptic("ok"); SFX.play("chime"); toast(edit ? "Збережено" : "Підписку додано", edit ? "✅" : st.emo); } catch (er) { toast("Помилка: " + (er.message || er)); }
       return;
     }
@@ -1581,45 +1744,241 @@ function openGoalView(id) {
   });
 }
 
+/* ================= рахунки ================= */
+const ACC_EMO = ["💳", "🖤", "💚", "💵", "🐷", "🏦", "💶", "🪙", "👛", "💼", "🏠", "✈️"];
+const ACC_PRESETS = [["Монобанк", "🖤"], ["ПриватБанк", "💚"], ["Готівка", "💵"], ["Накопичувальний", "🐷"]];
+const accHasTx = (id) => txs().some((t) => t.acc === id || t.to === id);
+function correctBalance(a) {
+  const cur = accBal(a);
+  askAmount({
+    title: (a.emo || "💳") + " Баланс «" + a.name + "»", sub: "Зараз у застосунку " + money(cur, a.cur) + ". Введи, скільки насправді — я скоригую без зайвих операцій.", value: cur, cur: a.cur, allowZero: true, neg: true, ok: "Скоригувати",
+    note: (n) => { const d = n - cur; return Math.abs(d) < 0.005 ? "" : "Різниця: " + (d > 0 ? "+" : "−") + money(Math.abs(d), a.cur); },
+    onSave: async (n) => {
+      const start = Math.round(((+a.start || 0) + (n - cur)) * 100) / 100;
+      try { await S.store.put(Object.assign({}, a, { start })); haptic("ok"); SFX.play("tick"); toast("Баланс «" + a.name + "»: " + money(n, a.cur), a.emo || "💳"); } catch (er) { toast("Помилка: " + (er.message || er)); }
+    },
+  });
+}
+function openAcc(a, preset) {
+  const edit = !!a; preset = preset || {};
+  const st = { name: a ? a.name : preset.name || "", emo: a ? a.emo || "💳" : preset.emo || "💳", cur: a ? a.cur || "€" : mainCur(), bal: a ? accBal(a) : 0 };
+  const lockCur = edit && accHasTx(a.id);
+  let h = "<h3>" + (edit ? "Рахунок" : "Новий рахунок") + "</h3>";
+  h += '<div class="fl">Значок</div><div class="emos">' + ACC_EMO.map((x) => '<button class="' + (x === st.emo ? "on" : "") + '" data-e="' + x + '">' + x + "</button>").join("") + "</div>";
+  h += '<div class="fl">Назва</div><input class="inp" id="a_name" maxlength="30" placeholder="Напр., Монобанк" value="' + esc(st.name) + '">';
+  if (!edit) h += '<div class="chips" style="margin-top:8px">' + ACC_PRESETS.map((p) => '<button class="chip" data-pre="' + esc(p[0]) + '" data-pe="' + p[1] + '">' + p[1] + " " + esc(p[0]) + "</button>").join("") + "</div>";
+  h += '<div class="fl">Валюта' + (lockCur ? ' <span class="opt">· вже є операції</span>' : "") + '</div><div class="chips">' + CURS.map((c) => '<button class="chip' + (c === st.cur ? " on" : "") + '" data-cur="' + c + '"' + (lockCur && c !== st.cur ? " disabled" : "") + ">" + c + " " + CUR_NAME[c] + "</button>").join("") + "</div>";
+  h += '<div class="fl">' + (edit ? "Поточний баланс" : "Скільки зараз на рахунку") + '</div><button class="balbtn glass" data-bal><span>' + money(st.bal, st.cur) + "</span><small>" + (edit ? "Скоригувати" : "Змінити") + "</small></button>";
+  if (edit) h += '<button class="row glass" style="margin-top:10px;border-radius:18px" data-def><span class="ri">⭐</span><span class="rm"><b>Основний рахунок</b><small>Обирається за замовчуванням для нових операцій</small></span><span class="sw' + (defAcc() && defAcc().id === a.id ? " on" : "") + '"></span></button>';
+  h += '<button class="btn pri" style="margin-top:20px" data-save>' + (edit ? "Зберегти" : "Додати рахунок") + "</button>";
+  if (edit) h += '<button class="btn danger sm" style="margin-top:6px" data-del>' + (accHasTx(a.id) ? "Приховати рахунок" : "Видалити рахунок") + "</button>";
+  const sh = openSheet(h);
+  const paintBal = () => { $("[data-bal] span", sh).textContent = money(st.bal, st.cur); };
+  $("#a_name", sh).addEventListener("input", (e) => { st.name = e.target.value; });
+  sh.addEventListener("click", async (e) => {
+    let b;
+    if ((b = e.target.closest("[data-e]"))) { st.emo = b.dataset.e; $$("[data-e]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-pre]"))) { st.name = b.dataset.pre; st.emo = b.dataset.pe; $("#a_name", sh).value = st.name; $$("[data-e]", sh).forEach((x) => x.classList.toggle("on", x.dataset.e === st.emo)); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-cur]"))) { if (b.disabled) return; st.cur = b.dataset.cur; $$("[data-cur]", sh).forEach((x) => x.classList.toggle("on", x === b)); paintBal(); haptic("sel"); return; }
+    if (e.target.closest("[data-bal]")) {
+      if (edit) { closeSheet(sh._entry); return setTimeout(() => correctBalance(a), 120); }
+      return askAmount({ title: "Баланс", value: st.bal, cur: st.cur, allowZero: true, neg: true, onSave: (n) => { st.bal = n; paintBal(); } });
+    }
+    if ((b = e.target.closest("[data-def]"))) { await S.store.saveMeta({ defAcc: a.id }); $(".sw", b).classList.add("on"); haptic("sel"); toast("«" + a.name + "» — основний рахунок", "⭐"); return; }
+    if (e.target.closest("[data-save]")) {
+      st.name = $("#a_name", sh).value.trim();
+      if (!st.name) { toast("Як назвемо рахунок?", "✍️"); haptic("error"); $("#a_name", sh).focus(); return; }
+      const item = edit ? Object.assign({}, a, { name: st.name, emo: st.emo, cur: st.cur }) : { id: "a_" + uid(), type: "acc", name: st.name, emo: st.emo, cur: st.cur, start: Math.round(st.bal * 100) / 100, order: accsAll().length, createdAt: Date.now() };
+      try { await S.store.put(item); closeSheet(sh._entry); haptic("ok"); SFX.play("chime"); toast(edit ? "Збережено" : "Рахунок «" + st.name + "» додано", st.emo); } catch (er) { toast("Помилка: " + (er.message || er)); }
+      return;
+    }
+    if (e.target.closest("[data-del]")) {
+      const has = accHasTx(a.id);
+      if (!has && accs().length <= 1) { toast("Має лишитися хоча б один рахунок", "💳"); return; }
+      const ok = await confirmSheet({ icon: esc(a.emo || "💳"), title: (has ? "Приховати" : "Видалити") + " «" + a.name + "»?", text: has ? "Операції залишаться в історії, але рахунок зникне з огляду й загальної суми." : "Рахунок без операцій буде видалено.", ok: has ? "Приховати" : "Видалити", danger: true });
+      if (!ok) return;
+      if (has) await S.store.put(Object.assign({}, a, { archived: true })); else await S.store.del(a.id);
+      if (S.filter.acc === a.id) S.filter.acc = null;
+      closeSheet(sh._entry); SFX.play("whoosh"); toast(has ? "Рахунок приховано" : "Рахунок видалено", "🗑️");
+    }
+  });
+}
+function openAccounts() {
+  const L = accs(), hid = accsAll().filter((a) => a.archived);
+  const h = "<h3>Рахунки</h3><p class=\"ssub\">Разом: <b>" + money(totalMoney()) + '</b></p><div class="box glass" style="margin-top:14px">' +
+    L.map((a) => '<button class="row" data-ea="' + esc(a.id) + '"><span class="ri">' + esc(a.emo || "💳") + '</span><span class="rm"><b>' + esc(a.name) + (defAcc() && defAcc().id === a.id ? " ⭐" : "") + "</b><small>" + CUR_NAME[a.cur || "€"] + '</small></span><span class="rv set">' + money(accBal(a), a.cur) + "</span></button>").join("") +
+    hid.map((a) => '<button class="row" data-ua="' + esc(a.id) + '" style="opacity:.6"><span class="ri">' + esc(a.emo || "💳") + '</span><span class="rm"><b>' + esc(a.name) + "</b><small>приховано · торкнись, щоб повернути</small></span></button>").join("") +
+    '</div><button class="btn pri" style="margin-top:14px" data-na>' + IC.plus + "Новий рахунок</button>";
+  const sh = openSheet(h);
+  sh.addEventListener("click", async (e) => {
+    let b;
+    if ((b = e.target.closest("[data-ea]"))) { closeSheet(sh._entry); setTimeout(() => openAcc(S.items[b.dataset.ea]), 120); }
+    else if ((b = e.target.closest("[data-ua]"))) { await S.store.put(Object.assign({}, S.items[b.dataset.ua], { archived: false })); closeSheet(sh._entry); toast("Рахунок повернуто", "💳"); }
+    else if (e.target.closest("[data-na]")) { closeSheet(sh._entry); setTimeout(() => openAcc(), 120); }
+  });
+}
+
+/* ================= борги ================= */
+function openDebt(d, dir) {
+  const edit = !!d;
+  const st = { dir: d ? d.dir : dir || "owe", who: d ? d.who : "", amt: d ? kpFrom(d.amt) : "", cur: d ? d.cur || "€" : mainCur(), due: d ? d.due || "" : "", note: d ? d.note || "" : "" };
+  let h = "<h3>" + (edit ? "Борг" : "Новий борг") + "</h3>";
+  h += segHtml("ddir", [["owe", "Я винен"], ["lent", "Мені винні"]], st.dir);
+  h += '<div class="fl">Хто</div><input class="inp" id="d_who" maxlength="30" placeholder="Імʼя, напр. Олег" value="' + esc(st.who) + '">';
+  h += '<div class="fl">Сума</div><input class="inp" id="d_amt" inputmode="decimal" placeholder="0" value="' + esc(st.amt) + '">';
+  h += '<div class="chips" style="margin-top:8px">' + CURS.map((c) => '<button class="chip' + (c === st.cur ? " on" : "") + '" data-cur="' + c + '">' + c + "</button>").join("") + "</div>";
+  h += '<div class="fl">Повернути до <span class="opt">· необовʼязково</span></div><input class="inp" type="date" id="d_due" value="' + esc(st.due) + '">';
+  h += '<div class="fl">Нотатка <span class="opt">· необовʼязково</span></div><input class="inp" id="d_note" maxlength="60" placeholder="За що, напр. квитки на концерт" value="' + esc(st.note) + '">';
+  h += '<button class="btn pri" style="margin-top:20px" data-save>' + (edit ? "Зберегти" : "Додати борг") + "</button>";
+  if (edit) h += '<button class="btn danger sm" style="margin-top:6px" data-del>Видалити борг</button>';
+  const sh = openSheet(h);
+  segBind($(".seg", sh), (v) => { st.dir = v; });
+  sh.addEventListener("click", async (e) => {
+    let b;
+    if ((b = e.target.closest("[data-cur]"))) { st.cur = b.dataset.cur; $$("[data-cur]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); return; }
+    if (e.target.closest("[data-save]")) {
+      const who = $("#d_who", sh).value.trim(), amt = kpNum($("#d_amt", sh).value.replace(/\s/g, ""));
+      if (!who) { toast("Хто винен?", "✍️"); haptic("error"); $("#d_who", sh).focus(); return; }
+      if (!(amt > 0)) { toast("Вкажи суму", "💶"); haptic("error"); $("#d_amt", sh).focus(); return; }
+      const item = Object.assign({}, d || {}, { id: d ? d.id : "d_" + uid(), type: "debt", dir: st.dir, who, amt: Math.round(amt * 100) / 100, cur: st.cur, due: $("#d_due", sh).value || "", note: $("#d_note", sh).value.trim(), paid: d ? +d.paid || 0 : 0, hist: d ? d.hist || [] : [], createdAt: d ? d.createdAt || Date.now() : Date.now() });
+      item.closed = item.paid >= item.amt - 0.004;
+      try { await S.store.put(item); closeSheet(sh._entry); haptic("ok"); SFX.play("tick"); toast(edit ? "Збережено" : (st.dir === "owe" ? "Я винен " : "Мені винні: ") + who + " · " + money(amt, st.cur), "🤝"); } catch (er) { toast("Помилка: " + (er.message || er)); }
+      return;
+    }
+    if (e.target.closest("[data-del]")) {
+      const ok = await confirmSheet({ icon: avatar(d.who), title: "Видалити борг?", text: esc(d.who) + " · " + money(d.amt, d.cur) + ". Операції повернень залишаться.", ok: "Видалити", danger: true });
+      if (ok) { await S.store.del(d.id); closeSheet(sh._entry); SFX.play("whoosh"); toast("Борг видалено", "🗑️"); }
+    }
+  });
+}
+function debtRepay(d, full) {
+  const left = debtLeft(d), owe = d.dir === "owe";
+  askAmount({
+    title: full ? "Погасити повністю" : owe ? "Я віддав частину" : "Мені повернули частину", sub: esc(d.who) + " · лишилось " + money(left, d.cur), cur: d.cur, value: full ? left : 0, max: left, ok: full ? "Погасити" : "Записати",
+    chips: full ? null : [left / 4, left / 2].map((x) => Math.round(x * 100) / 100).filter((x) => x > 0), chipFmt: (c) => money(c, d.cur),
+    accPick: owe ? "З якого рахунку" : "На який рахунок",
+    note: (n) => (n ? (n >= left - 0.004 ? "Борг буде закрито 🎉" : "Лишиться " + money(left - n, d.cur)) : ""),
+    onSave: async (n, cur, acc) => {
+      const paid = Math.round(((+d.paid || 0) + n) * 100) / 100, closed = paid >= d.amt - 0.004;
+      const hist = (d.hist || []).concat([{ d: today(), a: n, acc: acc || "" }]).slice(-60);
+      const out = [Object.assign({}, d, { paid, closed, hist })];
+      if (acc) out.push({ id: "t_" + uid(), type: "tx", kind: "debt", sign: owe ? -1 : 1, amt: n, cur: d.cur, acc, cat: "debt", note: (owe ? "Віддав борг: " : "Повернули борг: ") + d.who, debt: d.id, date: today(), createdAt: Date.now() });
+      try {
+        await S.store.putMany(out); haptic("ok");
+        if (closed) { SFX.play("tada"); confetti(); toast("Борг «" + d.who + "» закрито!", "🎉"); } else { SFX.play("coin"); toast((owe ? "Віддав " : "Повернули ") + money(n, d.cur) + " · лишилось " + money(d.amt - paid, d.cur), "🤝"); }
+      } catch (er) { toast("Помилка: " + (er.message || er)); }
+    },
+  });
+}
+function openDebtView(id) {
+  const d = S.items[id]; if (!d) return;
+  const left = debtLeft(d), p = d.amt ? (+d.paid || 0) / d.amt : 0, n = d.due ? dayDiff(today(), d.due) : null, owe = d.dir === "owe";
+  let h = '<div class="gview"><span class="sav av big" style="--c:' + debtColor(d.who) + '">' + avatar(d.who) + "</span><h3>" + esc(d.who) + '</h3><div class="dkind ' + (owe ? "owe" : "lent") + '">' + (owe ? "Я винен" : "Мені винні") + "</div>";
+  h += '<div class="gn" style="margin-top:12px"><b>' + money(d.closed ? 0 : left, d.cur) + "</b> лишилось з " + money(d.amt, d.cur) + "</div>";
+  h += '<div class="dprog"><i style="width:' + Math.min(100, p * 100).toFixed(1) + '%"></i></div>';
+  if (d.due || d.note) h += '<div class="ghint glass"><i>' + (n != null && n < 0 && !d.closed ? "⏰" : "🗓️") + "</i><span>" + (d.due ? (d.closed ? "Термін був " + dShort(d.due) : n < 0 ? "Прострочено на " + -n + " " + plural(-n, ["день", "дні", "днів"]) + " (" + dShort(d.due) + ")" : "Повернути до " + dShort(d.due) + " · " + inDays(n)) : "") + (d.note ? (d.due ? "<br>" : "") + "📝 " + esc(d.note) : "") + "</span></div>";
+  if (!d.closed) h += '<div class="btns"><button class="btn pri" data-full>✓ Погашено</button><button class="btn" data-part>Частково</button></div>';
+  else h += '<button class="btn" style="margin-top:14px" data-reopen>Відкрити знову</button>';
+  const hist = (d.hist || []).slice().reverse().slice(0, 10);
+  if (hist.length) h += '<div class="fl" style="text-align:left">Історія повернень</div><div class="box glass hist">' + hist.map((x) => { const a = accOf(x.acc); return '<div class="row"><span class="ri">🪙</span><span class="rm"><b>' + (owe ? "Віддав" : "Повернули") + "</b><small>" + dayLabel(x.d) + (a ? " · " + esc(accLabel(a)) : "") + '</small></span><span class="rv p">' + money(x.a, d.cur) + "</span></div>"; }).join("") + "</div>";
+  h += '<div class="btns"><button class="btn sm ghost" data-edit>✏️ Редагувати</button></div></div>';
+  const sh = openSheet(h);
+  sh.addEventListener("click", async (e) => {
+    if (e.target.closest("[data-full]")) { closeSheet(sh._entry); setTimeout(() => debtRepay(d, true), 120); }
+    else if (e.target.closest("[data-part]")) { closeSheet(sh._entry); setTimeout(() => debtRepay(d, false), 120); }
+    else if (e.target.closest("[data-edit]")) { closeSheet(sh._entry); setTimeout(() => openDebt(d), 120); }
+    else if (e.target.closest("[data-reopen]")) { await S.store.put(Object.assign({}, d, { closed: false, paid: Math.min(+d.paid || 0, d.amt - 0.01) })); closeSheet(sh._entry); toast("Борг знову відкрито", "🤝"); }
+  });
+}
+
+/* ================= зарплата: редактор (спільний для майстра й налаштувань) ================= */
+function payDraft() {
+  const s = S.meta.salary, da = defAcc();
+  const L = s && s.items && s.items.length ? clean(s.items) : [{ id: "p1", name: "Зарплата", amt: 0, cur: mainCur(), acc: da ? da.id : "", day: 5 }];
+  L.forEach((x) => { if (!accOf(x.acc)) x.acc = da ? da.id : ""; });
+  return L;
+}
+function payEditorHtml(L) {
+  L.forEach((x) => { if (!accOf(x.acc)) x.acc = (defAcc() || {}).id || ""; });
+  return L.map((x, i) => '<div class="prow glass"><div class="ph"><input class="ain" data-wpn="' + i + '" maxlength="24" value="' + esc(x.name) + '" aria-label="Назва">' + (i > 0 ? '<button class="ax" data-wpx="' + i + '" aria-label="Прибрати">' + IC.x + "</button>" : "") + "</div>" +
+    '<button class="pamt" data-wpa="' + i + '"><span>' + (x.amt ? money(x.amt, x.cur) : "Вкажи суму") + "</span><small>сума</small></button>" +
+    '<div class="pday"><span>Приходить</span><div class="stepper"><button data-wpd="' + i + ':-1" aria-label="Раніше">−</button><b>' + x.day + " числа</b><button data-wpd=\"" + i + ':1" aria-label="Пізніше">+</button></div></div>' +
+    (accs().length ? '<div class="alab">На рахунок</div>' + achipsHtml('data-wpacc="' + i + '" data-acc2', x.acc) : "") + "</div>").join("") +
+    (L.length < 2 ? '<button class="addrow2" data-wpadd>＋ Ще одна виплата (напр., аванс)</button>' : "");
+}
+// повертає true, якщо клік оброблено
+function payClick(e, L, redraw) {
+  let b;
+  if ((b = e.target.closest("[data-wpa]"))) { const x = L[+b.dataset.wpa]; askAmount({ title: "💼 " + (x.name || "Зарплата"), sub: "Скільки приходить на рахунок?", value: x.amt, cur: x.cur, curPick: true, ok: "Готово", onSave: (n, cur) => { x.amt = n; x.cur = cur; redraw(); } }); return true; }
+  if ((b = e.target.closest("[data-wpd]"))) { const [i, k] = b.dataset.wpd.split(":").map(Number); const x = L[i]; x.day = ((x.day - 1 + k + 31) % 31) + 1; haptic("sel"); redraw(); return true; }
+  if ((b = e.target.closest("[data-acc2]"))) { L[+b.dataset.wpacc].acc = b.dataset.acc2; haptic("sel"); redraw(); return true; }
+  if ((b = e.target.closest("[data-wpx]"))) { L.splice(+b.dataset.wpx, 1); redraw(); return true; }
+  if (e.target.closest("[data-wpadd]")) { const da = defAcc(); L.push({ id: "p" + Date.now().toString(36), name: "Аванс", amt: 0, cur: mainCur(), acc: L[0] ? L[0].acc : da ? da.id : "", day: 20 }); redraw(); return true; }
+  return false;
+}
+async function savePay(L) {
+  const old = S.meta.salary || {};
+  const items = L.filter((x) => +x.amt > 0).map((x) => ({ id: x.id, name: (x.name || "Зарплата").trim() || "Зарплата", amt: +x.amt, cur: x.cur || mainCur(), acc: x.acc || "", day: +x.day }));
+  await S.store.saveMeta({ salary: { items, since: old.since || today(), thru: old.thru || {} } });
+  return items;
+}
+function openSalary() {
+  const L = payDraft();
+  const sh = openSheet('<h3>Зарплата</h3><p class="ssub">У день виплати я сам додам дохід на обраний рахунок.</p><div class="ped"></div><button class="btn pri" style="margin-top:16px" data-savepay>Зберегти</button>');
+  const draw = () => { $(".ped", sh).innerHTML = payEditorHtml(L); };
+  draw();
+  sh.addEventListener("input", (e) => { const t = e.target.closest("[data-wpn]"); if (t) L[+t.dataset.wpn].name = t.value; });
+  sh.addEventListener("click", async (e) => {
+    if (payClick(e, L, draw)) return;
+    if (e.target.closest("[data-savepay]")) { const items = await savePay(L); closeSheet(sh._entry); haptic("ok"); toast(items.length ? "Зарплата: " + payDaysText(items) : "Зарплату вимкнено", "💼"); }
+  });
+}
+
 /* ================= налаштування ================= */
 function csvExport() {
   const mc = mainCur(), L = txs().sort((a, b) => a.date.localeCompare(b.date));
   const q = (s) => '"' + String(s == null ? "" : s).replace(/"/g, '""') + '"';
-  const rows = [["Дата", "Тип", "Категорія", "Сума", "Валюта", "Сума (" + mc + ")", "Нотатка"].map(q).join(";")];
-  L.forEach((t) => rows.push([t.date, t.kind === "inc" ? "Дохід" : "Витрата", cat(t.cat).name, String(t.amt).replace(".", ","), t.cur, txMain(t).toFixed(2).replace(".", ","), t.note || ""].map(q).join(";")));
+  const KIND = { inc: "Дохід", exp: "Витрата", tr: "Переказ", debt: "Борг" };
+  const rows = [["Дата", "Тип", "Категорія", "Рахунок", "Сума", "Валюта", "Сума (" + mc + ")", "Нотатка"].map(q).join(";")];
+  L.forEach((t) => {
+    const a = accOf(t.kind === "tr" ? t.acc : txAccId(t)), ta = accOf(t.to);
+    rows.push([t.date, KIND[t.kind] || "Витрата", t.kind === "tr" ? "" : t.kind === "debt" ? "Борг" : cat(t.cat).name, (a ? a.name : "") + (t.kind === "tr" && ta ? " → " + ta.name : ""), (t.kind === "debt" && t.sign < 0 ? "-" : "") + String(t.amt).replace(".", ","), t.cur, txMain(t).toFixed(2).replace(".", ","), t.note || ""].map(q).join(";"));
+  });
   return "﻿" + rows.join("\n");
 }
 function openSettings() {
-  const mc = mainCur(), plan = +S.meta.plan || 0;
+  const mc = mainCur(), sal = salItems(), T = debtTotals(), nOpen = debtsList().filter((d) => !d.closed).length;
   let h = "<h3>Налаштування</h3>";
-  h += '<p class="ssub">' + (S.store && S.store.mode === "cloud" ? "☁️ Дані синхронізуються з хмарою" + (S.status === "on" ? " · онлайн" : S.status === "err" ? " · помилка звʼязку" : " · очікую звʼязок") : "🧪 Демо-режим: дані зберігаються лише на цьому пристрої") + "</p>";
+  h += '<p class="ssub">' + (S.store && S.store.mode === "cloud" ? "☁️ Дані синхронізуються з хмарою" + (S.status === "on" ? " · онлайн" : S.status === "err" ? " · помилка звʼязку" : " · очікую звʼязок") : "📱 Локальний режим: дані зберігаються лише на цьому пристрої") + "</p>";
+  h += '<div class="fl">Гроші</div><div class="box glass">' +
+    '<button class="row" data-act2="accs"><span class="ri">💳</span><span class="rm"><b>Рахунки</b><small>' + accs().length + " " + plural(accs().length, ["рахунок", "рахунки", "рахунків"]) + " · разом " + money(totalMoney(), { r: 1 }) + '</small></span><span class="chev">' + IC.r + "</span></button>" +
+    '<button class="row" data-act2="salary"><span class="ri">💼</span><span class="rm"><b>Зарплата</b><small>' + (sal.length ? payDaysText(sal) + " · " + money(salMonthly(), { r: 1 }) + "/міс" : "Не налаштовано") + '</small></span><span class="chev">' + IC.r + "</span></button>" +
+    '<button class="row" data-act2="debts"><span class="ri">🤝</span><span class="rm"><b>Борги</b><small>' + (nOpen ? "Я винен " + money(T.owe, { r: 1 }) + " · мені винні " + money(T.lent, { r: 1 }) : "Немає відкритих") + '</small></span><span class="chev">' + IC.r + "</span></button>" +
+    '<button class="row" data-act2="limits"><span class="ri">🎯</span><span class="rm"><b>Ліміти на категорії</b><small>' + (Object.values(S.meta.limits || {}).filter((v) => v > 0).length || "Немає") + ' активних</small></span><span class="chev">' + IC.r + "</span></button></div>";
   h += '<div class="fl">Основна валюта</div><div class="chips" data-main>' + CURS.map((c) => '<button class="chip' + (c === mc ? " on" : "") + '" data-mc="' + c + '">' + c + " " + CUR_NAME[c] + "</button>").join("") + "</div>";
-  h += '<div class="hint">Операції в інших валютах перераховуються автоматично. Курс ' + (RATES.live() ? "оновлюється щодня" + (RATES.at() ? " (останнє: " + dShort(ds(new Date(RATES.at()))) + ")" : "") : "приблизний — оновиться, коли буде інтернет") + ".</div>";
-  h += '<div class="fl">Бюджет</div><div class="box glass"><button class="row" data-act2="plan"><span class="ri">💼</span><span class="rm"><b>План доходу на місяць</b><small>Для денного бюджету, поки зарплата не прийшла</small></span><span class="rv' + (plan ? " set" : "") + '">' + (plan ? money(plan, { r: 1 }) : "—") + "</span></button>" +
-    '<button class="row" data-act2="limits"><span class="ri">🎯</span><span class="rm"><b>Ліміти на категорії</b><small>' + (Object.values(S.meta.limits || {}).filter((v) => v > 0).length || "Немає") + " активних</small></span>" + '<span class="chev">' + IC.r + "</span></button></div>";
+  h += '<div class="hint">Операції й рахунки в інших валютах перераховуються автоматично. Курс ' + (RATES.live() ? "оновлюється щодня" + (RATES.at() ? " (останнє: " + dShort(ds(new Date(RATES.at()))) + ")" : "") : "приблизний — оновиться, коли буде інтернет") + ".</div>";
   const cc = S.meta.customCats || [];
-  h += '<div class="fl">Свої категорії</div><div class="box glass">' + cc.map((c) => '<div class="row"><span class="ri">' + esc(c.emo) + '</span><span class="rm"><b>' + esc(c.name) + "</b><small>" + (c.kind === "inc" ? "Дохід" : "Витрата") + '</small></span><button class="xb" data-rmcat="' + esc(c.key) + '" style="width:34px;height:34px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;color:var(--ink2)" aria-label="Видалити">' + IC.x.replace('viewBox="0 0 14 14"', 'viewBox="0 0 14 14" width="11" height="11"') + "</button></div>").join("") +
+  h += '<div class="fl">Свої категорії</div><div class="box glass">' + cc.map((c) => '<div class="row"><span class="ri">' + esc(c.emo) + '</span><span class="rm"><b>' + esc(c.name) + "</b><small>" + (c.kind === "inc" ? "Дохід" : "Витрата") + '</small></span><button class="xb" data-rmcat="' + esc(c.key) + '" aria-label="Видалити">' + IC.x + "</button></div>").join("") +
     '<div class="row" style="gap:8px"><input class="inp" id="cc_emo" maxlength="4" placeholder="🐾" style="width:58px;text-align:center;padding:12px 6px"><input class="inp" id="cc_name" maxlength="24" placeholder="Назва, напр. Тварини"><button class="chip" data-addcat style="flex:none">＋</button></div></div>';
   h += '<div class="fl">Оформлення</div>' + themePickerHtml();
   h += '<div class="fl">Інше</div><div class="box glass"><button class="row" data-act2="sound"><span class="ri">🔔</span><span class="rm"><b>Звуки</b><small>Мʼякі звуки при додаванні й досягненні цілей</small></span><span class="sw' + (SFX.on() ? " on" : "") + '"></span></button>' +
     '<button class="row" data-act2="csv"><span class="ri">📄</span><span class="rm"><b>Експорт операцій (CSV)</b><small>' + txs().length + " записів · для Excel чи Google Таблиць</small></span><span class=\"chev\">" + IC.r + "</span></button>" +
-    (S.store && S.store.mode === "demo" ? '<button class="row" data-act2="reset"><span class="ri">🧪</span><span class="rm"><b>Скинути демо-дані</b><small>Повернути приклад із 3 місяців операцій</small></span></button>' : "") + "</div>";
+    '<button class="row" data-act2="rewiz"><span class="ri">🧭</span><span class="rm"><b>Пройти налаштування заново</b><small>Валюта, рахунки, зарплата, борги, підписки</small></span><span class="chev">' + IC.r + "</span></button></div>";
   h += '<div class="hint" style="text-align:center;margin-top:18px">Гаманець · тільки для тебе, ' + ME + " 💚</div>";
   const sh = openSheet(h);
   bindThemePicker(sh);
   sh.addEventListener("click", async (e) => {
     let b;
     if ((b = e.target.closest("[data-mc]"))) {
-      const nc = b.dataset.mc, oc = mainCur(); if (nc === oc) return;
-      const conv = (v) => Math.round(RATES.conv(v, oc, nc));
-      const limits = {}; Object.entries(S.meta.limits || {}).forEach(([k, v]) => { if (v > 0) limits[k] = conv(v); });
-      LS.set("mn_cur", nc);
-      try { await S.store.saveMeta({ cur: nc, limits, plan: plan ? conv(plan) : 0 }); } catch (er) { toast("Помилка: " + (er.message || er)); }
+      const nc = b.dataset.mc; if (nc === mainCur()) return;
+      await setMainCur(nc);
       $$("[data-mc]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); toast("Основна валюта: " + nc + " " + CUR_NAME[nc], "💱"); return;
     }
     if ((b = e.target.closest("[data-act2]"))) {
       const a = b.dataset.act2;
-      if (a === "plan") askAmount({ title: "💼 План доходу на місяць", sub: "Скільки зазвичай заробляєш за місяць? Це допоможе рахувати денний бюджет.", value: plan, clear: plan ? "Прибрати" : "", chips: [1000, 1500, 2000, 2500, 3000], onSave: async (n) => { await S.store.saveMeta({ plan: n }); toast(n ? "План: " + money(n) : "План прибрано", "💼"); closeSheet(sh._entry); } });
+      if (a === "accs") openAccounts();
+      if (a === "salary") openSalary();
+      if (a === "debts") { closeSheet(sh._entry); setTab("debts"); }
       if (a === "limits") openLimitPick();
       if (a === "sound") { const v = !SFX.on(); LS.set("mn_sound", v); $(".sw", b).classList.toggle("on", v); haptic("sel"); if (v) SFX.play("chime"); }
       if (a === "csv") {
@@ -1628,9 +1987,9 @@ function openSettings() {
         try { const f = new File([csv], name, { type: "text/csv" }); if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: "Гаманець — операції" }); shared = true; } } catch (er) { if (er && er.name === "AbortError") shared = true; }
         if (!shared) copy(csv.replace(/^﻿/, ""), "CSV скопійовано — встав у таблицю 📋");
       }
-      if (a === "reset") {
-        const ok = await confirmSheet({ icon: "🧪", title: "Скинути демо-дані?", text: "Усі зміни в демо-режимі зникнуть, повернеться приклад.", ok: "Скинути", danger: true });
-        if (ok) { chargedIds.clear(); S.store.reset(); closeSheet(sh._entry); toast("Демо-дані відновлено", "🧪"); }
+      if (a === "rewiz") {
+        const ok = await confirmSheet({ icon: "🧭", title: "Пройти налаштування заново?", text: "Нічого не зітреться — просто ще раз переглянеш валюту, рахунки, зарплату, борги й підписки.", ok: "Поїхали" });
+        if (ok) { W.step = 0; W.accs = null; closeSheet(sh._entry); await S.store.saveMeta({ setupDone: false }); window.scrollTo(0, 0); }
       }
       return;
     }
@@ -1646,6 +2005,144 @@ function openSettings() {
     }
   });
 }
+async function setMainCur(nc) {
+  const oc = mainCur(); if (nc === oc) return;
+  const conv = (v) => Math.round(RATES.conv(v, oc, nc));
+  const limits = {}; Object.entries(S.meta.limits || {}).forEach(([k, v]) => { if (v > 0) limits[k] = conv(v); });
+  LS.set("mn_cur", nc);
+  try { await S.store.saveMeta({ cur: nc, limits }); } catch (er) { toast("Помилка: " + (er.message || er)); }
+}
+
+/* ================= майстер першого запуску ================= */
+const W = { step: 0, accs: null, pay: null, dDir: "owe", dCur: null };
+const W_STEPS = ["welcome", "cur", "accs", "pay", "debts", "subs", "done"];
+function wizInit() {
+  W.accs = accs().map((a) => ({ id: a.id, name: a.name, emo: a.emo || "💳", cur: a.cur || "€", bal: accBal(a), ex: true }));
+  if (!W.accs.length) W.accs = [{ id: "a_" + uid(), name: "Картка", emo: "💳", cur: mainCur(), bal: 0 }];
+  W.pay = null;
+}
+function wizDots() { return '<div class="wdots">' + [1, 2, 3, 4, 5].map((i) => '<i class="' + (i === W.step ? "on" : i < W.step ? "done" : "") + '"></i>').join("") + "</div>"; }
+function wizHead(emo, title, sub) { return '<div class="whead"><span class="wemo">' + emo + "</span><h2>" + title + "</h2><p>" + sub + "</p></div>"; }
+function wizStepHtml() {
+  const s = W_STEPS[W.step], mc = mainCur();
+  if (s === "welcome") return '<div class="wwel"><img src="logo.svg" alt="" class="wlogo"><h1>Привіт, ' + ME + ' 👋</h1><p>Давай налаштуємо твій гаманець — це займе хвилину.</p><div class="wlist glass">' +
+    [["💱", "Основна валюта"], ["💳", "Рахунки й баланси"], ["💼", "Зарплата"], ["🤝", "Борги"], ["🔁", "Підписки"]].map(([e, t]) => '<div class="wli"><span>' + e + "</span><b>" + t + "</b></div>").join("") +
+    '</div><p class="wnote">Кожен крок можна пропустити й змінити пізніше в налаштуваннях.</p></div>';
+  if (s === "cur") return wizHead("💱", "Основна валюта", "У ній показуватиму загальний баланс і ліміти. Інші валюти перерахую за курсом.") +
+    '<div class="wcur">' + CURS.map((c) => '<button class="wc glass' + (c === mc ? " on" : "") + '" data-wcur="' + c + '"><b>' + c + "</b><span>" + CUR_NAME[c] + "</span></button>").join("") + "</div>";
+  if (s === "accs") {
+    const tot = W.accs.reduce((a, x) => a + RATES.conv(+x.bal || 0, x.cur, mc), 0);
+    return wizHead("💳", "Скільки зараз на картці?", "Додай рахунки й поточні баланси — далі я рахуватиму сам.") +
+      W.accs.map((a, i) => '<div class="arow glass"><button class="aemo" data-wae="' + i + '" aria-label="Значок">' + esc(a.emo) + '</button><div class="am"><input class="ain" data-wan="' + i + '" maxlength="30" value="' + esc(a.name) + '" placeholder="Назва" aria-label="Назва рахунку"><button class="acur" data-wac="' + i + '"' + (a.ex && accHasTx(a.id) ? " disabled" : "") + ">" + esc(a.cur) + " " + CUR_NAME[a.cur] + "</button></div>" +
+        '<button class="abal" data-wab="' + i + '"><b class="' + (a.bal < 0 ? "neg" : "") + '">' + money(+a.bal || 0, a.cur) + "</b><small>баланс</small></button>" + (W.accs.length > 1 && !(a.ex && accHasTx(a.id)) ? '<button class="ax" data-wax="' + i + '" aria-label="Прибрати">' + IC.x + "</button>" : "") + "</div>").join("") +
+      '<div class="chips wpre">' + ACC_PRESETS.filter((p) => !W.accs.some((a) => a.name === p[0])).map((p) => '<button class="chip" data-wpre="' + esc(p[0]) + '" data-pe="' + p[1] + '">＋ ' + p[1] + " " + esc(p[0]) + "</button>").join("") + '<button class="chip" data-wpre="" data-pe="🏦">＋ Інший</button></div>' +
+      '<div class="wtotal glass"><span>Разом на рахунках</span><b>' + money(tot) + "</b></div>";
+  }
+  if (s === "pay") {
+    if (!W.pay) W.pay = payDraft();
+    return wizHead("💼", "Зарплата", "Вкажи суму й день виплати — у цей день я сам додам дохід на рахунок і покажу, скільки лишилось до наступної.") + '<div class="ped">' + payEditorHtml(W.pay) + "</div>";
+  }
+  if (s === "debts") {
+    const L = debtsList().filter((d) => !d.closed), dc = W.dCur || mc;
+    return wizHead("🤝", "Борги", "Хто кому винен? Додай — я нагадаю про термін і рахуватиму повернення.") +
+      segHtml("wdir", [["owe", "Я винен"], ["lent", "Мені винні"]], W.dDir) +
+      '<div class="dform glass"><input class="inp" id="wd_who" maxlength="30" placeholder="' + (W.dDir === "owe" ? "Кому, напр. Олег" : "Хто, напр. Марта") + '"><div class="dfr"><input class="inp" id="wd_amt" inputmode="decimal" placeholder="Сума"><button class="chip" data-wdcur>' + esc(dc) + '</button></div><div class="dfr"><input class="inp" type="date" id="wd_due" aria-label="Повернути до"><button class="btn pri sm" data-wdadd>Додати</button></div><div class="hint" style="margin:0">Дата — до коли повернути (необовʼязково)</div></div>' +
+      (L.length ? '<div class="dlist glass" style="margin-top:12px">' + L.map(debtRow).join("") + "</div>" : '<p class="wnote">Боргів немає? Просто натисни «Далі» 🙂</p>');
+  }
+  if (s === "subs") {
+    const L = subsList().filter((x) => !x.archived);
+    return wizHead("🔁", "Підписки", "Відміть, за що платиш регулярно — я сам спишу в день оплати з потрібного рахунку.") +
+      (L.length ? '<div class="dlist glass">' + L.map(subRow).join("") + "</div>" : "") +
+      '<div class="popgrid" style="margin-top:12px">' + POPULAR.slice(0, 11).map((p, i) => '<button class="pop glass" data-wpop="' + i + '"><span class="sav" style="--c:' + p[2] + '">' + p[1] + "</span>" + esc(p[0]) + "</button>").join("") + '<button class="pop glass" data-wown><span class="sav" style="--c:#64748b">✍️</span>Свій сервіс</button></div>';
+  }
+  // done
+  const T = debtTotals(), subM = subsList().filter((x) => !x.paused && !x.archived).reduce((a, x) => a + subMonthly(x), 0), sal = salItems();
+  return '<div class="wwel"><div class="wemo big">🎉</div><h1>Готово!</h1><p>Ось що я запамʼятав:</p><div class="wsum glass">' +
+    '<div class="wsr"><span>💳</span><b>На рахунках</b><em>' + money(totalMoney()) + "</em></div>" +
+    '<div class="wsr"><span>💼</span><b>Зарплата</b><em>' + (sal.length ? money(salMonthly(), { r: 1 }) + " · " + payDaysText(sal) : "—") + "</em></div>" +
+    '<div class="wsr"><span>🤝</span><b>Я винен / мені винні</b><em>' + money(T.owe, { r: 1 }) + " / " + money(T.lent, { r: 1 }) + "</em></div>" +
+    '<div class="wsr"><span>🔁</span><b>Підписки</b><em>' + money(subM) + "/міс</em></div></div><p class=\"wnote\">Усе це можна змінити в ⚙️ налаштуваннях.</p></div>";
+}
+function renderWiz() {
+  if (!W.accs) wizInit();
+  const s = W_STEPS[W.step], app = $("#app");
+  const nav = s === "welcome" ? '<button class="btn pri" data-wnext>Почнімо ✨</button>' : s === "done" ? '<button class="btn ghost sm wback" data-wback>Назад</button><button class="btn pri" data-wfin>Почати</button>' : '<button class="btn ghost sm wback" data-wback>Назад</button><button class="btn pri" data-wnext>Далі</button>';
+  const top = s !== "welcome" && s !== "done" ? '<div class="wtop">' + wizDots() + '<button class="wskip" data-wskip>Пропустити</button></div>' : '<div class="wtop"></div>';
+  const key = "w" + W.step;
+  const same = app.firstElementChild && app.firstElementChild.dataset.k === key;
+  app.innerHTML = '<div class="wiz" data-k="' + key + '">' + top + '<div class="wbody' + (same || reduceMotion() ? "" : " in") + '">' + wizStepHtml() + '</div><div class="wnav">' + nav + "</div></div>";
+  const sg = $(".wiz .seg", app); if (sg) segSync(sg);
+}
+async function wizCommit() {
+  const s = W_STEPS[W.step];
+  if (s === "accs") {
+    const mc = mainCur(), out = [];
+    W.accs.forEach((d, i) => {
+      const name = (d.name || "").trim() || "Рахунок " + (i + 1), ex = accOf(d.id);
+      if (ex) { const start = Math.round(((+ex.start || 0) + ((+d.bal || 0) - accBal(ex))) * 100) / 100; out.push(Object.assign({}, ex, { name, emo: d.emo, cur: d.cur, start, order: i })); }
+      else out.push({ id: d.id, type: "acc", name, emo: d.emo, cur: d.cur || mc, start: Math.round((+d.bal || 0) * 100) / 100, order: i, createdAt: Date.now() + i });
+      d.ex = true; d.name = name;
+    });
+    await S.store.putMany(out);
+    if (!accOf(S.meta.defAcc)) await S.store.saveMeta({ defAcc: out[0].id });
+  }
+  if (s === "pay" && W.pay) await savePay(W.pay);
+}
+async function wizGo(k, commit) {
+  try { if (commit) await wizCommit(); } catch (er) { toast("Помилка: " + (er.message || er)); return; }
+  W.step = Math.max(0, Math.min(W_STEPS.length - 1, W.step + k));
+  if (W_STEPS[W.step] === "pay") W.pay = null;
+  haptic("sel"); SFX.play("tick"); window.scrollTo(0, 0); render(true);
+}
+async function wizFinish() {
+  try {
+    if (!accs().length) await S.store.put({ id: "a_" + uid(), type: "acc", name: "Картка", emo: "💳", cur: mainCur(), start: 0, order: 0, createdAt: Date.now() });
+    await S.store.saveMeta({ setupDone: true, setupAt: S.meta.setupAt || Date.now() });
+    S.tab = "home"; S.month = ymNow(); UI.enter = true; W.accs = null; W.step = 0;
+    haptic("ok"); SFX.play("tada"); confetti(); toast("Гаманець готовий! Гарного користування", "💚");
+  } catch (er) { toast("Помилка: " + (er.message || er)); }
+}
+function wizClick(e) {
+  let b;
+  if (e.target.closest("[data-wnext]")) return wizGo(1, true);
+  if (e.target.closest("[data-wskip]")) return wizGo(1, false);
+  if (e.target.closest("[data-wback]")) return wizGo(-1, W_STEPS[W.step] === "accs" || W_STEPS[W.step] === "pay");
+  if (e.target.closest("[data-wfin]")) return wizFinish();
+  if ((b = e.target.closest("[data-wcur]"))) {
+    const nc = b.dataset.wcur, oc = mainCur();
+    W.accs.forEach((a) => { if (!a.ex && a.cur === oc) a.cur = nc; });
+    setMainCur(nc).then(() => render(true)); haptic("sel"); SFX.play("tick");
+    $$("[data-wcur]").forEach((x) => x.classList.toggle("on", x === b)); return;
+  }
+  // рахунки
+  if ((b = e.target.closest("[data-wae]"))) { const a = W.accs[+b.dataset.wae]; a.emo = ACC_EMO[(ACC_EMO.indexOf(a.emo) + 1) % ACC_EMO.length]; haptic("sel"); return render(true); }
+  if ((b = e.target.closest("[data-wac]"))) { const a = W.accs[+b.dataset.wac]; a.cur = CURS[(CURS.indexOf(a.cur) + 1) % CURS.length]; haptic("sel"); return render(true); }
+  if ((b = e.target.closest("[data-wab]"))) { const a = W.accs[+b.dataset.wab]; return askAmount({ title: (a.emo || "💳") + " " + (a.name || "Рахунок"), sub: "Скільки зараз на рахунку?", value: a.bal, cur: a.cur, curPick: !(a.ex && accHasTx(a.id)), allowZero: true, neg: true, ok: "Готово", onSave: (n, cur) => { a.bal = n; a.cur = cur; render(true); } }); }
+  if ((b = e.target.closest("[data-wax]"))) { const i = +b.dataset.wax, a = W.accs[i]; W.accs.splice(i, 1); if (a.ex && accOf(a.id)) S.store.del(a.id); haptic("light"); return render(true); }
+  if ((b = e.target.closest("[data-wpre]"))) { W.accs.push({ id: "a_" + uid(), name: b.dataset.wpre, emo: b.dataset.pe, cur: mainCur(), bal: 0 }); haptic("light"); SFX.play("pop"); render(true); if (!b.dataset.wpre) setTimeout(() => { const ins = $$("[data-wan]"); if (ins.length) ins[ins.length - 1].focus(); }, 50); return; }
+  // зарплата
+  if (W_STEPS[W.step] === "pay" && W.pay && payClick(e, W.pay, () => render(true))) return;
+  // борги
+  if ((b = e.target.closest(".wiz .seg button[data-v]"))) { if (b.dataset.v !== W.dDir) { W.dDir = b.dataset.v; haptic("sel"); render(true); } return; }
+  if (e.target.closest("[data-wdcur]")) { const c = W.dCur || mainCur(); W.dCur = CURS[(CURS.indexOf(c) + 1) % CURS.length]; e.target.closest("[data-wdcur]").textContent = W.dCur; haptic("sel"); return; }
+  if (e.target.closest("[data-wdadd]")) {
+    const who = $("#wd_who").value.trim(), amt = kpNum($("#wd_amt").value.replace(/\s/g, "")), due = $("#wd_due").value;
+    if (!who) { toast(W.dDir === "owe" ? "Кому ти винен?" : "Хто тобі винен?", "✍️"); haptic("error"); $("#wd_who").focus(); return; }
+    if (!(amt > 0)) { toast("Вкажи суму", "💶"); haptic("error"); $("#wd_amt").focus(); return; }
+    S.store.put({ id: "d_" + uid(), type: "debt", dir: W.dDir, who, amt: Math.round(amt * 100) / 100, cur: W.dCur || mainCur(), due: due || "", note: "", paid: 0, hist: [], closed: false, createdAt: Date.now() }).then(() => { haptic("ok"); SFX.play("tick"); toast((W.dDir === "owe" ? "Я винен " : "Мені винні: ") + who, "🤝"); if (document.activeElement) document.activeElement.blur(); render(true); });
+    return;
+  }
+  if ((b = e.target.closest("[data-debt]"))) return openDebtView(b.dataset.debt);
+  // підписки
+  if ((b = e.target.closest("[data-wpop]"))) { const p = POPULAR[+b.dataset.wpop]; haptic("light"); return openSub(null, { name: p[0], emo: p[1], color: p[2] }); }
+  if (e.target.closest("[data-wown]")) { haptic("light"); return openSub(null, {}); }
+  if ((b = e.target.closest("[data-sub]"))) return openSub(S.items[b.dataset.sub]);
+}
+document.addEventListener("input", (e) => {
+  if (!wizActive()) return;
+  const t = e.target.closest("[data-wan]"); if (t && W.accs) W.accs[+t.dataset.wan].name = t.value;
+  const p = e.target.closest("[data-wpn]"); if (p && W.pay) W.pay[+p.dataset.wpn].name = p.value;
+});
 
 /* ================= ТЕМИ ================= */
 const THEMES = {
@@ -1791,29 +2288,39 @@ function bindThemePicker(sh) {
 /* ================= події ================= */
 document.addEventListener("click", (e) => {
   const app = $("#app"); if (!app.contains(e.target) && !e.target.closest("#tabbar")) return;
+  if (wizActive()) return wizClick(e);
   let b;
   if ((b = e.target.closest("[data-tab]"))) return setTab(b.dataset.tab);
   if (e.target.closest("#fab")) { haptic("medium"); SFX.play("pop"); return openTx(); }
   if ((b = e.target.closest("[data-m]"))) return setMonth(ymAdd(S.month, +b.dataset.m));
   if ((b = e.target.closest("[data-tx]"))) { haptic("light"); return openTx(S.items[b.dataset.tx]); }
   if ((b = e.target.closest("[data-sub]"))) { haptic("light"); return openSub(S.items[b.dataset.sub]); }
+  if ((b = e.target.closest("[data-debt]"))) { haptic("light"); return openDebtView(b.dataset.debt); }
+  if ((b = e.target.closest("[data-acc]"))) { haptic("light"); S.filter = { kind: "all", cat: null, acc: b.dataset.acc }; UI.enter = true; return S.tab === "ops" ? render() : setTab("ops"); }
   if ((b = e.target.closest("[data-gdep]"))) { haptic("light"); return goalMove(S.items[b.dataset.gdep], 1); }
   if ((b = e.target.closest("[data-goal]"))) { haptic("light"); return openGoalView(b.dataset.goal); }
   if ((b = e.target.closest("[data-lim]"))) { haptic("light"); return setLimit(b.dataset.lim); }
-  if ((b = e.target.closest("[data-go]"))) { S.filter = { kind: b.dataset.go ? "exp" : "all", cat: b.dataset.go || null }; return setTab("ops"); }
+  if ((b = e.target.closest("[data-go]"))) { S.filter = { kind: b.dataset.go ? "exp" : "all", cat: b.dataset.go || null, acc: null }; return setTab("ops"); }
   if ((b = e.target.closest("[data-tab-go]"))) return setTab(b.dataset.tabGo);
   if ((b = e.target.closest("[data-fk]"))) { S.filter.kind = b.dataset.fk; if (S.filter.cat && b.dataset.fk === "inc" && cat(S.filter.cat).kind !== "inc") S.filter.cat = null; haptic("sel"); return render(); }
   if (!(b = e.target.closest("[data-act]"))) return;
-  const a = b.dataset.act;
+  const a = b.dataset.act, fa = accOf(S.filter.acc);
   if (a === "settings") { haptic("light"); openSettings(); }
   else if (a === "mnow") { if (S.month !== ymNow()) setMonth(ymNow()); }
-  else if (a === "report") openReport();
   else if (a === "limadd") openLimitPick();
   else if (a === "clrcat") { S.filter.cat = null; haptic("sel"); render(); }
+  else if (a === "clracc") { S.filter.acc = null; haptic("sel"); render(); }
+  else if (a === "trfrom" && fa) openTx(null, { kind: "tr", acc: fa.id });
+  else if (a === "acccorr" && fa) correctBalance(fa);
+  else if (a === "accedit" && fa) openAcc(fa);
+  else if (a === "accadd") { haptic("light"); openAcc(); }
+  else if (a === "salary") { haptic("light"); openSalary(); }
   else if (a === "add") openTx();
   else if (a === "subadd") { haptic("light"); openSubPick(); }
   else if (a === "goaladd") { haptic("light"); openGoal(); }
+  else if (a === "debtadd") { haptic("light"); openDebt(null, b.dataset.dir); }
   else if (a === "archtoggle") { S.showArch = !S.showArch; haptic("sel"); render(); }
+  else if (a === "closedtoggle") { S.showClosed = !S.showClosed; haptic("sel"); render(); }
   else if (a === "legall") { S.legendAll = !S.legendAll; render(); }
 });
 document.addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-goal]")) { e.preventDefault(); openGoalView(e.target.dataset.goal); } if (e.key === "Escape" && sheets.length) closeSheet(); });
@@ -1821,17 +2328,17 @@ window.addEventListener("resize", () => syncTabbar(false));
 // свайп між місяцями на огляді/операціях
 (() => {
   let x0 = null, y0 = 0, t0 = 0;
-  document.addEventListener("touchstart", (e) => { if (sheets.length || !(S.tab === "home" || S.tab === "ops") || e.touches.length > 1 || e.target.closest(".cats,.tabbar")) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = e.timeStamp; }, { passive: true });
+  document.addEventListener("touchstart", (e) => { if (sheets.length || wizActive() || !(S.tab === "home" || S.tab === "ops") || e.touches.length > 1 || e.target.closest(".cats,.tabbar,.accs")) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = e.timeStamp; }, { passive: true });
   document.addEventListener("touchend", (e) => { if (x0 == null) return; const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; x0 = null; if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.8 && e.timeStamp - t0 < 600) setMonth(ymAdd(S.month, dx < 0 ? 1 : -1)); }, { passive: true });
 })();
 
 /* ================= дані ================= */
 function onData(d) {
-  S.items = d.items || {}; S.meta = d.meta || {};
+  S.items = d.items || {}; S.meta = d.meta || {}; MS = null; AB = null;
   if (S.meta.cur) LS.set("mn_cur", S.meta.cur);
   const first = !S.loaded; S.loaded = true; if (first) UI.enter = true;
   render();
-  processSubs();
+  processAuto();
 }
 function renderLocked() {
   $("#app").innerHTML = '<div class="locked"><img src="logo.svg" alt=""><h1>Гаманець</h1><p>' + (inTg ? "Цей гаманець приватний — він відкривається лише у власника." : "Відкрий Гаманець через Telegram-бота.") + '</p><span class="lockchip glass">' + IC.lock + "Тільки для своїх</span></div>";
@@ -1849,14 +2356,14 @@ function renderLocked() {
   RATES.load();
   render(); syncTabbar(false);
   try { S.store = CFG ? await makeCloudStore(CFG) : makeLocalStore(); }
-  catch (e) { console.warn(e); S.store = makeLocalStore(); toast("Не вдалося підключитися до хмари — відкрито демо-режим"); }
+  catch (e) { console.warn(e); S.store = makeLocalStore(); toast("Не вдалося підключитися до хмари — відкрито локальний режим"); }
   S.status = S.store.mode === "demo" ? "demo" : "cache";
   S.store.start(onData, (st, err) => {
     const was = S.status; S.status = st;
     if (st === "err") { console.warn(err); toast(err && err.code === "permission-denied" ? "База не пускає: перевір правила Firestore" : "Немає звʼязку з базою"); }
-    if (was !== st && S.loaded) { const d = $(".hello"); if (d) render(); }
+    if (was !== st && S.loaded && !wizActive()) render();
   });
-  document.addEventListener("visibilitychange", () => { if (!document.hidden && S.loaded) { processSubs(); render(); } });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden && S.loaded) { processAuto(); render(); } });
 })();
 /*</JS>*/
 </script>
