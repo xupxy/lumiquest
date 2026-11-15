@@ -1213,6 +1213,25 @@ html.dark[data-theme=autumn]{
 .sa-occ .sa-idea{box-shadow:inset 0 0 0 1.5px #f3d58a}
 .dark .sa-occ .sa-idea{box-shadow:inset 0 0 0 1.5px #6b5520}
 select.inp.sa-sel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1.5 1.5 6 6l4.5-4.5' fill='none' stroke='%23b5a2ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:38px}
+/* 5. курсы валют */
+.sa-fxbox{padding:4px 14px}
+.sa-fxr{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+.sa-fxr:last-child{border-bottom:0}
+.sa-fxl{flex:none;width:52px;font-weight:700;color:var(--ink2);font-size:14px}
+.sa-fxr .inp{flex:1;min-width:0;padding:10px 12px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.sa-fxc{flex:none;width:28px;font-weight:800;font-size:16px}
+.sa-fxu{flex:none;font:800 10px/1 var(--font);padding:4px 6px;border-radius:999px;background:var(--roseSoft);color:var(--rose)}
+.sa-fxu.z{visibility:hidden}
+.sa-fxd{flex:none;width:28px;height:28px;border-radius:50%;background:var(--bg2);color:var(--ink2);display:grid;place-items:center;font-weight:800}
+.sa-fxd.z{color:var(--ink3);background:none}
+.sa-cvout{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.sa-cvout span{padding:8px 11px;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--line);font-size:13.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.sa-cvout span b{color:var(--ink)}.sa-cvout span.on{box-shadow:inset 0 0 0 2px var(--rose2);background:var(--roseSoft)}
+.sa-fxset svg{width:16px;height:16px;color:var(--ink3);flex:none}
+.sa-fxpill{display:inline-flex;align-items:center;gap:5px;margin-top:10px;padding:8px 12px;border-radius:999px;background:var(--bg2);font-size:13px;color:var(--ink2);font-weight:600;text-align:left}
+.sa-fxpill b{color:var(--ink)}
+.sa-fxnote{display:block;width:100%;margin-top:10px;text-align:center;font-size:12px;font-weight:600;color:var(--ink3)}
+.sa-fxnote u{color:var(--rose);text-decoration-style:dotted;text-underline-offset:3px}
 /* ===== /МОДУЛИ САШИ: CSS ===== */
 /* welcome / locked */
 .welcome{min-height:92vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:30px 6px}
@@ -4042,6 +4061,58 @@ SA_ACT.iocc = (b) => {
   const sh = openSheet("<h3>К какому поводу?</h3><p class=\"ssub\">💡 " + esc(x.t) + '</p><div class="stlist">' + datesSorted().map((dt) => '<button class="stopt" data-sa-io="' + esc(dt.id) + '"><span class="se2">' + esc(dt.emo || "🎁") + "</span><b>" + esc(dt.title) + '<small class="sa-oss">' + saWhen(dt) + "</small></b></button>").join("") + "</div>", null, { cls: "compact" });
   sh.addEventListener("click", async (e) => { const o = e.target.closest("[data-sa-io]"); if (!o) return; x.occ = o.dataset.saIo; await SA.save("ideas"); haptic("light"); closeSheet(); render(); });
 };
+
+/* --- 5. КУРСЫ ВАЛЮТ: свои курсы для пересчёта + быстрый конвертер --- */
+const saFxStr = (n) => (n >= 100 ? Math.round(n) : n >= 10 ? Math.round(n * 10) / 10 : Math.round(n * 1000) / 1000).toLocaleString("ru-RU");
+const saPer = (c) => saConv(1, saCur(), c); // сколько «c» за 1 базовую
+const saUsedCurs = () => { const s = new Set(); Object.values(S.items).forEach((i) => { if (numPrice(i)) s.add(i.cur || "€"); }); saIdeas().forEach((x) => { if (Number(x.price)) s.add(x.cur || "€"); }); Object.values(SA.d.buy || {}).forEach((b) => { if (b.paid) s.add(b.cur || "€"); }); s.delete(saCur()); return Array.from(s); };
+function saFxSheet() {
+  const base = saCur(); const others = CURS.filter((c) => c !== base); const used = saUsedCurs();
+  others.sort((a, b) => (used.includes(b) ? 1 : 0) - (used.includes(a) ? 1 : 0));
+  const fx = SA.d.fx || {};
+  const sh = openSheet('<h3>Курсы валют 💱</h3><p class="ssub">Её цены бывают в разных валютах — всё пересчитывается в твою (' + esc(base) + ') по этим курсам. Впиши курс из своего банка, чтобы бюджет был точным.</p>' +
+    '<div class="box sa-fxbox">' + others.map((c) => '<div class="sa-fxr"><span class="sa-fxl">1 ' + esc(base) + " =</span><input class=\"inp\" inputmode=\"decimal\" data-sa-fx=\"" + esc(c) + '" value="' + saFxStr(saPer(c)) + '"><span class="sa-fxc">' + esc(c) + "</span>" +
+      (used.includes(c) ? '<span class="sa-fxu">в списке</span>' : '<span class="sa-fxu z">в списке</span>') + (fx[c] ? '<button class="sa-fxd" data-sa-fxr="' + esc(c) + '" aria-label="Сбросить">↺</button>' : '<span class="sa-fxd z" title="примерный курс">≈</span>') + "</div>").join("") + "</div>" +
+    '<div class="hint">≈ — примерный курс по умолчанию, ↺ — вернуть его.' + (SA.d.fxAt ? " Твои курсы обновлены " + ago(SA.d.fxAt) + "." : "") + "</div>" +
+    '<div class="fl">Быстрый пересчёт</div><div class="pricerow"><div class="ifield"><span class="ic">🔁</span><input class="inp" id="sa_cv" inputmode="decimal" placeholder="Сумма" value="1000"></div><select class="inp cur" id="sa_cvc">' + CURS.map((c) => "<option" + (c === (used[0] || "₴") ? " selected" : "") + ">" + c + "</option>").join("") + '</select></div><div class="sa-cvout" id="sa_cvo"></div>' +
+    '<button class="btn pri" id="sa_fxs" style="margin-top:22px">Сохранить курсы</button>');
+  const conv = () => {
+    const n = Number(String($("#sa_cv", sh).value).replace(/\s/g, "").replace(",", ".")) || 0, from = $("#sa_cvc", sh).value;
+    const tmp = saTmpRates();
+    $("#sa_cvo", sh).innerHTML = CURS.filter((c) => c !== from).map((c) => { const v = n * tmp(from) / tmp(c); return '<span class="' + (c === base ? "on" : "") + '"><b>' + (v >= 100 ? Math.round(v).toLocaleString("ru-RU") : (Math.round(v * 100) / 100).toLocaleString("ru-RU")) + "</b> " + esc(c) + "</span>"; }).join("");
+  };
+  const saTmpRates = () => { const r = {}; r[base] = saRate(base); sh.querySelectorAll("[data-sa-fx]").forEach((i) => { const v = Number(String(i.value).replace(/\s/g, "").replace(",", ".")); r[i.dataset.saFx] = v > 0 ? saRate(base) / v : saRate(i.dataset.saFx); }); return (c) => r[c] || saRate(c); };
+  sh.addEventListener("input", conv); sh.addEventListener("change", conv); conv();
+  sh.addEventListener("click", async (e) => {
+    const r = e.target.closest("[data-sa-fxr]"); if (r) { const c = r.dataset.saFxr; delete SA.d.fx[c]; const i = sh.querySelector('[data-sa-fx="' + c + '"]'); i.value = saFxStr(saPer(c)); r.outerHTML = '<span class="sa-fxd z">≈</span>'; await SA.save("fx"); haptic("light"); conv(); render(); return; }
+    if (!e.target.closest("#sa_fxs")) return;
+    SA.d.fx = SA.d.fx || {}; let bad = false;
+    sh.querySelectorAll("[data-sa-fx]").forEach((i) => {
+      const c = i.dataset.saFx, v = Number(String(i.value).replace(/\s/g, "").replace(",", "."));
+      if (!(v > 0)) { i.classList.add("err"); bad = true; return; }
+      if (i.value !== saFxStr(saPer(c))) SA.d.fx[c] = saRate(base) / v;
+    });
+    if (bad) { haptic("error"); return; }
+    SA.d.fx[base] = saRate(base); SA.d.fxAt = Date.now(); await SA.save("fx"); await SA.save("fxAt");
+    haptic("ok"); SFX.play("pop"); closeSheet(); render(); saRedrawSheets(); toast("Курсы сохранены 💱"); if (SA.lastDetail && S.items[SA.lastDetail]) saRefreshDetail(SA.lastDetail);
+  });
+}
+SA_ACT.fx = () => saFxSheet();
+HOOKS.settings.push(() => {
+  if (!saOn()) return "";
+  const used = saUsedCurs(), show = (used.length ? used : ["$", "₴"]).slice(0, 3);
+  return '<div class="fl">Для подарков</div><button class="tgl sa-fxset" data-sa="fx" data-sa-any><span><b>💱 Курсы валют</b><span class="d">' + show.map((c) => "1 " + esc(saCur()) + " = " + saFxStr(saPer(c)) + " " + esc(c)).join(" · ") + (SA.d.fxAt ? "" : " · примерно") + "</span></span>" + IC.chev + "</button>";
+});
+// в карточке желания в чужой валюте — сколько это в твоей (сразу под ценой)
+HOOKS.detail.unshift((it) => {
+  SA.lastDetail = it.id;
+  if (!saOn() || !numPrice(it) || (it.cur || "€") === saCur()) return "";
+  return '<button class="sa-fxpill" data-sa="fx" data-sa-any>💱 ≈ <b>' + money(saPriceIn(it, saCur()), saCur()) + "</b> " + (SA.d.fx && SA.d.fx[it.cur || "€"] ? "по твоему курсу" : "по примерному курсу") + " · 1 " + esc(saCur()) + " = " + saFxStr(saPer(it.cur || "€")) + " " + esc(it.cur || "€") + "</button>";
+});
+SA.occTop.push(() => {
+  const used = saUsedCurs(); if (!used.length) return "";
+  return '<button class="sa-fxnote" data-sa="fx">💱 Пересчёт в ' + esc(saCur()) + ": " + used.map((c) => "1 " + esc(saCur()) + " = " + saFxStr(saPer(c)) + " " + esc(c)).join(" · ") + (SA.d.fxAt ? "" : " <u>уточнить</u>") + "</button>";
+});
 /* ================= /МОДУЛИ САШИ ================= */
 
 /* ================= новые желания вживую ================= */
