@@ -1174,6 +1174,45 @@ html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
 .bringc .bt b{font:700 17px/1.2 var(--font)}
 .drow .dn{font:800 22px/1 var(--font)}
 .mquote{font:600 17px/1.4 var(--font)}
+/* --- итерация 2: иерархия, читаемость, зоны нажатия --- */
+.dark{--m1:rgba(226,83,122,.32);--m2:rgba(120,96,255,.28);--m3:rgba(255,140,90,.14);--m4:rgba(70,150,255,.18);--card:#252030;--sheetA:80%}
+.dark .sheet{background:color-mix(in srgb,var(--card) 82%,transparent)}
+.dark .grab.sc,.dark .grab.hd,.dark .dbar,html.dark[data-theme] .dbar{background:color-mix(in srgb,var(--card) 70%,transparent)}
+.dark .dbody{background:color-mix(in srgb,var(--card) 88%,transparent)}
+.banner>span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+.banner .go{font-size:13px;padding:9px 12px;gap:1px;flex:none}
+.banner .go svg{width:14px;height:14px}
+.stats{row-gap:8px}
+.seenall{margin-left:0;font-weight:700}
+.hello{font-size:13.5px}
+/* мягче выделение выбранной категории */
+.cat.on.k1,.cat.on.k2,.cat.on.k3{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,currentColor 70%,transparent),0 8px 20px -12px currentColor}
+.cat .rd{box-shadow:inset 0 0 0 1.5px var(--fline)}
+/* зоны нажатия ≥44px без изменения внешнего вида */
+.drm,.sa-clr,.purh .purE,.tab,.chip,.gst{position:relative}
+.grab .x:after,.drm:after,.pth .rm:after,.sa-clr:after,.purh .purE:after,.gst:after{content:"";position:absolute;inset:-8px;border-radius:50%}
+.pth .rm:after{inset:-10px}
+.tab:after{content:"";position:absolute;left:0;right:0;top:-4px;bottom:-4px}
+.grab .x{width:34px;height:34px}
+.chip{min-height:40px}
+/* цифры — табличные, цены не прыгают */
+.cprice,.dprice,.plan .pl2,.spyc .big,.tab b,.sechead .sn,.tile .bn,.bringc .bn{font-variant-numeric:tabular-nums}
+/* светлая тема: чуть плотнее стекло для контраста текста */
+:root:not(.dark){--gl:rgba(255,255,255,.62)}
+.ctitle{color:var(--ink)}
+.cfoot{min-height:26px}
+.card.k1 .cprice{background:rgba(255,95,74,.12)}.card.k2 .cprice{background:rgba(63,174,134,.13)}.card.k3 .cprice{background:rgba(143,107,240,.13)}
+.dark .card.k1 .cprice{background:rgba(255,120,100,.16)}.dark .card.k2 .cprice{background:rgba(90,210,160,.15)}.dark .card.k3 .cprice{background:rgba(170,140,255,.17)}
+.sico.k1,.k1 .sico{background:rgba(255,95,74,.13)}.sico.k2{background:rgba(63,174,134,.14)}.sico.k3{background:rgba(143,107,240,.14)}
+/* подсказка-строка у него */
+.spyhint{padding:10px 14px;border-radius:16px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb);margin-top:12px}
+/* шторка подтверждения */
+.cfmico{border-radius:50%;box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
+.btn.del{background:linear-gradient(135deg,#ff6b6b,#e0413a);box-shadow:0 14px 28px -12px rgba(224,65,58,.65),inset 0 1px 0 rgba(255,255,255,.3)}
+/* настройки */
+.tgl,.box,.who{border-radius:22px}
+.who .wr{border-radius:50%}
+.thsw,.thauto{border-radius:22px}
 /* ===== /ДИЗАЙН «СКЛО» ===== */
 </style>
 </head>
@@ -1601,7 +1640,7 @@ function render() {
   }
   let h = headerHtml(stats);
 
-  if (S.store.mode === "demo") h += '<button class="banner" data-act="setup"><span class="bi">' + IC.cloud + '</span><span><b>Демо-режим</b>Список виден только тут</span><span class="go">Подключить' + IC.chev + "</span></button>";
+  if (S.store.mode === "demo") h += '<button class="banner" data-act="setup"><span class="bi">' + IC.cloud + '</span><span><b>Демо-режим</b>Виден только тут</span><span class="go">Подключить' + IC.chev + "</span></button>";
 
   h += festHtml();
   // мысли / настроение (+ его реакция, «видел», устаревание)
