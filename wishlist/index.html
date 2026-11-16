@@ -881,6 +881,9 @@ html.dark[data-theme=autumn]{
 .cm .icn{font-size:64px;line-height:1;filter:drop-shadow(0 10px 16px rgba(120,40,70,.25));transition:transform .3s var(--ease)}
 .card:active .cm .icn{transform:scale(1.08) rotate(-4deg)}
 .dph .icn{font-size:130px}
+.nudgeprev{margin-top:14px;border-radius:22px;overflow:hidden;background:var(--card);box-shadow:var(--cardShadow)}
+.nudgeprev .nimg{aspect-ratio:1/1;display:grid;place-items:center;background:var(--bg2)}.nudgeprev .nimg img{width:100%;height:100%;object-fit:cover;display:block}
+.nudgeprev .ntxt{padding:14px 16px 16px;font-size:14.5px;line-height:1.45}
 /* ===== МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== /МОДУЛИ АРИНЫ: CSS ===== */
 /* ===== МОДУЛИ САШИ: CSS ===== */
@@ -3376,6 +3379,72 @@ HOOKS.editor.push({
   },
   collect: () => ({}),
 });
+
+/* ================= «НАПОМНИТЬ АРИНЕ» — красивое сообщение от бота ================= */
+const NUDGES = [
+  { e: "✨", title: "Твой вишлист заскучал", text: (n) => "✨ <b>" + n + ", твой вишлист заскучал!</b>\n\nЗагляни на минутку и добавь пару желаний 🛍️ — то, что давно присмотрела, о чём мечтаешь или что просто радует глаз 💄👟🎧\n\nЧем подробнее — тем точнее сбываются 🎁" },
+  { e: "🌸", title: "Время мечтать", text: (n) => "🌸 <b>Время немножко помечтать, " + n + "</b>\n\nЧто бы тебе хотелось прямо сейчас? Уютный свитер 🧶, новая палетка 🎨, книга 📚 или что-то совсем особенное ✨\n\nЗапиши в вишлист — пусть ничего не потеряется 💗" },
+  { e: "🎁", title: "Подскажи, что подарить", text: (n) => "🎁 <b>" + n + ", подскажи идею!</b>\n\nВ вишлисте пока маловато желаний 👀 Добавь пару вещей с фото или ссылкой — размер, цвет, магазин 📏🎨\n\nТогда сюрпризы будут попадать точно в цель 🎯" },
+  { e: "💫", title: "Обнови свой список", text: (n) => "💫 <b>Маленькое напоминание для " + n + "</b>\n\nМожет, что-то уже не актуально, а появилось новое? 🛒 Обнови вишлист — и отметь самое важное 🔥\n\nЭто займёт пару минут ☕" },
+];
+function seasonalNudge(n) {
+  const d = new Date(), m = d.getMonth() + 1, day = d.getDate();
+  if (m === 12 || (m === 1 && day <= 6)) return { e: "🎄", title: "Скоро Новый год", text: "🎄 <b>" + n + ", скоро Новый год!</b>\n\nСамое время пополнить вишлист ❄️ Что хочется найти под ёлкой? 🎁✨\n\nДобавь желания с фото — пусть праздник будет волшебным 🌟" };
+  if (m === 2 && day <= 14) return { e: "💘", title: "Скоро 14 февраля", text: "💘 <b>" + n + ", скоро 14 февраля!</b>\n\nЗагляни в вишлист и добавь то, что порадует 🌹🎁\n\nПусть подарок будет именно тем, о чём ты мечтаешь ✨" };
+  const bd = parseDM((S.meta.about || {}).bday);
+  if (bd) { const t = new Date(d.getFullYear(), bd.m - 1, bd.d); if (t < d) t.setFullYear(d.getFullYear() + 1); const left = Math.round((t - d) / 864e5); if (left <= 30) return { e: "🎂", title: "Скоро твой день рождения", text: "🎂 <b>" + n + ", до дня рождения " + left + " " + dayWord(left) + "!</b>\n\nСамое время обновить вишлист 🎈 Добавь, о чём мечтаешь — с фото, размером и ссылкой 📸📏\n\nПусть праздник будет идеальным 🎉" }; }
+  return null;
+}
+async function nudgeImage(nd) {
+  const W = 1080, H = 1080, c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d");
+  const rr = (bx, by, bw, bh, r) => { x.beginPath(); x.moveTo(bx + r, by); x.arcTo(bx + bw, by, bx + bw, by + bh, r); x.arcTo(bx + bw, by + bh, bx, by + bh, r); x.arcTo(bx, by + bh, bx, by, r); x.arcTo(bx, by, bx + bw, by, r); x.closePath(); };
+  const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, "#ffd6e4"); g.addColorStop(.55, "#ffe7d6"); g.addColorStop(1, "#e4d8ff"); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const rg = x.createRadialGradient(W / 2, 430, 40, W / 2, 430, 520); rg.addColorStop(0, "rgba(255,255,255,.85)"); rg.addColorStop(1, "rgba(255,255,255,0)"); x.fillStyle = rg; x.fillRect(0, 0, W, H);
+  x.textAlign = "center"; x.textBaseline = "middle";
+  const EF = 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+  [["👟", 150, 170, 92, -14], ["💄", 920, 190, 84, 12], ["🎧", 140, 720, 80, 10], ["🌸", 940, 700, 88, -8], ["🎁", 880, 470, 70, 6], ["✨", 200, 470, 66, 0], ["🛍️", 540, 120, 64, 0], ["💎", 300, 900, 56, -6], ["🧸", 790, 905, 60, 8]]
+    .forEach(([e, px, py, s, r]) => { x.save(); x.translate(px, py); x.rotate(r * Math.PI / 180); x.font = s + EF; x.fillText(e, 0, 0); x.restore(); });
+  try {
+    const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = "logo.svg"; });
+    x.save(); x.shadowColor = "rgba(194,51,95,.35)"; x.shadowBlur = 50; x.shadowOffsetY = 18; x.fillStyle = "#fff"; rr(W / 2 - 170, 260, 340, 340, 70); x.fill(); x.restore();
+    x.save(); rr(W / 2 - 170, 260, 340, 340, 70); x.clip(); x.drawImage(im, W / 2 - 170, 260, 340, 340); x.restore();
+  } catch (e) { x.font = "220" + EF; x.fillText("💝", W / 2, 430); }
+  const F = (w, s) => w + " " + s + 'px WInter, -apple-system, "Segoe UI", Roboto, sans-serif';
+  x.fillStyle = "#2e1d27"; x.font = F(800, 72); x.fillText(nd.title, W / 2, 700);
+  x.fillStyle = "#e2537a"; x.font = F(700, 40); x.fillText("Открой вишлист и добавь желания " + nd.e, W / 2, 785);
+  x.fillStyle = "rgba(255,255,255,.8)"; rr(W / 2 - 210, 850, 420, 86, 43); x.fill();
+  x.fillStyle = "#c2335f"; x.font = F(800, 38); x.fillText("💗 Вишлист", W / 2, 894);
+  return c.toDataURL("image/jpeg", .9);
+}
+function openNudge() {
+  const n = herName(), ready = !!(S.meta.bot && S.meta.ownerId);
+  const opts = [seasonalNudge(n)].filter(Boolean).concat(NUDGES.map((v) => ({ e: v.e, title: v.title, text: v.text(n) })));
+  let k = 0, img = null;
+  const last = LS.get("wl_nudge_at", 0), recent = last && Date.now() - last < 3 * 3600e3;
+  const sh = openSheet("<h3>Напомнить " + esc(herDat()) + ' 💌</h3><p class="ssub">Бот пришлёт ей красивое сообщение с картинкой и кнопкой «Открыть вишлист».</p>' +
+    '<div class="nudgeprev"><div class="nimg" id="nd_img"><span class="mspin ink"></span></div><div class="ntxt" id="nd_txt"></div></div>' +
+    '<div class="chips" style="margin-top:12px">' + opts.map((o, i) => '<button class="chip' + (i ? "" : " on") + '" data-ndv="' + i + '">' + o.e + " " + esc(o.title) + "</button>").join("") + "</div>" +
+    (ready ? "" : '<div class="box sbox" style="margin-top:14px"><span class="sdot"></span><div><b>Пока не получится</b><span>Нужно, чтобы уведомления были включены (⚙️ → «Уведомления в Telegram»), а ' + esc(n) + " хотя бы раз открыла вишлист и нажала Start в боте.</span></div></div>") +
+    '<button class="btn pri" id="nd_send" style="margin-top:16px"' + (ready ? "" : " disabled") + ">Отправить 💌</button>" +
+    (recent ? '<div class="hint" style="text-align:center">Последнее напоминание было ' + ago(last) + " — не переусердствуй 😉</div>" : ""));
+  const draw = async () => {
+    const o = opts[k]; $("#nd_txt", sh).innerHTML = o.text.replace(/\n/g, "<br>");
+    $("#nd_img", sh).innerHTML = '<span class="mspin ink"></span>'; img = await nudgeImage(o); if (sh.isConnected) $("#nd_img", sh).innerHTML = '<img src="' + img + '" alt="">';
+  };
+  draw();
+  sh.addEventListener("click", async (e) => {
+    const v = e.target.closest("[data-ndv]");
+    if (v) { k = +v.dataset.ndv; sh.querySelectorAll("[data-ndv]").forEach((b) => b.classList.toggle("on", b === v)); haptic("light"); draw(); return; }
+    const b = e.target.closest("#nd_send"); if (!b || b.disabled || b.classList.contains("busy")) return;
+    b.classList.add("busy"); b.innerHTML = '<span class="mspin"></span>Отправляю…';
+    if (!img) img = await nudgeImage(opts[k]);
+    const r = await NOTIFY.send(opts[k].text, img, { to: "owner" });
+    if (r.ok) { LS.set("wl_nudge_at", Date.now()); haptic("ok"); SFX.play("chime"); heartsFrom(b, 10); closeSheet(); toast("Отправлено " + n + " 💌"); }
+    else { b.classList.remove("busy"); b.textContent = "Попробовать ещё раз"; toast("Бот ответил: " + (r.description || "ошибка") + (/chat not found|blocked/i.test(r.description || "") ? " — " + n + " должна нажать Start в боте" : "")); haptic("error"); }
+  });
+}
+HOOKS.settings.push(() => isOwner() ? "" : '<div class="fl">Напоминание</div><button class="tgl" data-nudge="1"><span><b>💌 Напомнить ' + esc(herDat()) + ' заполнить вишлист</b><span class="d">Красивое сообщение с картинкой от бота</span></span><span style="font-size:22px">›</span></button>');
+document.addEventListener("click", (e) => { if (!e.target.closest("[data-nudge]")) return; const top = sheets[sheets.length - 1]; if (top) closeSheet(top, true); setTimeout(openNudge, top ? 250 : 0); });
 
 /* ================= МОДУЛИ АРИНЫ ================= */
 /* ================= /МОДУЛИ АРИНЫ ================= */
