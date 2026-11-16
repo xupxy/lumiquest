@@ -51,14 +51,14 @@ body{min-height:100vh;overflow-x:hidden;background:transparent}
 body.lock{overflow:hidden}
 body:before{content:"";position:fixed;inset:-8%;z-index:0;pointer-events:none;
   background:radial-gradient(60% 42% at 8% 4%,var(--m1),transparent 70%),radial-gradient(55% 40% at 100% 30%,var(--m2),transparent 72%),radial-gradient(60% 40% at 0% 78%,var(--m3),transparent 72%),radial-gradient(55% 38% at 100% 100%,var(--m4),transparent 72%),var(--bg);
-  animation:meshDrift 38s ease-in-out infinite alternate}
+  }
 @keyframes meshDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-2.5%,1.5%,0) scale(1.04)}100%{transform:translate3d(2%,-1.5%,0) scale(1.02)}}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
 input,textarea,select{font:inherit;color:var(--ink)}
 .hidden{display:none!important}
 #app{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 16px calc(118px + var(--safeB))}
 .num{font-variant-numeric:tabular-nums}
-.glass{background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.5),var(--sh1)}
+.glass{background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.5),var(--sh1)}
 .dark .glass{box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.05),var(--sh1)}
 
 /* шапка */
@@ -96,7 +96,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .hbig{font:800 40px/1.05 var(--font);letter-spacing:-.045em;margin-top:9px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .hbig.neg{color:#ffd1d1}
 .hrow{display:flex;gap:8px;margin-top:16px}
-.hp{flex:1;min-width:0;padding:10px 12px;border-radius:18px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);display:flex;align-items:center;gap:9px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.hp{flex:1;min-width:0;padding:10px 12px;border-radius:18px;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);display:flex;align-items:center;gap:9px;}
 .hp i{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:rgba(255,255,255,.2)}
 .hp i svg{width:16px;height:16px}
 .hp span{display:block;font:600 11.5px/1 var(--font);opacity:.82}
@@ -260,9 +260,9 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .gsum .sub2{font:600 13px/1.3 var(--font);color:var(--ink2);margin-top:6px}
 
 /* нижня панель вкладок */
-.fadebot{position:fixed;left:0;right:0;bottom:0;z-index:18;pointer-events:none;height:calc(110px + var(--safeB));background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),color-mix(in srgb,var(--bg) 60%,transparent));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);-webkit-mask-image:linear-gradient(transparent,#000 60%);mask-image:linear-gradient(transparent,#000 60%)}
+.fadebot{position:fixed;left:0;right:0;bottom:0;z-index:18;pointer-events:none;height:calc(110px + var(--safeB));background:linear-gradient(color-mix(in srgb,var(--bg) 0%,transparent),color-mix(in srgb,var(--bg) 60%,transparent));-webkit-mask-image:linear-gradient(transparent,#000 60%);mask-image:linear-gradient(transparent,#000 60%)}
 .tabbar{position:fixed;left:50%;bottom:calc(12px + var(--safeB));transform:translateX(-50%);z-index:20;width:min(calc(100% - 24px),440px);height:68px;border-radius:28px;display:flex;align-items:center;padding:0 6px;
-  background:var(--gl2);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.6),var(--sh2)}
+  background:var(--gl2);box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.6),var(--sh2)}
 .dark .tabbar{box-shadow:inset 0 0 0 1px var(--glb),inset 0 1px 0 rgba(255,255,255,.06),var(--sh2)}
 .tbind{position:absolute;top:7px;left:0;height:54px;width:60px;border-radius:21px;background:var(--accSoft);pointer-events:none;opacity:0}
 .tbind.ok{opacity:1}
@@ -290,18 +290,18 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .iconbtn:active{transform:scale(.9)}
 
 /* шторки */
-.veil{position:fixed;inset:0;z-index:40;background:rgba(10,40,32,.24);opacity:0;transition:opacity .45s var(--ease);-webkit-backdrop-filter:blur(8px) saturate(120%);backdrop-filter:blur(8px) saturate(120%)}
+.veil{position:fixed;inset:0;z-index:40;background:rgba(10,40,32,.24);opacity:0;transition:opacity .45s var(--ease);}
 .dark .veil{background:rgba(0,0,0,.55)}
 .veil.on{opacity:1}
 .veil.out{pointer-events:none}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:560px;margin:0 auto;background:var(--bg);background:var(--sheetBg);-webkit-backdrop-filter:blur(40px) saturate(180%);backdrop-filter:blur(40px) saturate(180%);
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-width:560px;margin:0 auto;background:var(--bg);background:var(--sheetBg);
   border-radius:32px 32px 0 0;max-height:94vh;max-height:calc(100dvh - 18px);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;transform:translate3d(0,105%,0);transition:transform .52s cubic-bezier(.32,.72,0,1);
   padding:0 18px calc(22px + var(--safeB));box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 -20px 60px -10px rgba(10,60,50,.25);outline:none}
 .dark .sheet{box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -20px 60px -10px rgba(0,0,0,.6)}
 .sheet.on{transform:none}
 .sheet.out{transition:transform .3s cubic-bezier(.4,0,.85,.55);pointer-events:none}
 .grab{position:sticky;top:0;z-index:6;margin:0 -18px;height:46px;transition:box-shadow .2s}
-.grab.sc{background:var(--sheetBg);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 1px 0 var(--hair)}
+.grab.sc{background:var(--sheetBg);box-shadow:0 1px 0 var(--hair)}
 .grab i{position:absolute;left:50%;top:8px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:var(--ink3);opacity:.5}
 .grab .x{position:absolute;right:14px;top:12px;width:34px;height:34px;border-radius:50%;background:var(--bg2);color:var(--ink2);display:grid;place-items:center}
 .grab .x svg{width:11px;height:11px}
@@ -463,7 +463,7 @@ input[type=date].inp{min-height:50px}
 .cfm .btn+.btn{margin-top:6px}
 
 /* тости */
-.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));z-index:80;display:flex;align-items:center;gap:10px;width:max-content;max-width:min(92vw,440px);padding:6px 18px 6px 6px;border-radius:999px;background:rgba(14,32,27,.82);color:#fff;-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);font:600 14.5px/1.3 var(--font);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 18px 40px -12px rgba(10,40,30,.5);transform:translate(-50%,-160%) scale(.92);opacity:0;transition:transform .6s var(--spring),opacity .3s;pointer-events:none}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top,0px));z-index:80;display:flex;align-items:center;gap:10px;width:max-content;max-width:min(92vw,440px);padding:6px 18px 6px 6px;border-radius:999px;background:rgba(14,32,27,.82);color:#fff;font:600 14.5px/1.3 var(--font);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 18px 40px -12px rgba(10,40,30,.5);transform:translate(-50%,-160%) scale(.92);opacity:0;transition:transform .6s var(--spring),opacity .3s;pointer-events:none}
 .dark .toast{background:rgba(240,255,250,.9);color:#0f1f1a}
 .toast.on{transform:translate(-50%,0) scale(1);opacity:1}
 .toast .ti{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:17px;background:rgba(255,255,255,.16)}
@@ -570,11 +570,11 @@ input[type=date].inp{min-height:50px}
 .wskip{font:700 14px/1 var(--font);color:var(--ink2);padding:10px 4px}
 .wbody.in>*{animation:rise .5s var(--ease) both}
 .wbody.in>:nth-child(2){animation-delay:.05s}.wbody.in>:nth-child(3){animation-delay:.09s}.wbody.in>:nth-child(n+4){animation-delay:.13s}
-.wnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safeB));z-index:20;width:min(calc(100% - 24px),440px);display:flex;gap:8px;padding:7px;border-radius:999px;background:var(--gl2);-webkit-backdrop-filter:blur(26px) saturate(180%);backdrop-filter:blur(26px) saturate(180%);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
+.wnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + var(--safeB));z-index:20;width:min(calc(100% - 24px),440px);display:flex;gap:8px;padding:7px;border-radius:999px;background:var(--gl2);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
 .wnav .btn{min-height:52px}
 .wnav .wback{flex:0 0 auto;width:auto;padding:0 20px}
 .whead{text-align:center;margin:18px 0 18px}
-.wemo{display:inline-grid;place-items:center;width:72px;height:72px;border-radius:50%;font-size:34px;background:var(--gl);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2);animation:float 4s ease-in-out infinite}
+.wemo{display:inline-grid;place-items:center;width:72px;height:72px;border-radius:50%;font-size:34px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2);animation:float 4s ease-in-out infinite}
 .wemo.big{width:96px;height:96px;font-size:46px}
 .whead h2{margin:14px 0 0;font:800 25px/1.15 var(--font);letter-spacing:-.035em}
 .whead p{margin:8px auto 0;color:var(--ink2);font-size:14.5px;line-height:1.45;max-width:330px}
@@ -643,6 +643,179 @@ input[type=date].inp{min-height:50px}
 .wsr b{flex:1;font:700 14.5px/1.2 var(--font)}
 .wsr em{font:800 14.5px/1.2 var(--font);font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
 html[data-theme=winter] .wiz{padding-top:40px}
+
+/* ===== ДИЗАЙН 3 · ФІНТЕХ (швидкий: без розмиття, суцільні поверхні) ===== */
+:root{
+  --bg:#f2f4f3;--surface:#ffffff;--surface2:#f7f9f8;--ink:#0c1613;--ink2:#5d6c66;--ink3:#98a6a0;--line:rgba(12,22,19,.07);--hair:rgba(12,22,19,.06);--bg2:rgba(12,40,30,.05);
+  --card:#fff;--gl:#fff;--gl2:#fff;--glb:rgba(12,22,19,.045);--field:#f3f6f4;--fline:rgba(12,22,19,.09);
+  --sh1:0 1px 2px rgba(16,28,24,.04),0 6px 18px -10px rgba(16,40,32,.14);
+  --sh2:0 2px 6px rgba(16,28,24,.05),0 22px 44px -22px rgba(16,40,32,.28);
+  --acc:#0f9d77;--acc2:#14b8a6;--accInk:#08765a;--accSoft:rgba(16,185,129,.11);
+  --hero:linear-gradient(155deg,#04342c 0%,#075a47 48%,#0c8462 100%);--heroSh:0 24px 48px -24px rgba(4,60,48,.75);
+  --sheetBg:#f6f8f7;--m1:rgba(110,231,183,.30);--m2:rgba(153,246,228,.22);--m3:rgba(253,230,138,.0);--m4:rgba(165,214,255,.0);
+}
+.dark{
+  --bg:#090c0b;--surface:#131816;--surface2:#181e1c;--ink:#eef4f1;--ink2:#9aaaa3;--ink3:#5e6d67;--line:rgba(255,255,255,.07);--hair:rgba(255,255,255,.06);--bg2:rgba(255,255,255,.06);
+  --card:#131816;--gl:#131816;--gl2:#1b2220;--glb:rgba(255,255,255,.05);--field:#1a201e;--fline:rgba(255,255,255,.09);
+  --sh1:0 1px 2px rgba(0,0,0,.3),0 8px 22px -12px rgba(0,0,0,.6);--sh2:0 2px 6px rgba(0,0,0,.35),0 24px 48px -20px rgba(0,0,0,.75);
+  --acc:#34d399;--accInk:#6ee7b7;--accSoft:rgba(52,211,153,.12);
+  --hero:linear-gradient(155deg,#032a23 0%,#064c3c 50%,#0a6e53 100%);--heroSh:0 24px 48px -24px rgba(0,0,0,.9);
+  --sheetBg:#101513;--m1:rgba(16,185,129,.14);--m2:rgba(20,184,166,.08);--m3:rgba(0,0,0,0);--m4:rgba(0,0,0,0);
+}
+body:before{inset:0;background:radial-gradient(90% 40% at 15% 0%,var(--m1),transparent 70%),radial-gradient(70% 34% at 100% 6%,var(--m2),transparent 72%),var(--bg)}
+.glass{background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+.dark .glass{box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+#app{padding:0 16px calc(112px + var(--safeB))}
+/* шапка */
+.top{padding:18px 2px 0;gap:12px}
+.brand{width:44px;height:44px;border-radius:14px;box-shadow:0 6px 16px -8px rgba(13,148,136,.55),0 0 0 1px rgba(255,255,255,.7) inset}
+.hello{font:600 12.5px/1.2 var(--font);color:var(--ink3)}
+.top h1{font:800 23px/1.1 var(--font);letter-spacing:-.035em;margin-top:3px}
+.iconbtn{width:42px;height:42px;background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+/* героїчна картка: «аврора» рухається лише transform-ом */
+.hero{margin-top:16px;border-radius:28px;padding:20px 20px 18px;background:var(--hero);box-shadow:var(--heroSh),inset 0 1px 0 rgba(255,255,255,.14);color:#fff}
+.hero:before,.hero:after{display:none}
+.hero .aurora{position:absolute;inset:-60% -40%;z-index:-1;pointer-events:none;background:radial-gradient(24% 30% at 62% 40%,rgba(52,211,153,.6),transparent 70%),radial-gradient(26% 32% at 40% 64%,rgba(45,212,191,.42),transparent 70%),radial-gradient(22% 26% at 70% 72%,rgba(250,204,21,.2),transparent 70%);animation:aur 16s ease-in-out infinite alternate;will-change:transform}
+@keyframes aur{0%{transform:translate3d(-6%,-4%,0) rotate(0)}50%{transform:translate3d(5%,3%,0) rotate(12deg)}100%{transform:translate3d(-2%,6%,0) rotate(-8deg)}}
+.hero:after{content:"";display:block;position:absolute;left:0;top:0;right:0;bottom:0;width:auto;height:auto;z-index:-1;border-radius:inherit;background:linear-gradient(180deg,rgba(255,255,255,.08),transparent 45%);pointer-events:none}
+.hrow1{display:flex;align-items:center;justify-content:space-between}
+.hlbl{font:600 13px/1 var(--font);opacity:.78;letter-spacing:.01em}
+.hacc{font:700 11.5px/1 var(--font);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.hbig{display:flex;align-items:baseline;margin-top:12px;font:800 46px/1 var(--font);letter-spacing:-.05em}
+.hbig small{font:700 24px/1 var(--font);letter-spacing:-.03em;opacity:.62;margin-left:1px}
+.hbig.neg{color:#ffc9c9}
+.hchips{margin-top:16px;gap:6px}
+.hchip{background:rgba(255,255,255,.11);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);font:600 12px/1.1 var(--font);padding:7px 11px}
+/* банківські картки */
+.bcards{display:flex;gap:10px;overflow-x:auto;margin:14px -16px 0;padding:4px 16px 14px;scrollbar-width:none;overscroll-behavior-x:contain}
+.bcards::-webkit-scrollbar{display:none}
+.bcard{flex:none;width:176px;height:111px;border-radius:18px;padding:12px 14px;position:relative;overflow:hidden;color:#fff;text-align:left;display:flex;flex-direction:column;
+  background:radial-gradient(120% 90% at 100% 0%,rgba(255,255,255,.26),transparent 55%),linear-gradient(140deg,var(--g1),var(--g2));
+  box-shadow:0 12px 22px -14px var(--g2),0 2px 4px rgba(0,0,0,.08),inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 0 1px rgba(255,255,255,.08);transition:transform .35s var(--spring)}
+.bcard:after{content:"";position:absolute;right:-30px;bottom:-46px;width:120px;height:120px;border-radius:50%;border:16px solid rgba(255,255,255,.07);pointer-events:none}
+.bcard:active{transform:scale(.96)}
+.bc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.bc-name{font:700 13px/1.15 var(--font);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.15)}
+.bc-emo{font-size:17px;line-height:1;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.bc-chip{width:26px;height:19px;border-radius:5px;margin-top:9px;background:linear-gradient(135deg,#fde68a,#d4a017 55%,#f5d77a);box-shadow:inset 0 0 0 1px rgba(120,80,0,.25);position:relative;opacity:.92}
+.bc-chip:before{content:"";position:absolute;left:8px;right:8px;top:0;bottom:0;border-left:1px solid rgba(120,80,0,.35);border-right:1px solid rgba(120,80,0,.35)}
+.bc-bal{margin-top:auto;font:800 19px/1.05 var(--font);letter-spacing:-.035em;white-space:nowrap;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.18)}
+.bc-bal.neg{color:#ffe0e0}
+.bc-sub{font:600 10.5px/1.2 var(--font);opacity:.78;margin-top:3px;white-space:nowrap}
+.bcard.add{width:112px;align-items:center;justify-content:center;gap:8px;background:var(--surface);color:var(--ink2);box-shadow:0 0 0 1.5px var(--fline) inset}
+.bcard.add:after{display:none}
+.bc-plus{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:var(--accSoft);color:var(--accInk)}
+.bcard.add .bc-name{font-weight:600;font-size:12.5px;text-shadow:none;white-space:normal;text-align:center}
+/* швидкі дії */
+.qa{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:2px}
+.qa button{display:flex;flex-direction:column;align-items:center;gap:7px;font:600 12px/1 var(--font);color:var(--ink2);padding:4px 0}
+.qa i{position:relative;width:54px;height:54px;border-radius:18px;display:grid;place-items:center;background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1);color:var(--accInk);transition:transform .3s var(--spring)}
+.dark .qa i{color:var(--acc)}
+.qa i svg{width:23px;height:23px}
+.qa .qi-exp{color:#e5484d}.qa .qi-inc{color:var(--inc)}
+.qa i b{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#ef4444;color:#fff;font:800 11px/20px var(--font);box-shadow:0 0 0 2px var(--bg)}
+.qa button:active i{transform:scale(.9)}
+.mailcard{display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;padding:12px 14px 12px 12px;border-radius:20px;text-align:left}
+.mailcard .mi{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:linear-gradient(140deg,#fff1c2,#ffd6a5)}
+.dark .mailcard .mi{background:linear-gradient(140deg,rgba(250,204,21,.25),rgba(251,146,60,.25))}
+.mailcard .mt2{flex:1;min-width:0}
+.mailcard b{display:block;font:700 14.5px/1.2 var(--font)}
+.mailcard small{display:block;font:500 12.5px/1.3 var(--font);color:var(--ink2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* місяць */
+.msw{margin-top:22px;padding:4px;background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+.msw .mt{font:700 15px/1 var(--font)}
+.mcard{border-radius:22px;padding:16px}
+.mc3 b{font-size:18px}
+/* секції й списки */
+.sec{margin-top:26px}
+.sh{margin:0 4px 10px}
+.sh h2{font:800 18px/1.15 var(--font);letter-spacing:-.03em}
+.dlist{border-radius:22px;padding:4px 4px}
+.tx,.sub{padding:11px 10px;border-radius:16px;gap:12px}
+.tx+.tx:before,.sub+.sub:before{left:64px;right:10px}
+.ce{width:42px;height:42px;border-radius:13px;font-size:20px;background:color-mix(in srgb,var(--c,#94a3b8) 13%,var(--surface));box-shadow:none}
+.dark .ce{background:color-mix(in srgb,var(--c,#94a3b8) 20%,var(--surface))}
+.sav{width:42px;height:42px;border-radius:13px;font-size:20px}
+.tx .tm b,.sub .sm b{font:600 15px/1.25 var(--font)}
+.tx .ta,.sub .sr b{font:700 15px/1.2 var(--font)}
+.tx .ta:not(.inc):not(.tr){color:var(--ink)}
+.dh{margin:0 8px 8px;font:600 12.5px/1 var(--font);color:var(--ink3);text-transform:none}
+.dh b{font:700 13px/1 var(--font);color:var(--ink2)}
+.day{margin-top:20px;content-visibility:auto;contain-intrinsic-size:auto 320px}
+.sec{content-visibility:auto;contain-intrinsic-size:auto 400px}
+.more{text-align:center;padding:18px;color:var(--ink3);font:600 13px/1 var(--font)}
+.lg .ce{border-radius:11px}
+.lim,.limempty,.gcard,.addrow,.rteaser{border-radius:20px}
+.when{font:700 11px/1 var(--font)}
+.fseg{background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+.fseg button.on{background:var(--bg2);box-shadow:none}
+.dark .fseg button.on{background:rgba(255,255,255,.08)}
+/* панель вкладок — одна з трьох поверхонь із реальним розмиттям */
+.tabbar{height:64px;border-radius:26px;background:color-mix(in srgb,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(18px) saturate(170%);backdrop-filter:blur(18px) saturate(170%);box-shadow:0 0 0 1px var(--glb),0 12px 32px -12px rgba(10,30,24,.28)}
+.dark .tabbar{box-shadow:0 0 0 1px var(--glb),0 12px 32px -12px rgba(0,0,0,.8)}
+.tbind{top:6px;height:52px;border-radius:20px;background:var(--accSoft)}
+.tb{font:600 10.5px/1 var(--font)}
+.tb svg{width:23px;height:23px}
+.tbadd{width:56px;height:56px;margin-top:-28px;box-shadow:var(--fabSh),0 0 0 5px var(--bg)}
+.tbadd:after{animation:none;opacity:.5}
+.fadebot{background:linear-gradient(transparent,var(--bg) 85%);-webkit-mask-image:none;mask-image:none;height:calc(96px + var(--safeB))}
+/* шторки: суцільні */
+.veil{background:rgba(4,14,11,.42)}
+.dark .veil{background:rgba(0,0,0,.62)}
+.sheet{background:var(--sheetBg);box-shadow:0 -12px 40px -12px rgba(0,0,0,.25);border-radius:28px 28px 0 0}
+.dark .sheet{background:var(--sheetBg);box-shadow:0 -12px 40px -12px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
+.grab.sc{background:var(--sheetBg);box-shadow:0 1px 0 var(--hair)}
+.sheet h3{font:800 24px/1.15 var(--font)}
+.btn{background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+.btn.pri{background:var(--fab);box-shadow:var(--fabSh)}
+.btn.ghost,.btn.danger{background:transparent;box-shadow:none}
+.kpk{background:var(--surface);box-shadow:0 0 0 1px var(--glb),0 1px 2px rgba(0,0,0,.04)}
+.dark .kpk{background:var(--surface2)}
+.cc,.chip,.ach{background:var(--surface)}
+.dark .cc,.dark .chip,.dark .ach{background:var(--surface2)}
+.toast{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+/* пошта */
+.mlist{display:grid;gap:10px;margin-top:14px}
+.mrow{border-radius:20px;padding:12px;transition:opacity .25s,transform .25s}
+.mrow.gone{opacity:0;transform:translateX(30px)}
+.mh{display:flex;align-items:center;gap:11px}
+.mm{flex:1;min-width:0}
+.mm b{display:block;font:700 15px/1.2 var(--font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mm small{display:block;font:500 12.5px/1.3 var(--font);color:var(--ink2);margin-top:2px}
+.ma{font:800 16px/1 var(--font);letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.msubj{font:500 12.5px/1.35 var(--font);color:var(--ink3);margin:8px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mdup{font:600 12px/1.3 var(--font);color:var(--warn);margin:6px 2px 0}
+.mbtns{display:flex;gap:6px;margin-top:10px}
+.mbtns .btn{min-height:42px;padding:8px 12px;font-size:14px;flex:1 1 0;width:auto;white-space:nowrap}
+.mbtns .btn.pri{flex-grow:1.5}
+.mx{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--bg2);color:var(--ink3)}
+.mx svg{width:12px;height:12px}
+.mx:active{transform:scale(.9)}
+.mstat{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;margin-top:6px}
+.mstat .ri{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:var(--bg2);flex:none}
+.mstat b{display:block;font:700 15px/1.2 var(--font)}
+.mstat small{display:block;font:500 12.5px/1.35 var(--font);color:var(--ink2);margin-top:2px}
+.steps{list-style:none;counter-reset:st;padding:0;margin:14px 0 0;display:grid;gap:10px}
+.steps li{counter-increment:st;position:relative;padding:12px 14px 12px 50px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh1);font:500 13.5px/1.45 var(--font);color:var(--ink2)}
+.steps li:before{content:counter(st);position:absolute;left:12px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--accSoft);color:var(--accInk);font:800 13px/26px var(--font);text-align:center}
+.steps li b{color:var(--ink)}
+.steps li .btn{margin-top:10px;min-height:42px;font-size:14px}
+.steps code{font:600 12.5px/1 ui-monospace,Menlo,monospace;padding:2px 6px;border-radius:6px;background:var(--bg2);color:var(--ink)}
+/* майстер */
+.wnav{background:color-mix(in srgb,var(--surface) 80%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.wemo{background:var(--surface);box-shadow:0 0 0 1px var(--glb),var(--sh2)}
+.wlogo{border-radius:30px}
+.arow,.prow,.wc,.dform,.wsum,.wlist,.wtotal{box-shadow:0 0 0 1px var(--glb),var(--sh1)}
+.skins{display:flex;gap:8px;flex-wrap:wrap}
+.skins button{width:52px;height:34px;border-radius:9px;background:linear-gradient(140deg,var(--g1),var(--g2));box-shadow:inset 0 1px 0 rgba(255,255,255,.3);transition:transform .3s var(--spring)}
+.skins button.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc);transform:scale(1.05)}
+.dt:after{display:none}
+.dt{padding:16px}
+.dt b{font-size:26px}
+.shero .orb{background:none}
+.mbar i,.lim .lb i{transform-origin:left center;transition:transform .9s var(--ease)!important}
+/* теми — спокійніше */
+html[data-theme]:not([data-theme=classic]) body:before{opacity:.75}
 /* ===== ТЕМИ ===== */
 #thfx{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;opacity:0;transition:opacity .9s ease}
 #thfx.on{opacity:1}
@@ -656,7 +829,7 @@ html[data-theme=winter] .wiz{padding-top:40px}
 @keyframes thBulb{0%{opacity:.62}100%{opacity:1}}
 @keyframes thGarIn{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
 html[data-theme=winter]{--bg:#edf2fa;--m1:rgba(170,198,255,.6);--m2:rgba(153,246,228,.42);--m3:rgba(214,196,255,.42);--m4:rgba(186,230,255,.5);--hero:linear-gradient(145deg,#1e3a8a 0%,#1d6f8f 52%,#14b8a6 120%);--heroSh:0 26px 44px -22px rgba(40,80,170,.6)}
-html.dark[data-theme=winter]{--bg:#0b1124;--m1:rgba(80,120,255,.24);--m2:rgba(20,184,166,.16);--m3:rgba(150,90,220,.16);--m4:rgba(90,190,255,.14);--hero:linear-gradient(145deg,#172554 0%,#14506b 55%,#0f8a7c 130%);--sheetBg:color-mix(in srgb,#141b33 90%,transparent);--card:#151c33;--gl:color-mix(in srgb,#161e38 62%,transparent);--gl2:color-mix(in srgb,#161e38 88%,transparent)}
+html.dark[data-theme=winter]{--bg:#0b1124;--m1:rgba(80,120,255,.24);--m2:rgba(20,184,166,.16);--m3:rgba(150,90,220,.16);--m4:rgba(90,190,255,.14);--hero:linear-gradient(145deg,#172554 0%,#14506b 55%,#0f8a7c 130%);--surface:#121828;--surface2:#171e30;--card:#121828;--gl:#121828;--gl2:#171e30;--sheetBg:#0f1424}
 html[data-theme=winter] .top{padding-top:40px}
 html[data-theme=spring]{--bg:#f3f7ef;--m1:rgba(255,190,210,.55);--m2:rgba(170,232,204,.55);--m3:rgba(255,236,190,.45);--m4:rgba(200,236,255,.35)}
 html.dark[data-theme=spring]{--bg:#0f1712;--m1:rgba(244,128,162,.16);--m2:rgba(80,200,150,.2);--m3:rgba(255,220,120,.07);--m4:rgba(90,180,220,.1)}
@@ -769,13 +942,19 @@ const CAT_EXP = [
 const CAT_INC = [["salary", "💼", "Зарплата", "", "#10b981"], ["side", "💻", "Підробіток", "", "#06b6d4"], ["gift_in", "🎁", "Подарунок", "", "#f472b6"], ["other_in", "💰", "Інше", "", "#84cc16"]];
 const PALETTE = ["#a855f7", "#f97316", "#06b6d4", "#84cc16", "#e11d48", "#0891b2", "#d946ef", "#65a30d"];
 const mkCat = (a, kind) => ({ key: a[0], emo: a[1], name: a[2], acc: a[3] || a[2].toLowerCase(), color: a[4], kind });
+let CATC = { ref: undefined, exp: null, inc: null, map: null };
 function cats(kind) {
+  if (CATC.ref !== S.meta.customCats || !CATC.exp) { CATC = { ref: S.meta.customCats, exp: buildCats("exp"), inc: buildCats("inc"), map: null }; CATC.map = {}; CATC.exp.concat(CATC.inc).forEach((c) => { if (!CATC.map[c.key]) CATC.map[c.key] = c; }); }
+  return CATC[kind];
+}
+function buildCats(kind) {
   const base = (kind === "inc" ? CAT_INC : CAT_EXP).map((a) => mkCat(a, kind));
   const custom = (S.meta.customCats || []).filter((c) => c.kind === kind).map((c, i) => ({ key: c.key, emo: c.emo || "🏷️", name: c.name, acc: c.name.toLowerCase(), color: c.color || PALETTE[i % PALETTE.length], kind, custom: true }));
   if (kind === "exp") { const oth = base.pop(); return base.concat(custom, [oth]); }
   const oth = base.pop(); return base.concat(custom, [oth]);
 }
-function cat(key) { return cats("exp").concat(cats("inc")).find((c) => c.key === key) || { key, emo: "📦", name: "Інше", acc: "інше", color: "#94a3b8", kind: "exp" }; }
+const CAT_OTHER = { key: "other", emo: "📦", name: "Інше", acc: "інше", color: "#94a3b8", kind: "exp" };
+function cat(key) { cats("exp"); return CATC.map[key] || CAT_OTHER; }
 
 /* ================= курси валют ================= */
 const CURS = ["€", "₴", "$", "zł", "£", "₽"];
@@ -799,7 +978,7 @@ const RATES = (() => {
         if (r && r.UAH && r.USD) {
           const keep = {}; Object.keys(FALLBACK).forEach((k) => { if (r[k]) keep[k] = r[k]; });
           rates = { at: Date.now(), day: today(), r: Object.assign({}, FALLBACK, keep, { EUR: 1 }) }; LS.set("mn_fx", rates);
-          if (S.loaded) render(); return;
+          if (S.loaded) { MS = null; AB = null; scheduleRender(); } return;
         }
       } catch (e) {}
     }
@@ -813,14 +992,14 @@ const RATES = (() => {
     rate(c) { return R()[SYM[c]]; },
   };
 })();
-function mainCur() { return (S.meta && S.meta.cur) || LS.get("mn_cur", "€"); }
+let CUR0 = null;
+function mainCur() { return (S.meta && S.meta.cur) || CUR0 || (CUR0 = LS.get("mn_cur", "€")); }
 const toMain = (amt, cur) => RATES.conv(+amt || 0, cur || "€", mainCur());
 const txMain = (t) => toMain(t.amt, t.cur);
 
 /* ================= сховище ================= */
 function makeLocalStore() {
   const KEY = "mn_local_v2";
-  // старые примерные данные первой версии — стираем, чтобы не путались с настоящими
   try { localStorage.removeItem("mn_demo_db"); } catch (e) {}
   const read = () => LS.get(KEY, null) || { items: {}, meta: {} };
   let subs = [], t = 0;
@@ -852,6 +1031,7 @@ async function makeCloudStore(cfg) {
       const st = { items: {}, meta: {} }; let gi = false, gm = false;
       const push = () => { if (gi && gm) onData({ items: st.items, meta: st.meta }); };
       fs.onSnapshot(fs.collection(db, "lists", L, "items"), { includeMetadataChanges: true }, (snap) => {
+        if (gi && !snap.docChanges().length) { onStatus(snap.metadata.fromCache ? "cache" : "on"); return; }
         const items = {}; snap.forEach((d) => { items[d.id] = Object.assign({ id: d.id }, d.data()); });
         st.items = items; gi = true; push(); onStatus(snap.metadata.fromCache ? "cache" : "on");
       }, (err) => onStatus("err", err));
@@ -1204,15 +1384,48 @@ function limitState(k, spent, ym) {
   else { const dl = daysIn(ym) - new Date().getDate() + 1; msg = "На " + c.acc + " лишилось " + money(left) + " до кінця місяця" + (dl > 1 && pct >= 50 ? " · ~" + money(left / dl) + "/день" : ""); }
   return { k, c, lim, spent, left, pct, cls, msg };
 }
+const SKINS = {
+  mono: ["#46464d", "#0d0d10", "Чорна"], privat: ["#63c94f", "#16702b", "Зелена"], cash: ["#3fd394", "#0a7650", "Мʼятна"], save: ["#ff92c4", "#be1d5b", "Рожева"],
+  teal: ["#2fd6c3", "#0b6e66", "Бірюзова"], indigo: ["#8d93fa", "#3f37c9", "Індиго"], sunset: ["#ffb36b", "#df4f25", "Захід"], sky: ["#78cdfa", "#0b5f9a", "Небо"], plum: ["#c48bfb", "#6d1fc0", "Слива"], gold: ["#f7d36b", "#a8650f", "Золото"],
+};
+const SKIN_ORDER = ["teal", "indigo", "sunset", "sky", "plum", "gold", "mono", "privat", "cash", "save"];
+function skinOf(a) {
+  if (a.skin && SKINS[a.skin]) return a.skin;
+  const n = String(a.name || "").toLowerCase();
+  if (/моно|mono/.test(n)) return "mono"; if (/приват|privat/.test(n)) return "privat"; if (/готів|кеш|cash/.test(n)) return "cash"; if (/накоп|скарб|збер|save|копил/.test(n)) return "save";
+  return ["teal", "indigo", "sunset", "sky", "plum", "gold"][(a.order || 0) % 6];
+}
+const skinVars = (k) => "--g1:" + SKINS[k][0] + ";--g2:" + SKINS[k][1];
+// велика сума: копійки дрібніше
+function bigMoney(n, cur) { const s = money(n, cur), m = s.match(/^(.*?)(,\d\d)?(\s\S+)$/); return m ? "<span>" + m[1] + "</span><small>" + (m[2] || "") + m[3] + "</small>" : s; }
 function heroHtml() {
   const total = totalMoney(), L = accs(), np = nextPay(), T = debtTotals();
   let chips = "";
-  if (np) { const n = dayDiff(today(), np.d); chips += '<span class="hchip">💼 ' + (n === 0 ? esc(np.x.name || "Зарплата") + " сьогодні" : "Наступна зарплата " + inDays(n)) + " · +" + money(np.x.amt, np.x.cur, { r: 1 }) + "</span>"; }
-  if (T.owe > 0.004) chips += '<span class="hchip">🤝 Я винен ' + money(T.owe, { r: 1 }) + "</span>";
-  if (T.lent > 0.004) chips += '<span class="hchip">🫴 Мені винні ' + money(T.lent, { r: 1 }) + "</span>";
-  const strip = '<div class="accs">' + L.map((a) => { const b = accBal(a), c = a.cur || "€"; return '<button class="acard" data-acc="' + esc(a.id) + '"><span class="ae">' + esc(a.emo || "💳") + '</span><span class="an">' + esc(a.name) + '</span><b class="' + (b < 0 ? "neg" : "") + '">' + money(b, c) + "</b>" + (c !== mainCur() ? "<small>≈ " + money(RATES.conv(b, c, mainCur()), { r: 1 }) + "</small>" : "") + "</button>"; }).join("") +
-    '<button class="acard add" data-act="accadd" aria-label="Додати рахунок"><span class="ae">＋</span><span class="an">Рахунок</span></button></div>';
-  return '<div class="hero"><span class="coin" aria-hidden="true">' + esc(mainCur()) + '</span><div class="hlbl">Усього грошей · ' + L.length + " " + plural(L.length, ["рахунок", "рахунки", "рахунків"]) + '</div><div class="hbig' + (total < 0 ? " neg" : "") + '" data-count="' + total.toFixed(2) + '">' + money(total) + "</div>" + (chips ? '<div class="hchips">' + chips + "</div>" : "") + strip + "</div>";
+  if (np) { const n = dayDiff(today(), np.d); chips += '<span class="hchip">💼 ' + (n === 0 ? esc(np.x.name || "Зарплата") + " сьогодні" : "Зарплата " + inDays(n)) + "</span>"; }
+  if (T.owe > 0.004) chips += '<span class="hchip">Я винен ' + money(T.owe, { r: 1 }) + "</span>";
+  if (T.lent > 0.004) chips += '<span class="hchip">Мені винні ' + money(T.lent, { r: 1 }) + "</span>";
+  return '<div class="hero"><i class="aurora" aria-hidden="true"></i><div class="hrow1"><span class="hlbl">Усього грошей</span><span class="hacc">' + L.length + " " + plural(L.length, ["рахунок", "рахунки", "рахунків"]) + '</span></div><div class="hbig' + (total < 0 ? " neg" : "") + '" data-count="' + total.toFixed(2) + '">' + bigMoney(total) + "</div>" + (chips ? '<div class="hchips">' + chips + "</div>" : "") + "</div>";
+}
+function cardsHtml() {
+  const L = accs(), da = defAcc();
+  return '<div class="bcards">' + L.map((a) => { const b = accBal(a), c = a.cur || "€", k = skinOf(a);
+    return '<button class="bcard" data-acc="' + esc(a.id) + '" style="' + skinVars(k) + '"><span class="bc-top"><span class="bc-name">' + esc(a.name) + '</span><span class="bc-emo">' + esc(a.emo || "💳") + '</span></span><span class="bc-chip" aria-hidden="true"></span><span class="bc-bal' + (b < 0 ? " neg" : "") + '">' + money(b, c) + '</span><span class="bc-sub">' + (c !== mainCur() ? "≈ " + money(RATES.conv(b, c, mainCur()), { r: 1 }) : CUR_NAME[c] || c) + (da && da.id === a.id && L.length > 1 ? " · основний" : "") + "</span></button>"; }).join("") +
+    '<button class="bcard add" data-act="accadd" aria-label="Додати рахунок"><span class="bc-plus">＋</span><span class="bc-name">Новий рахунок</span></button></div>';
+}
+const QA_IC = {
+  exp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>',
+  inc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>',
+  tr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h14l-4-4M20 16H6l4 4"/></svg>',
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg>',
+};
+function quickHtml() {
+  const n = mailNew().length;
+  return '<div class="qa">' + [["qexp", "exp", "Витрата"], ["qinc", "inc", "Дохід"], ["qtr", "tr", "Переказ"], ["mail", "mail", "Пошта"]].map(([act, ic, l]) => '<button data-act="' + act + '"><i class="qi-' + ic + '">' + QA_IC[ic] + (act === "mail" && n ? "<b>" + n + "</b>" : "") + "</i><span>" + l + "</span></button>").join("") + "</div>";
+}
+function mailCardHtml() {
+  const L = mailNew(); if (!L.length) return "";
+  const prev = L.slice(0, 2).map((m) => esc(m.merchant || "Лист") + (m.amount ? " " + money(+m.amount, m.cur || "€") : "")).join(" · ");
+  return '<button class="mailcard glass" data-act="mail"><span class="mi">📬</span><span class="mt2"><b>З пошти: ' + L.length + " " + plural(L.length, ["новий чек", "нові чеки", "нових чеків"]) + "</b><small>" + prev + '</small></span><span class="chev">' + IC.r + "</span></button>";
 }
 function monthCardHtml(st) {
   const ym = st.ym, isCur = ym === ymNow(), plan = salMonthly();
@@ -1250,7 +1463,7 @@ function eventRow(ico, color, title, sub, amt, when, n, attr) {
 }
 function homeHtml() {
   const ym = S.month, st = monthStats(ym), isCur = ym === ymNow();
-  let h = heroHtml() + mswHtml() + monthCardHtml(st);
+  let h = heroHtml() + cardsHtml() + quickHtml() + mailCardHtml() + mswHtml() + monthCardHtml(st);
   // найближчі події: зарплата, підписки, борги
   if (isCur) {
     const t = today(), ev = [];
@@ -1299,13 +1512,34 @@ function opsHtml() {
     .sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
   const filt = f.cat || f.kind !== "all" || fa;
   if (!list.length) return h + emptyHtml(f.cat ? cat(f.cat).emo : fa ? esc(fa.emo || "💳") : "🧾", filt ? "Тут порожньо" : "Ще немає операцій", filt ? "За цим фільтром у " + MON_L[+ym.slice(5) - 1] + " нічого немає." : "Записуй витрати й доходи — і я покажу, куди йдуть гроші.", '<button class="btn pri" data-act="add">' + IC.plus + "Додати операцію</button>");
-  const groups = {}; list.forEach((t) => (groups[t.date] = groups[t.date] || []).push(t));
-  Object.keys(groups).forEach((d) => {
-    const g = groups[d]; let e2 = 0, i2 = 0; g.forEach((t) => { if (t.kind === "inc") i2 += txMain(t); else if (t.kind === "exp") e2 += txMain(t); });
-    const tot = [e2 ? "−" + money(e2) : "", i2 ? '<span style="color:var(--inc)">+' + money(i2) + "</span>" : ""].filter(Boolean).join(" · ");
-    h += '<div class="day"><div class="dh"><b>' + dayLabel(d) + "</b><span>" + tot + '</span></div><div class="dlist glass">' + g.map(txRow).join("") + "</div></div>";
-  });
+  // підсумки дня рахуємо один раз; рядки — порціями по 60 (решта дописується під час прокрутки)
+  const tot = {}; list.forEach((t) => { const x = tot[t.date] || (tot[t.date] = [0, 0]); if (t.kind === "inc") x[1] += txMain(t); else if (t.kind === "exp") x[0] += txMain(t); });
+  UI.ops = { list, tot, n: Math.min(list.length, 60) };
+  const c = opsChunk(0, UI.ops.n);
+  h += c.h + moreHtml();
   return h;
+}
+
+function dayHtml(d, rows) {
+  const x = UI.ops.tot[d] || [0, 0];
+  const tot = [x[0] ? "−" + money(x[0]) : "", x[1] ? '<span style="color:var(--inc)">+' + money(x[1]) + "</span>" : ""].filter(Boolean).join(" · ");
+  return '<div class="day"><div class="dh"><b>' + dayLabel(d) + "</b><span>" + tot + '</span></div><div class="dlist glass">' + rows + "</div></div>";
+}
+function opsChunk(from, to) {
+  const L = UI.ops.list; let cont = "", h = "", i = from;
+  while (from > 0 && i < to && i < L.length && L[i].date === L[from - 1].date) { cont += txRow(L[i]); i++; }
+  while (i < to && i < L.length) { const d = L[i].date; let rows = ""; while (i < to && i < L.length && L[i].date === d) { rows += txRow(L[i]); i++; } h += dayHtml(d, rows); }
+  return { cont, h };
+}
+function moreHtml() { const r = UI.ops.list.length - UI.ops.n; return r > 0 ? '<div class="more" id="opsMore">Ще ' + r + " " + plural(r, ["запис", "записи", "записів"]) + "…</div>" : ""; }
+// дописуємо наступну порцію без перемальовування всього списку
+function opsAppend() {
+  const more = $("#opsMore"); if (!more || !UI.ops) return;
+  const from = UI.ops.n, to = Math.min(UI.ops.list.length, from + 40), c = opsChunk(from, to);
+  if (c.cont) { const lists = $$(".day .dlist"); if (lists.length) lists[lists.length - 1].insertAdjacentHTML("beforeend", c.cont); }
+  more.insertAdjacentHTML("beforebegin", c.h); UI.ops.n = to;
+  const r = UI.ops.list.length - to;
+  if (r > 0) { more.textContent = "Ще " + r + " " + plural(r, ["запис", "записи", "записів"]) + "…"; moreIO.observe(more); } else more.remove();
 }
 
 /* ---- Підписки ---- */
@@ -1383,8 +1617,10 @@ function goalHint(g) {
 /* ---- головний рендер ---- */
 function skeleton() { return topHtml() + '<div class="sk" style="height:230px;margin-top:18px;border-radius:30px"></div><div class="sk" style="height:50px;margin-top:14px;border-radius:999px"></div><div class="sk" style="height:110px;margin-top:12px"></div><div class="sk" style="height:300px;margin-top:24px;border-radius:26px"></div>'; }
 const wizActive = () => S.loaded && !S.meta.setupDone;
+let RQ = 0;
+function scheduleRender() { if (RQ) return; RQ = requestAnimationFrame(() => { RQ = 0; render(); }); }
 function render(force) {
-  MS = null; AB = null;
+  if (RQ) { cancelAnimationFrame(RQ); RQ = 0; }
   const app = $("#app");
   if (!S.loaded) { app.innerHTML = skeleton(); return; }
   const wz = wizActive();
@@ -1400,11 +1636,18 @@ function render(force) {
   syncTabbar(false);
   afterRender(enter);
 }
+let moreIO = null;
 function afterRender(enter) {
+  const more = $("#opsMore");
+  if (more && "IntersectionObserver" in window) {
+    if (moreIO) moreIO.disconnect();
+    moreIO = new IntersectionObserver((en) => { if (en.some((x) => x.isIntersecting)) { moreIO.disconnect(); requestAnimationFrame(opsAppend); } }, { rootMargin: "800px" });
+    moreIO.observe(more);
+  }
   if (enter && !reduceMotion()) {
     $$(".dwrap circle.seg").forEach((c) => { const da = c.getAttribute("stroke-dasharray"); c.setAttribute("stroke-dasharray", "0 999"); requestAnimationFrame(() => requestAnimationFrame(() => c.setAttribute("stroke-dasharray", da))); });
     $$(".ring .rp").forEach((c) => { const o = c.getAttribute("stroke-dashoffset"); c.setAttribute("stroke-dashoffset", c.dataset.c); requestAnimationFrame(() => requestAnimationFrame(() => c.setAttribute("stroke-dashoffset", o))); });
-    $$(".mbar i,.lim .lb i").forEach((i) => { const w = i.style.width; i.style.width = "0%"; requestAnimationFrame(() => requestAnimationFrame(() => (i.style.width = w))); });
+    $$(".mbar i,.lim .lb i").forEach((i) => { i.style.transform = "scaleX(0)"; requestAnimationFrame(() => requestAnimationFrame(() => (i.style.transform = ""))); });
   }
   const hb = $(".hbig[data-count]");
   if (hb) {
@@ -1412,7 +1655,7 @@ function afterRender(enter) {
     UI.bal.total = to;
     if (from != null && from !== to && !reduceMotion()) {
       const t0 = performance.now(), D = 650;
-      const step = (now) => { const p = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - p, 3), v = from + (to - from) * e; if (!hb.isConnected) return; hb.textContent = money(p < 1 ? v : to); if (p < 1) requestAnimationFrame(step); };
+      const step = (now) => { const p = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - p, 3), v = from + (to - from) * e; if (!hb.isConnected) return; hb.innerHTML = bigMoney(p < 1 ? v : to); if (p < 1) requestAnimationFrame(step); };
       requestAnimationFrame(step);
     }
   }
@@ -1427,10 +1670,10 @@ function syncTabbar(animate) {
 }
 function setTab(t) {
   if (t === S.tab) { window.scrollTo({ top: 0, behavior: reduceMotion() ? "auto" : "smooth" }); return; }
-  UI.scroll[S.tab] = window.scrollY; S.tab = t; UI.enter = true; haptic("sel"); SFX.play("tick");
+  UI.scroll[S.tab] = window.scrollY; S.tab = t; UI.enter = true; UI.opsLimit = 60; haptic("sel"); SFX.play("tick");
   render(); syncTabbar(true); window.scrollTo(0, UI.scroll[t] || 0);
 }
-function setMonth(ym) { if (ym > ymNow()) return; S.month = ym; UI.enter = true; haptic("sel"); render(); }
+function setMonth(ym) { if (ym > ymNow()) return; S.month = ym; UI.enter = true; UI.opsLimit = 60; haptic("sel"); render(); }
 
 /* ================= швидке введення операції ================= */
 function achipsHtml(attr, sel, exclude, opt) {
@@ -1439,10 +1682,10 @@ function achipsHtml(attr, sel, exclude, opt) {
 function openTx(t, preset) {
   preset = preset || {};
   const edit = !!t, da = defAcc();
-  const st = { kind: t ? t.kind || "exp" : preset.kind || "exp", v: t ? kpFrom(t.amt) : "", cur: t ? t.cur || "€" : null, cat: t ? t.cat : null, date: t ? t.date : today(), note: t ? t.note || "" : "", showCur: false,
+  const st = { kind: t ? t.kind || "exp" : preset.kind || "exp", v: t ? kpFrom(t.amt) : preset.amt ? kpFrom(preset.amt) : "", cur: t ? t.cur || "€" : preset.cur || null, cat: t ? t.cat : preset.cat || null, date: t ? t.date : preset.date && preset.date <= today() ? preset.date : today(), note: t ? t.note || "" : preset.note || "", showCur: false,
     acc: t ? (t.kind === "tr" ? t.acc : txAccId(t)) : preset.acc || S.filter.acc || (da && da.id) || "", to: t ? t.to || "" : "" };
   if (st.kind === "debt") return toast("Це повернення боргу — змінюй його у розділі «Борги»", "🤝");
-  const A = () => accOf(st.acc);
+  const A = () => accOf(st.acc), curFixed = !!st.cur && !t;
   if (!st.cur) st.cur = (A() && A().cur) || mainCur();
   if (st.kind === "tr" && !st.to) { const o = accs().find((a) => a.id !== st.acc); st.to = o ? o.id : ""; }
   const multi = accs().length > 1;
@@ -1496,7 +1739,7 @@ function openTx(t, preset) {
     let b;
     if ((b = e.target.closest("[data-curbtn]"))) { st.showCur = !st.showCur; paint(); haptic("light"); return; }
     if ((b = e.target.closest("[data-cur]"))) { st.cur = b.dataset.cur; st.showCur = false; paint(); haptic("sel"); return; }
-    if ((b = e.target.closest("[data-a]"))) { st.acc = b.dataset.a; if (st.to === st.acc) { const o = accs().find((a) => a.id !== st.acc); st.to = o ? o.id : ""; } if (A()) st.cur = A().cur || st.cur; paintCats(); paint(); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-a]"))) { st.acc = b.dataset.a; if (st.to === st.acc) { const o = accs().find((a) => a.id !== st.acc); st.to = o ? o.id : ""; } if (A() && !curFixed) st.cur = A().cur || st.cur; paintCats(); paint(); haptic("sel"); return; }
     if ((b = e.target.closest("[data-to]"))) { st.to = b.dataset.to; paintCats(); paint(); haptic("sel"); return; }
     if ((b = e.target.closest(".cc"))) { st.cat = b.dataset.c; $$(".cc", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); SFX.play("tick"); return; }
     if ((b = e.target.closest("[data-d]"))) { st.date = addDays(today(), -b.dataset.d); paint(); haptic("sel"); return; }
@@ -1528,6 +1771,7 @@ function openTx(t, preset) {
     const spent = prevSpent - oldPart + toMain(amt, st.cur), lim = st.kind === "exp" ? limitOf(st.cat) : 0;
     try {
       await S.store.put(item);
+      if (preset.onSaved) try { await preset.onSaved(item); } catch (er) { console.warn(er); }
       closeSheet(sh._entry); haptic("ok"); SFX.play(st.kind === "inc" ? "chime" : "coin");
       if (ym !== S.month) { S.month = ym; UI.enter = true; }
       const c = cat(st.cat);
@@ -1621,7 +1865,7 @@ function openSubPick() {
 }
 function openSub(s, preset) {
   const edit = !!s; preset = preset || {};
-  const st = { name: s ? s.name : preset.name || "", emo: s ? s.emo : preset.emo || "🔁", color: s ? s.color : preset.color || SUB_COL[0], amt: s ? kpFrom(s.amt) : "", cur: s ? s.cur : mainCur(), cycle: s ? s.cycle || "m" : "m", next: s ? s.next : today(), acc: s && accOf(s.acc) ? s.acc : (defAcc() || {}).id || "" };
+  const st = { name: s ? s.name : preset.name || "", emo: s ? s.emo : preset.emo || "🔁", color: s ? s.color : preset.color || SUB_COL[0], amt: s ? kpFrom(s.amt) : preset.amt ? kpFrom(preset.amt) : "", cur: s ? s.cur : preset.cur || mainCur(), cycle: s ? s.cycle || "m" : "m", next: s ? s.next : preset.next || today(), acc: s && accOf(s.acc) ? s.acc : (defAcc() || {}).id || "" };
   const emos = SUB_EMO.includes(st.emo) ? SUB_EMO : [st.emo].concat(SUB_EMO.slice(0, -1));
   const cols = SUB_COL.includes(st.color) ? SUB_COL : [st.color].concat(SUB_COL.slice(0, -1));
   let h = '<div class="subprev"><span class="sav" style="--c:' + esc(st.color) + '">' + esc(st.emo) + '</span><div><h3 style="margin:0;padding:0">' + (edit ? "Підписка" : "Нова підписка") + '</h3><p class="ssub" data-prev>' + esc(st.name || "Назва сервісу") + "</p></div></div>";
@@ -1642,7 +1886,7 @@ function openSub(s, preset) {
   const prev = () => { const a = $(".subprev .sav", sh); a.style.setProperty("--c", st.color); a.textContent = st.emo; $("[data-prev]", sh).textContent = st.name || "Назва сервісу"; };
   segBind($(".seg", sh), (v) => { st.cycle = v; });
   $("#s_name", sh).addEventListener("input", (e) => { st.name = e.target.value; prev(); });
-  if (!edit && preset.name) setTimeout(() => { try { $("#s_amt", sh).focus(); } catch (e) {} }, 450);
+  if (!edit && preset.name && !preset.amt) setTimeout(() => { try { $("#s_amt", sh).focus(); } catch (e) {} }, 450);
   sh.addEventListener("click", async (e) => {
     let b;
     if ((b = e.target.closest("[data-cur]"))) { st.cur = b.dataset.cur; $$("[data-cur]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); return; }
@@ -1654,7 +1898,7 @@ function openSub(s, preset) {
       if (!st.name) { toast("Вкажи назву", "✍️"); haptic("error"); $("#s_name", sh).focus(); return; }
       if (!(amt > 0)) { toast("Вкажи ціну", "💶"); haptic("error"); $("#s_amt", sh).focus(); return; }
       const item = Object.assign({}, s || {}, { id: s ? s.id : "s_" + uid(), type: "sub", name: st.name, emo: st.emo, color: st.color, amt: Math.round(amt * 100) / 100, cur: st.cur, cycle: st.cycle, next: st.next, anchor: pd(st.next).getDate(), acc: st.acc || "", createdAt: s ? s.createdAt || Date.now() : Date.now() });
-      try { await S.store.put(item); closeSheet(sh._entry); haptic("ok"); SFX.play("chime"); toast(edit ? "Збережено" : "Підписку додано", edit ? "✅" : st.emo); } catch (er) { toast("Помилка: " + (er.message || er)); }
+      try { await S.store.put(item); if (preset.onSaved) await preset.onSaved(item); closeSheet(sh._entry); haptic("ok"); SFX.play("chime"); toast(edit ? "Збережено" : "Підписку додано", edit ? "✅" : st.emo); } catch (er) { toast("Помилка: " + (er.message || er)); }
       return;
     }
     if (e.target.closest("[data-pause]")) {
@@ -1763,10 +2007,11 @@ function correctBalance(a) {
 }
 function openAcc(a, preset) {
   const edit = !!a; preset = preset || {};
-  const st = { name: a ? a.name : preset.name || "", emo: a ? a.emo || "💳" : preset.emo || "💳", cur: a ? a.cur || "€" : mainCur(), bal: a ? accBal(a) : 0 };
+  const st = { name: a ? a.name : preset.name || "", emo: a ? a.emo || "💳" : preset.emo || "💳", cur: a ? a.cur || "€" : mainCur(), bal: a ? accBal(a) : 0, skin: a ? a.skin || "" : "" };
   const lockCur = edit && accHasTx(a.id);
   let h = "<h3>" + (edit ? "Рахунок" : "Новий рахунок") + "</h3>";
   h += '<div class="fl">Значок</div><div class="emos">' + ACC_EMO.map((x) => '<button class="' + (x === st.emo ? "on" : "") + '" data-e="' + x + '">' + x + "</button>").join("") + "</div>";
+  h += '<div class="fl">Колір картки</div><div class="skins">' + SKIN_ORDER.map((k) => '<button data-skin="' + k + '" style="' + skinVars(k) + '" class="' + (k === (st.skin || (a ? skinOf(a) : "")) ? "on" : "") + '" aria-label="' + SKINS[k][2] + '"></button>').join("") + "</div>";
   h += '<div class="fl">Назва</div><input class="inp" id="a_name" maxlength="30" placeholder="Напр., Монобанк" value="' + esc(st.name) + '">';
   if (!edit) h += '<div class="chips" style="margin-top:8px">' + ACC_PRESETS.map((p) => '<button class="chip" data-pre="' + esc(p[0]) + '" data-pe="' + p[1] + '">' + p[1] + " " + esc(p[0]) + "</button>").join("") + "</div>";
   h += '<div class="fl">Валюта' + (lockCur ? ' <span class="opt">· вже є операції</span>' : "") + '</div><div class="chips">' + CURS.map((c) => '<button class="chip' + (c === st.cur ? " on" : "") + '" data-cur="' + c + '"' + (lockCur && c !== st.cur ? " disabled" : "") + ">" + c + " " + CUR_NAME[c] + "</button>").join("") + "</div>";
@@ -1780,6 +2025,7 @@ function openAcc(a, preset) {
   sh.addEventListener("click", async (e) => {
     let b;
     if ((b = e.target.closest("[data-e]"))) { st.emo = b.dataset.e; $$("[data-e]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); return; }
+    if ((b = e.target.closest("[data-skin]"))) { st.skin = b.dataset.skin; $$("[data-skin]", sh).forEach((x) => x.classList.toggle("on", x === b)); haptic("sel"); return; }
     if ((b = e.target.closest("[data-pre]"))) { st.name = b.dataset.pre; st.emo = b.dataset.pe; $("#a_name", sh).value = st.name; $$("[data-e]", sh).forEach((x) => x.classList.toggle("on", x.dataset.e === st.emo)); haptic("sel"); return; }
     if ((b = e.target.closest("[data-cur]"))) { if (b.disabled) return; st.cur = b.dataset.cur; $$("[data-cur]", sh).forEach((x) => x.classList.toggle("on", x === b)); paintBal(); haptic("sel"); return; }
     if (e.target.closest("[data-bal]")) {
@@ -1790,7 +2036,7 @@ function openAcc(a, preset) {
     if (e.target.closest("[data-save]")) {
       st.name = $("#a_name", sh).value.trim();
       if (!st.name) { toast("Як назвемо рахунок?", "✍️"); haptic("error"); $("#a_name", sh).focus(); return; }
-      const item = edit ? Object.assign({}, a, { name: st.name, emo: st.emo, cur: st.cur }) : { id: "a_" + uid(), type: "acc", name: st.name, emo: st.emo, cur: st.cur, start: Math.round(st.bal * 100) / 100, order: accsAll().length, createdAt: Date.now() };
+      const item = edit ? Object.assign({}, a, { name: st.name, emo: st.emo, cur: st.cur, skin: st.skin || a.skin || "" }) : { id: "a_" + uid(), type: "acc", name: st.name, emo: st.emo, cur: st.cur, skin: st.skin || "", start: Math.round(st.bal * 100) / 100, order: accsAll().length, createdAt: Date.now() };
       try { await S.store.put(item); closeSheet(sh._entry); haptic("ok"); SFX.play("chime"); toast(edit ? "Збережено" : "Рахунок «" + st.name + "» додано", st.emo); } catch (er) { toast("Помилка: " + (er.message || er)); }
       return;
     }
@@ -1936,6 +2182,89 @@ function openSalary() {
   });
 }
 
+
+/* ================= пошта (Gmail через Apps Script) ================= */
+const mailAll = () => all("mail");
+const mailNew = () => mailAll().filter((m) => (m.status || "new") === "new" && +m.amount > 0).sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.createdAt || 0) - (a.createdAt || 0));
+function mailStatusText() {
+  if (!CFG) return "Потрібна хмарна синхронізація";
+  const L = mailAll(); if (!L.length) return "Ще не налаштовано";
+  const last = L.reduce((a, m) => Math.max(a, +m.createdAt || 0), 0);
+  return "Останній чек знайдено " + (last ? dShort(ds(new Date(last))) : "—") + " · нових " + mailNew().length;
+}
+// схожа операція вже є? (та сама сума й валюта, ±3 дні)
+function mailDup(m) { return txs().some((t) => t.kind === "exp" && Math.abs(+t.amt - +m.amount) < 0.01 && (t.cur || "€") === (m.cur || "€") && m.date && t.date && Math.abs(dayDiff(t.date, m.date)) <= 3); }
+const MAIL_CUR = { EUR: "€", UAH: "₴", USD: "$", PLN: "zł", GBP: "£" };
+const mailCur = (c) => (CURS.includes(c) ? c : MAIL_CUR[c] || mainCur());
+async function mailMark(m, patch) { await S.store.put(Object.assign({}, m, patch, { handledAt: Date.now() })); }
+function openMail() {
+  let showDone = false;
+  const sh = openSheet('<div class="mailbox"></div>');
+  const draw = () => {
+    const L = mailNew(), done = mailAll().filter((m) => (m.status || "new") !== "new");
+    let h = '<h3>📬 Пошта</h3><p class="ssub">Чеки й квитанції з Gmail. Додай у витрати, збережи як підписку або пропусти.</p>';
+    if (!L.length) h += emptyHtml("📭", "Нових чеків немає", CFG && mailAll().length ? "Скрипт перевіряє пошту щогодини — нові чеки зʼявляться тут." : "Підключи Gmail — і я знаходитиму чеки, квитанції та підписки сам.", '<button class="btn pri" data-msetup>Налаштувати пошту</button>');
+    else h += '<div class="mlist">' + L.map((m) => {
+      const c = cat(m.cat || "other"), dup = mailDup(m);
+      return '<div class="mrow glass" data-mid="' + esc(m.id) + '"><div class="mh"><span class="ce" style="--c:' + c.color + '">' + c.emo + '</span><div class="mm"><b>' + esc(m.merchant || "Лист") + "</b><small>" + (m.date ? dShort(m.date) : "") + " · " + esc(c.name) + (m.isSub ? ' · <span class="tag">🔁 підписка?</span>' : "") + '</small></div><div class="ma">' + money(+m.amount, mailCur(m.cur)) + "</div></div>" +
+        (m.subject ? '<div class="msubj">' + esc(m.subject) + "</div>" : "") + (dup ? '<div class="mdup">👀 Схожа операція вже є — можливо, це дубль</div>' : "") +
+        '<div class="mbtns">' + (m.isSub ? '<button class="btn pri sm" data-msub>🔁 Це підписка</button><button class="btn sm" data-madd>Витрата</button>' : '<button class="btn pri sm" data-madd>Додати витрату</button><button class="btn sm" data-msub>Підписка</button>') + '<button class="mx" data-mign aria-label="Ігнорувати" title="Ігнорувати">' + IC.x + "</button></div></div>";
+    }).join("") + "</div>";
+    if (done.length) {
+      h += '<button class="toggle' + (showDone ? " open" : "") + '" data-mdone>' + IC.r + "Опрацьовані · " + done.length + "</button>";
+      if (showDone) h += '<div class="box glass">' + done.sort((a, b) => (b.handledAt || 0) - (a.handledAt || 0)).slice(0, 30).map((m) => '<div class="row"><span class="ri">' + (m.status === "ignored" ? "🙈" : m.status === "sub" ? "🔁" : "✅") + '</span><span class="rm"><b>' + esc(m.merchant || "Лист") + "</b><small>" + (m.status === "ignored" ? "пропущено" : m.status === "sub" ? "додано як підписку" : "додано у витрати") + " · " + money(+m.amount || 0, mailCur(m.cur)) + "</small></span>" + (m.status === "ignored" ? '<button class="pill" data-mback="' + esc(m.id) + '">Повернути</button>' : "") + "</div>").join("") + "</div>";
+    }
+    $(".mailbox", sh).innerHTML = h;
+  };
+  draw();
+  sh._redraw = draw;
+  sh.addEventListener("click", async (e) => {
+    let b;
+    if (e.target.closest("[data-msetup]")) { closeSheet(sh._entry); return setTimeout(openMailSetup, 120); }
+    if (e.target.closest("[data-mdone]")) { showDone = !showDone; haptic("sel"); return draw(); }
+    if ((b = e.target.closest("[data-mback]"))) { await mailMark(S.items[b.dataset.mback], { status: "new" }); haptic("sel"); return setTimeout(draw, 30); }
+    const row = e.target.closest("[data-mid]"); if (!row) return;
+    const m = S.items[row.dataset.mid]; if (!m) return;
+    if (e.target.closest("[data-mign]")) { row.classList.add("gone"); await mailMark(m, { status: "ignored" }); haptic("light"); toast("Пропущено: " + (m.merchant || "лист"), "🙈"); return setTimeout(draw, 260); }
+    if (e.target.closest("[data-madd]")) {
+      haptic("light");
+      return openTx(null, { kind: "exp", amt: +m.amount, cur: mailCur(m.cur), cat: m.cat && cat(m.cat).kind === "exp" ? m.cat : null, note: (m.merchant || "").slice(0, 40) || (m.subject || "").slice(0, 40), date: m.date,
+        onSaved: async (tx) => { await mailMark(m, { status: "added", tx: tx.id }); setTimeout(draw, 60); } });
+    }
+    if (e.target.closest("[data-msub]")) {
+      haptic("light");
+      const pop = POPULAR.find((x) => (m.merchant || "").toLowerCase().includes(x[0].toLowerCase().split(" ")[0]));
+      return openSub(null, { name: m.merchant || "", emo: pop ? pop[1] : "🔁", color: pop ? pop[2] : SUB_COL[0], amt: +m.amount, cur: mailCur(m.cur), next: m.date ? addCycle(m.date, "m") : today(),
+        onSaved: async (sub) => { await mailMark(m, { status: "sub", sub: sub.id }); setTimeout(draw, 60); } });
+    }
+  });
+}
+let MAIL_GS = null;
+async function mailScript() {
+  if (!MAIL_GS) { const r = await fetch("gmail-sync.gs", { cache: "no-cache" }); if (!r.ok) throw new Error("Не вдалося завантажити скрипт"); MAIL_GS = await r.text(); }
+  const c = CFG || {};
+  return MAIL_GS.replace(/^var FIREBASE_PROJECT = ".*?";/m, 'var FIREBASE_PROJECT = "' + (c.p || "ВСТАВ_PROJECT_ID") + '";').replace(/^var API_KEY = ".*?";/m, 'var API_KEY = "' + (c.k || "ВСТАВ_API_KEY") + '";').replace(/^var LIST_ID = ".*?";/m, 'var LIST_ID = "' + (c.l || "ВСТАВ_LIST_ID") + '";');
+}
+function openMailSetup() {
+  let script = null;
+  mailScript().then((t) => { script = t; const b = $("[data-mcopy]", sh); if (b) b.disabled = false; }).catch(() => {});
+  const L = mailAll();
+  let h = '<h3>📬 Пошта (Gmail)</h3><div class="mstat glass"><span class="ri">' + (CFG ? (L.length ? "✅" : "⏳") : "⚠️") + '</span><span class="rm"><b>' + (CFG ? (L.length ? "Підключено" : "Ще не налаштовано") : "Потрібна хмарна синхронізація") + "</b><small>" + (CFG ? (L.length ? mailStatusText() : "Як тільки скрипт знайде перший чек — він зʼявиться тут") : "Відкрий Гаманець через посилання бота з параметрами хмари (p, k, l) — у локальному режимі скрипту нікуди писати.") + "</small></span></div>";
+  h += '<p class="ssub" style="margin-top:14px">Google не дозволяє входити в Gmail всередині Telegram, тож пошту перевіряє маленький скрипт у <b>твоєму</b> Google-акаунті. Він читає лише листи-чеки й надсилає сюди тільки магазин, суму, дату й короткий фрагмент — без тексту листів.</p>';
+  h += '<ol class="steps">' +
+    '<li><b>Відкрий script.google.com</b> і натисни «Новий проєкт».<button class="btn sm" data-mopen>Відкрити script.google.com ↗</button></li>' +
+    '<li><b>Скопіюй скрипт</b> — твої ключі вже вписані всередині.<button class="btn pri sm" data-mcopy disabled>📋 Скопіювати скрипт</button></li>' +
+    "<li><b>Встав і збережи.</b> Видали все, що є в редакторі, встав скрипт і натисни 💾 «Зберегти».</li>" +
+    "<li><b>Запусти <code>setup</code>.</b> Угорі обери функцію <code>setup</code> → «Виконати» → «Переглянути дозволи» → свій акаунт. Google напише «Google не перевірив цей додаток» — це нормально, бо скрипт твій власний: натисни «Додатково» → «Перейти до проєкту (небезпечно)» → «Дозволити».</li>" +
+    "<li><b>Готово!</b> Скрипт перевірятиме пошту щогодини. Щоб перевірити одразу — запусти функцію <code>testOnce</code>, у журналі буде видно, що він знайшов.</li></ol>";
+  h += '<div class="hint" style="text-align:center">Вимкнути: script.google.com → проєкт → ⏰ Тригери → видалити.</div>';
+  const sh = openSheet(h);
+  sh.addEventListener("click", (e) => {
+    if (e.target.closest("[data-mopen]")) { const u = "https://script.google.com/home/projects/create"; try { if (tg && tg.openLink) return tg.openLink(u); } catch (er) {} window.open(u, "_blank"); }
+    if (e.target.closest("[data-mcopy]")) { if (!script) return toast("Скрипт ще завантажується…", "⏳"); copy(script, "Скрипт скопійовано — встав у редактор 📋"); }
+  });
+}
+
 /* ================= налаштування ================= */
 function csvExport() {
   const mc = mainCur(), L = txs().sort((a, b) => a.date.localeCompare(b.date));
@@ -1956,7 +2285,8 @@ function openSettings() {
     '<button class="row" data-act2="accs"><span class="ri">💳</span><span class="rm"><b>Рахунки</b><small>' + accs().length + " " + plural(accs().length, ["рахунок", "рахунки", "рахунків"]) + " · разом " + money(totalMoney(), { r: 1 }) + '</small></span><span class="chev">' + IC.r + "</span></button>" +
     '<button class="row" data-act2="salary"><span class="ri">💼</span><span class="rm"><b>Зарплата</b><small>' + (sal.length ? payDaysText(sal) + " · " + money(salMonthly(), { r: 1 }) + "/міс" : "Не налаштовано") + '</small></span><span class="chev">' + IC.r + "</span></button>" +
     '<button class="row" data-act2="debts"><span class="ri">🤝</span><span class="rm"><b>Борги</b><small>' + (nOpen ? "Я винен " + money(T.owe, { r: 1 }) + " · мені винні " + money(T.lent, { r: 1 }) : "Немає відкритих") + '</small></span><span class="chev">' + IC.r + "</span></button>" +
-    '<button class="row" data-act2="limits"><span class="ri">🎯</span><span class="rm"><b>Ліміти на категорії</b><small>' + (Object.values(S.meta.limits || {}).filter((v) => v > 0).length || "Немає") + ' активних</small></span><span class="chev">' + IC.r + "</span></button></div>";
+    '<button class="row" data-act2="mail"><span class="ri">📬</span><span class="rm"><b>Пошта (Gmail)</b><small>' + mailStatusText() + '</small></span><span class="chev">' + IC.r + "</span></button>" +
+    '<button class="row" data-act2="limits"><span class="ri">🎯</span><span class="rm"><b>Ліміти на категорії</b><small>' + ((n) => (n ? n + " " + plural(n, ["активний", "активні", "активних"]) : "Немає"))(Object.values(S.meta.limits || {}).filter((v) => v > 0).length) + '</small></span><span class="chev">' + IC.r + "</span></button></div>";
   h += '<div class="fl">Основна валюта</div><div class="chips" data-main>' + CURS.map((c) => '<button class="chip' + (c === mc ? " on" : "") + '" data-mc="' + c + '">' + c + " " + CUR_NAME[c] + "</button>").join("") + "</div>";
   h += '<div class="hint">Операції й рахунки в інших валютах перераховуються автоматично. Курс ' + (RATES.live() ? "оновлюється щодня" + (RATES.at() ? " (останнє: " + dShort(ds(new Date(RATES.at()))) + ")" : "") : "приблизний — оновиться, коли буде інтернет") + ".</div>";
   const cc = S.meta.customCats || [];
@@ -1964,6 +2294,7 @@ function openSettings() {
     '<div class="row" style="gap:8px"><input class="inp" id="cc_emo" maxlength="4" placeholder="🐾" style="width:58px;text-align:center;padding:12px 6px"><input class="inp" id="cc_name" maxlength="24" placeholder="Назва, напр. Тварини"><button class="chip" data-addcat style="flex:none">＋</button></div></div>';
   h += '<div class="fl">Оформлення</div>' + themePickerHtml();
   h += '<div class="fl">Інше</div><div class="box glass"><button class="row" data-act2="sound"><span class="ri">🔔</span><span class="rm"><b>Звуки</b><small>Мʼякі звуки при додаванні й досягненні цілей</small></span><span class="sw' + (SFX.on() ? " on" : "") + '"></span></button>' +
+    '<button class="row" data-act2="fx"><span class="ri">❄️</span><span class="rm"><b>Анімований фон</b><small>Сніг, пелюстки, листя за сезоном · вимкни, якщо телефон гріється</small></span><span class="sw' + (fxOn() ? " on" : "") + '"></span></button>' +
     '<button class="row" data-act2="csv"><span class="ri">📄</span><span class="rm"><b>Експорт операцій (CSV)</b><small>' + txs().length + " записів · для Excel чи Google Таблиць</small></span><span class=\"chev\">" + IC.r + "</span></button>" +
     '<button class="row" data-act2="rewiz"><span class="ri">🧭</span><span class="rm"><b>Пройти налаштування заново</b><small>Валюта, рахунки, зарплата, борги, підписки</small></span><span class="chev">' + IC.r + "</span></button></div>";
   h += '<div class="hint" style="text-align:center;margin-top:18px">Гаманець · тільки для тебе, ' + ME + " 💚</div>";
@@ -1982,6 +2313,8 @@ function openSettings() {
       if (a === "salary") openSalary();
       if (a === "debts") { closeSheet(sh._entry); setTab("debts"); }
       if (a === "limits") openLimitPick();
+      if (a === "mail") openMailSetup();
+      if (a === "fx") { const v = !fxOn(); LS.set("mn_fx", v); $(".sw", b).classList.toggle("on", v); applyTheme(); haptic("sel"); }
       if (a === "sound") { const v = !SFX.on(); LS.set("mn_sound", v); $(".sw", b).classList.toggle("on", v); haptic("sel"); if (v) SFX.play("chime"); }
       if (a === "csv") {
         const csv = csvExport(), name = "hamanets-" + today() + ".csv";
@@ -2011,7 +2344,7 @@ async function setMainCur(nc) {
   const oc = mainCur(); if (nc === oc) return;
   const conv = (v) => Math.round(RATES.conv(v, oc, nc));
   const limits = {}; Object.entries(S.meta.limits || {}).forEach(([k, v]) => { if (v > 0) limits[k] = conv(v); });
-  LS.set("mn_cur", nc);
+  LS.set("mn_cur", nc); CUR0 = nc;
   try { await S.store.saveMeta({ cur: nc, limits }); } catch (er) { toast("Помилка: " + (er.message || er)); }
 }
 
@@ -2188,7 +2521,7 @@ function fxSprites(kind) {
   }
   return S2;
 }
-function fxCount(base) { const a = (FX.w * FX.h) / (390 * 844); return Math.min(70, Math.round(base * Math.max(0.6, Math.min(1.4, a)))); }
+function fxCount(base) { const a = (FX.w * FX.h) / (390 * 844); return Math.min(32, Math.round(base * 0.45 * Math.max(0.6, Math.min(1.2, a)))); }
 function fxMake(init) {
   const k = FX.kind, w = FX.w, h = FX.h, z = Math.random(), SP = FX.spr;
   const p = { x: rnd(0, w), y: init ? rnd(-20, h + 20) : -30, z, ph: rnd(0, 6.28), fr: rnd(0.4, 1.1), rot: rnd(0, 6.28), vr: rnd(-1, 1), fl: rnd(0, 6.28), vf: rnd(1.2, 3), lap: null };
@@ -2199,7 +2532,7 @@ function fxMake(init) {
   else if (k === "autumn") { p.s = 13 + z * 13; p.vy = 18 + z * 30; p.vx = rnd(-4, 10); p.amp = 18 + z * 28; p.a = 0.6 + z * 0.35; p.par = 0.03 + z * 0.14; p.vr = rnd(-1.6, 1.6); p.img = SP.list[(Math.random() * SP.list.length) | 0]; }
   return p;
 }
-function fxSize() { if (!FX.cv) return; FX.dpr = Math.min(window.devicePixelRatio || 1, 2); FX.w = window.innerWidth; FX.h = window.innerHeight; FX.cv.width = Math.round(FX.w * FX.dpr); FX.cv.height = Math.round(FX.h * FX.dpr); FX.ctx.setTransform(FX.dpr, 0, 0, FX.dpr, 0, 0); }
+function fxSize() { if (!FX.cv) return; FX.dpr = 1; /* тонким частинкам не потрібна retina — у 4–9 разів менше пікселів */ FX.w = window.innerWidth; FX.h = window.innerHeight; FX.cv.width = Math.round(FX.w * FX.dpr); FX.cv.height = Math.round(FX.h * FX.dpr); FX.ctx.setTransform(FX.dpr, 0, 0, FX.dpr, 0, 0); }
 function fxDraw(dt) {
   const c = FX.ctx, w = FX.w, h = FX.h, M = 50, H = h + M * 2, W = w + M * 2, t = FX.t, k = FX.kind, off = window.scrollY || 0;
   const wind = Math.sin(t * 0.13) * 0.6 + Math.sin(t * 0.047 + 1) * 0.4;
@@ -2219,7 +2552,14 @@ function fxDraw(dt) {
   }
   c.globalAlpha = 1; c.globalCompositeOperation = "source-over";
 }
-function fxLoop(now) { FX.raf = 0; if (!FX.kind || document.hidden) return; const dt = Math.min(0.05, FX.last ? (now - FX.last) / 1000 : 0.016); FX.last = now; FX.t += dt; fxDraw(dt); FX.raf = requestAnimationFrame(fxLoop); }
+function fxLoop(now) {
+  FX.raf = 0; if (!FX.kind || document.hidden) return;
+  // 30 кадрів/с; пауза під час прокрутки і коли відкрита шторка
+  if (sheets.length || now - (FX.scrollT || 0) < 220 || (FX.last && now - FX.last < 32)) { if (sheets.length || now - (FX.scrollT || 0) < 220) FX.last = 0; FX.raf = requestAnimationFrame(fxLoop); return; }
+  const dt = Math.min(0.05, FX.last ? (now - FX.last) / 1000 : 0.033); FX.last = now; FX.t += dt; fxDraw(dt); FX.raf = requestAnimationFrame(fxLoop);
+}
+window.addEventListener("scroll", () => { FX.scrollT = performance.now(); }, { passive: true });
+const fxOn = () => LS.get("mn_fx", false);
 function fxStop() { if (FX.raf) cancelAnimationFrame(FX.raf); FX.raf = 0; FX.last = 0; }
 function fxPlay() { fxStop(); if (!FX.kind || document.hidden) return; if (reduceMotion()) { fxDraw(0); return; } FX.raf = requestAnimationFrame(fxLoop); }
 function fxStart(kind) {
@@ -2268,7 +2608,7 @@ function applyTheme() {
   const dark = html.classList.contains("dark"), bg = (THEMES[id] || THEMES.classic).bg[dark ? 1 : 0];
   try { if (tg && tg.setHeaderColor) tg.setHeaderColor(bg); if (tg && tg.setBackgroundColor) tg.setBackgroundColor(bg); } catch (e) {}
   try { const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", bg); } catch (e) {}
-  try { fxStart(id === "classic" ? null : id); } catch (e) {}
+  try { fxStart(id === "classic" || !fxOn() ? null : id); } catch (e) {}
   thGarland(id === "winter");
 }
 const TH_HINT = (ch) => (ch === "auto" ? "Тема змінюється сама: зима, весна, літо, осінь — і романтика до 14 лютого 💕" : "Обрано вручну. «Авто» знову ввімкне зміну за сезоном.");
@@ -2316,6 +2656,10 @@ document.addEventListener("click", (e) => {
   else if (a === "acccorr" && fa) correctBalance(fa);
   else if (a === "accedit" && fa) openAcc(fa);
   else if (a === "accadd") { haptic("light"); openAcc(); }
+  else if (a === "qexp") { haptic("light"); openTx(); }
+  else if (a === "qinc") { haptic("light"); openTx(null, { kind: "inc" }); }
+  else if (a === "qtr") { haptic("light"); if (accs().length < 2) { toast("Для переказу потрібен другий рахунок", "💳"); openAcc(); } else openTx(null, { kind: "tr" }); }
+  else if (a === "mail") { haptic("light"); openMail(); }
   else if (a === "salary") { haptic("light"); openSalary(); }
   else if (a === "add") openTx();
   else if (a === "subadd") { haptic("light"); openSubPick(); }
@@ -2339,7 +2683,8 @@ function onData(d) {
   S.items = d.items || {}; S.meta = d.meta || {}; MS = null; AB = null;
   if (S.meta.cur) LS.set("mn_cur", S.meta.cur);
   const first = !S.loaded; S.loaded = true; if (first) UI.enter = true;
-  render();
+  if (first) render(); else scheduleRender();
+  sheets.forEach((x) => { if (x.sh._redraw) try { x.sh._redraw(); } catch (e) {} });
   processAuto();
 }
 function renderLocked() {
