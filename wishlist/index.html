@@ -12,7 +12,7 @@
 @font-face{font-family:"WInter";src:url(inter-medium-cyr.woff) format("woff");font-weight:500;font-display:swap}
 @font-face{font-family:"WInter";src:url(inter-bold-cyr.woff) format("woff");font-weight:700;font-display:swap}
 @font-face{font-family:"WInter";src:url(inter-extrabold-cyr.woff) format("woff");font-weight:800;font-display:swap}
-:root{
+:root{--c4:#4f7ff0;--c4s:#e3edff;
   --bg:#fbf4ef;--bg2:#f5e9e2;--card:#fff;--ink:#2e1d27;--ink2:#7a6470;--ink3:#b5a2ab;--line:#efe2db;
   --rose:#e2537a;--rose2:#ff8fab;--roseSoft:#ffe4ec;
   --c1:#ff5f4a;--c1s:#ffe7e2;--c2:#3fae86;--c2s:#ddf4ea;--c3:#8f6bf0;--c3s:#ece6ff;
@@ -21,7 +21,7 @@
   --font:"WInter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
 }
-.dark{
+.dark{--c4s:#1e2c4a;
   --bg:#1b1418;--bg2:#251b21;--card:#2a2026;--ink:#f7ecf0;--ink2:#c2aab5;--ink3:#7e6872;--line:#3a2d34;
   --roseSoft:#4a2533;--c1s:#4a2622;--c2s:#1d3a30;--c3s:#30274f;
   --shadow:0 6px 24px rgba(0,0,0,.35);
@@ -108,6 +108,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .sechead{display:flex;align-items:center;gap:11px;margin:0 2px 11px}
 .sico{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;font-size:18px;flex:none}
 .k1 .sico,.sico.k1{background:var(--c1s)}.sico.k2{background:var(--c2s)}.sico.k3{background:var(--c3s)}
+.k1 .sico,.sico.k1{background:var(--c1s)}.sico.k2{background:var(--c2s)}.sico.k4{background:var(--c4s)}
 .sechead .st{flex:1;min-width:0}
 .sechead h2{margin:0;font:700 20px/1.1 var(--serif);letter-spacing:-.2px}
 .sechead p{margin:3px 0 0;font-size:12.5px;color:var(--ink2)}
@@ -126,19 +127,25 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .cm.nop.k1{background:radial-gradient(90% 80% at 30% 20%,#fff3ee 0%,rgba(255,243,238,0) 70%),linear-gradient(150deg,#ffd9cf,#ffc4b8)}
 .cm.nop.k2{background:radial-gradient(90% 80% at 30% 20%,#f1fbf6 0%,rgba(241,251,246,0) 70%),linear-gradient(150deg,#d3f1e3,#b4e5cf)}
 .cm.nop.k3{background:radial-gradient(90% 80% at 30% 20%,#f7f3ff 0%,rgba(247,243,255,0) 70%),linear-gradient(150deg,#e3daff,#cfc1ff)}
+.cm.nop.k4{background:radial-gradient(90% 80% at 30% 20%,#f2f7ff 0%,rgba(247,243,255,0) 70%),linear-gradient(150deg,#d6e5ff,#b9d0ff)}
 .dark .cm.nop.k1{background:radial-gradient(90% 80% at 30% 20%,rgba(255,140,120,.18) 0%,rgba(0,0,0,0) 70%),linear-gradient(150deg,#4d2a26,#3a2220)}
 .dark .cm.nop.k2{background:radial-gradient(90% 80% at 30% 20%,rgba(110,220,170,.14) 0%,rgba(0,0,0,0) 70%),linear-gradient(150deg,#23463a,#1c3129)}
 .dark .cm.nop.k3{background:radial-gradient(90% 80% at 30% 20%,rgba(170,140,255,.18) 0%,rgba(0,0,0,0) 70%),linear-gradient(150deg,#3a2f61,#2a2443)}
+.dark .cm.nop.k4{background:radial-gradient(90% 80% at 30% 20%,rgba(170,140,255,.18) 0%,rgba(0,0,0,0) 70%),linear-gradient(150deg,#3a2f61,#2a2443)}
 .cm .ini{font:italic 700 66px/1 var(--serif);letter-spacing:-2px;opacity:.9;transform:translateY(-4px)}
 .k1 .ini{color:#f0725e}.k2 .ini{color:#3fa27e}.k3 .ini{color:#8a68e8}
+.k1 .ini{color:#f0725e}.k2 .ini{color:#3fa27e}.k4 .ini{color:#8a68e8}
 .dark .k1 .ini{color:#ff8e7c}.dark .k2 .ini{color:#5fcfa3}.dark .k3 .ini{color:#ad92ff}
+.dark .k1 .ini{color:#ff8e7c}.dark .k2 .ini{color:#5fcfa3}.dark .k4 .ini{color:#ad92ff}
 .cm .wm{position:absolute;right:9px;bottom:8px;font-size:16px;opacity:.75}
 .cbody{padding:9px 7px 6px;display:flex;flex-direction:column;flex:1;gap:8px}
 .ctitle{font-weight:700;font-size:14px;line-height:1.3;letter-spacing:-.1px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;color:var(--ink)}
 .cfoot{margin-top:auto;display:flex;align-items:center;gap:6px;min-height:22px}
 .cprice{display:inline-flex;align-items:center;font:800 12px/1 var(--font);padding:5px 8px;border-radius:999px;letter-spacing:.01em;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 .card.k1 .cprice{background:var(--c1s);color:#d9473a}.card.k2 .cprice{background:var(--c2s);color:#2a8f69}.card.k3 .cprice{background:var(--c3s);color:#7552d8}
+.card.k1 .cprice{background:var(--c1s);color:#d9473a}.card.k2 .cprice{background:var(--c2s);color:#2a8f69}.card.k4 .cprice{background:var(--c4s);color:#7552d8}
 .dark .card.k1 .cprice{color:#ff9282}.dark .card.k2 .cprice{color:#6fd6ad}.dark .card.k3 .cprice{color:#b49cff}
+.dark .card.k1 .cprice{color:#ff9282}.dark .card.k2 .cprice{color:#6fd6ad}.dark .card.k4 .cprice{color:#b49cff}
 .cnop{font-size:11.5px;color:var(--ink3);font-weight:600}
 .cago{margin-left:auto;font-size:11px;color:var(--ink3);font-weight:600;white-space:nowrap}
 .badge{position:absolute;top:7px;left:7px;padding:5px 8px 5px 7px;border-radius:999px;font:800 10px/1 var(--font);letter-spacing:.06em;text-transform:uppercase;background:var(--rose);color:#fff;box-shadow:0 4px 12px -2px rgba(226,83,122,.55);display:flex;align-items:center;gap:5px}
@@ -175,6 +182,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .empty .eart{width:112px;height:112px;margin:0 auto 18px;position:relative;display:grid;place-items:center}
 .empty .eart:before{content:"";position:absolute;inset:0;border-radius:36px;background:var(--roseSoft);transform:rotate(-8deg)}
 .empty .eart.k1:before{background:var(--c1s)}.empty .eart.k2:before{background:var(--c2s)}.empty .eart.k3:before{background:var(--c3s)}
+.empty .eart.k1:before{background:var(--c1s)}.empty .eart.k2:before{background:var(--c2s)}.empty .eart.k4:before{background:var(--c4s)}
 .empty .eart > *{position:relative}
 .empty .eart img{width:84px;height:84px;border-radius:26px;box-shadow:0 14px 30px -12px rgba(226,83,122,.6)}
 .empty .eart span{font-size:50px;animation:float 3.4s ease-in-out infinite}
@@ -259,6 +267,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 /* detail */
 .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-weight:700;font-size:12.5px}
 .p1{background:var(--c1s);color:var(--c1)}.p2{background:var(--c2s);color:var(--c2)}.p3{background:var(--c3s);color:var(--c3)}
+.p1{background:var(--c1s);color:var(--c1)}.p2{background:var(--c2s);color:var(--c2)}.p4{background:var(--c4s);color:var(--c4)}
 .dhero{position:relative;margin:0 -18px;background:var(--bg2)}
 .gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
 .gal::-webkit-scrollbar{display:none}
@@ -269,9 +278,11 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .dph.k1{background:radial-gradient(circle at 50% 46%,#fff4ee 0,transparent 55%),linear-gradient(150deg,#ffcfc4,#ffe9dc 60%,#fff3ea)}
 .dph.k2{background:radial-gradient(circle at 50% 46%,#f3fcf7 0,transparent 55%),linear-gradient(150deg,#bfeed9,#e3f7ec 60%,#f2fbf6)}
 .dph.k3{background:radial-gradient(circle at 50% 46%,#faf7ff 0,transparent 55%),linear-gradient(150deg,#d8caff,#ece4ff 60%,#f7f3ff)}
+.dph.k4{background:radial-gradient(circle at 50% 46%,#f3f8ff 0,transparent 55%),linear-gradient(150deg,#c9dcff,#e4eeff 60%,#f2f7ff)}
 .dark .dph.k1{background:radial-gradient(circle at 50% 46%,rgba(255,140,120,.18) 0,transparent 55%),linear-gradient(150deg,#5a2c26,#33201f)}
 .dark .dph.k2{background:radial-gradient(circle at 50% 46%,rgba(90,220,170,.14) 0,transparent 55%),linear-gradient(150deg,#1f4a3b,#1a2a25)}
 .dark .dph.k3{background:radial-gradient(circle at 50% 46%,rgba(170,140,255,.16) 0,transparent 55%),linear-gradient(150deg,#3d3166,#251f38)}
+.dark .dph.k4{background:radial-gradient(circle at 50% 46%,rgba(170,140,255,.16) 0,transparent 55%),linear-gradient(150deg,#22345e,#251f38)}
 .dhero.img:after{content:"";position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(rgba(20,8,14,0),rgba(20,8,14,.26));pointer-events:none}
 .galdots{position:absolute;left:50%;bottom:36px;transform:translateX(-50%);z-index:2;display:flex;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(30,14,22,.3);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .galdots:empty{display:none}
@@ -281,6 +292,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .dtags{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
 .dpill{display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 10px;border-radius:999px;font:700 13px/1 var(--font)}
 .dpill.k1{background:var(--c1s);color:var(--c1)}.dpill.k2{background:var(--c2s);color:var(--c2)}.dpill.k3{background:var(--c3s);color:var(--c3)}
+.dpill.k1{background:var(--c1s);color:var(--c1)}.dpill.k2{background:var(--c2s);color:var(--c2)}.dpill.k4{background:var(--c4s);color:var(--c4)}
 .dpill.dn{background:#dcf5e9;color:#1f8a5c}
 .dark .dpill.dn{background:#1d3a30;color:#6fdcaa}
 .dpill em{font-style:normal;font-weight:500;opacity:.75}
@@ -342,6 +354,7 @@ textarea.inp{min-height:100px;resize:none}
 .cat:active{transform:scale(.98)}
 .cat .ci{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:22px;flex:none;transition:background .25s,transform .3s var(--ease)}
 .cat.k1 .ci{background:var(--c1s)}.cat.k2 .ci{background:var(--c2s)}.cat.k3 .ci{background:var(--c3s)}
+.cat.k1 .ci{background:var(--c1s)}.cat.k2 .ci{background:var(--c2s)}.cat.k4 .ci{background:var(--c4s)}
 .cat .ct{flex:1;min-width:0}
 .cat b{display:block;font-size:15.5px;line-height:1.25}
 .cat .ct span{font-size:13px;color:var(--ink2)}
@@ -351,6 +364,7 @@ textarea.inp{min-height:100px;resize:none}
 .cat.on.k1{background:var(--c1s);box-shadow:inset 0 0 0 2px var(--c1)}.cat.on.k1 .rd{background:var(--c1);box-shadow:none}
 .cat.on.k2{background:var(--c2s);box-shadow:inset 0 0 0 2px var(--c2)}.cat.on.k2 .rd{background:var(--c2);box-shadow:none}
 .cat.on.k3{background:var(--c3s);box-shadow:inset 0 0 0 2px var(--c3)}.cat.on.k3 .rd{background:var(--c3);box-shadow:none}
+.cat.on.k4{background:var(--c4s);box-shadow:inset 0 0 0 2px var(--c4)}.cat.on.k4 .rd{background:var(--c4);box-shadow:none}
 .photos{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .pth{position:relative;aspect-ratio:1/1;border-radius:16px;overflow:hidden;background:var(--bg2);animation:fin .3s var(--ease);transition:transform .16s var(--ease)}
 .pth:active{transform:scale(.95)}
@@ -446,6 +460,7 @@ pre.code{display:block;padding:12px 14px;white-space:pre;overflow-x:auto;word-br
 .grow .gimg{width:62px;height:62px;border-radius:15px;flex:none;overflow:hidden;display:grid;place-items:center;font-size:26px}
 .grow .gimg img{width:100%;height:100%;object-fit:cover}
 .grow .gimg.k1{background:var(--c1s)}.grow .gimg.k2{background:var(--c2s)}.grow .gimg.k3{background:var(--c3s)}
+.grow .gimg.k1{background:var(--c1s)}.grow .gimg.k2{background:var(--c2s)}.grow .gimg.k4{background:var(--c4s)}
 .grow .gt{flex:1 1 0;width:0;min-width:0;overflow:hidden;display:block}
 .grow .gt b{display:block;font-size:14.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .grow .gt span{font-size:12.5px;color:var(--ink2);font-weight:700}
@@ -1091,6 +1106,7 @@ html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
 .empty h3{font:800 22px/1.2 var(--font);letter-spacing:-.03em}
 .empty .eart:before{border-radius:50%;transform:none;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb),var(--sh2)}
 .empty .eart.k1:before,.empty .eart.k2:before,.empty .eart.k3:before{background:var(--gl)}
+.empty .eart.k1:before,.empty .eart.k2:before,.empty .eart.k4:before{background:var(--gl)}
 .sa-empty b{font:800 19px/1.2 var(--font);letter-spacing:-.02em}
 
 /* FAB + нижнее «прогрессивное» размытие */
@@ -1154,7 +1170,9 @@ html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
 .cat .ci{border-radius:50%}
 .cat b{font-weight:700;letter-spacing:-.01em}
 .cat.on.k1,.cat.on.k2,.cat.on.k3{box-shadow:inset 0 0 0 1.5px currentColor}
+.cat.on.k1,.cat.on.k2,.cat.on.k4{box-shadow:inset 0 0 0 1.5px currentColor}
 .cat.on.k1{color:var(--c1)}.cat.on.k2{color:var(--c2)}.cat.on.k3{color:var(--c3)}
+.cat.on.k1{color:var(--c1)}.cat.on.k2{color:var(--c2)}.cat.on.k4{color:var(--c4)}
 .cat.on b{color:var(--ink)}
 .pth{border-radius:18px}
 .addph{border-radius:18px;border:1px dashed var(--ink3);background:var(--field)}
@@ -1204,6 +1222,7 @@ html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
 .hello{font-size:13.5px}
 /* мягче выделение выбранной категории */
 .cat.on.k1,.cat.on.k2,.cat.on.k3{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,currentColor 70%,transparent),0 8px 20px -12px currentColor}
+.cat.on.k1,.cat.on.k2,.cat.on.k4{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,currentColor 70%,transparent),0 8px 20px -12px currentColor}
 .cat .rd{box-shadow:inset 0 0 0 1.5px var(--fline)}
 /* зоны нажатия ≥44px без изменения внешнего вида */
 .drm,.sa-clr,.purh .purE,.tab,.chip,.gst{position:relative}
@@ -1219,8 +1238,11 @@ html[data-theme]:not([data-theme=classic]) .mood:before{opacity:.5}
 .ctitle{color:var(--ink)}
 .cfoot{min-height:26px}
 .card.k1 .cprice{background:rgba(255,95,74,.12)}.card.k2 .cprice{background:rgba(63,174,134,.13)}.card.k3 .cprice{background:rgba(143,107,240,.13)}
+.card.k1 .cprice{background:rgba(255,95,74,.12)}.card.k2 .cprice{background:rgba(63,174,134,.13)}.card.k4 .cprice{background:rgba(79,127,240,.13)}
 .dark .card.k1 .cprice{background:rgba(255,120,100,.16)}.dark .card.k2 .cprice{background:rgba(90,210,160,.15)}.dark .card.k3 .cprice{background:rgba(170,140,255,.17)}
+.dark .card.k1 .cprice{background:rgba(255,120,100,.16)}.dark .card.k2 .cprice{background:rgba(90,210,160,.15)}.dark .card.k4 .cprice{background:rgba(170,140,255,.17)}
 .sico.k1,.k1 .sico{background:rgba(255,95,74,.13)}.sico.k2{background:rgba(63,174,134,.14)}.sico.k3{background:rgba(143,107,240,.14)}
+.sico.k1,.k1 .sico{background:rgba(255,95,74,.13)}.sico.k2{background:rgba(63,174,134,.14)}.sico.k4{background:rgba(79,127,240,.14)}
 /* подсказка-строка у него */
 .spyhint{padding:10px 14px;border-radius:16px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--glb);margin-top:12px}
 /* шторка подтверждения */
@@ -1321,6 +1343,7 @@ const CATS = {
   1: { key: 1, emo: "🔥", name: "Очень нужно", sub: "Срочно, прям горит", short: "Срочно" },
   2: { key: 2, emo: "🌿", name: "Нужно", sub: "Не горит, но пригодится", short: "Нужно" },
   3: { key: 3, emo: "✨", name: "Хочу-хочу", sub: "Не горит, но очень хочется", short: "Хочу" },
+  4: { key: 4, emo: "🌠", name: "Мечта", sub: "Большое — когда-нибудь обязательно", short: "Мечта" },
 };
 const CURS = ["€", "₴", "₽", "$", "zł", "£"];
 /* ===== РОЗЕТКИ ДЛЯ МОДУЛЕЙ (подключение новых функций без правок ядра) =====
@@ -1740,14 +1763,14 @@ function render() {
   // вкладки
   const mineN = active.filter((i) => G(i.id)).length;
   const extTabs = []; HOOKS.tabs.forEach((f) => { try { (f() || []).forEach((t) => extTabs.push(t)); } catch (e) { console.warn(e); } });
-  const tabs = [["all", "Все", active.length]].concat(isOwner() ? [] : [["mine", "🎁 Я дарю", mineN]]).concat([ ["1", "🔥 Срочно", cnt(1)], ["2", "🌿 Нужно", cnt(2)], ["3", "✨ Хочу", cnt(3)], ["done", "🎉 Сбылось", done.length]]);
+  const tabs = [["all", "Все", active.length]].concat(isOwner() ? [] : [["mine", "🎁 Я дарю", mineN]]).concat([ ["1", "🔥 Срочно", cnt(1)], ["2", "🌿 Нужно", cnt(2)], ["3", "✨ Хочу", cnt(3)], ["4", "🌠 Мечта", cnt(4)], ["done", "🎉 Сбылось", done.length]]);
   extTabs.forEach((t) => tabs.push([t.key, t.label, t.count || 0]));
   h += '<div class="tabs"><div class="tabrail"><span class="tabind"></span>' + tabs.map((t) => '<button class="tab' + (S.tab === t[0] ? " on" : "") + '" data-tab="' + t[0] + '">' + t[1] + (t[2] || t[0] === "all" ? " <b>" + t[2] + "</b>" : "") + "</button>").join("") + "</div></div>";
 
   let n = 0; const grid = (list) => '<div class="grid">' + list.map((it) => cardHtml(it, n++)).join("") + "</div>";
   if (S.tab === "all") {
     if (!active.length) h += emptyHtml(done.length);
-    [1, 2, 3].forEach((k) => {
+    [1, 2, 3, 4].forEach((k) => {
       const list = sortedItems((i) => !i.done && i.cat == k); if (!list.length) return;
       h += sectionHead(k, list.length, n++) + grid(list) + "</div>";
     });
@@ -1943,7 +1966,7 @@ async function openDetail(id) {
 
 function openEditor(it, photosIn, pre) {
   const isNew = !it;
-  const st = { cat: it ? it.cat : (S.tab === "1" || S.tab === "2" || S.tab === "3" ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false, loading: false };
+  const st = { cat: it ? it.cat : (["1", "2", "3", "4"].includes(S.tab) ? +S.tab : 2), photos: (photosIn || []).slice(), busy: false, loading: false };
   const defCur = LS.get("wl_cur", "€");
   const curOpts = CURS.map((c) => '<option' + ((it ? it.cur || defCur : defCur) === c ? " selected" : "") + ">" + c + "</option>").join("");
   const noteV = it ? it.note || "" : "";
@@ -1951,7 +1974,7 @@ function openEditor(it, photosIn, pre) {
   const h = '<label class="fl" style="margin-top:8px">Фото <span class="opt">до 6 штук · можно выбрать сразу несколько</span></label><div class="photos" id="phs"></div><div class="hint" id="phhint"></div>' +
     '<label class="fl" for="f_title">Что хочешь?</label><input class="inp" id="f_title" maxlength="120" autocomplete="off" placeholder="Например: белые кроссовки New Balance" value="' + esc(it ? it.title : "") + '"><div class="ferr" id="e_title">Напиши, что ты хочешь 🙂</div>' +
     '<div class="fl">Насколько важно</div><div class="cats" id="cats" role="radiogroup">' +
-      [1, 2, 3].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '" role="radio" aria-checked="' + (st.cat === k) + '"><span class="ci">' + CATS[k].emo + '</span><span class="ct"><b>' + CATS[k].name + "</b><span>" + CATS[k].sub + '</span></span><span class="rd"></span></button>').join("") +
+      [1, 2, 3, 4].map((k) => '<button class="cat k' + k + (st.cat === k ? " on" : "") + '" data-cat="' + k + '" role="radio" aria-checked="' + (st.cat === k) + '"><span class="ci">' + CATS[k].emo + '</span><span class="ct"><b>' + CATS[k].name + "</b><span>" + CATS[k].sub + '</span></span><span class="rd"></span></button>').join("") +
     "</div>" +
     '<label class="fl" for="f_price">Цена <span class="opt">примерно</span></label><div class="pricerow"><div class="ifield"><span class="ic">🏷️</span><input class="inp" id="f_price" inputmode="decimal" autocomplete="off" placeholder="необязательно" value="' + esc(it && it.price != null ? it.price : "") + '"></div><select class="inp cur" id="f_cur" aria-label="Валюта">' + curOpts + "</select></div>" + '<div class="ferr" id="e_price">Цена — это число, например 49 или 1 200</div>' +
     '<label class="fl" for="f_link">Ссылка на товар</label><div class="ifield"><span class="ic">🔗</span><input class="inp" id="f_link" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…" value="' + esc(it ? it.link || "" : "") + '"></div><div class="ferr" id="e_link">Похоже, это не ссылка — проверь адрес</div>' +
@@ -3567,7 +3590,7 @@ function saPickHtml() {
     '<div class="fl">Потолок цены <span class="opt">в ' + esc(cur) + "</span></div>" +
     '<div class="chips"><button class="chip' + (!SA_PICK.max ? " on" : "") + '" data-sa-max="0">Любая</button>' + maxes.map((m) => '<button class="chip' + (SA_PICK.max === m ? " on" : "") + '" data-sa-max="' + m + '">до ' + money(m, cur) + "</button>").join("") +
       (SPY.budget && !maxes.includes(SPY.budget) ? '<button class="chip' + (SA_PICK.max === SPY.budget ? " on" : "") + '" data-sa-max="' + SPY.budget + '">💸 мой бюджет</button>' : "") + "</div>" +
-    '<div class="fl">Важность</div><div class="chips">' + [1, 2, 3].map((k) => '<button class="chip' + (SA_PICK.cats.includes(k) ? " on" : "") + '" data-sa-cat="' + k + '">' + CATS[k].emo + " " + CATS[k].short + "</button>").join("") +
+    '<div class="fl">Важность</div><div class="chips">' + [1, 2, 3, 4].map((k) => '<button class="chip' + (SA_PICK.cats.includes(k) ? " on" : "") + '" data-sa-cat="' + k + '">' + CATS[k].emo + " " + CATS[k].short + "</button>").join("") +
       '<button class="chip' + (SA_PICK.hideMine ? " on" : "") + '" data-sa-k="mine">Скрыть мои 🎁</button></div>' +
     '<div class="fl">Сортировка</div><div class="seg sa-seg">' + [["smart", "Умно"], ["cheap", "Дешевле"], ["exp", "Дороже"], ["new", "Новые"]].map((s) => '<button class="' + (SA_PICK.sort === s[0] ? "on" : "") + '" data-sa-sort="' + s[0] + '">' + s[1] + "</button>").join("") + "</div>" +
     (SA_PICK.sort === "smart" ? '<div class="hint">«Умно» — сначала важное для неё и недорогое, потом остальное. Цены в других валютах пересчитаны примерно.</div>' : "") +
