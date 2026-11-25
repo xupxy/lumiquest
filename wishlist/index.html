@@ -1341,7 +1341,10 @@ if (!(CFG.p && CFG.k && CFG.l)) {
   const saved = LS.get("wl_cfg", null);
   if (saved && saved.p && saved.k && saved.l) CFG = saved; else CFG = null;
 } else LS.set("wl_cfg", CFG);
-const LIST = CFG ? CFG.l : "demo";
+let LIST = CFG ? CFG.l : "demo";
+// адрес базы дублируем в облако Telegram: его не стирает ни iPhone, ни чистка кэша
+const TGCS = { get(k) { return new Promise((res) => { try { const cs = tg && tg.CloudStorage; if (!cs) return res(null); const t = setTimeout(() => res(null), 2500); cs.getItem(k, (e, v) => { clearTimeout(t); res(e ? null : v || null); }); } catch (e) { res(null); } }); },
+  set(k, v) { try { const cs = tg && tg.CloudStorage; if (cs) cs.setItem(k, v, () => {}); } catch (e) {} } };
 
 /* ================= доступ: только двое ================= */
 const ACCESS = { fllezzka: "owner", xupxy: "viewer" }; // ник в Telegram → роль
@@ -1722,7 +1725,7 @@ function render() {
   }
   let h = headerHtml(stats);
 
-  if (S.store.mode === "demo") h += '<button class="banner" data-act="setup"><span class="bi">' + IC.cloud + '</span><span><b>Демо-режим</b>Виден только тут</span><span class="go">Подключить' + IC.chev + "</span></button>";
+  if (S.store.mode === "demo") h += '<button class="banner warn" data-act="relink"><span class="bi">⚠️</span><span><b>Нет связи с общим списком</b>Сейчас видно только на этом телефоне</span><span class="go">Подключить' + IC.chev + "</span></button>";
 
   h += festHtml();
   // мысли / настроение (+ его реакция, «видел», устаревание)
@@ -1812,6 +1815,7 @@ document.addEventListener("click", (e) => {
   if (act === "add") openEditor(null);
   else if (act === "settings") openSettings();
   else if (act === "setup") openSetup();
+  else if (act === "relink") openRelink();
   else if (act === "mood") openMood();
   else if (act === "dates") openDates();
   else if (act === "notes") openNotes();
@@ -3446,6 +3450,38 @@ function openNudge() {
 HOOKS.settings.push(() => isOwner() ? "" : '<div class="fl">Напоминание</div><button class="tgl" data-nudge="1"><span><b>💌 Напомнить ' + esc(herDat()) + ' заполнить вишлист</b><span class="d">Красивое сообщение с картинкой от бота</span></span><span style="font-size:22px">›</span></button>');
 document.addEventListener("click", (e) => { if (!e.target.closest("[data-nudge]")) return; const top = sheets[sheets.length - 1]; if (top) closeSheet(top, true); setTimeout(openNudge, top ? 250 : 0); });
 
+/* ================= ВОССТАНОВЛЕНИЕ СВЯЗИ С ОБЩИМ СПИСКОМ ================= */
+function cfgFromText(t) {
+  const u = extractUrl(t) || String(t || "");
+  try { const q = new URL(/^https?:/i.test(u) ? u : "https://x/?" + u.replace(/^.*\?/, "")).searchParams; const c = { p: q.get("p"), k: q.get("k"), l: q.get("l") }; return c.p && c.k && c.l ? c : null; } catch (e) { return null; }
+}
+function openRelink() {
+  const sh = openSheet('<h3>Подключить общий список 🔗</h3><p class="ssub">Вставь ссылку на вишлист (ту, что в настройках бота у BotFather — с <code>?p=…&amp;k=…&amp;l=…</code>). Желания из общего списка вернутся, а адрес запомнится навсегда.</p>' +
+    '<input class="inp" id="rl_u" inputmode="url" autocapitalize="off" spellcheck="false" placeholder="https://xupxy.github.io/lumiquest/wishlist/?p=…" style="margin-top:14px">' +
+    '<button class="btn pri" id="rl_go" style="margin-top:12px">Подключить</button>', null, { cls: "compact" });
+  const go = () => {
+    const c = cfgFromText($("#rl_u", sh).value);
+    if (!c) { $("#rl_u", sh).classList.add("err"); toast("В ссылке нет p, k и l — скопируй её целиком"); haptic("error"); return; }
+    LS.set("wl_cfg", c); TGCS.set("wl_cfg", JSON.stringify(c)); haptic("ok");
+    location.href = location.origin + location.pathname + "?p=" + encodeURIComponent(c.p) + "&k=" + encodeURIComponent(c.k) + "&l=" + encodeURIComponent(c.l);
+  };
+  sh.addEventListener("click", (e) => { if (e.target.closest("#rl_go")) go(); });
+  $("#rl_u", sh).addEventListener("paste", () => setTimeout(() => { if (cfgFromText($("#rl_u", sh).value)) go(); }, 60));
+}
+// желания, добавленные, пока не было связи, — предлагаем перенести в общий список
+async function offerDemoMigration() {
+  if (!S.store || S.store.mode !== "cloud" || LS.get("wl_demo_moved", false)) return;
+  const d = LS.get("wl_demo_db", null); const items = d && d.items ? Object.values(d.items).filter((i) => i && i.id && i.title) : [];
+  const fresh = items.filter((i) => !S.items[i.id]);
+  if (!fresh.length) { if (items.length) LS.set("wl_demo_moved", true); return; }
+  const ok = await confirmSheet({ icon: "📦", title: "Перенести " + fresh.length + " " + plural(fresh.length, ["желание", "желания", "желаний"]) + "?", text: "Пока не было связи с общим списком, на этом телефоне добавилось: " + fresh.slice(0, 3).map((i) => "«" + esc(i.title) + "»").join(", ") + (fresh.length > 3 ? " и ещё " + (fresh.length - 3) : "") + ". Перенести их в общий вишлист?", ok: "Перенести", cancel: "Не сейчас" });
+  if (!ok) return;
+  let n = 0;
+  for (const it of fresh) { try { await S.store.saveItem(it, (d.photos || {})[it.id] || []); n++; } catch (e) { console.warn(e); } }
+  LS.set("wl_demo_backup", d); LS.set("wl_demo_moved", true);
+  haptic("ok"); toast("Перенесено: " + n + " ✓");
+}
+
 /* ================= МОДУЛИ АРИНЫ ================= */
 /* ================= /МОДУЛИ АРИНЫ ================= */
 
@@ -3629,13 +3665,19 @@ function renderLocked() {
   } catch (e) {}
 
   render();
+  // нет ссылки с параметрами и память телефона пуста — достаём адрес базы из облака Telegram
+  if (CFG) TGCS.set("wl_cfg", JSON.stringify(CFG));
+  else {
+    try { const c = JSON.parse((await TGCS.get("wl_cfg")) || "null"); if (c && c.p && c.k && c.l) { CFG = c; LIST = c.l; LS.set("wl_cfg", c); S.seen = LS.get(K("seen"), S.seen); } } catch (e) {}
+  }
   try {
     S.store = CFG ? await makeCloudStore(CFG) : makeLocalStore();
     S.status = CFG ? "cache" : "demo";
   } catch (e) {
     console.error(e); S.store = makeLocalStore(); S.status = "demo";
-    toast("Не удалось подключиться к облаку — открыт демо-режим");
+    toast("Не удалось подключиться к общему списку — проверь интернет и открой вишлист заново");
   }
+  if (S.store.mode === "cloud") setTimeout(offerDemoMigration, 2500);
   S.store.start(onData, (st, err) => {
     S.status = st;
     if (st === "err") { console.error(err); toast(err && err.code === "permission-denied" ? "База не пускает: проверь правила Firestore" : "Нет связи с базой"); }

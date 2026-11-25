@@ -2702,6 +2702,15 @@ function renderLocked() {
   $("#tabbar").classList.remove("hidden"); $("#fadebot").classList.remove("hidden");
   RATES.load();
   render(); syncTabbar(false);
+  // адрес хмари дублюємо в хмару Telegram, щоб не губився, коли iPhone чистить пам'ять
+  try {
+    const cs = tg && tg.CloudStorage;
+    if (cs && CFG) cs.setItem("mn_cfg", JSON.stringify(CFG), () => {});
+    else if (cs && !CFG) {
+      const v = await new Promise((res) => { const t = setTimeout(() => res(null), 2500); try { cs.getItem("mn_cfg", (e, x) => { clearTimeout(t); res(e ? null : x); }); } catch (er) { res(null); } });
+      const c = JSON.parse(v || "null"); if (c && c.p && c.k && c.l) { CFG = c; LS.set("mn_cfg", c); }
+    }
+  } catch (e) {}
   try { S.store = CFG ? await makeCloudStore(CFG) : makeLocalStore(); }
   catch (e) { console.warn(e); S.store = makeLocalStore(); toast("Не вдалося підключитися до хмари — відкрито локальний режим"); }
   S.status = S.store.mode === "demo" ? "demo" : "cache";
