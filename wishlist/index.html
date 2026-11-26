@@ -3439,6 +3439,7 @@ HOOKS.editor.push({
 
 /* ================= «НАПОМНИТЬ АРИНЕ» — красивое сообщение от бота ================= */
 const NUDGES = [
+  { e: "🎁", title: "Саша уже выбрал подарок", text: (n) => "🎁 <b>" + n + ", Саша уже выбрал тебе подарок!</b>\n\nОн нашёл кое-что в твоём вишлисте — и это уже точно твоё 🛍️✅ Подарок куплен (или вот-вот будет) 🤫\n\nЧто именно — секрет. Просто знай: скоро тебя ждёт приятный сюрприз ✨💝" },
   { e: "✨", title: "Твой вишлист заскучал", text: (n) => "✨ <b>" + n + ", твой вишлист заскучал!</b>\n\nЗагляни на минутку и добавь пару желаний 🛍️ — то, что давно присмотрела, о чём мечтаешь или что просто радует глаз 💄👟🎧\n\nЧем подробнее — тем точнее сбываются 🎁" },
   { e: "🌸", title: "Время мечтать", text: (n) => "🌸 <b>Время немножко помечтать, " + n + "</b>\n\nЧто бы тебе хотелось прямо сейчас? Уютный свитер 🧶, новая палетка 🎨, книга 📚 или что-то совсем особенное ✨\n\nЗапиши в вишлист — пусть ничего не потеряется 💗" },
   { e: "🎁", title: "Подскажи, что подарить", text: (n) => "🎁 <b>" + n + ", подскажи идею!</b>\n\nВ вишлисте пока маловато желаний 👀 Добавь пару вещей с фото или ссылкой — размер, цвет, магазин 📏🎨\n\nТогда сюрпризы будут попадать точно в цель 🎯" },
@@ -3467,7 +3468,7 @@ async function nudgeImage(nd) {
     x.save(); rr(W / 2 - 170, 260, 340, 340, 70); x.clip(); x.drawImage(im, W / 2 - 170, 260, 340, 340); x.restore();
   } catch (e) { x.font = "220" + EF; x.fillText("💝", W / 2, 430); }
   const F = (w, s) => w + " " + s + 'px WInter, -apple-system, "Segoe UI", Roboto, sans-serif';
-  x.fillStyle = "#2e1d27"; x.font = F(800, 72); x.fillText(nd.title, W / 2, 700);
+  x.fillStyle = "#2e1d27"; x.font = F(800, 72); x.fillText(nd.pic || nd.title, W / 2, 700);
   x.fillStyle = "#e2537a"; x.font = F(700, 40); x.fillText("Открой вишлист и добавь желания " + nd.e, W / 2, 785);
   x.fillStyle = "rgba(255,255,255,.8)"; rr(W / 2 - 210, 850, 420, 86, 43); x.fill();
   x.fillStyle = "#c2335f"; x.font = F(800, 38); x.fillText("💗 Вишлист", W / 2, 894);
@@ -3476,16 +3477,19 @@ async function nudgeImage(nd) {
 function openNudge() {
   const n = herName(), ready = !!(S.meta.bot && S.meta.ownerId);
   const opts = [seasonalNudge(n)].filter(Boolean).concat(NUDGES.map((v) => ({ e: v.e, title: v.title, text: v.text(n) })));
+  opts.push({ e: "✏️", title: "Свой текст", pic: "Сообщение для тебя", text: "", custom: true });
   let k = 0, img = null;
   const last = LS.get("wl_nudge_at", 0), recent = last && Date.now() - last < 3 * 3600e3;
   const sh = openSheet("<h3>Напомнить " + esc(herDat()) + ' 💌</h3><p class="ssub">Бот пришлёт ей красивое сообщение с картинкой и кнопкой «Открыть вишлист».</p>' +
     '<div class="nudgeprev"><div class="nimg" id="nd_img"><span class="mspin ink"></span></div><div class="ntxt" id="nd_txt"></div></div>' +
+    '<textarea class="inp hidden" id="nd_own" maxlength="700" style="margin-top:12px;min-height:110px" placeholder="Напиши своё сообщение — можно со смайликами 🎁✨"></textarea>' +
     '<div class="chips" style="margin-top:12px">' + opts.map((o, i) => '<button class="chip' + (i ? "" : " on") + '" data-ndv="' + i + '">' + o.e + " " + esc(o.title) + "</button>").join("") + "</div>" +
     (ready ? "" : '<div class="box sbox" style="margin-top:14px"><span class="sdot"></span><div><b>Пока не получится</b><span>Нужно, чтобы уведомления были включены (⚙️ → «Уведомления в Telegram»), а ' + esc(n) + " хотя бы раз открыла вишлист и нажала Start в боте.</span></div></div>") +
     '<button class="btn pri" id="nd_send" style="margin-top:16px"' + (ready ? "" : " disabled") + ">Отправить 💌</button>" +
     (recent ? '<div class="hint" style="text-align:center">Последнее напоминание было ' + ago(last) + " — не переусердствуй 😉</div>" : ""));
   const draw = async () => {
-    const o = opts[k]; $("#nd_txt", sh).innerHTML = o.text.replace(/\n/g, "<br>");
+    const o = opts[k]; const own = $("#nd_own", sh); own.classList.toggle("hidden", !o.custom);
+    $("#nd_txt", sh).innerHTML = o.custom ? '<span style="color:var(--ink3)">Текст появится здесь, как ты его напишешь</span>' : o.text.replace(/\n/g, "<br>");
     $("#nd_img", sh).innerHTML = '<span class="mspin ink"></span>'; img = await nudgeImage(o); if (sh.isConnected) $("#nd_img", sh).innerHTML = '<img src="' + img + '" alt="">';
   };
   draw();
@@ -3495,7 +3499,9 @@ function openNudge() {
     const b = e.target.closest("#nd_send"); if (!b || b.disabled || b.classList.contains("busy")) return;
     b.classList.add("busy"); b.innerHTML = '<span class="mspin"></span>Отправляю…';
     if (!img) img = await nudgeImage(opts[k]);
-    const r = await NOTIFY.send(opts[k].text, img, { to: "owner" });
+    let txt = opts[k].text;
+    if (opts[k].custom) { const v = $("#nd_own", sh).value.trim(); if (!v) { b.classList.remove("busy"); b.textContent = "Отправить 💌"; $("#nd_own", sh).classList.add("err"); toast("Напиши текст сообщения"); return; } txt = NOTIFY.escH(v); }
+    const r = await NOTIFY.send(txt, img, { to: "owner" });
     if (r.ok) { LS.set("wl_nudge_at", Date.now()); haptic("ok"); SFX.play("chime"); heartsFrom(b, 10); closeSheet(); toast("Отправлено " + n + " 💌"); }
     else { b.classList.remove("busy"); b.textContent = "Попробовать ещё раз"; toast("Бот ответил: " + (r.description || "ошибка") + (/chat not found|blocked/i.test(r.description || "") ? " — " + n + " должна нажать Start в боте" : "")); haptic("error"); }
   });
