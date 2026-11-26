@@ -1317,6 +1317,30 @@ html[data-theme]:not([data-theme=classic]) .fab:after{background:radial-gradient
   .card:after{display:none}
 }
 /* ===== /ДИЗАЙН «СКЛО» ===== */
+
+/* ===== ПЛАВНОСТЬ: облегчённый рендер для iPhone/Telegram ===== */
+:root,.dark,html[data-theme]{--blur:none}
+html,body{-webkit-text-size-adjust:100%}
+button,a,input,select,textarea,label,[data-act],[data-open],[data-tab],.card,.tile,.chip,.tab{touch-action:manipulation}
+/* настоящее размытие — дорогое: оставляем только тосту, остальное — сплошные/полупрозрачные поверхности */
+*:not(.toast){-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.sheet,.dbody,.dbar,html[data-theme] .dbar,.grab.sc,.grab.hd{background:var(--bg)!important}
+.veil{background:rgba(24,14,30,.42)!important}
+.dark .veil{background:rgba(0,0,0,.55)!important}
+.tabrail{background:color-mix(in srgb,var(--card) 88%,transparent)!important}
+.gift,.multi,.vbadge,.galdots,.sheet.hero .grab .x,.pth .rm,.dvid .pl{background-color:rgba(20,12,22,.6)!important}
+.gift{background-color:rgba(255,255,255,.92)!important}
+/* бесконечные фоновые анимации гоняют перерисовку всего экрана — выключаем */
+body:before,body:after{animation:none!important}
+.badge:not(.upd),.badge:before,.top .brand img,.dph span,.fab:after,.empty .eart:before{animation:none!important}
+/* слои и отклик */
+.sheet{will-change:transform;contain:layout paint}
+.veil{will-change:opacity}
+.card,.tile,.btn,.chip,.tab,.iconbtn,.fab{transition-duration:.14s!important}
+.card:active,.tile:active,.btn:active,.chip:active,.iconbtn:active{transition-duration:.06s!important}
+.sec{content-visibility:auto;contain-intrinsic-size:auto 600px}
+.card .cm img{content-visibility:auto}
+#thfx{will-change:transform}
 </style>
 </head>
 <body>
@@ -2821,7 +2845,7 @@ function fxSprites(kind) {
   }
   return S;
 }
-function fxCount(base) { const a = (FX.w * FX.h) / (390 * 844); return Math.min(70, Math.round(base * Math.max(.6, Math.min(1.4, a)))); }
+function fxCount(base) { const a = (FX.w * FX.h) / (390 * 844); return Math.min(36, Math.round(base * .55 * Math.max(.6, Math.min(1.2, a)))); }
 function fxMake(init) {
   const k = FX.kind, w = FX.w, h = FX.h, z = Math.random(), S = FX.spr;
   const p = { x: rnd(0, w), y: init ? rnd(-20, h + 20) : -30, z, ph: rnd(0, 6.28), fr: rnd(.4, 1.1), rot: rnd(0, 6.28), vr: rnd(-1, 1), fl: rnd(0, 6.28), vf: rnd(1.2, 3), lap: null };
@@ -2848,7 +2872,7 @@ function fxMake(init) {
 }
 function fxSize() {
   if (!FX.cv) return;
-  FX.dpr = Math.min(window.devicePixelRatio || 1, 2);
+  FX.dpr = Math.min(window.devicePixelRatio || 1, 1.25);
   FX.w = window.innerWidth; FX.h = window.innerHeight;
   FX.cv.width = Math.round(FX.w * FX.dpr); FX.cv.height = Math.round(FX.h * FX.dpr);
   FX.ctx.setTransform(FX.dpr, 0, 0, FX.dpr, 0, 0);
@@ -2884,11 +2908,17 @@ function fxDraw(dt) {
   }
   c.globalAlpha = 1; c.globalCompositeOperation = "source-over";
 }
+let fxScrollUntil = 0;
+window.addEventListener("scroll", () => { fxScrollUntil = performance.now() + 220; }, { passive: true });
 function fxLoop(now) {
   FX.raf = 0;
   if (!FX.kind || document.hidden) return;
-  const dt = Math.min(.05, FX.last ? (now - FX.last) / 1000 : .016); FX.last = now; FX.t += dt;
-  fxDraw(dt);
+  // 30 кадров/с, пауза во время прокрутки и пока открыта шторка — пальцу ничего не мешает
+  const busy = now < fxScrollUntil || (typeof sheets !== "undefined" && sheets.length);
+  if (!busy && (!FX.last || now - FX.last >= 32)) {
+    const dt = Math.min(.05, FX.last ? (now - FX.last) / 1000 : .033); FX.last = now; FX.t += dt;
+    fxDraw(dt);
+  } else if (busy) FX.last = now;
   FX.raf = requestAnimationFrame(fxLoop);
 }
 function fxStop() { if (FX.raf) cancelAnimationFrame(FX.raf); FX.raf = 0; FX.last = 0; }
